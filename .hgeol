@@ -1,0 +1,29 @@
+[repository]
+native = LF
+
+[patterns]
+# Mercurial settings files.
+.hgignore = native
+.hgtags = native
+.hgeol = native
+
+# Source and project files.
+**.cs = native
+**.csproj = native
+**.proj = native
+**.py = native
+**.tt = native
+**.ttinclude = native
+**.h = native
+**.c = native
+**.cc = native
+**.cpp = native
+**.sln = CRLF
+
+# Shell scripts
+**.cmd = native
+**.bat = native
+**.sh = native
+
+# Resources
+**.html = native

@@ -1,0 +1,113 @@
+﻿//
+// This file manually written from cef/include/internal/cef_types.h.
+// C API name: cef_settings_t.
+//
+// Note: cef_settings_t structure in CEF has 2 layouts (choosed in compile time),
+//       so in C# we make different structures and will choose layouts in runtime.
+//    Windows platform: cef_settings_t_windows.
+//    Non-windows platforms: cef_settings_t_posix.
+//
+namespace Xilium.CefGlue.Interop
+{
+    using System;
+    using System.Runtime.InteropServices;
+
+    internal unsafe struct cef_settings_t
+    {
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
+    internal unsafe struct cef_settings_t_windows
+    {
+        public UIntPtr size;
+        public bool_t single_process;
+        public cef_string_t browser_subprocess_path;
+        public bool_t multi_threaded_message_loop;
+        public bool_t command_line_args_disabled;
+        public cef_string_t cache_path;
+        public cef_string_t user_agent;
+        public cef_string_t product_version;
+        public cef_string_t locale;
+        public cef_string_list* extra_plugin_paths;
+        public cef_string_t log_file;
+        public CefLogSeverity log_severity;
+        public cef_graphics_implementation_t_windows graphics_implementation;
+        public uint local_storage_quota;
+        public uint session_storage_quota;
+        public cef_string_t javascript_flags;
+        public bool_t auto_detect_proxy_settings_enabled;
+        public cef_string_t pack_file_path;
+        public cef_string_t locales_dir_path;
+        public bool_t pack_loading_disabled;
+        public int remote_debugging_port;
+
+        #region Alloc & Free
+        private static int _sizeof;
+
+        static cef_settings_t_windows()
+        {
+            _sizeof = Marshal.SizeOf(typeof(cef_settings_t_windows));
+        }
+
+        public static cef_settings_t_windows* Alloc()
+        {
+            var ptr = (cef_settings_t_windows*)Marshal.AllocHGlobal(_sizeof);
+            *ptr = new cef_settings_t_windows();
+            ptr->size = (UIntPtr)_sizeof;
+            return ptr;
+        }
+
+        public static void Free(cef_settings_t_windows* ptr)
+        {
+            Marshal.FreeHGlobal((IntPtr)ptr);
+        }
+        #endregion
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
+    internal unsafe struct cef_settings_t_posix
+    {
+        public UIntPtr size;
+        public bool_t single_process;
+        public cef_string_t browser_subprocess_path;
+        public bool_t multi_threaded_message_loop;
+        public bool_t command_line_args_disabled;
+        public cef_string_t cache_path;
+        public cef_string_t user_agent;
+        public cef_string_t product_version;
+        public cef_string_t locale;
+        public cef_string_list* extra_plugin_paths;
+        public cef_string_t log_file;
+        public CefLogSeverity log_severity;
+        public cef_graphics_implementation_t_posix graphics_implementation;
+        public uint local_storage_quota;
+        public uint session_storage_quota;
+        public cef_string_t javascript_flags;
+        public cef_string_t pack_file_path;
+        public cef_string_t locales_dir_path;
+        public bool_t pack_loading_disabled;
+        public int remote_debugging_port;
+
+        #region Alloc & Free
+        private static int _sizeof;
+
+        static cef_settings_t_posix()
+        {
+            _sizeof = Marshal.SizeOf(typeof(cef_settings_t_posix));
+        }
+
+        public static cef_settings_t_posix* Alloc()
+        {
+            var ptr = (cef_settings_t_posix*)Marshal.AllocHGlobal(_sizeof);
+            *ptr = new cef_settings_t_posix();
+            ptr->size = (UIntPtr)_sizeof;
+            return ptr;
+        }
+
+        public static void Free(cef_settings_t_posix* ptr)
+        {
+            Marshal.FreeHGlobal((IntPtr)ptr);
+        }
+        #endregion
+    }
+}
