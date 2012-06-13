@@ -174,6 +174,31 @@ inline bool operator!=(const CefRect& a, const CefRect& b) {
   return !(a == b);
 }
 
+struct CefKeyEventTraits {
+  typedef cef_key_event_t struct_type;
+
+  static inline void init(struct_type* s) {}
+
+  static inline void clear(struct_type* s) {}
+
+  static inline void set(const struct_type* src, struct_type* target,
+      bool copy) {
+    target->type = src->type;
+    target->modifiers = src->modifiers;
+    target->windows_key_code = src->windows_key_code;
+    target->native_key_code = src->native_key_code;
+    target->is_system_key = src->is_system_key;
+    target->character = src->character;
+    target->unmodified_character = src->unmodified_character;
+    target->focus_on_editable_field = src->focus_on_editable_field;
+  }
+};
+
+///
+// Class representing a a keyboard event.
+///
+typedef CefStructBase<CefKeyEventTraits> CefKeyEvent;
+
 
 struct CefPopupFeaturesTraits {
   typedef cef_popup_features_t struct_type;
@@ -237,8 +262,6 @@ struct CefSettingsTraits {
     cef_string_clear(&s->user_agent);
     cef_string_clear(&s->product_version);
     cef_string_clear(&s->locale);
-    if (s->extra_plugin_paths)
-      cef_string_list_free(s->extra_plugin_paths);
     cef_string_clear(&s->log_file);
     cef_string_clear(&s->javascript_flags);
     cef_string_clear(&s->pack_file_path);
@@ -262,24 +285,14 @@ struct CefSettingsTraits {
         &target->product_version, copy);
     cef_string_set(src->locale.str, src->locale.length, &target->locale, copy);
 
-    if (target->extra_plugin_paths)
-      cef_string_list_free(target->extra_plugin_paths);
-    target->extra_plugin_paths = src->extra_plugin_paths ?
-        cef_string_list_copy(src->extra_plugin_paths) : NULL;
-
     cef_string_set(src->log_file.str, src->log_file.length, &target->log_file,
         copy);
     target->log_severity = src->log_severity;
-    target->graphics_implementation = src->graphics_implementation;
-    target->local_storage_quota = src->local_storage_quota;
-    target->session_storage_quota = src->session_storage_quota;
     cef_string_set(src->javascript_flags.str, src->javascript_flags.length,
         &target->javascript_flags, copy);
 
-#if defined(OS_WIN)
     target->auto_detect_proxy_settings_enabled =
         src->auto_detect_proxy_settings_enabled;
-#endif
 
     cef_string_set(src->pack_file_path.str, src->pack_file_path.length,
         &target->pack_file_path, copy);
@@ -316,10 +329,6 @@ struct CefBrowserSettingsTraits {
 
   static inline void set(const struct_type* src, struct_type* target,
       bool copy) {
-    target->drag_drop_disabled = src->drag_drop_disabled;
-    target->load_drops_disabled = src->load_drops_disabled;
-    target->history_disabled = src->history_disabled;
-
     cef_string_set(src->standard_font_family.str,
         src->standard_font_family.length, &target->standard_font_family, copy);
     cef_string_set(src->fixed_font_family.str, src->fixed_font_family.length,

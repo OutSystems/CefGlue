@@ -28,7 +28,8 @@ namespace Xilium.CefGlue
         private cef_render_process_handler_t.on_browser_destroyed_delegate _ds6;
         private cef_render_process_handler_t.on_context_created_delegate _ds7;
         private cef_render_process_handler_t.on_context_released_delegate _ds8;
-        private cef_render_process_handler_t.on_process_message_recieved_delegate _ds9;
+        private cef_render_process_handler_t.on_focused_node_changed_delegate _ds9;
+        private cef_render_process_handler_t.on_process_message_received_delegate _dsa;
         
         protected CefRenderProcessHandler()
         {
@@ -52,8 +53,10 @@ namespace Xilium.CefGlue
             _self->_on_context_created = Marshal.GetFunctionPointerForDelegate(_ds7);
             _ds8 = new cef_render_process_handler_t.on_context_released_delegate(on_context_released);
             _self->_on_context_released = Marshal.GetFunctionPointerForDelegate(_ds8);
-            _ds9 = new cef_render_process_handler_t.on_process_message_recieved_delegate(on_process_message_recieved);
-            _self->_on_process_message_recieved = Marshal.GetFunctionPointerForDelegate(_ds9);
+            _ds9 = new cef_render_process_handler_t.on_focused_node_changed_delegate(on_focused_node_changed);
+            _self->_on_focused_node_changed = Marshal.GetFunctionPointerForDelegate(_ds9);
+            _dsa = new cef_render_process_handler_t.on_process_message_received_delegate(on_process_message_received);
+            _self->_on_process_message_received = Marshal.GetFunctionPointerForDelegate(_dsa);
         }
         
         ~CefRenderProcessHandler()

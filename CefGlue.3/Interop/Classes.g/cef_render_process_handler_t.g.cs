@@ -19,7 +19,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _on_browser_destroyed;
         internal IntPtr _on_context_created;
         internal IntPtr _on_context_released;
-        internal IntPtr _on_process_message_recieved;
+        internal IntPtr _on_focused_node_changed;
+        internal IntPtr _on_process_message_received;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -79,7 +80,13 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int on_process_message_recieved_delegate(cef_render_process_handler_t* self, cef_browser_t* browser, CefProcessId source_process, cef_process_message_t* message);
+        internal delegate void on_focused_node_changed_delegate(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_domnode_t* node);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int on_process_message_received_delegate(cef_render_process_handler_t* self, cef_browser_t* browser, CefProcessId source_process, cef_process_message_t* message);
         
         private static int _sizeof;
         

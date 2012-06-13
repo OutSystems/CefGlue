@@ -66,11 +66,13 @@
     <Compile Include="Classes.g\CefDomEventListener.g.cs" />
     <Compile Include="Classes.g\CefDomNode.g.cs" />
     <Compile Include="Classes.g\CefDomVisitor.g.cs" />
+    <Compile Include="Classes.g\CefFocusHandler.g.cs" />
     <Compile Include="Classes.g\CefFrame.g.cs" />
     <Compile Include="Classes.g\CefGeolocationCallback.g.cs" />
     <Compile Include="Classes.g\CefGeolocationHandler.g.cs" />
     <Compile Include="Classes.g\CefJSDialogCallback.g.cs" />
     <Compile Include="Classes.g\CefJSDialogHandler.g.cs" />
+    <Compile Include="Classes.g\CefKeyboardHandler.g.cs" />
     <Compile Include="Classes.g\CefLifeSpanHandler.g.cs" />
     <Compile Include="Classes.g\CefListValue.g.cs" />
     <Compile Include="Classes.g\CefLoadHandler.g.cs" />
@@ -110,8 +112,10 @@
     <Compile Include="Classes.Handlers\CefDisplayHandler.cs" />
     <Compile Include="Classes.Handlers\CefDomEventListener.cs" />
     <Compile Include="Classes.Handlers\CefDomVisitor.cs" />
+    <Compile Include="Classes.Handlers\CefFocusHandler.cs" />
     <Compile Include="Classes.Handlers\CefGeolocationHandler.cs" />
     <Compile Include="Classes.Handlers\CefJSDialogHandler.cs" />
+    <Compile Include="Classes.Handlers\CefKeyboardHandler.cs" />
     <Compile Include="Classes.Handlers\CefLifeSpanHandler.cs" />
     <Compile Include="Classes.Handlers\CefLoadHandler.cs" />
     <Compile Include="Classes.Handlers\CefProxyHandler.cs" />
@@ -159,6 +163,9 @@
     <Compile Include="Classes.Proxies\CefWebPluginInfo.cs" />
     <Compile Include="Classes.Proxies\CefXmlReader.cs" />
     <Compile Include="Classes.Proxies\CefZipReader.cs" />
+    <Compile Include="Enums\CefFocusSource.cs" />
+    <Compile Include="Enums\CefKeyEventModifiers.cs" />
+    <Compile Include="Enums\CefKeyEventType.cs" />
     <Compile Include="Enums\CefLogSeverity.cs" />
     <Compile Include="Enums\CefStorageType.cs" />
     <Compile Include="Enums\CefHandlerErrorCode.cs" />
@@ -173,7 +180,6 @@
     <Compile Include="Enums\CefXmlNodeType.cs" />
     <Compile Include="Enums\CefStatusMessageType.cs" />
     <Compile Include="Enums\CefProxyType.cs" />
-    <Compile Include="Enums\CefGraphicsImplementation.cs" />
     <Compile Include="Enums\CefJSDialogType.cs" />
     <Compile Include="Enums\CefMenuId.cs" />
     <Compile Include="Enums\CefEventFlags.cs" />
@@ -201,14 +207,18 @@
     <Compile Include="Interop\Classes.g\cef_domevent_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_domnode_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_domvisitor_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_focus_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_jsdialog_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_jsdialog_handler_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_keyboard_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_menu_model_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_scheme_registrar_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_user_data_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_web_plugin_info_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_web_plugin_info_visitor_t.g.cs" />
+    <Compile Include="Interop\Structs\cef_key_event_t.cs" />
     <Compile Include="Structs\CefCookie.cs" />
+    <Compile Include="Structs\CefKeyEvent.cs" />
     <Compile Include="Structs\CefMainArgs.cs" />
     <Compile Include="Structs\CefPopupFeatures.cs" />
     <Compile Include="Structs\CefProxyInfo.cs" />
@@ -268,7 +278,6 @@
     <Compile Include="Interop\Classes.g\cef_xml_reader_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_zip_reader_t.g.cs" />
     <Compile Include="Interop\libcef.time.cs" />
-    <Compile Include="Interop\Enums\cef_graphics_implementation_t.cs" />
     <Compile Include="Interop\libcef.string_multimap.cs" />
     <Compile Include="Interop\libcef.string_map.cs" />
     <Compile Include="Interop\libcef.string_list.cs" />
@@ -289,7 +298,9 @@
     <Compile Include="StringHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Interop\Enums\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

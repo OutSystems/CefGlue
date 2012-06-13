@@ -6,6 +6,8 @@
 from schema import *
 
 classdef = {
+    'CefUserData': { 'role': ROLE_HANDLER, 'reversible': True },
+
     'CefApp': { 'role': ROLE_HANDLER, 'name': 'CefApp' },
     'CefBrowser': { 'role': ROLE_PROXY },
     'CefBrowserHost': { 'role': ROLE_PROXY },
@@ -61,6 +63,6 @@ classdef = {
     'CefSchemeRegistrar': { 'role': ROLE_PROXY },
     'CefWebPluginInfo': { 'role': ROLE_PROXY },
     'CefWebPluginInfoVisitor': { 'role': ROLE_HANDLER },
-
-    'CefUserData': { 'role': ROLE_HANDLER, 'reversible': True },
+    'CefFocusHandler': { 'role': ROLE_HANDLER },
+    'CefKeyboardHandler': { 'role': ROLE_HANDLER },
     }

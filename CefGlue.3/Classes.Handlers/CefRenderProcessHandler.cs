@@ -115,14 +115,40 @@ namespace Xilium.CefGlue
         }
 
 
-        private int on_process_message_recieved(cef_render_process_handler_t* self, cef_browser_t* browser, CefProcessId source_process, cef_process_message_t* message)
+        private void on_focused_node_changed(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_domnode_t* node)
+        {
+            CheckSelf(self);
+
+            var m_browser = CefBrowser.FromNative(browser);
+            var m_frame = CefFrame.FromNative(frame);
+            var m_node = CefDomNode.FromNative(node);
+
+            OnFocusedNodeChanged(m_browser, m_frame, m_node);
+
+            m_node.Dispose();
+        }
+
+        /// <summary>
+        /// Called when a new node in the the browser gets focus. The |node| value may
+        /// be empty if no specific node has gained focus. The node object passed to
+        /// this method represents a snapshot of the DOM at the time this method is
+        /// executed. DOM objects are only valid for the scope of this method. Do not
+        /// keep references to or attempt to access any DOM objects outside the scope
+        /// of this method.
+        /// </summary>
+        protected virtual void OnFocusedNodeChanged(CefBrowser browser, CefFrame frame, CefDomNode node)
+        {
+        }
+
+
+        private int on_process_message_received(cef_render_process_handler_t* self, cef_browser_t* browser, CefProcessId source_process, cef_process_message_t* message)
         {
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
             var m_message = CefProcessMessage.FromNative(message);
 
-            var result = OnProcessMessageRecieved(m_browser, source_process, m_message);
+            var result = OnProcessMessageReceived(m_browser, source_process, m_message);
 
             m_message.Dispose();
 
@@ -134,7 +160,7 @@ namespace Xilium.CefGlue
         /// if the message was handled or false otherwise. Do not keep a reference to
         /// or attempt to access the message outside of this callback.
         /// </summary>
-        protected virtual bool OnProcessMessageRecieved(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
+        protected virtual bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
         {
             return false;
         }

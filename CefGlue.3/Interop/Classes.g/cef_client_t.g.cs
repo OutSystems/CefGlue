@@ -13,14 +13,16 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_client_t
     {
         internal cef_base_t _base;
+        internal IntPtr _get_context_menu_handler;
+        internal IntPtr _get_display_handler;
+        internal IntPtr _get_focus_handler;
+        internal IntPtr _get_geolocation_handler;
+        internal IntPtr _get_jsdialog_handler;
+        internal IntPtr _get_keyboard_handler;
         internal IntPtr _get_life_span_handler;
         internal IntPtr _get_load_handler;
         internal IntPtr _get_request_handler;
-        internal IntPtr _get_display_handler;
-        internal IntPtr _get_geolocation_handler;
-        internal IntPtr _get_jsdialog_handler;
-        internal IntPtr _get_context_menu_handler;
-        internal IntPtr _on_process_message_recieved;
+        internal IntPtr _on_process_message_received;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -44,6 +46,42 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
+        internal delegate cef_context_menu_handler_t* get_context_menu_handler_delegate(cef_client_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate cef_display_handler_t* get_display_handler_delegate(cef_client_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate cef_focus_handler_t* get_focus_handler_delegate(cef_client_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate cef_geolocation_handler_t* get_geolocation_handler_delegate(cef_client_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate cef_jsdialog_handler_t* get_jsdialog_handler_delegate(cef_client_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate cef_keyboard_handler_t* get_keyboard_handler_delegate(cef_client_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
         internal delegate cef_life_span_handler_t* get_life_span_handler_delegate(cef_client_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
@@ -62,31 +100,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate cef_display_handler_t* get_display_handler_delegate(cef_client_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate cef_geolocation_handler_t* get_geolocation_handler_delegate(cef_client_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate cef_jsdialog_handler_t* get_jsdialog_handler_delegate(cef_client_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate cef_context_menu_handler_t* get_context_menu_handler_delegate(cef_client_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate int on_process_message_recieved_delegate(cef_client_t* self, cef_browser_t* browser, CefProcessId source_process, cef_process_message_t* message);
+        internal delegate int on_process_message_received_delegate(cef_client_t* self, cef_browser_t* browser, CefProcessId source_process, cef_process_message_t* message);
         
         private static int _sizeof;
         

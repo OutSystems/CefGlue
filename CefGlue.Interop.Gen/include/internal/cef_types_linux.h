@@ -42,9 +42,10 @@
 extern "C" {
 #endif
 
-// Window handle.
+// Handle types.
+#define cef_cursor_handle_t GtkCursor*
+#define cef_event_handle_t GdkEvent*
 #define cef_window_handle_t GtkWidget*
-#define cef_cursor_handle_t void*
 
 ///
 // Structure representing CefExecuteProcess arguments.
@@ -53,14 +54,6 @@ typedef struct _cef_main_args_t {
   int argc;
   char** argv;
 } cef_main_args_t;
-
-///
-// Supported graphics implementations.
-///
-enum cef_graphics_implementation_t {
-  DESKTOP_IN_PROCESS = 0,
-  DESKTOP_IN_PROCESS_COMMAND_BUFFER,
-};
 
 ///
 // Class representing window information.

@@ -10,9 +10,6 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_browser_settings_t
     {
         public UIntPtr size;
-        public bool_t drag_drop_disabled;
-        public bool_t load_drops_disabled;
-        public bool_t history_disabled;
         public cef_string_t standard_font_family;
         public cef_string_t fixed_font_family;
         public cef_string_t serif_font_family;

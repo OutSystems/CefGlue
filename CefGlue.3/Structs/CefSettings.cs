@@ -65,12 +65,6 @@
         public string Locale { get; set; }
 
         /// <summary>
-        /// List of fully qualified paths to plugins (including plugin name) that will
-        /// be loaded in addition to any plugins found in the default search paths.
-        /// </summary>
-        public string[] ExtraPluginPaths { get; set; }
-
-        /// <summary>
         /// The directory and file name to use for the debug log. If empty, the
         /// default name of "debug.log" will be used and the file will be written
         /// to the application directory.
@@ -82,22 +76,6 @@
         /// logged.
         /// </summary>
         public CefLogSeverity LogSeverity { get; set; }
-
-        /// <summary>
-        /// The graphics implementation that CEF will use for rendering GPU accelerated
-        /// content like WebGL, accelerated layers and 3D CSS.
-        /// </summary>
-        public CefGraphicsImplementation GraphicsImplementation { get; set; }
-
-        /// <summary>
-        /// Quota limit for localStorage data across all origins. Default size is 5MB.
-        /// </summary>
-        public int LocalStorageQuota { get; set; }
-
-        /// <summary>
-        /// Quota limit for sessionStorage data per namespace. Default size is 5MB.
-        /// </summary>
-        public int SessionStorageQuota { get; set; }
 
         /// <summary>
         /// Custom flags that will be used when initializing the V8 JavaScript engine.
@@ -147,26 +125,7 @@
 
         internal cef_settings_t* ToNative()
         {
-            switch (CefRuntime.Platform)
-            {
-                case CefRuntimePlatform.Windows:
-                    return (cef_settings_t*)ToNativeWindows();
-
-                case CefRuntimePlatform.Linux:
-                case CefRuntimePlatform.MacOSX:
-                    {
-                        throw new NotImplementedException();
-                        return (cef_settings_t*)ToNativePosix();
-                    }
-
-                default:
-                    throw ExceptionBuilder.UnsupportedPlatform();
-            }
-        }
-
-        private cef_settings_t_windows* ToNativeWindows()
-        {
-            var ptr = cef_settings_t_windows.Alloc();
+            var ptr = cef_settings_t.Alloc();
             ptr->single_process = SingleProcess;
             cef_string_t.Copy(BrowserSubprocessPath, &ptr->browser_subprocess_path);
             ptr->multi_threaded_message_loop = MultiThreadedMessageLoop;
@@ -175,12 +134,8 @@
             cef_string_t.Copy(UserAgent, &ptr->user_agent);
             cef_string_t.Copy(ProductVersion, &ptr->product_version);
             cef_string_t.Copy(Locale, &ptr->locale);
-            // TODO: ExtraPluginPaths
             cef_string_t.Copy(LogFile, &ptr->log_file);
             ptr->log_severity = LogSeverity;
-            ptr->graphics_implementation = ToGraphicsImplementationWindows(GraphicsImplementation);
-            ptr->local_storage_quota = LocalStorageQuota > 0 ? (uint)LocalStorageQuota : 0;
-            ptr->session_storage_quota = SessionStorageQuota > 0 ? (uint)SessionStorageQuota : 0;
             cef_string_t.Copy(JavaScriptFlags, &ptr->javascript_flags);
             ptr->auto_detect_proxy_settings_enabled = AutoDetectProxySettingsEnabled;
             cef_string_t.Copy(PackFilePath, &ptr->pack_file_path);
@@ -190,115 +145,23 @@
             return ptr;
         }
 
-        private cef_settings_t_posix* ToNativePosix()
-        {
-            var ptr = cef_settings_t_posix.Alloc();
-            ptr->single_process = SingleProcess;
-            cef_string_t.Copy(BrowserSubprocessPath, &ptr->browser_subprocess_path);
-            ptr->multi_threaded_message_loop = MultiThreadedMessageLoop;
-            ptr->command_line_args_disabled = CommandLineArgsDisabled;
-            cef_string_t.Copy(CachePath, &ptr->cache_path);
-            cef_string_t.Copy(UserAgent, &ptr->user_agent);
-            cef_string_t.Copy(ProductVersion, &ptr->product_version);
-            cef_string_t.Copy(Locale, &ptr->locale);
-            // TODO: ExtraPluginPaths
-            cef_string_t.Copy(LogFile, &ptr->log_file);
-            ptr->log_severity = LogSeverity;
-            ptr->graphics_implementation = ToGraphicsImplementationPosix(GraphicsImplementation);
-            ptr->local_storage_quota = LocalStorageQuota > 0 ? (uint)LocalStorageQuota : 0;
-            ptr->session_storage_quota = SessionStorageQuota > 0 ? (uint)SessionStorageQuota : 0;
-            cef_string_t.Copy(JavaScriptFlags, &ptr->javascript_flags);
-            cef_string_t.Copy(PackFilePath, &ptr->pack_file_path);
-            cef_string_t.Copy(LocalesDirPath, &ptr->locales_dir_path);
-            ptr->pack_loading_disabled = PackLoadingDisabled;
-            ptr->remote_debugging_port = RemoteDebuggingPort;
-            return ptr;
-        }
-
-        private static void Clear(cef_settings_t_windows* ptr)
+        private static void Clear(cef_settings_t* ptr)
         {
             libcef.string_clear(&ptr->browser_subprocess_path);
             libcef.string_clear(&ptr->cache_path);
             libcef.string_clear(&ptr->user_agent);
             libcef.string_clear(&ptr->product_version);
             libcef.string_clear(&ptr->locale);
-            // TODO: ExtraPluginPaths
             libcef.string_clear(&ptr->log_file);
             libcef.string_clear(&ptr->javascript_flags);
             libcef.string_clear(&ptr->pack_file_path);
             libcef.string_clear(&ptr->locales_dir_path);
-        }
-
-        private static void Clear(cef_settings_t_posix* ptr)
-        {
-            libcef.string_clear(&ptr->browser_subprocess_path);
-            libcef.string_clear(&ptr->cache_path);
-            libcef.string_clear(&ptr->user_agent);
-            libcef.string_clear(&ptr->product_version);
-            libcef.string_clear(&ptr->locale);
-            // TODO: ExtraPluginPaths
-            libcef.string_clear(&ptr->log_file);
-            libcef.string_clear(&ptr->javascript_flags);
-            libcef.string_clear(&ptr->pack_file_path);
-            libcef.string_clear(&ptr->locales_dir_path);
-        }
-
-        private static cef_graphics_implementation_t_windows ToGraphicsImplementationWindows(CefGraphicsImplementation value)
-        {
-            switch (value)
-            {
-                case CefGraphicsImplementation.Default:
-                case CefGraphicsImplementation.AngleInProcess:
-                default:
-                    return cef_graphics_implementation_t_windows.ANGLE_IN_PROCESS;
-
-                case CefGraphicsImplementation.DefaultCommandBuffer:
-                case CefGraphicsImplementation.AngleInProcessCommandBuffer:
-                    return cef_graphics_implementation_t_windows.ANGLE_IN_PROCESS_COMMAND_BUFFER;
-
-                case CefGraphicsImplementation.DesktopInProcess:
-                    return cef_graphics_implementation_t_windows.DESKTOP_IN_PROCESS;
-
-                case CefGraphicsImplementation.DesktopInProcessCommandBuffer:
-                    return cef_graphics_implementation_t_windows.DESKTOP_IN_PROCESS_COMMAND_BUFFER;
-            }
-        }
-
-        private static cef_graphics_implementation_t_posix ToGraphicsImplementationPosix(CefGraphicsImplementation value)
-        {
-            switch (value)
-            {
-                case CefGraphicsImplementation.Default:
-                case CefGraphicsImplementation.DesktopInProcess:
-                case CefGraphicsImplementation.AngleInProcess:
-                default:
-                    return cef_graphics_implementation_t_posix.DESKTOP_IN_PROCESS;
-
-                case CefGraphicsImplementation.DefaultCommandBuffer:
-                case CefGraphicsImplementation.DesktopInProcessCommandBuffer:
-                case CefGraphicsImplementation.AngleInProcessCommandBuffer:
-                    return cef_graphics_implementation_t_posix.DESKTOP_IN_PROCESS_COMMAND_BUFFER;
-            }
         }
 
         internal static void Free(cef_settings_t* ptr)
         {
-            switch (CefRuntime.Platform)
-            {
-                case CefRuntimePlatform.Windows:
-                    Clear((cef_settings_t_windows*)ptr);
-                    cef_settings_t_windows.Free((cef_settings_t_windows*)ptr);
-                    return;
-
-                case CefRuntimePlatform.Linux:
-                case CefRuntimePlatform.MacOSX:
-                    Clear((cef_settings_t_posix*)ptr);
-                    cef_settings_t_posix.Free((cef_settings_t_posix*)ptr);
-                    return;
-
-                default:
-                    throw ExceptionBuilder.UnsupportedPlatform();
-            }
+            Clear((cef_settings_t*)ptr);
+            cef_settings_t.Free((cef_settings_t*)ptr);
         }
     }
 }

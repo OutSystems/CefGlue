@@ -47,6 +47,7 @@ c2cs_types = {
     'time_t': 'int',
 
     'cef_window_handle_t': 'IntPtr',
+    'cef_event_handle_t': 'IntPtr',
 
     'cef_base_t': 'cef_base_t',
 
@@ -55,17 +56,19 @@ c2cs_types = {
     'cef_proxy_info_t': 'cef_proxy_info_t',
     'cef_popup_features_t': 'cef_popup_features_t',
     'cef_browser_settings_t': 'cef_browser_settings_t',
+    'cef_time_t': 'cef_time_t',
+    'cef_cookie_t': 'cef_cookie_t',
+    'cef_settings_t': 'cef_settings_t',
+    'cef_key_event_t': 'cef_key_event_t',
 
     # platform dependend structs
-    'cef_time_t': 'cef_time_t',
     'cef_main_args_t': 'cef_main_args_t',
-    'cef_settings_t': 'cef_settings_t',
     'cef_window_info_t': 'cef_window_info_t',
-    'cef_cookie_t': 'cef_cookie_t',
     }
 
 c2cs_platform_retval = {
-	'cef_time_t': ['_other', '_mac']
+	# generates multiple delegates/methods if return value is platform specific
+    # 'cef_time_t': ['_other', '_mac']
     }
 
 c2cs_enumtypes = {
@@ -95,6 +98,7 @@ c2cs_enumtypes = {
     'cef_jsdialog_type_t': 'CefJSDialogType',
     'cef_menu_item_type_t': 'CefMenuItemType',
     'cef_event_flags_t': 'CefEventFlags',
+    'cef_focus_source_t': 'CefFocusSource',
     }
 
 c2cs_structtypes = { }

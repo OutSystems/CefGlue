@@ -8,7 +8,9 @@ namespace Xilium.CefGlue
 
     /// <summary>
     /// Class used to represent the browser process aspects of a browser window. The
-    /// methods of this class can only be called in the browser process.
+    /// methods of this class can only be called in the browser process. They may be
+    /// called on any thread in that process unless otherwise indicated in the
+    /// comments.
     /// </summary>
     public sealed unsafe partial class CefBrowserHost
     {
@@ -154,6 +156,22 @@ namespace Xilium.CefGlue
         {
             var n_url = cef_browser_host_t.get_dev_tools_url(_self, httpScheme ? 1 : 0);
             return cef_string_userfree.ToString(n_url);
+        }
+
+        /// <summary>
+        /// Get the zoom level. This method can only be called on the UI thread.
+        /// </summary>
+        public double GetZoomLevel()
+        {
+            return cef_browser_host_t.get_zoom_level(_self);
+        }
+
+        /// <summary>
+        /// Change the zoom level to the specified value.
+        /// </summary>
+        public void SetZoomLevel(double value)
+        {
+            cef_browser_host_t.set_zoom_level(_self, value);
         }
     }
 }

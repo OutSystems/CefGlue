@@ -37,6 +37,14 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
+        /// Returns true if this is an editable node.
+        /// </summary>
+        public bool IsEditable
+        {
+            get { return cef_domnode_t.is_editable(_self) != 0; }
+        }
+
+        /// <summary>
         /// Returns true if this is a form control element node.
         /// </summary>
         public bool IsFormControlElement

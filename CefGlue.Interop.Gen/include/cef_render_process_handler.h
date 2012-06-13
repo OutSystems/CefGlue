@@ -40,6 +40,7 @@
 
 #include "include/cef_base.h"
 #include "include/cef_browser.h"
+#include "include/cef_dom.h"
 #include "include/cef_frame.h"
 #include "include/cef_process_message.h"
 #include "include/cef_v8.h"
@@ -95,12 +96,25 @@ class CefRenderProcessHandler : public virtual CefBase {
                                  CefRefPtr<CefV8Context> context) {}
 
   ///
+  // Called when a new node in the the browser gets focus. The |node| value may
+  // be empty if no specific node has gained focus. The node object passed to
+  // this method represents a snapshot of the DOM at the time this method is
+  // executed. DOM objects are only valid for the scope of this method. Do not
+  // keep references to or attempt to access any DOM objects outside the scope
+  // of this method.
+  ///
+  /*--cef(optional_param=frame,optional_param=node)--*/
+  virtual void OnFocusedNodeChanged(CefRefPtr<CefBrowser> browser,
+                                    CefRefPtr<CefFrame> frame,
+                                    CefRefPtr<CefDOMNode> node) {}
+
+  ///
   // Called when a new message is received from a different process. Return true
   // if the message was handled or false otherwise. Do not keep a reference to
   // or attempt to access the message outside of this callback.
   ///
   /*--cef()--*/
-  virtual bool OnProcessMessageRecieved(CefRefPtr<CefBrowser> browser,
+  virtual bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
                                         CefProcessId source_process,
                                         CefRefPtr<CefProcessMessage> message) {
     return false;

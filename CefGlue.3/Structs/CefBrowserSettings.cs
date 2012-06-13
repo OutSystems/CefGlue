@@ -24,33 +24,6 @@
             _self = null;
         }
 
-        /// <summary>
-        /// Disable drag & drop of URLs from other windows.
-        /// </summary>
-        public bool DragDropDisabled
-        {
-            get { return _self->drag_drop_disabled; }
-            set { _self->drag_drop_disabled = value; }
-        }
-
-        /// <summary>
-        /// Disable default navigation resulting from drag & drop of URLs.
-        /// </summary>
-        public bool LoadDropsDisabled
-        {
-            get { return _self->load_drops_disabled; }
-            set { _self->load_drops_disabled = value; }
-        }
-
-        /// <summary>
-        /// Disable history back/forward navigation.
-        /// </summary>
-        public bool HistoryDisabled
-        {
-            get { return _self->history_disabled; }
-            set { _self->history_disabled = value; }
-        }
-
 
         /// The below values map to WebPreferences settings.
 

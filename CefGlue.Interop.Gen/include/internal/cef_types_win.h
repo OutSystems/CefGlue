@@ -42,9 +42,10 @@
 extern "C" {
 #endif
 
-// Window handle.
-#define cef_window_handle_t HWND
+// Handle types.
 #define cef_cursor_handle_t HCURSOR
+#define cef_event_handle_t MSG*
+#define cef_window_handle_t HWND
 
 ///
 // Structure representing CefExecuteProcess arguments.
@@ -52,16 +53,6 @@ extern "C" {
 typedef struct _cef_main_args_t {
   HINSTANCE instance;
 } cef_main_args_t;
-
-///
-// Supported graphics implementations.
-///
-enum cef_graphics_implementation_t {
-  ANGLE_IN_PROCESS = 0,
-  ANGLE_IN_PROCESS_COMMAND_BUFFER,
-  DESKTOP_IN_PROCESS,
-  DESKTOP_IN_PROCESS_COMMAND_BUFFER,
-};
 
 ///
 // Structure representing window information.

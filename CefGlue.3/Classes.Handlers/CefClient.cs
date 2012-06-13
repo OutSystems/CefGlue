@@ -8,53 +8,22 @@ namespace Xilium.CefGlue
 
     public abstract unsafe partial class CefClient
     {
-        private cef_life_span_handler_t* get_life_span_handler(cef_client_t* self)
+        private cef_context_menu_handler_t* get_context_menu_handler(cef_client_t* self)
         {
             CheckSelf(self);
-
-            var result = GetLifeSpanHandler();
+            var result = GetContextMenuHandler();
             return result != null ? result.ToNative() : null;
         }
 
         /// <summary>
-        /// Return the handler for browser life span events.
+        /// Return the handler for context menus. If no handler is provided the default
+        /// implementation will be used.
         /// </summary>
-        protected virtual CefLifeSpanHandler GetLifeSpanHandler()
+        protected virtual CefContextMenuHandler GetContextMenuHandler()
         {
             return null;
         }
 
-        private cef_load_handler_t* get_load_handler(cef_client_t* self)
-        {
-            CheckSelf(self);
-
-            var result = GetLoadHandler();
-            return result != null ? result.ToNative() : null;
-        }
-
-        /// <summary>
-        /// Return the handler for browser load status events.
-        /// </summary>
-        protected virtual CefLoadHandler GetLoadHandler()
-        {
-            return null;
-        }
-
-        private cef_request_handler_t* get_request_handler(cef_client_t* self)
-        {
-            CheckSelf(self);
-
-            var result = GetRequestHandler();
-            return result != null ? result.ToNative() : null;
-        }
-
-        /// <summary>
-        /// Return the handler for browser request events.
-        /// </summary>
-        protected virtual CefRequestHandler GetRequestHandler()
-        {
-            return null;
-        }
 
         private cef_display_handler_t* get_display_handler(cef_client_t* self)
         {
@@ -71,6 +40,24 @@ namespace Xilium.CefGlue
         {
             return null;
         }
+
+
+        private cef_focus_handler_t* get_focus_handler(cef_client_t* self)
+        {
+            CheckSelf(self);
+
+            var result = GetFocusHandler();
+            return result != null ? result.ToNative() : null;
+        }
+
+        /// <summary>
+        /// Return the handler for focus events.
+        /// </summary>
+        protected virtual CefFocusHandler GetFocusHandler()
+        {
+            return null;
+        }
+
 
         private cef_geolocation_handler_t* get_geolocation_handler(cef_client_t* self)
         {
@@ -89,6 +76,7 @@ namespace Xilium.CefGlue
             return null;
         }
 
+
         private cef_jsdialog_handler_t* get_jsdialog_handler(cef_client_t* self)
         {
             CheckSelf(self);
@@ -106,30 +94,83 @@ namespace Xilium.CefGlue
             return null;
         }
 
-        private cef_context_menu_handler_t* get_context_menu_handler(cef_client_t* self)
+
+        private cef_keyboard_handler_t* get_keyboard_handler(cef_client_t* self)
         {
             CheckSelf(self);
-            var result = GetContextMenuHandler();
+
+            var result = GetKeyboardHandler();
             return result != null ? result.ToNative() : null;
         }
 
         /// <summary>
-        /// Return the handler for context menus. If no handler is provided the default
-        /// implementation will be used.
+        /// Return the handler for keyboard events.
         /// </summary>
-        protected virtual CefContextMenuHandler GetContextMenuHandler()
+        protected virtual CefKeyboardHandler GetKeyboardHandler()
         {
             return null;
         }
 
-        private int on_process_message_recieved(cef_client_t* self, cef_browser_t* browser, CefProcessId source_process, cef_process_message_t* message)
+
+        private cef_life_span_handler_t* get_life_span_handler(cef_client_t* self)
+        {
+            CheckSelf(self);
+
+            var result = GetLifeSpanHandler();
+            return result != null ? result.ToNative() : null;
+        }
+
+        /// <summary>
+        /// Return the handler for browser life span events.
+        /// </summary>
+        protected virtual CefLifeSpanHandler GetLifeSpanHandler()
+        {
+            return null;
+        }
+
+
+        private cef_load_handler_t* get_load_handler(cef_client_t* self)
+        {
+            CheckSelf(self);
+
+            var result = GetLoadHandler();
+            return result != null ? result.ToNative() : null;
+        }
+
+        /// <summary>
+        /// Return the handler for browser load status events.
+        /// </summary>
+        protected virtual CefLoadHandler GetLoadHandler()
+        {
+            return null;
+        }
+
+
+        private cef_request_handler_t* get_request_handler(cef_client_t* self)
+        {
+            CheckSelf(self);
+
+            var result = GetRequestHandler();
+            return result != null ? result.ToNative() : null;
+        }
+
+        /// <summary>
+        /// Return the handler for browser request events.
+        /// </summary>
+        protected virtual CefRequestHandler GetRequestHandler()
+        {
+            return null;
+        }
+
+
+        private int on_process_message_received(cef_client_t* self, cef_browser_t* browser, CefProcessId source_process, cef_process_message_t* message)
         {
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
             var m_message = CefProcessMessage.FromNative(message);
 
-            var result = OnProcessMessageRecieved(m_browser, source_process, m_message);
+            var result = OnProcessMessageReceived(m_browser, source_process, m_message);
 
             m_browser.Dispose();
             m_message.Dispose();
@@ -142,7 +183,7 @@ namespace Xilium.CefGlue
         /// if the message was handled or false otherwise. Do not keep a reference to
         /// or attempt to access the message outside of this callback.
         /// </summary>
-        protected virtual bool OnProcessMessageRecieved(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
+        protected virtual bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
         {
             return false;
         }

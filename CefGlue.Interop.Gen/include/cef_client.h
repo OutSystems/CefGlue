@@ -41,8 +41,10 @@
 #include "include/cef_base.h"
 #include "include/cef_context_menu_handler.h"
 #include "include/cef_display_handler.h"
+#include "include/cef_focus_handler.h"
 #include "include/cef_geolocation_handler.h"
 #include "include/cef_jsdialog_handler.h"
+#include "include/cef_keyboard_handler.h"
 #include "include/cef_life_span_handler.h"
 #include "include/cef_load_handler.h"
 #include "include/cef_process_message.h"
@@ -54,6 +56,57 @@
 /*--cef(source=client,no_debugct_check)--*/
 class CefClient : public virtual CefBase {
  public:
+  ///
+  // Return the handler for context menus. If no handler is provided the default
+  // implementation will be used.
+  ///
+  /*--cef()--*/
+  virtual CefRefPtr<CefContextMenuHandler> GetContextMenuHandler() {
+    return NULL;
+  }
+
+  ///
+  // Return the handler for browser display state events.
+  ///
+  /*--cef()--*/
+  virtual CefRefPtr<CefDisplayHandler> GetDisplayHandler() {
+    return NULL;
+  }
+
+  ///
+  // Return the handler for focus events.
+  ///
+  /*--cef()--*/
+  virtual CefRefPtr<CefFocusHandler> GetFocusHandler() {
+    return NULL;
+  }
+
+  ///
+  // Return the handler for geolocation permissions requests. If no handler is
+  // provided geolocation access will be denied by default.
+  ///
+  /*--cef()--*/
+  virtual CefRefPtr<CefGeolocationHandler> GetGeolocationHandler() {
+    return NULL;
+  }
+
+  ///
+  // Return the handler for JavaScript dialogs. If no handler is provided the
+  // default implementation will be used.
+  ///
+  /*--cef()--*/
+  virtual CefRefPtr<CefJSDialogHandler> GetJSDialogHandler() {
+    return NULL;
+  }
+
+  ///
+  // Return the handler for keyboard events.
+  ///
+  /*--cef()--*/
+  virtual CefRefPtr<CefKeyboardHandler> GetKeyboardHandler() {
+    return NULL;
+  }
+
   ///
   // Return the handler for browser life span events.
   ///
@@ -79,47 +132,12 @@ class CefClient : public virtual CefBase {
   }
 
   ///
-  // Return the handler for browser display state events.
-  ///
-  /*--cef()--*/
-  virtual CefRefPtr<CefDisplayHandler> GetDisplayHandler() {
-    return NULL;
-  }
-
-  ///
-  // Return the handler for geolocation permissions requests. If no handler is
-  // provided geolocation access will be denied by default.
-  ///
-  /*--cef()--*/
-  virtual CefRefPtr<CefGeolocationHandler> GetGeolocationHandler() {
-    return NULL;
-  }
-
-  ///
-  // Return the handler for JavaScript dialogs. If no handler is provided the
-  // default implementation will be used.
-  ///
-  /*--cef()--*/
-  virtual CefRefPtr<CefJSDialogHandler> GetJSDialogHandler() {
-    return NULL;
-  }
-
-  ///
-  // Return the handler for context menus. If no handler is provided the default
-  // implementation will be used.
-  ///
-  /*--cef()--*/
-  virtual CefRefPtr<CefContextMenuHandler> GetContextMenuHandler() {
-    return NULL;
-  }
-
-  ///
   // Called when a new message is received from a different process. Return true
   // if the message was handled or false otherwise. Do not keep a reference to
   // or attempt to access the message outside of this callback.
   ///
   /*--cef()--*/
-  virtual bool OnProcessMessageRecieved(CefRefPtr<CefBrowser> browser,
+  virtual bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
                                         CefProcessId source_process,
                                         CefRefPtr<CefProcessMessage> message) {
     return false;

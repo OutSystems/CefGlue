@@ -21,6 +21,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_opener_window_handle;
         internal IntPtr _get_client;
         internal IntPtr _get_dev_tools_url;
+        internal IntPtr _get_zoom_level;
+        internal IntPtr _set_zoom_level;
         
         // CreateBrowser
         [DllImport(libcef.DllName, EntryPoint = "cef_browser_host_create_browser", CallingConvention = libcef.CEF_CALL)]
@@ -95,6 +97,18 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate cef_string_userfree* get_dev_tools_url_delegate(cef_browser_host_t* self, int http_scheme);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate double get_zoom_level_delegate(cef_browser_host_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void set_zoom_level_delegate(cef_browser_host_t* self, double zoomLevel);
         
         // AddRef
         private static IntPtr _p0;
@@ -281,6 +295,40 @@ namespace Xilium.CefGlue.Interop
                 if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
             }
             return d(self, http_scheme);
+        }
+        
+        // GetZoomLevel
+        private static IntPtr _pb;
+        private static get_zoom_level_delegate _db;
+        
+        public static double get_zoom_level(cef_browser_host_t* self)
+        {
+            get_zoom_level_delegate d;
+            var p = self->_get_zoom_level;
+            if (p == _pb) { d = _db; }
+            else
+            {
+                d = (get_zoom_level_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_zoom_level_delegate));
+                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
+            }
+            return d(self);
+        }
+        
+        // SetZoomLevel
+        private static IntPtr _pc;
+        private static set_zoom_level_delegate _dc;
+        
+        public static void set_zoom_level(cef_browser_host_t* self, double zoomLevel)
+        {
+            set_zoom_level_delegate d;
+            var p = self->_set_zoom_level;
+            if (p == _pc) { d = _dc; }
+            else
+            {
+                d = (set_zoom_level_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_zoom_level_delegate));
+                if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
+            }
+            d(self, zoomLevel);
         }
         
     }

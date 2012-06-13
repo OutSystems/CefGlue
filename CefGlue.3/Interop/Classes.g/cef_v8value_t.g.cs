@@ -219,13 +219,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_time_t_other get_date_value_delegate_other(cef_v8value_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        private delegate cef_time_t_mac get_date_value_delegate_mac(cef_v8value_t* self);
+        private delegate cef_time_t get_date_value_delegate(cef_v8value_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -707,35 +701,18 @@ namespace Xilium.CefGlue.Interop
         }
         
         // GetDateValue
-        private static IntPtr _p13_other;
-        private static get_date_value_delegate_other _d13_other;
+        private static IntPtr _p13;
+        private static get_date_value_delegate _d13;
         
-        public static cef_time_t_other get_date_value_other(cef_v8value_t* self)
+        public static cef_time_t get_date_value(cef_v8value_t* self)
         {
-            get_date_value_delegate_other d;
+            get_date_value_delegate d;
             var p = self->_get_date_value;
-            if (p == _p13_other) { d = _d13_other; }
+            if (p == _p13) { d = _d13; }
             else
             {
-                d = (get_date_value_delegate_other)Marshal.GetDelegateForFunctionPointer(p, typeof(get_date_value_delegate_other));
-                if (_p13_other == IntPtr.Zero) { _d13_other = d; _p13_other = p; }
-            }
-            return d(self);
-        }
-        
-        // GetDateValue
-        private static IntPtr _p13_mac;
-        private static get_date_value_delegate_mac _d13_mac;
-        
-        public static cef_time_t_mac get_date_value_mac(cef_v8value_t* self)
-        {
-            get_date_value_delegate_mac d;
-            var p = self->_get_date_value;
-            if (p == _p13_mac) { d = _d13_mac; }
-            else
-            {
-                d = (get_date_value_delegate_mac)Marshal.GetDelegateForFunctionPointer(p, typeof(get_date_value_delegate_mac));
-                if (_p13_mac == IntPtr.Zero) { _d13_mac = d; _p13_mac = p; }
+                d = (get_date_value_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_date_value_delegate));
+                if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
             }
             return d(self);
         }

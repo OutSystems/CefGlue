@@ -78,26 +78,12 @@ namespace Xilium.CefGlue
         /// CefV8Accessor callback, or in combination with calling Enter() and Exit()
         /// on a stored CefV8Context reference.
         /// </summary>
-        public static CefV8Value CreateDate(DateTime date)
+        public static CefV8Value CreateDate(DateTime value)
         {
-            switch (CefRuntime.Platform)
-            {
-                case CefRuntimePlatform.Windows:
-                case CefRuntimePlatform.Linux:
-                    var date_other = new cef_time_t_other(date);
-                    return CefV8Value.FromNative(
-                        cef_v8value_t.create_date((cef_time_t*)&date_other)
-                        );
-
-                case CefRuntimePlatform.MacOSX:
-                    var date_mac = new cef_time_t_mac(date);
-                    return CefV8Value.FromNative(
-                        cef_v8value_t.create_date((cef_time_t*)&date_mac)
-                        );
-
-                default:
-                    throw ExceptionBuilder.UnsupportedPlatform();
-            }
+            var n_value = new cef_time_t(value);
+            return CefV8Value.FromNative(
+                cef_v8value_t.create_date(&n_value)
+                );
         }
 
         /// <summary>
@@ -301,24 +287,8 @@ namespace Xilium.CefGlue
         /// </summary>
         public DateTime GetDateValue()
         {
-            switch (CefRuntime.Platform)
-            {
-                case CefRuntimePlatform.Windows:
-                case CefRuntimePlatform.Linux:
-                    {
-                        var value = cef_v8value_t.get_date_value_other(_self);
-                        return cef_time_t_other.ToDateTime(&value);
-                    }
-
-                case CefRuntimePlatform.MacOSX:
-                    {
-                        var value = cef_v8value_t.get_date_value_mac(_self);
-                        return cef_time_t_mac.ToDateTime(&value);
-                    }
-
-                default:
-                    throw ExceptionBuilder.UnsupportedPlatform();
-            }
+            var value = cef_v8value_t.get_date_value(_self);
+            return cef_time_t.ToDateTime(&value);
         }
 
         /// <summary>

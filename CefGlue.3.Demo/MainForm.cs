@@ -39,17 +39,27 @@
             CefBrowserHost.CreateBrowser(windowInfo, client, settings, url);
         }
 
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (_browser != null)
+            {
+                _browser.GetHost().ParentWindowWillClose();
+            }
+
+            base.OnClosing(e);
+        }
+
         private void OnBrowserCreated(CefBrowser browser)
         {
             _browser = browser;
             _browserWindowHandle = _browser.GetHost().GetWindowHandle();
-            ResizeWindow(_browserWindowHandle, this.Width, this.Height);
+            ResizeWindow(_browserWindowHandle, this.ClientSize.Width, this.ClientSize.Height);
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            ResizeWindow(_browserWindowHandle, this.Width, this.Height);
+            ResizeWindow(_browserWindowHandle, this.ClientSize.Width, this.ClientSize.Height);
         }
 
         private static void ResizeWindow(IntPtr handle, int width, int height)
