@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xilium.CefGlue.3", "CefGlue.3\Xilium.CefGlue.3.csproj", "{703FF300-34B9-48D4-A5D6-E741F48D5F95}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue", "CefGlue\CefGlue.csproj", "{703FF300-34B9-48D4-A5D6-E741F48D5F95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xilium.CefGlue.3.Demo", "CefGlue.3.Demo\Xilium.CefGlue.3.Demo.csproj", "{311984DF-EB92-4B01-B4AD-C7E73A13E271}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue.Demo", "CefGlue.Demo\CefGlue.Demo.csproj", "{311984DF-EB92-4B01-B4AD-C7E73A13E271}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

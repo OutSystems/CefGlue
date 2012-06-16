@@ -59,7 +59,10 @@
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            ResizeWindow(_browserWindowHandle, this.ClientSize.Width, this.ClientSize.Height);
+            if (WindowState != FormWindowState.Minimized)
+            {
+                ResizeWindow(_browserWindowHandle, this.ClientSize.Width, this.ClientSize.Height);
+            }
         }
 
         private static void ResizeWindow(IntPtr handle, int width, int height)
