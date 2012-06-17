@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue.Demo
+﻿namespace Xilium.CefGlue.Client
 {
     using System;
     using System.Collections.Generic;
@@ -40,7 +40,7 @@
 
             var settings = new CefSettings
                 {
-                    // BrowserSubprocessPath = @"D:\fddima\Projects\Xilium\Xilium.CefGlue-dev\CefGlue.Demo\bin\Release\cefclient.exe", // Xilium.CefGlue.Demo.exe",
+                    // BrowserSubprocessPath = @"D:\fddima\Projects\Xilium\Xilium.CefGlue\CefGlue.Demo\bin\Release\Xilium.CefGlue.Demo.exe",
                     SingleProcess = false,
                     MultiThreadedMessageLoop = true,
                     LogSeverity = CefLogSeverity.Disable,

@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue.Demo
+﻿namespace Xilium.CefGlue.WindowsForms
 {
     using System;
     using System.Collections.Generic;
