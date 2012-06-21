@@ -13,6 +13,7 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_post_data_element_t
     {
         internal cef_base_t _base;
+        internal IntPtr _is_read_only;
         internal IntPtr _set_to_empty;
         internal IntPtr _set_to_file;
         internal IntPtr _set_to_bytes;
@@ -21,7 +22,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_bytes_count;
         internal IntPtr _get_bytes;
         
-        // CreatePostDataElement
+        // Create
         [DllImport(libcef.DllName, EntryPoint = "cef_post_data_element_create", CallingConvention = libcef.CEF_CALL)]
         public static extern cef_post_data_element_t* create();
         
@@ -42,6 +43,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int get_refct_delegate(cef_post_data_element_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate int is_read_only_delegate(cef_post_data_element_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -136,121 +143,138 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // SetToEmpty
+        // IsReadOnly
         private static IntPtr _p3;
-        private static set_to_empty_delegate _d3;
+        private static is_read_only_delegate _d3;
+        
+        public static int is_read_only(cef_post_data_element_t* self)
+        {
+            is_read_only_delegate d;
+            var p = self->_is_read_only;
+            if (p == _p3) { d = _d3; }
+            else
+            {
+                d = (is_read_only_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_read_only_delegate));
+                if (_p3 == IntPtr.Zero) { _d3 = d; _p3 = p; }
+            }
+            return d(self);
+        }
+        
+        // SetToEmpty
+        private static IntPtr _p4;
+        private static set_to_empty_delegate _d4;
         
         public static void set_to_empty(cef_post_data_element_t* self)
         {
             set_to_empty_delegate d;
             var p = self->_set_to_empty;
-            if (p == _p3) { d = _d3; }
+            if (p == _p4) { d = _d4; }
             else
             {
                 d = (set_to_empty_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_to_empty_delegate));
-                if (_p3 == IntPtr.Zero) { _d3 = d; _p3 = p; }
+                if (_p4 == IntPtr.Zero) { _d4 = d; _p4 = p; }
             }
             d(self);
         }
         
         // SetToFile
-        private static IntPtr _p4;
-        private static set_to_file_delegate _d4;
+        private static IntPtr _p5;
+        private static set_to_file_delegate _d5;
         
         public static void set_to_file(cef_post_data_element_t* self, cef_string_t* fileName)
         {
             set_to_file_delegate d;
             var p = self->_set_to_file;
-            if (p == _p4) { d = _d4; }
+            if (p == _p5) { d = _d5; }
             else
             {
                 d = (set_to_file_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_to_file_delegate));
-                if (_p4 == IntPtr.Zero) { _d4 = d; _p4 = p; }
+                if (_p5 == IntPtr.Zero) { _d5 = d; _p5 = p; }
             }
             d(self, fileName);
         }
         
         // SetToBytes
-        private static IntPtr _p5;
-        private static set_to_bytes_delegate _d5;
+        private static IntPtr _p6;
+        private static set_to_bytes_delegate _d6;
         
         public static void set_to_bytes(cef_post_data_element_t* self, UIntPtr size, void* bytes)
         {
             set_to_bytes_delegate d;
             var p = self->_set_to_bytes;
-            if (p == _p5) { d = _d5; }
+            if (p == _p6) { d = _d6; }
             else
             {
                 d = (set_to_bytes_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_to_bytes_delegate));
-                if (_p5 == IntPtr.Zero) { _d5 = d; _p5 = p; }
+                if (_p6 == IntPtr.Zero) { _d6 = d; _p6 = p; }
             }
             d(self, size, bytes);
         }
         
         // GetType
-        private static IntPtr _p6;
-        private static get_type_delegate _d6;
+        private static IntPtr _p7;
+        private static get_type_delegate _d7;
         
         public static CefPostDataElementType get_type(cef_post_data_element_t* self)
         {
             get_type_delegate d;
             var p = self->_get_type;
-            if (p == _p6) { d = _d6; }
-            else
-            {
-                d = (get_type_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_type_delegate));
-                if (_p6 == IntPtr.Zero) { _d6 = d; _p6 = p; }
-            }
-            return d(self);
-        }
-        
-        // GetFile
-        private static IntPtr _p7;
-        private static get_file_delegate _d7;
-        
-        public static cef_string_userfree* get_file(cef_post_data_element_t* self)
-        {
-            get_file_delegate d;
-            var p = self->_get_file;
             if (p == _p7) { d = _d7; }
             else
             {
-                d = (get_file_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_file_delegate));
+                d = (get_type_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_type_delegate));
                 if (_p7 == IntPtr.Zero) { _d7 = d; _p7 = p; }
             }
             return d(self);
         }
         
-        // GetBytesCount
+        // GetFile
         private static IntPtr _p8;
-        private static get_bytes_count_delegate _d8;
+        private static get_file_delegate _d8;
         
-        public static UIntPtr get_bytes_count(cef_post_data_element_t* self)
+        public static cef_string_userfree* get_file(cef_post_data_element_t* self)
         {
-            get_bytes_count_delegate d;
-            var p = self->_get_bytes_count;
+            get_file_delegate d;
+            var p = self->_get_file;
             if (p == _p8) { d = _d8; }
             else
             {
-                d = (get_bytes_count_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_bytes_count_delegate));
+                d = (get_file_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_file_delegate));
                 if (_p8 == IntPtr.Zero) { _d8 = d; _p8 = p; }
             }
             return d(self);
         }
         
-        // GetBytes
+        // GetBytesCount
         private static IntPtr _p9;
-        private static get_bytes_delegate _d9;
+        private static get_bytes_count_delegate _d9;
+        
+        public static UIntPtr get_bytes_count(cef_post_data_element_t* self)
+        {
+            get_bytes_count_delegate d;
+            var p = self->_get_bytes_count;
+            if (p == _p9) { d = _d9; }
+            else
+            {
+                d = (get_bytes_count_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_bytes_count_delegate));
+                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetBytes
+        private static IntPtr _pa;
+        private static get_bytes_delegate _da;
         
         public static UIntPtr get_bytes(cef_post_data_element_t* self, UIntPtr size, void* bytes)
         {
             get_bytes_delegate d;
             var p = self->_get_bytes;
-            if (p == _p9) { d = _d9; }
+            if (p == _pa) { d = _da; }
             else
             {
                 d = (get_bytes_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_bytes_delegate));
-                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
+                if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
             }
             return d(self, size, bytes);
         }

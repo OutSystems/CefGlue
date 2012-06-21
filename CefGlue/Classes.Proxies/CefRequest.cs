@@ -23,6 +23,14 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
+        /// Returns true if this object is read-only.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return cef_request_t.is_read_only(_self) != 0; }
+        }
+
+        /// <summary>
         /// Gets or sets the fully qualified URL.
         /// </summary>
         public string Url
@@ -123,12 +131,12 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Get the flags used in combination with CefWebURLRequest.
+        /// Get the options used in combination with CefUrlRequest.
         /// </summary>
-        public CefWebUrlRequestOptions Options
+        public CefUrlRequestOptions Options
         {
-            get { return cef_request_t.get_flags(_self); }
-            set { cef_request_t.set_flags(_self, value); }
+            get { return (CefUrlRequestOptions)cef_request_t.get_flags(_self); }
+            set { cef_request_t.set_flags(_self, (int)value); }
         }
 
         /// <summary>

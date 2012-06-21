@@ -25,7 +25,9 @@ namespace Xilium.CefGlue
         private cef_resource_handler_t.process_request_delegate _ds3;
         private cef_resource_handler_t.get_response_headers_delegate _ds4;
         private cef_resource_handler_t.read_response_delegate _ds5;
-        private cef_resource_handler_t.cancel_delegate _ds6;
+        private cef_resource_handler_t.can_get_cookie_delegate _ds6;
+        private cef_resource_handler_t.can_set_cookie_delegate _ds7;
+        private cef_resource_handler_t.cancel_delegate _ds8;
         
         protected CefResourceHandler()
         {
@@ -43,8 +45,12 @@ namespace Xilium.CefGlue
             _self->_get_response_headers = Marshal.GetFunctionPointerForDelegate(_ds4);
             _ds5 = new cef_resource_handler_t.read_response_delegate(read_response);
             _self->_read_response = Marshal.GetFunctionPointerForDelegate(_ds5);
-            _ds6 = new cef_resource_handler_t.cancel_delegate(cancel);
-            _self->_cancel = Marshal.GetFunctionPointerForDelegate(_ds6);
+            _ds6 = new cef_resource_handler_t.can_get_cookie_delegate(can_get_cookie);
+            _self->_can_get_cookie = Marshal.GetFunctionPointerForDelegate(_ds6);
+            _ds7 = new cef_resource_handler_t.can_set_cookie_delegate(can_set_cookie);
+            _self->_can_set_cookie = Marshal.GetFunctionPointerForDelegate(_ds7);
+            _ds8 = new cef_resource_handler_t.cancel_delegate(cancel);
+            _self->_cancel = Marshal.GetFunctionPointerForDelegate(_ds8);
         }
         
         ~CefResourceHandler()

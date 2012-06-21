@@ -13,6 +13,7 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_request_t
     {
         internal cef_base_t _base;
+        internal IntPtr _is_read_only;
         internal IntPtr _get_url;
         internal IntPtr _set_url;
         internal IntPtr _get_method;
@@ -27,7 +28,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_first_party_for_cookies;
         internal IntPtr _set_first_party_for_cookies;
         
-        // CreateRequest
+        // Create
         [DllImport(libcef.DllName, EntryPoint = "cef_request_create", CallingConvention = libcef.CEF_CALL)]
         public static extern cef_request_t* create();
         
@@ -48,6 +49,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int get_refct_delegate(cef_request_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate int is_read_only_delegate(cef_request_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -107,13 +114,13 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate CefWebUrlRequestOptions get_flags_delegate(cef_request_t* self);
+        private delegate int get_flags_delegate(cef_request_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void set_flags_delegate(cef_request_t* self, CefWebUrlRequestOptions flags);
+        private delegate void set_flags_delegate(cef_request_t* self, int flags);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -178,223 +185,240 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetURL
+        // IsReadOnly
         private static IntPtr _p3;
-        private static get_url_delegate _d3;
+        private static is_read_only_delegate _d3;
         
-        public static cef_string_userfree* get_url(cef_request_t* self)
+        public static int is_read_only(cef_request_t* self)
         {
-            get_url_delegate d;
-            var p = self->_get_url;
+            is_read_only_delegate d;
+            var p = self->_is_read_only;
             if (p == _p3) { d = _d3; }
             else
             {
-                d = (get_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_url_delegate));
+                d = (is_read_only_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_read_only_delegate));
                 if (_p3 == IntPtr.Zero) { _d3 = d; _p3 = p; }
             }
             return d(self);
         }
         
-        // SetURL
+        // GetURL
         private static IntPtr _p4;
-        private static set_url_delegate _d4;
+        private static get_url_delegate _d4;
+        
+        public static cef_string_userfree* get_url(cef_request_t* self)
+        {
+            get_url_delegate d;
+            var p = self->_get_url;
+            if (p == _p4) { d = _d4; }
+            else
+            {
+                d = (get_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_url_delegate));
+                if (_p4 == IntPtr.Zero) { _d4 = d; _p4 = p; }
+            }
+            return d(self);
+        }
+        
+        // SetURL
+        private static IntPtr _p5;
+        private static set_url_delegate _d5;
         
         public static void set_url(cef_request_t* self, cef_string_t* url)
         {
             set_url_delegate d;
             var p = self->_set_url;
-            if (p == _p4) { d = _d4; }
+            if (p == _p5) { d = _d5; }
             else
             {
                 d = (set_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_url_delegate));
-                if (_p4 == IntPtr.Zero) { _d4 = d; _p4 = p; }
+                if (_p5 == IntPtr.Zero) { _d5 = d; _p5 = p; }
             }
             d(self, url);
         }
         
         // GetMethod
-        private static IntPtr _p5;
-        private static get_method_delegate _d5;
+        private static IntPtr _p6;
+        private static get_method_delegate _d6;
         
         public static cef_string_userfree* get_method(cef_request_t* self)
         {
             get_method_delegate d;
             var p = self->_get_method;
-            if (p == _p5) { d = _d5; }
+            if (p == _p6) { d = _d6; }
             else
             {
                 d = (get_method_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_method_delegate));
-                if (_p5 == IntPtr.Zero) { _d5 = d; _p5 = p; }
+                if (_p6 == IntPtr.Zero) { _d6 = d; _p6 = p; }
             }
             return d(self);
         }
         
         // SetMethod
-        private static IntPtr _p6;
-        private static set_method_delegate _d6;
+        private static IntPtr _p7;
+        private static set_method_delegate _d7;
         
         public static void set_method(cef_request_t* self, cef_string_t* method)
         {
             set_method_delegate d;
             var p = self->_set_method;
-            if (p == _p6) { d = _d6; }
+            if (p == _p7) { d = _d7; }
             else
             {
                 d = (set_method_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_method_delegate));
-                if (_p6 == IntPtr.Zero) { _d6 = d; _p6 = p; }
+                if (_p7 == IntPtr.Zero) { _d7 = d; _p7 = p; }
             }
             d(self, method);
         }
         
         // GetPostData
-        private static IntPtr _p7;
-        private static get_post_data_delegate _d7;
+        private static IntPtr _p8;
+        private static get_post_data_delegate _d8;
         
         public static cef_post_data_t* get_post_data(cef_request_t* self)
         {
             get_post_data_delegate d;
             var p = self->_get_post_data;
-            if (p == _p7) { d = _d7; }
+            if (p == _p8) { d = _d8; }
             else
             {
                 d = (get_post_data_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_post_data_delegate));
-                if (_p7 == IntPtr.Zero) { _d7 = d; _p7 = p; }
+                if (_p8 == IntPtr.Zero) { _d8 = d; _p8 = p; }
             }
             return d(self);
         }
         
         // SetPostData
-        private static IntPtr _p8;
-        private static set_post_data_delegate _d8;
+        private static IntPtr _p9;
+        private static set_post_data_delegate _d9;
         
         public static void set_post_data(cef_request_t* self, cef_post_data_t* postData)
         {
             set_post_data_delegate d;
             var p = self->_set_post_data;
-            if (p == _p8) { d = _d8; }
+            if (p == _p9) { d = _d9; }
             else
             {
                 d = (set_post_data_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_post_data_delegate));
-                if (_p8 == IntPtr.Zero) { _d8 = d; _p8 = p; }
+                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
             }
             d(self, postData);
         }
         
         // GetHeaderMap
-        private static IntPtr _p9;
-        private static get_header_map_delegate _d9;
+        private static IntPtr _pa;
+        private static get_header_map_delegate _da;
         
         public static void get_header_map(cef_request_t* self, cef_string_multimap* headerMap)
         {
             get_header_map_delegate d;
             var p = self->_get_header_map;
-            if (p == _p9) { d = _d9; }
-            else
-            {
-                d = (get_header_map_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_header_map_delegate));
-                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
-            }
-            d(self, headerMap);
-        }
-        
-        // SetHeaderMap
-        private static IntPtr _pa;
-        private static set_header_map_delegate _da;
-        
-        public static void set_header_map(cef_request_t* self, cef_string_multimap* headerMap)
-        {
-            set_header_map_delegate d;
-            var p = self->_set_header_map;
             if (p == _pa) { d = _da; }
             else
             {
-                d = (set_header_map_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_header_map_delegate));
+                d = (get_header_map_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_header_map_delegate));
                 if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
             }
             d(self, headerMap);
         }
         
-        // Set
+        // SetHeaderMap
         private static IntPtr _pb;
-        private static set_delegate _db;
+        private static set_header_map_delegate _db;
+        
+        public static void set_header_map(cef_request_t* self, cef_string_multimap* headerMap)
+        {
+            set_header_map_delegate d;
+            var p = self->_set_header_map;
+            if (p == _pb) { d = _db; }
+            else
+            {
+                d = (set_header_map_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_header_map_delegate));
+                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
+            }
+            d(self, headerMap);
+        }
+        
+        // Set
+        private static IntPtr _pc;
+        private static set_delegate _dc;
         
         public static void set(cef_request_t* self, cef_string_t* url, cef_string_t* method, cef_post_data_t* postData, cef_string_multimap* headerMap)
         {
             set_delegate d;
             var p = self->_set;
-            if (p == _pb) { d = _db; }
+            if (p == _pc) { d = _dc; }
             else
             {
                 d = (set_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_delegate));
-                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
+                if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
             }
             d(self, url, method, postData, headerMap);
         }
         
         // GetFlags
-        private static IntPtr _pc;
-        private static get_flags_delegate _dc;
+        private static IntPtr _pd;
+        private static get_flags_delegate _dd;
         
-        public static CefWebUrlRequestOptions get_flags(cef_request_t* self)
+        public static int get_flags(cef_request_t* self)
         {
             get_flags_delegate d;
             var p = self->_get_flags;
-            if (p == _pc) { d = _dc; }
+            if (p == _pd) { d = _dd; }
             else
             {
                 d = (get_flags_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_flags_delegate));
-                if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
+                if (_pd == IntPtr.Zero) { _dd = d; _pd = p; }
             }
             return d(self);
         }
         
         // SetFlags
-        private static IntPtr _pd;
-        private static set_flags_delegate _dd;
+        private static IntPtr _pe;
+        private static set_flags_delegate _de;
         
-        public static void set_flags(cef_request_t* self, CefWebUrlRequestOptions flags)
+        public static void set_flags(cef_request_t* self, int flags)
         {
             set_flags_delegate d;
             var p = self->_set_flags;
-            if (p == _pd) { d = _dd; }
+            if (p == _pe) { d = _de; }
             else
             {
                 d = (set_flags_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_flags_delegate));
-                if (_pd == IntPtr.Zero) { _dd = d; _pd = p; }
+                if (_pe == IntPtr.Zero) { _de = d; _pe = p; }
             }
             d(self, flags);
         }
         
         // GetFirstPartyForCookies
-        private static IntPtr _pe;
-        private static get_first_party_for_cookies_delegate _de;
+        private static IntPtr _pf;
+        private static get_first_party_for_cookies_delegate _df;
         
         public static cef_string_userfree* get_first_party_for_cookies(cef_request_t* self)
         {
             get_first_party_for_cookies_delegate d;
             var p = self->_get_first_party_for_cookies;
-            if (p == _pe) { d = _de; }
+            if (p == _pf) { d = _df; }
             else
             {
                 d = (get_first_party_for_cookies_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_first_party_for_cookies_delegate));
-                if (_pe == IntPtr.Zero) { _de = d; _pe = p; }
+                if (_pf == IntPtr.Zero) { _df = d; _pf = p; }
             }
             return d(self);
         }
         
         // SetFirstPartyForCookies
-        private static IntPtr _pf;
-        private static set_first_party_for_cookies_delegate _df;
+        private static IntPtr _p10;
+        private static set_first_party_for_cookies_delegate _d10;
         
         public static void set_first_party_for_cookies(cef_request_t* self, cef_string_t* url)
         {
             set_first_party_for_cookies_delegate d;
             var p = self->_set_first_party_for_cookies;
-            if (p == _pf) { d = _df; }
+            if (p == _p10) { d = _d10; }
             else
             {
                 d = (set_first_party_for_cookies_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_first_party_for_cookies_delegate));
-                if (_pf == IntPtr.Zero) { _df = d; _pf = p; }
+                if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
             }
             d(self, url);
         }

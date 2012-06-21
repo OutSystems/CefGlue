@@ -24,9 +24,9 @@ namespace Xilium.CefGlue
         private cef_app_t.get_refct_delegate _ds2;
         private cef_app_t.on_before_command_line_processing_delegate _ds3;
         private cef_app_t.on_register_custom_schemes_delegate _ds4;
-        private cef_app_t.get_render_process_handler_delegate _ds5;
-        private cef_app_t.get_resource_bundle_handler_delegate _ds6;
-        private cef_app_t.get_proxy_handler_delegate _ds7;
+        private cef_app_t.get_resource_bundle_handler_delegate _ds5;
+        private cef_app_t.get_browser_process_handler_delegate _ds6;
+        private cef_app_t.get_render_process_handler_delegate _ds7;
         
         protected CefApp()
         {
@@ -42,12 +42,12 @@ namespace Xilium.CefGlue
             _self->_on_before_command_line_processing = Marshal.GetFunctionPointerForDelegate(_ds3);
             _ds4 = new cef_app_t.on_register_custom_schemes_delegate(on_register_custom_schemes);
             _self->_on_register_custom_schemes = Marshal.GetFunctionPointerForDelegate(_ds4);
-            _ds5 = new cef_app_t.get_render_process_handler_delegate(get_render_process_handler);
-            _self->_get_render_process_handler = Marshal.GetFunctionPointerForDelegate(_ds5);
-            _ds6 = new cef_app_t.get_resource_bundle_handler_delegate(get_resource_bundle_handler);
-            _self->_get_resource_bundle_handler = Marshal.GetFunctionPointerForDelegate(_ds6);
-            _ds7 = new cef_app_t.get_proxy_handler_delegate(get_proxy_handler);
-            _self->_get_proxy_handler = Marshal.GetFunctionPointerForDelegate(_ds7);
+            _ds5 = new cef_app_t.get_resource_bundle_handler_delegate(get_resource_bundle_handler);
+            _self->_get_resource_bundle_handler = Marshal.GetFunctionPointerForDelegate(_ds5);
+            _ds6 = new cef_app_t.get_browser_process_handler_delegate(get_browser_process_handler);
+            _self->_get_browser_process_handler = Marshal.GetFunctionPointerForDelegate(_ds6);
+            _ds7 = new cef_app_t.get_render_process_handler_delegate(get_render_process_handler);
+            _self->_get_render_process_handler = Marshal.GetFunctionPointerForDelegate(_ds7);
         }
         
         ~CefApp()

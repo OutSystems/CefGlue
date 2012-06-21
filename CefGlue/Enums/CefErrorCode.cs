@@ -7,8 +7,10 @@ namespace Xilium.CefGlue
     /// <summary>
     /// Supported error code values.
     /// </summary>
-    public enum CefHandlerErrorCode
+    public enum CefErrorCode
     {
+        None = 0,
+
         Failed = -2,
         Aborted = -3,
         InvalidArgument = -4,

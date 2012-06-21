@@ -10,79 +10,79 @@ namespace Xilium.CefGlue.Interop
     
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     [SuppressMessage("Microsoft.Design", "CA1049:TypesThatOwnNativeResourcesShouldBeDisposable")]
-    internal unsafe struct cef_post_data_t
+    internal unsafe struct cef_urlrequest_t
     {
         internal cef_base_t _base;
-        internal IntPtr _is_read_only;
-        internal IntPtr _get_element_count;
-        internal IntPtr _get_elements;
-        internal IntPtr _remove_element;
-        internal IntPtr _add_element;
-        internal IntPtr _remove_elements;
+        internal IntPtr _get_request;
+        internal IntPtr _get_client;
+        internal IntPtr _get_request_status;
+        internal IntPtr _get_request_error;
+        internal IntPtr _get_response;
+        internal IntPtr _cancel;
         
         // Create
-        [DllImport(libcef.DllName, EntryPoint = "cef_post_data_create", CallingConvention = libcef.CEF_CALL)]
-        public static extern cef_post_data_t* create();
+        [DllImport(libcef.DllName, EntryPoint = "cef_urlrequest_create", CallingConvention = libcef.CEF_CALL)]
+        public static extern cef_urlrequest_t* create(cef_request_t* request, cef_urlrequest_client_t* client);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int add_ref_delegate(cef_post_data_t* self);
+        private delegate int add_ref_delegate(cef_urlrequest_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int release_delegate(cef_post_data_t* self);
+        private delegate int release_delegate(cef_urlrequest_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int get_refct_delegate(cef_post_data_t* self);
+        private delegate int get_refct_delegate(cef_urlrequest_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int is_read_only_delegate(cef_post_data_t* self);
+        private delegate cef_request_t* get_request_delegate(cef_urlrequest_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate UIntPtr get_element_count_delegate(cef_post_data_t* self);
+        private delegate cef_urlrequest_client_t* get_client_delegate(cef_urlrequest_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void get_elements_delegate(cef_post_data_t* self, UIntPtr* elementsCount, cef_post_data_element_t** elements);
+        private delegate CefUrlRequestStatus get_request_status_delegate(cef_urlrequest_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int remove_element_delegate(cef_post_data_t* self, cef_post_data_element_t* element);
+        private delegate CefErrorCode get_request_error_delegate(cef_urlrequest_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int add_element_delegate(cef_post_data_t* self, cef_post_data_element_t* element);
+        private delegate cef_response_t* get_response_delegate(cef_urlrequest_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void remove_elements_delegate(cef_post_data_t* self);
+        private delegate void cancel_delegate(cef_urlrequest_t* self);
         
         // AddRef
         private static IntPtr _p0;
         private static add_ref_delegate _d0;
         
-        public static int add_ref(cef_post_data_t* self)
+        public static int add_ref(cef_urlrequest_t* self)
         {
             add_ref_delegate d;
             var p = self->_base._add_ref;
@@ -99,7 +99,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1;
         private static release_delegate _d1;
         
-        public static int release(cef_post_data_t* self)
+        public static int release(cef_urlrequest_t* self)
         {
             release_delegate d;
             var p = self->_base._release;
@@ -116,7 +116,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p2;
         private static get_refct_delegate _d2;
         
-        public static int get_refct(cef_post_data_t* self)
+        public static int get_refct(cef_urlrequest_t* self)
         {
             get_refct_delegate d;
             var p = self->_base._get_refct;
@@ -129,103 +129,103 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // IsReadOnly
+        // GetRequest
         private static IntPtr _p3;
-        private static is_read_only_delegate _d3;
+        private static get_request_delegate _d3;
         
-        public static int is_read_only(cef_post_data_t* self)
+        public static cef_request_t* get_request(cef_urlrequest_t* self)
         {
-            is_read_only_delegate d;
-            var p = self->_is_read_only;
+            get_request_delegate d;
+            var p = self->_get_request;
             if (p == _p3) { d = _d3; }
             else
             {
-                d = (is_read_only_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_read_only_delegate));
+                d = (get_request_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_request_delegate));
                 if (_p3 == IntPtr.Zero) { _d3 = d; _p3 = p; }
             }
             return d(self);
         }
         
-        // GetElementCount
+        // GetClient
         private static IntPtr _p4;
-        private static get_element_count_delegate _d4;
+        private static get_client_delegate _d4;
         
-        public static UIntPtr get_element_count(cef_post_data_t* self)
+        public static cef_urlrequest_client_t* get_client(cef_urlrequest_t* self)
         {
-            get_element_count_delegate d;
-            var p = self->_get_element_count;
+            get_client_delegate d;
+            var p = self->_get_client;
             if (p == _p4) { d = _d4; }
             else
             {
-                d = (get_element_count_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_element_count_delegate));
+                d = (get_client_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_client_delegate));
                 if (_p4 == IntPtr.Zero) { _d4 = d; _p4 = p; }
             }
             return d(self);
         }
         
-        // GetElements
+        // GetRequestStatus
         private static IntPtr _p5;
-        private static get_elements_delegate _d5;
+        private static get_request_status_delegate _d5;
         
-        public static void get_elements(cef_post_data_t* self, UIntPtr* elementsCount, cef_post_data_element_t** elements)
+        public static CefUrlRequestStatus get_request_status(cef_urlrequest_t* self)
         {
-            get_elements_delegate d;
-            var p = self->_get_elements;
+            get_request_status_delegate d;
+            var p = self->_get_request_status;
             if (p == _p5) { d = _d5; }
             else
             {
-                d = (get_elements_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_elements_delegate));
+                d = (get_request_status_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_request_status_delegate));
                 if (_p5 == IntPtr.Zero) { _d5 = d; _p5 = p; }
             }
-            d(self, elementsCount, elements);
+            return d(self);
         }
         
-        // RemoveElement
+        // GetRequestError
         private static IntPtr _p6;
-        private static remove_element_delegate _d6;
+        private static get_request_error_delegate _d6;
         
-        public static int remove_element(cef_post_data_t* self, cef_post_data_element_t* element)
+        public static CefErrorCode get_request_error(cef_urlrequest_t* self)
         {
-            remove_element_delegate d;
-            var p = self->_remove_element;
+            get_request_error_delegate d;
+            var p = self->_get_request_error;
             if (p == _p6) { d = _d6; }
             else
             {
-                d = (remove_element_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(remove_element_delegate));
+                d = (get_request_error_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_request_error_delegate));
                 if (_p6 == IntPtr.Zero) { _d6 = d; _p6 = p; }
             }
-            return d(self, element);
+            return d(self);
         }
         
-        // AddElement
+        // GetResponse
         private static IntPtr _p7;
-        private static add_element_delegate _d7;
+        private static get_response_delegate _d7;
         
-        public static int add_element(cef_post_data_t* self, cef_post_data_element_t* element)
+        public static cef_response_t* get_response(cef_urlrequest_t* self)
         {
-            add_element_delegate d;
-            var p = self->_add_element;
+            get_response_delegate d;
+            var p = self->_get_response;
             if (p == _p7) { d = _d7; }
             else
             {
-                d = (add_element_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(add_element_delegate));
+                d = (get_response_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_response_delegate));
                 if (_p7 == IntPtr.Zero) { _d7 = d; _p7 = p; }
             }
-            return d(self, element);
+            return d(self);
         }
         
-        // RemoveElements
+        // Cancel
         private static IntPtr _p8;
-        private static remove_elements_delegate _d8;
+        private static cancel_delegate _d8;
         
-        public static void remove_elements(cef_post_data_t* self)
+        public static void cancel(cef_urlrequest_t* self)
         {
-            remove_elements_delegate d;
-            var p = self->_remove_elements;
+            cancel_delegate d;
+            var p = self->_cancel;
             if (p == _p8) { d = _d8; }
             else
             {
-                d = (remove_elements_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(remove_elements_delegate));
+                d = (cancel_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(cancel_delegate));
                 if (_p8 == IntPtr.Zero) { _d8 = d; _p8 = p; }
             }
             d(self);

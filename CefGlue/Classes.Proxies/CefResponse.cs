@@ -13,6 +13,24 @@ namespace Xilium.CefGlue
     public sealed unsafe partial class CefResponse
     {
         /// <summary>
+        /// Create a new CefResponse object.
+        /// </summary>
+        public static CefResponse Create()
+        {
+            return CefResponse.FromNative(
+                cef_response_t.create()
+                );
+        }
+
+        /// <summary>
+        /// Returns true if this object is read-only.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return cef_response_t.is_read_only(_self) != 0; }
+        }
+
+        /// <summary>
         /// Gets or sets the response status code.
         /// </summary>
         public int Status

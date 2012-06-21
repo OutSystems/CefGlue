@@ -65,4 +65,7 @@ classdef = {
     'CefWebPluginInfoVisitor': { 'role': ROLE_HANDLER },
     'CefFocusHandler': { 'role': ROLE_HANDLER },
     'CefKeyboardHandler': { 'role': ROLE_HANDLER },
+    'CefBrowserProcessHandler': { 'role': ROLE_HANDLER },
+    'CefURLRequest': { 'role': ROLE_PROXY, 'name': 'CefUrlRequest' },
+    'CefURLRequestClient': { 'role': ROLE_HANDLER, 'name': 'CefUrlRequestClient', 'reversible': True },
     }

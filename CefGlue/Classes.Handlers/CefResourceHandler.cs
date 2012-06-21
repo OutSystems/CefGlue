@@ -90,6 +90,39 @@ namespace Xilium.CefGlue
         protected abstract bool ReadResponse(Stream response, int bytesToRead, out int bytesRead, CefCallback callback);
 
 
+        private int can_get_cookie(cef_resource_handler_t* self, cef_cookie_t* cookie)
+        {
+            CheckSelf(self);
+
+            var m_cookie = CefCookie.FromNative(cookie);
+
+            return CanGetCookie(m_cookie) ? 1 : 0;
+        }
+
+        /// <summary>
+        /// Return true if the specified cookie can be sent with the request or false
+        /// otherwise. If false is returned for any cookie then no cookies will be sent
+        /// with the request.
+        /// </summary>
+        protected abstract bool CanGetCookie(CefCookie cookie);
+
+
+        private int can_set_cookie(cef_resource_handler_t* self, cef_cookie_t* cookie)
+        {
+            CheckSelf(self);
+
+            var m_cookie = CefCookie.FromNative(cookie);
+
+            return CanSetCookie(m_cookie) ? 1 : 0;
+        }
+
+        /// <summary>
+        /// Return true if the specified cookie returned with the response can be set
+        /// or false otherwise.
+        /// </summary>
+        protected abstract bool CanSetCookie(CefCookie cookie);
+
+
         private void cancel(cef_resource_handler_t* self)
         {
             CheckSelf(self);

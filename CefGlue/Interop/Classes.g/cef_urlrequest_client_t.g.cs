@@ -10,79 +10,72 @@ namespace Xilium.CefGlue.Interop
     
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     [SuppressMessage("Microsoft.Design", "CA1049:TypesThatOwnNativeResourcesShouldBeDisposable")]
-    internal unsafe struct cef_app_t
+    internal unsafe struct cef_urlrequest_client_t
     {
         internal cef_base_t _base;
-        internal IntPtr _on_before_command_line_processing;
-        internal IntPtr _on_register_custom_schemes;
-        internal IntPtr _get_resource_bundle_handler;
-        internal IntPtr _get_browser_process_handler;
-        internal IntPtr _get_render_process_handler;
+        internal IntPtr _on_request_complete;
+        internal IntPtr _on_upload_progress;
+        internal IntPtr _on_download_progress;
+        internal IntPtr _on_download_data;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int add_ref_delegate(cef_app_t* self);
+        internal delegate int add_ref_delegate(cef_urlrequest_client_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int release_delegate(cef_app_t* self);
+        internal delegate int release_delegate(cef_urlrequest_client_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int get_refct_delegate(cef_app_t* self);
+        internal delegate int get_refct_delegate(cef_urlrequest_client_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_before_command_line_processing_delegate(cef_app_t* self, cef_string_t* process_type, cef_command_line_t* command_line);
+        internal delegate void on_request_complete_delegate(cef_urlrequest_client_t* self, cef_urlrequest_t* request);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_register_custom_schemes_delegate(cef_app_t* self, cef_scheme_registrar_t* registrar);
+        internal delegate void on_upload_progress_delegate(cef_urlrequest_client_t* self, cef_urlrequest_t* request, ulong current, ulong total);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate cef_resource_bundle_handler_t* get_resource_bundle_handler_delegate(cef_app_t* self);
+        internal delegate void on_download_progress_delegate(cef_urlrequest_client_t* self, cef_urlrequest_t* request, ulong current, ulong total);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate cef_browser_process_handler_t* get_browser_process_handler_delegate(cef_app_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate cef_render_process_handler_t* get_render_process_handler_delegate(cef_app_t* self);
+        internal delegate void on_download_data_delegate(cef_urlrequest_client_t* self, cef_urlrequest_t* request, void* data, UIntPtr data_length);
         
         private static int _sizeof;
         
-        static cef_app_t()
+        static cef_urlrequest_client_t()
         {
-            _sizeof = Marshal.SizeOf(typeof(cef_app_t));
+            _sizeof = Marshal.SizeOf(typeof(cef_urlrequest_client_t));
         }
         
-        internal static cef_app_t* Alloc()
+        internal static cef_urlrequest_client_t* Alloc()
         {
-            var ptr = (cef_app_t*)Marshal.AllocHGlobal(_sizeof);
-            *ptr = new cef_app_t();
+            var ptr = (cef_urlrequest_client_t*)Marshal.AllocHGlobal(_sizeof);
+            *ptr = new cef_urlrequest_client_t();
             ptr->_base._size = (UIntPtr)_sizeof;
             return ptr;
         }
         
-        internal static void Free(cef_app_t* ptr)
+        internal static void Free(cef_urlrequest_client_t* ptr)
         {
             Marshal.FreeHGlobal((IntPtr)ptr);
         }

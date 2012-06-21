@@ -23,6 +23,14 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
+        /// Returns true if this object is read-only.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return cef_post_data_element_t.is_read_only(_self) != 0; }
+        }
+
+        /// <summary>
         /// Remove all contents from the post data element.
         /// </summary>
         public void SetToEmpty()

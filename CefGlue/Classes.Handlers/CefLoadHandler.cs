@@ -58,7 +58,7 @@ namespace Xilium.CefGlue
         }
 
 
-        private void on_load_error(cef_load_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, CefHandlerErrorCode errorCode, cef_string_t* errorText, cef_string_t* failedUrl)
+        private void on_load_error(cef_load_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, CefErrorCode errorCode, cef_string_t* errorText, cef_string_t* failedUrl)
         {
             CheckSelf(self);
 
@@ -76,7 +76,7 @@ namespace Xilium.CefGlue
         /// that failed to load. See net\base\net_error_list.h for complete
         /// descriptions of the error codes.
         /// </summary>
-        protected virtual void OnLoadError(CefBrowser browser, CefFrame frame, CefHandlerErrorCode errorCode, string errorText, string failedUrl)
+        protected virtual void OnLoadError(CefBrowser browser, CefFrame frame, CefErrorCode errorCode, string errorText, string failedUrl)
         {
         }
     }

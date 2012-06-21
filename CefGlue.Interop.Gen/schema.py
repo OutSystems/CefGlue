@@ -34,6 +34,7 @@ c2cs_types = {
     'int32': 'int',
     'uint32': 'uint',
     'int64': 'long',
+    'uint64': 'ulong',
     'double': 'double',
     'size_t': 'UIntPtr',
 
@@ -72,7 +73,7 @@ c2cs_platform_retval = {
     }
 
 c2cs_enumtypes = {
-    'cef_handler_errorcode_t': 'CefHandlerErrorCode',
+    'cef_errorcode_t': 'CefErrorCode',
     'cef_log_severity_t': 'CefLogSeverity',
     'cef_postdataelement_type_t': 'CefPostDataElementType',
     'cef_process_id_t': 'CefProcessId',
@@ -83,7 +84,6 @@ c2cs_enumtypes = {
     'cef_v8_accesscontrol_t': 'CefV8AccessControl',
     'cef_v8_propertyattribute_t': 'CefV8PropertyAttribute',
     'cef_value_type_t': 'CefValueType',
-    'cef_weburlrequest_flags_t': 'CefWebUrlRequestOptions',
     'cef_xml_encoding_type_t': 'CefXmlEncoding',
     'cef_xml_node_type_t': 'CefXmlNodeType',
     'cef_event_flags_t': 'CefEventFlags',
@@ -99,6 +99,8 @@ c2cs_enumtypes = {
     'cef_menu_item_type_t': 'CefMenuItemType',
     'cef_event_flags_t': 'CefEventFlags',
     'cef_focus_source_t': 'CefFocusSource',
+    'cef_urlrequest_flags_t': 'CefUrlRequestOptions',
+    'cef_urlrequest_status_t': 'CefUrlRequestStatus',
     }
 
 c2cs_structtypes = { }

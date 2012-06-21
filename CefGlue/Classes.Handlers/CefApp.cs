@@ -34,6 +34,7 @@
         {
         }
 
+
         private void on_register_custom_schemes(cef_app_t* self, cef_scheme_registrar_t* registrar)
         {
             CheckSelf(self);
@@ -55,24 +56,6 @@
         {
         }
 
-        private cef_render_process_handler_t* get_render_process_handler(cef_app_t* self)
-        {
-            CheckSelf(self);
-
-            var result = GetRenderProcessHandler();
-
-            return result != null ? result.ToNative() : null;
-        }
-
-        /// <summary>
-        /// Return the handler for render process events. This method is called by the
-        /// render process main thread.
-        /// </summary>
-        /// <returns></returns>
-        protected virtual CefRenderProcessHandler GetRenderProcessHandler()
-        {
-            return null;
-        }
 
         private cef_resource_bundle_handler_t* get_resource_bundle_handler(cef_app_t* self)
         {
@@ -94,21 +77,41 @@
             return null;
         }
 
-        private cef_proxy_handler_t* get_proxy_handler(cef_app_t* self)
+
+        private cef_browser_process_handler_t* get_browser_process_handler(cef_app_t* self)
         {
             CheckSelf(self);
 
-            var result = GetProxyHandler();
+            var result = GetBrowserProcessHandler();
 
             return result != null ? result.ToNative() : null;
         }
 
         /// <summary>
-        /// Return the handler for proxy events. If no handler is returned the default
-        /// system handler will be used. This method is called by the browser process
-        /// IO thread.
+        /// Return the handler for functionality specific to the browser process. This
+        /// method is called on multiple threads in the browser process.
         /// </summary>
-        protected virtual CefProxyHandler GetProxyHandler()
+        protected virtual CefBrowserProcessHandler GetBrowserProcessHandler()
+        {
+            return null;
+        }
+
+
+        private cef_render_process_handler_t* get_render_process_handler(cef_app_t* self)
+        {
+            CheckSelf(self);
+
+            var result = GetRenderProcessHandler();
+
+            return result != null ? result.ToNative() : null;
+        }
+
+        /// <summary>
+        /// Return the handler for render process events. This method is called by the
+        /// render process main thread.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual CefRenderProcessHandler GetRenderProcessHandler()
         {
             return null;
         }

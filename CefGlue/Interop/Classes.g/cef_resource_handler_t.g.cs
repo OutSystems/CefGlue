@@ -16,6 +16,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _process_request;
         internal IntPtr _get_response_headers;
         internal IntPtr _read_response;
+        internal IntPtr _can_get_cookie;
+        internal IntPtr _can_set_cookie;
         internal IntPtr _cancel;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
@@ -53,6 +55,18 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate int read_response_delegate(cef_resource_handler_t* self, void* data_out, int bytes_to_read, int* bytes_read, cef_callback_t* callback);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int can_get_cookie_delegate(cef_resource_handler_t* self, cef_cookie_t* cookie);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int can_set_cookie_delegate(cef_resource_handler_t* self, cef_cookie_t* cookie);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

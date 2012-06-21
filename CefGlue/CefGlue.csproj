@@ -52,6 +52,7 @@
     <Compile Include="Classes.g\CefBinaryValue.g.cs" />
     <Compile Include="Classes.g\CefBrowser.g.cs" />
     <Compile Include="Classes.g\CefBrowserHost.g.cs" />
+    <Compile Include="Classes.g\CefBrowserProcessHandler.g.cs" />
     <Compile Include="Classes.g\CefCallback.g.cs" />
     <Compile Include="Classes.g\CefClient.g.cs" />
     <Compile Include="Classes.g\CefCommandLine.g.cs" />
@@ -94,6 +95,8 @@
     <Compile Include="Classes.g\CefStreamWriter.g.cs" />
     <Compile Include="Classes.g\CefStringVisitor.g.cs" />
     <Compile Include="Classes.g\CefTask.g.cs" />
+    <Compile Include="Classes.g\CefUrlRequest.g.cs" />
+    <Compile Include="Classes.g\CefUrlRequestClient.g.cs" />
     <Compile Include="Classes.g\CefUserData.g.cs" />
     <Compile Include="Classes.g\CefV8Accessor.g.cs" />
     <Compile Include="Classes.g\CefV8Context.g.cs" />
@@ -106,6 +109,7 @@
     <Compile Include="Classes.g\CefXmlReader.g.cs" />
     <Compile Include="Classes.g\CefZipReader.g.cs" />
     <Compile Include="Classes.Handlers\CefApp.cs" />
+    <Compile Include="Classes.Handlers\CefBrowserProcessHandler.cs" />
     <Compile Include="Classes.Handlers\CefClient.cs" />
     <Compile Include="Classes.Handlers\CefContextMenuHandler.cs" />
     <Compile Include="Classes.Handlers\CefCookieVisitor.cs" />
@@ -126,6 +130,7 @@
     <Compile Include="Classes.Handlers\CefResourceHandler.cs" />
     <Compile Include="Classes.Handlers\CefSchemeHandlerFactory.cs" />
     <Compile Include="Classes.Handlers\CefStringVisitor.cs" />
+    <Compile Include="Classes.Handlers\CefUrlRequestClient.cs" />
     <Compile Include="Classes.Handlers\CefUserData.cs" />
     <Compile Include="Classes.Handlers\CefV8Accessor.cs" />
     <Compile Include="Classes.Handlers\CefV8Handler.cs" />
@@ -157,6 +162,7 @@
     <Compile Include="Classes.Proxies\CefSchemeRegistrar.cs" />
     <Compile Include="Classes.Proxies\CefStreamReader.cs" />
     <Compile Include="Classes.Proxies\CefStreamWriter.cs" />
+    <Compile Include="Classes.Proxies\CefUrlRequest.cs" />
     <Compile Include="Classes.Proxies\CefV8Context.cs" />
     <Compile Include="Classes.Proxies\CefV8Exception.cs" />
     <Compile Include="Classes.Proxies\CefV8Value.cs" />
@@ -168,11 +174,11 @@
     <Compile Include="Enums\CefKeyEventType.cs" />
     <Compile Include="Enums\CefLogSeverity.cs" />
     <Compile Include="Enums\CefStorageType.cs" />
-    <Compile Include="Enums\CefHandlerErrorCode.cs" />
+    <Compile Include="Enums\CefErrorCode.cs" />
     <Compile Include="Enums\CefV8AccessControl.cs" />
     <Compile Include="Enums\CefV8PropertyAttribute.cs" />
     <Compile Include="Enums\CefPostDataElementType.cs" />
-    <Compile Include="Enums\CefWebUrlRequestFlags.cs" />
+    <Compile Include="Enums\CefUrlRequestFlags.cs" />
     <Compile Include="Enums\CefProcessId.cs" />
     <Compile Include="Enums\CefThreadId.cs" />
     <Compile Include="Enums\CefValueType.cs" />
@@ -192,12 +198,14 @@
     <Compile Include="Enums\CefDomEventCategory.cs" />
     <Compile Include="Enums\CefDomEventPhase.cs" />
     <Compile Include="Enums\CefDomNodeType.cs" />
+    <Compile Include="Enums\CefUrlRequestStatus.cs" />
     <Compile Include="ExceptionBuilder.cs" />
     <Compile Include="Exceptions\CefVersionMismatchException.cs" />
     <Compile Include="Interop\Base\bool_t.cs" />
     <Compile Include="Interop\Base\cefglue_userdata_t.cs" />
     <Compile Include="Interop\Base\cef_base_t.cs" />
     <Compile Include="Interop\Base\cef_string_t.cs" />
+    <Compile Include="Interop\Classes.g\cef_browser_process_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_context_menu_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_context_menu_params_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_cookie_manager_t.g.cs" />
@@ -213,6 +221,8 @@
     <Compile Include="Interop\Classes.g\cef_keyboard_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_menu_model_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_scheme_registrar_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_urlrequest_client_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_urlrequest_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_user_data_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_web_plugin_info_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_web_plugin_info_visitor_t.g.cs" />
