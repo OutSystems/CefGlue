@@ -25,6 +25,8 @@ namespace Xilium.CefGlue
         private cef_load_handler_t.on_load_start_delegate _ds3;
         private cef_load_handler_t.on_load_end_delegate _ds4;
         private cef_load_handler_t.on_load_error_delegate _ds5;
+        private cef_load_handler_t.on_render_process_terminated_delegate _ds6;
+        private cef_load_handler_t.on_plugin_crashed_delegate _ds7;
         
         protected CefLoadHandler()
         {
@@ -42,6 +44,10 @@ namespace Xilium.CefGlue
             _self->_on_load_end = Marshal.GetFunctionPointerForDelegate(_ds4);
             _ds5 = new cef_load_handler_t.on_load_error_delegate(on_load_error);
             _self->_on_load_error = Marshal.GetFunctionPointerForDelegate(_ds5);
+            _ds6 = new cef_load_handler_t.on_render_process_terminated_delegate(on_render_process_terminated);
+            _self->_on_render_process_terminated = Marshal.GetFunctionPointerForDelegate(_ds6);
+            _ds7 = new cef_load_handler_t.on_plugin_crashed_delegate(on_plugin_crashed);
+            _self->_on_plugin_crashed = Marshal.GetFunctionPointerForDelegate(_ds7);
         }
         
         ~CefLoadHandler()

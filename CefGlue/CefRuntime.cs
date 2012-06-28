@@ -2,8 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
+    using System.Globalization;
     using System.Runtime.InteropServices;
+    using System.Text;
     using Xilium.CefGlue.Interop;
 
     public static unsafe class CefRuntime
@@ -313,6 +314,50 @@
         [DllImport(libcef.DllName, EntryPoint = "cef_visit_web_plugin_info", CallingConvention = libcef.CEF_CALL)]
         public static extern void visit_web_plugin_info(cef_web_plugin_info_visitor_t* visitor);
         */
+        #endregion
+
+        #region cef_path_util
+
+        /// <summary>
+        /// Retrieve the path associated with the specified |key|. Returns true on
+        /// success. Can be called on any thread in the browser process.
+        /// </summary>
+        public static string GetPath(CefPathKey pathKey)
+        {
+            var n_value = new cef_string_t();
+            var success = libcef.get_path(pathKey, &n_value) != 0;
+            var value = cef_string_t.ToString(&n_value);
+            libcef.string_clear(&n_value);
+            if (!success)
+            {
+                throw new InvalidOperationException(
+                    string.Format(CultureInfo.InvariantCulture, "Failed to get path for key {0}.", pathKey)
+                    );
+            }
+            return value;
+        }
+
+        #endregion
+
+        #region cef_process_util
+
+        /// <summary>
+        /// Launches the process specified via |command_line|. Returns true upon
+        /// success. Must be called on the browser process TID_PROCESS_LAUNCHER thread.
+        ///
+        /// Unix-specific notes:
+        /// - All file descriptors open in the parent process will be closed in the
+        ///   child process except for stdin, stdout, and stderr.
+        /// - If the first argument on the command line does not contain a slash,
+        ///   PATH will be searched. (See man execvp.)
+        /// </summary>
+        public static bool LaunchProcess(CefCommandLine commandLine)
+        {
+            if (commandLine == null) throw new ArgumentNullException("commandLine");
+
+            return libcef.launch_process(commandLine.ToNative()) != 0;
+        }
+
         #endregion
 
         private static void LoadIfNeed()

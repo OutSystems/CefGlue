@@ -49,6 +49,7 @@
     <Compile Include="CefRuntimePlatform.cs" />
     <Compile Include="Classes.g\CefApp.g.cs" />
     <Compile Include="Classes.g\CefAuthCallback.g.cs" />
+    <Compile Include="Classes.g\CefBeforeDownloadCallback.g.cs" />
     <Compile Include="Classes.g\CefBinaryValue.g.cs" />
     <Compile Include="Classes.g\CefBrowser.g.cs" />
     <Compile Include="Classes.g\CefBrowserHost.g.cs" />
@@ -67,6 +68,9 @@
     <Compile Include="Classes.g\CefDomEventListener.g.cs" />
     <Compile Include="Classes.g\CefDomNode.g.cs" />
     <Compile Include="Classes.g\CefDomVisitor.g.cs" />
+    <Compile Include="Classes.g\CefDownloadHandler.g.cs" />
+    <Compile Include="Classes.g\CefDownloadItem.g.cs" />
+    <Compile Include="Classes.g\CefDownloadItemCallback.g.cs" />
     <Compile Include="Classes.g\CefFocusHandler.g.cs" />
     <Compile Include="Classes.g\CefFrame.g.cs" />
     <Compile Include="Classes.g\CefGeolocationCallback.g.cs" />
@@ -116,6 +120,7 @@
     <Compile Include="Classes.Handlers\CefDisplayHandler.cs" />
     <Compile Include="Classes.Handlers\CefDomEventListener.cs" />
     <Compile Include="Classes.Handlers\CefDomVisitor.cs" />
+    <Compile Include="Classes.Handlers\CefDownloadHandler.cs" />
     <Compile Include="Classes.Handlers\CefFocusHandler.cs" />
     <Compile Include="Classes.Handlers\CefGeolocationHandler.cs" />
     <Compile Include="Classes.Handlers\CefJSDialogHandler.cs" />
@@ -137,6 +142,7 @@
     <Compile Include="Classes.Handlers\CefWebPluginInfoVisitor.cs" />
     <Compile Include="Classes.Handlers\CefWriteHandler.cs" />
     <Compile Include="Classes.Proxies\CefAuthCallback.cs" />
+    <Compile Include="Classes.Proxies\CefBeforeDownloadCallback.cs" />
     <Compile Include="Classes.Proxies\CefBinaryValue.cs" />
     <Compile Include="Classes.Proxies\CefBrowser.cs" />
     <Compile Include="Classes.Proxies\CefCallback.cs" />
@@ -149,6 +155,8 @@
     <Compile Include="Classes.Proxies\CefDomDocument.cs" />
     <Compile Include="Classes.Proxies\CefDomEvent.cs" />
     <Compile Include="Classes.Proxies\CefDomNode.cs" />
+    <Compile Include="Classes.Proxies\CefDownloadItem.cs" />
+    <Compile Include="Classes.Proxies\CefDownloadItemCallback.cs" />
     <Compile Include="Classes.Proxies\CefFrame.cs" />
     <Compile Include="Classes.Proxies\CefGeolocationCallback.cs" />
     <Compile Include="Classes.Proxies\CefJSDialogCallback.cs" />
@@ -199,12 +207,15 @@
     <Compile Include="Enums\CefDomEventPhase.cs" />
     <Compile Include="Enums\CefDomNodeType.cs" />
     <Compile Include="Enums\CefUrlRequestStatus.cs" />
+    <Compile Include="Enums\CefTerminationStatus.cs" />
+    <Compile Include="Enums\CefPathKey.cs" />
     <Compile Include="ExceptionBuilder.cs" />
     <Compile Include="Exceptions\CefVersionMismatchException.cs" />
     <Compile Include="Interop\Base\bool_t.cs" />
     <Compile Include="Interop\Base\cefglue_userdata_t.cs" />
     <Compile Include="Interop\Base\cef_base_t.cs" />
     <Compile Include="Interop\Base\cef_string_t.cs" />
+    <Compile Include="Interop\Classes.g\cef_before_download_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_browser_process_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_context_menu_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_context_menu_params_t.g.cs" />
@@ -215,6 +226,9 @@
     <Compile Include="Interop\Classes.g\cef_domevent_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_domnode_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_domvisitor_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_download_handler_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_download_item_callback_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_download_item_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_focus_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_jsdialog_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_jsdialog_handler_t.g.cs" />

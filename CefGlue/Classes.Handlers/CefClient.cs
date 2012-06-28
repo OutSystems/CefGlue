@@ -42,6 +42,24 @@ namespace Xilium.CefGlue
         }
 
 
+        private cef_download_handler_t* get_download_handler(cef_client_t* self)
+        {
+            CheckSelf(self);
+
+            var result = GetDownloadHandler();
+            return result != null ? result.ToNative() : null;
+        }
+
+        /// <summary>
+        /// Return the handler for download events. If no handler is returned downloads
+        /// will not be allowed.
+        /// </summary>
+        protected virtual CefDownloadHandler GetDownloadHandler()
+        {
+            return null;
+        }
+
+
         private cef_focus_handler_t* get_focus_handler(cef_client_t* self)
         {
             CheckSelf(self);

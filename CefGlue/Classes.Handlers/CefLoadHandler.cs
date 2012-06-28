@@ -79,5 +79,40 @@ namespace Xilium.CefGlue
         protected virtual void OnLoadError(CefBrowser browser, CefFrame frame, CefErrorCode errorCode, string errorText, string failedUrl)
         {
         }
+
+
+        private void on_render_process_terminated(cef_load_handler_t* self, cef_browser_t* browser, CefTerminationStatus status)
+        {
+            CheckSelf(self);
+
+            var m_browser = CefBrowser.FromNative(browser);
+            OnRenderProcessTerminated(m_browser, status);
+        }
+
+        /// <summary>
+        /// Called when the render process terminates unexpectedly. |status| indicates
+        /// how the process terminated.
+        /// </summary>
+        protected virtual void OnRenderProcessTerminated(CefBrowser browser, CefTerminationStatus status)
+        {
+        }
+
+
+        private void on_plugin_crashed(cef_load_handler_t* self, cef_browser_t* browser, cef_string_t* plugin_path)
+        {
+            CheckSelf(self);
+
+            var m_browser = CefBrowser.FromNative(browser);
+            var m_plugin_path = cef_string_t.ToString(plugin_path);
+            OnPluginCrashed(m_browser, m_plugin_path);
+        }
+
+        /// <summary>
+        /// Called when a plugin has crashed. |plugin_path| is the path of the plugin
+        /// that crashed.
+        /// </summary>
+        protected virtual void OnPluginCrashed(CefBrowser browser, string pluginPath)
+        {
+        }
     }
 }

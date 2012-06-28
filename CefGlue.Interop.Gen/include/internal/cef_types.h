@@ -92,12 +92,39 @@ extern "C" {
 // Log severity levels.
 ///
 enum cef_log_severity_t {
-  LOGSEVERITY_VERBOSE = -1,
+  ///
+  // Default logging (currently INFO logging).
+  ///
+  LOGSEVERITY_DEFAULT,
+
+  ///
+  // Verbose logging.
+  ///
+  LOGSEVERITY_VERBOSE,
+
+  ///
+  // INFO logging.
+  ///
   LOGSEVERITY_INFO,
+
+  ///
+  // WARNING logging.
+  ///
   LOGSEVERITY_WARNING,
+
+  ///
+  // ERROR logging.
+  ///
   LOGSEVERITY_ERROR,
+
+  ///
+  // ERROR_REPORT logging.
+  ///
   LOGSEVERITY_ERROR_REPORT,
-  // Disables logging completely.
+
+  ///
+  // Completely disable logging.
+  ///
   LOGSEVERITY_DISABLE = 99
 };
 
@@ -552,6 +579,62 @@ typedef struct _cef_cookie_t {
   bool has_expires;
   cef_time_t expires;
 } cef_cookie_t;
+
+///
+// Process termination status values.
+///
+enum cef_termination_status_t {
+  ///
+  // Non-zero exit status.
+  ///
+  TS_ABNORMAL_TERMINATION,
+
+  ///
+  // SIGKILL or task manager kill.
+  ///
+  TS_PROCESS_WAS_KILLED,
+
+  ///
+  // Segmentation fault.
+  ///
+  TS_PROCESS_CRASHED,
+};
+
+///
+// Path key values.
+///
+enum cef_path_key_t {
+  ///
+  // Current directory.
+  ///
+  PK_DIR_CURRENT,
+
+  ///
+  // Directory containing PK_FILE_EXE.
+  ///
+  PK_DIR_EXE,
+
+  ///
+  // Directory containing PK_FILE_MODULE.
+  ///
+  PK_DIR_MODULE,
+
+  ///
+  // Temporary directory.
+  ///
+  PK_DIR_TEMP,
+
+  ///
+  // Path and filename of the current executable.
+  ///
+  PK_FILE_EXE,
+
+  ///
+  // Path and filename of the module containing the CEF code (usually the libcef
+  // module).
+  ///
+  PK_FILE_MODULE,
+};
 
 ///
 // Storage types.

@@ -45,6 +45,14 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_clear_cross_origin_whitelist", CallingConvention = libcef.CEF_CALL)]
         public static extern int clear_cross_origin_whitelist();
         
+        // CefGetPath
+        [DllImport(libcef.DllName, EntryPoint = "cef_get_path", CallingConvention = libcef.CEF_CALL)]
+        public static extern int get_path(CefPathKey key, cef_string_t* path);
+        
+        // CefLaunchProcess
+        [DllImport(libcef.DllName, EntryPoint = "cef_launch_process", CallingConvention = libcef.CEF_CALL)]
+        public static extern int launch_process(cef_command_line_t* command_line);
+        
         // CefRegisterSchemeHandlerFactory
         [DllImport(libcef.DllName, EntryPoint = "cef_register_scheme_handler_factory", CallingConvention = libcef.CEF_CALL)]
         public static extern int register_scheme_handler_factory(cef_string_t* scheme_name, cef_string_t* domain_name, cef_scheme_handler_factory_t* factory);

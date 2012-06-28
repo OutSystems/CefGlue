@@ -144,5 +144,32 @@ namespace Xilium.CefGlue
         {
             return null;
         }
+
+
+
+        private void on_protocol_execution(cef_request_handler_t* self, cef_browser_t* browser, cef_string_t* url, int* allow_os_execution)
+        {
+            CheckSelf(self);
+
+            var m_browser = CefBrowser.FromNative(browser);
+            var m_url = cef_string_t.ToString(url);
+            bool m_allow_os_execution;
+
+            OnProtocolExecution(m_browser, m_url, out m_allow_os_execution);
+
+            *allow_os_execution = m_allow_os_execution ? 1 : 0;
+        }
+
+        /// <summary>
+        /// Called on the UI thread to handle requests for URLs with an unknown
+        /// protocol component. Set |allow_os_execution| to true to attempt execution
+        /// via the registered OS protocol handler, if any.
+        /// SECURITY WARNING: YOU SHOULD USE THIS METHOD TO ENFORCE RESTRICTIONS BASED
+        /// ON SCHEME, HOST OR OTHER URL ANALYSIS BEFORE ALLOWING OS EXECUTION.
+        /// </summary>
+        protected virtual void OnProtocolExecution(CefBrowser browser, string url, out bool allowOSExecution)
+        {
+            allowOSExecution = true;
+        }
     }
 }

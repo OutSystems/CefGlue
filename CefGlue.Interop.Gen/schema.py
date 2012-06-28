@@ -101,6 +101,8 @@ c2cs_enumtypes = {
     'cef_focus_source_t': 'CefFocusSource',
     'cef_urlrequest_flags_t': 'CefUrlRequestOptions',
     'cef_urlrequest_status_t': 'CefUrlRequestStatus',
+    'cef_termination_status_t': 'CefTerminationStatus',
+    'cef_path_key_t': 'CefPathKey',
     }
 
 c2cs_structtypes = { }

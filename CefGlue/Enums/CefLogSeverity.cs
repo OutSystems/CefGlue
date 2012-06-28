@@ -9,14 +9,38 @@ namespace Xilium.CefGlue
     /// </summary>
     public enum CefLogSeverity
     {
-        Verbose = -1,
+        /// <summary>
+        /// Default logging (currently INFO logging).
+        /// </summary>
+        Default,
+
+        /// <summary>
+        /// Verbose logging.
+        /// </summary>
+        Verbose,
+
+        /// <summary>
+        /// INFO logging.
+        /// </summary>
         Info,
+
+        /// <summary>
+        /// WARNING logging.
+        /// </summary>
         Warning,
+
+        /// <summary>
+        /// ERROR logging.
+        /// </summary>
         Error,
+
+        /// <summary>
+        /// ERROR_REPORT logging.
+        /// </summary>
         ErrorReport,
 
         /// <summary>
-        /// Disables logging completely.
+        /// Completely disable logging.
         /// </summary>
         Disable = 99,
     }

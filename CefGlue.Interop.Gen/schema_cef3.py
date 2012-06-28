@@ -68,4 +68,8 @@ classdef = {
     'CefBrowserProcessHandler': { 'role': ROLE_HANDLER },
     'CefURLRequest': { 'role': ROLE_PROXY, 'name': 'CefUrlRequest' },
     'CefURLRequestClient': { 'role': ROLE_HANDLER, 'name': 'CefUrlRequestClient', 'reversible': True },
+    'CefBeforeDownloadCallback': { 'role': ROLE_PROXY },
+    'CefDownloadItemCallback': { 'role': ROLE_PROXY },
+    'CefDownloadHandler': { 'role': ROLE_HANDLER },
+    'CefDownloadItem': { 'role': ROLE_PROXY },
     }
