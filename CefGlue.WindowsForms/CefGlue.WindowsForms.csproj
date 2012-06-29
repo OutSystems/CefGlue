@@ -54,6 +54,7 @@
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetWindowPosFlags.cs" />
+    <Compile Include="StatusMessageEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Xilium.CefGlue.snk">

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using System.Windows.Forms;
 
     internal sealed class CefWebDisplayHandler : CefDisplayHandler
     {
@@ -24,6 +25,11 @@
             {
                 _core.OnAddressChanged(url);
             }
+        }
+
+        protected override void OnStatusMessage(CefBrowser browser, string value, CefStatusMessageType type)
+        {
+            _core.OnStatusMessage(value, type);
         }
     }
 }

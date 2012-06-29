@@ -121,6 +121,14 @@
 
         public event EventHandler AddressChanged;
 
+        internal void OnStatusMessage(string value, CefStatusMessageType type)
+        {
+            var handler = StatusMessage;
+            if (handler != null) handler(this, new StatusMessageEventArgs(value, type));
+        }
+
+        public event EventHandler<StatusMessageEventArgs> StatusMessage;
+
         protected override void OnSizeChanged(EventArgs e)
         {
             ResizeWindow(_browserWindowHandle, Width, Height);

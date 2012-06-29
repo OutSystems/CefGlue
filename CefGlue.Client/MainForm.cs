@@ -105,21 +105,31 @@
             browser.Dock = DockStyle.Fill;
             browser.TitleChanged += (s, e) =>
                 {
-                    var title = browser.Title;
-                    if (tabControl.SelectedTab == page)
-                    {
-                        Text = browser.Title + " - " + _mainTitle;
-                    }
-                    page.ToolTipText = title;
-                    if (title.Length > 18)
-                    {
-                        title = title.Substring(0, 18) + "...";
-                    }
-                    page.Text = title;
+                    BeginInvoke(new Action(() => {
+                        var title = browser.Title;
+                        if (tabControl.SelectedTab == page)
+                        {
+                            Text = browser.Title + " - " + _mainTitle;
+                        }
+                        page.ToolTipText = title;
+                        if (title.Length > 18)
+                        {
+                            title = title.Substring(0, 18) + "...";
+                        }
+                        page.Text = title;
+                    }));
                 };
             browser.AddressChanged += (s, e) =>
                 {
-                    addressTextBox.Text = browser.Address;
+                    BeginInvoke(new Action(() => {
+                        addressTextBox.Text = browser.Address;
+                    }));
+                };
+            browser.StatusMessage += (s, e) =>
+                {
+                    BeginInvoke(new Action(() => {
+                        statusLabel.Text = e.Value;
+                    }));
                 };
 
             page.Controls.Add(browser);
