@@ -269,17 +269,42 @@
         #endregion
 
         #region cef_scheme
-        // TODO: CefRuntime.RegisterSchemeHandlerFactory
-        // TODO: CefRuntime.ClearSchemeHandlerFactories
-        /*
-        // CefRegisterSchemeHandlerFactory
-        [DllImport(libcef.DllName, EntryPoint = "cef_register_scheme_handler_factory", CallingConvention = libcef.CEF_CALL)]
-        public static extern int register_scheme_handler_factory(cef_string_t* scheme_name, cef_string_t* domain_name, cef_scheme_handler_factory_t* factory);
 
-        // CefClearSchemeHandlerFactories
-        [DllImport(libcef.DllName, EntryPoint = "cef_clear_scheme_handler_factories", CallingConvention = libcef.CEF_CALL)]
-        public static extern int clear_scheme_handler_factories();
-        */
+        /// <summary>
+        /// Register a scheme handler factory for the specified |scheme_name| and
+        /// optional |domain_name|. An empty |domain_name| value for a standard scheme
+        /// will cause the factory to match all domain names. The |domain_name| value
+        /// will be ignored for non-standard schemes. If |scheme_name| is a built-in
+        /// scheme and no handler is returned by |factory| then the built-in scheme
+        /// handler factory will be called. If |scheme_name| is a custom scheme the
+        /// CefRegisterCustomScheme() function should be called for that scheme.
+        /// This function may be called multiple times to change or remove the factory
+        /// that matches the specified |scheme_name| and optional |domain_name|.
+        /// Returns false if an error occurs. This function may be called on any thread.
+        /// </summary>
+        public static bool RegisterSchemeHandlerFactory(string schemeName, string domainName, CefSchemeHandlerFactory factory)
+        {
+            if (string.IsNullOrEmpty(schemeName)) throw new ArgumentNullException("schemeName");
+            if (factory == null) throw new ArgumentNullException("factory");
+
+            fixed (char* schemeName_str = schemeName)
+            fixed (char* domainName_str = domainName)
+            {
+                var n_schemeName = new cef_string_t(schemeName_str, schemeName.Length);
+                var n_domainName = new cef_string_t(domainName_str, domainName != null ? domainName.Length : 0);
+
+                return libcef.register_scheme_handler_factory(&n_schemeName, &n_domainName, factory.ToNative()) != 0;
+            }
+        }
+
+        /// <summary>
+        /// Clear all registered scheme handler factories. Returns false on error. This
+        /// function may be called on any thread.
+        /// </summary>
+        public static bool ClearSchemeHandlerFactories()
+        {
+            return libcef.clear_scheme_handler_factories() != 0;
+        }
 
         #endregion
 
