@@ -42,6 +42,8 @@ classdef = {
     'CefV8Accessor': { 'role': ROLE_HANDLER },
     'CefV8Exception': { 'role': ROLE_PROXY },
     'CefV8Value': { 'role': ROLE_PROXY },
+    'CefV8StackTrace': { 'role': ROLE_PROXY },
+    'CefV8StackFrame': { 'role': ROLE_PROXY },
     'CefBinaryValue': { 'role': ROLE_PROXY },
     'CefDictionaryValue': { 'role': ROLE_PROXY },
     'CefListValue': { 'role': ROLE_PROXY },

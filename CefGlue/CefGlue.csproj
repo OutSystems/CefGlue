@@ -106,6 +106,8 @@
     <Compile Include="Classes.g\CefV8Context.g.cs" />
     <Compile Include="Classes.g\CefV8Exception.g.cs" />
     <Compile Include="Classes.g\CefV8Handler.g.cs" />
+    <Compile Include="Classes.g\CefV8StackFrame.g.cs" />
+    <Compile Include="Classes.g\CefV8StackTrace.g.cs" />
     <Compile Include="Classes.g\CefV8Value.g.cs" />
     <Compile Include="Classes.g\CefWebPluginInfo.g.cs" />
     <Compile Include="Classes.g\CefWebPluginInfoVisitor.g.cs" />
@@ -173,6 +175,8 @@
     <Compile Include="Classes.Proxies\CefUrlRequest.cs" />
     <Compile Include="Classes.Proxies\CefV8Context.cs" />
     <Compile Include="Classes.Proxies\CefV8Exception.cs" />
+    <Compile Include="Classes.Proxies\CefV8StackFrame.cs" />
+    <Compile Include="Classes.Proxies\CefV8StackTrace.cs" />
     <Compile Include="Classes.Proxies\CefV8Value.cs" />
     <Compile Include="Classes.Proxies\CefWebPluginInfo.cs" />
     <Compile Include="Classes.Proxies\CefXmlReader.cs" />
@@ -238,6 +242,8 @@
     <Compile Include="Interop\Classes.g\cef_urlrequest_client_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_urlrequest_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_user_data_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_v8stack_frame_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_v8stack_trace_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_web_plugin_info_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_web_plugin_info_visitor_t.g.cs" />
     <Compile Include="Interop\Structs\cef_key_event_t.cs" />
