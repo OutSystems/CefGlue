@@ -249,22 +249,98 @@
         #endregion
 
         #region cef_origin_whitelist
-        // TODO: CefRuntime.AddCrossOriginWhitelistEntry
-        // TODO: CefRuntime.RemoveCrossOriginWhitelistEntry
-        // TODO: CefRuntime.ClearCrossOriginWhitelist
-        /*
-        // CefAddCrossOriginWhitelistEntry
-        [DllImport(libcef.DllName, EntryPoint = "cef_add_cross_origin_whitelist_entry", CallingConvention = libcef.CEF_CALL)]
-        public static extern int add_cross_origin_whitelist_entry(cef_string_t* source_origin, cef_string_t* target_protocol, cef_string_t* target_domain, int allow_target_subdomains);
 
-        // CefRemoveCrossOriginWhitelistEntry
-        [DllImport(libcef.DllName, EntryPoint = "cef_remove_cross_origin_whitelist_entry", CallingConvention = libcef.CEF_CALL)]
-        public static extern int remove_cross_origin_whitelist_entry(cef_string_t* source_origin, cef_string_t* target_protocol, cef_string_t* target_domain, int allow_target_subdomains);
+        /// <summary>
+        /// Add an entry to the cross-origin access whitelist.
+        ///
+        /// The same-origin policy restricts how scripts hosted from different origins
+        /// (scheme + domain + port) can communicate. By default, scripts can only access
+        /// resources with the same origin. Scripts hosted on the HTTP and HTTPS schemes
+        /// (but no other schemes) can use the "Access-Control-Allow-Origin" header to
+        /// allow cross-origin requests. For example, https://source.example.com can make
+        /// XMLHttpRequest requests on http://target.example.com if the
+        /// http://target.example.com request returns an "Access-Control-Allow-Origin:
+        /// https://source.example.com" response header.
+        ///
+        /// Scripts in separate frames or iframes and hosted from the same protocol and
+        /// domain suffix can execute cross-origin JavaScript if both pages set the
+        /// document.domain value to the same domain suffix. For example,
+        /// scheme://foo.example.com and scheme://bar.example.com can communicate using
+        /// JavaScript if both domains set document.domain="example.com".
+        ///
+        /// This method is used to allow access to origins that would otherwise violate
+        /// the same-origin policy. Scripts hosted underneath the fully qualified
+        /// |source_origin| URL (like http://www.example.com) will be allowed access to
+        /// all resources hosted on the specified |target_protocol| and |target_domain|.
+        /// If |target_domain| is non-empty and |allow_target_subdomains| if false only
+        /// exact domain matches will be allowed. If |target_domain| is non-empty and
+        /// |allow_target_subdomains| is true sub-domain matches will be allowed. If
+        /// |target_domain| is empty and |allow_target_subdomains| if true all domains
+        /// and IP addresses will be allowed.
+        ///
+        /// This method cannot be used to bypass the restrictions on local or display
+        /// isolated schemes. See the comments on CefRegisterCustomScheme for more
+        /// information.
+        ///
+        /// This function may be called on any thread. Returns false if |source_origin|
+        /// is invalid or the whitelist cannot be accessed.
+        /// </summary>
+        public static bool AddCrossOriginWhitelistEntry(string sourceOrigin, string targetProtocol, string targetDomain, bool allowTargetSubdomains)
+        {
+            if (string.IsNullOrEmpty("sourceOrigin")) throw new ArgumentNullException("sourceOrigin");
+            if (string.IsNullOrEmpty("targetProtocol")) throw new ArgumentNullException("targetProtocol");
 
-        // CefClearCrossOriginWhitelist
-        [DllImport(libcef.DllName, EntryPoint = "cef_clear_cross_origin_whitelist", CallingConvention = libcef.CEF_CALL)]
-        public static extern int clear_cross_origin_whitelist();
-        */
+            fixed (char* sourceOrigin_ptr = sourceOrigin)
+            fixed (char* targetProtocol_ptr = targetProtocol)
+            fixed (char* targetDomain_ptr = targetDomain)
+            {
+                var n_sourceOrigin = new cef_string_t(sourceOrigin_ptr, sourceOrigin.Length);
+                var n_targetProtocol = new cef_string_t(targetProtocol_ptr, targetProtocol.Length);
+                var n_targetDomain = new cef_string_t(targetDomain_ptr, targetDomain != null ? targetDomain.Length : 0);
+
+                return libcef.add_cross_origin_whitelist_entry(
+                    &n_sourceOrigin,
+                    &n_targetProtocol,
+                    &n_targetDomain,
+                    allowTargetSubdomains ? 1 : 0
+                    ) != 0;
+            }
+        }
+
+        /// <summary>
+        /// Remove an entry from the cross-origin access whitelist. Returns false if
+        /// |source_origin| is invalid or the whitelist cannot be accessed.
+        /// </summary>
+        public static bool RemoveCrossOriginWhitelistEntry(string sourceOrigin, string targetProtocol, string targetDomain, bool allowTargetSubdomains)
+        {
+            if (string.IsNullOrEmpty("sourceOrigin")) throw new ArgumentNullException("sourceOrigin");
+            if (string.IsNullOrEmpty("targetProtocol")) throw new ArgumentNullException("targetProtocol");
+
+            fixed (char* sourceOrigin_ptr = sourceOrigin)
+            fixed (char* targetProtocol_ptr = targetProtocol)
+            fixed (char* targetDomain_ptr = targetDomain)
+            {
+                var n_sourceOrigin = new cef_string_t(sourceOrigin_ptr, sourceOrigin.Length);
+                var n_targetProtocol = new cef_string_t(targetProtocol_ptr, targetProtocol.Length);
+                var n_targetDomain = new cef_string_t(targetDomain_ptr, targetDomain != null ? targetDomain.Length : 0);
+
+                return libcef.remove_cross_origin_whitelist_entry(
+                    &n_sourceOrigin,
+                    &n_targetProtocol,
+                    &n_targetDomain,
+                    allowTargetSubdomains ? 1 : 0
+                    ) != 0;
+            }
+        }
+
+        /// <summary>
+        /// Remove all entries from the cross-origin access whitelist. Returns false if
+        /// the whitelist cannot be accessed.
+        /// </summary>
+        public static bool ClearCrossOriginWhitelist()
+        {
+            return libcef.clear_cross_origin_whitelist() != 0;
+        }
 
         #endregion
 
