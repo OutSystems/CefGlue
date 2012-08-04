@@ -121,11 +121,11 @@ namespace Xilium.CefGlue
 
             var m_browser = CefBrowser.FromNative(browser);
             var m_frame = CefFrame.FromNative(frame);
-            var m_node = CefDomNode.FromNative(node);
+            var m_node = CefDomNode.FromNativeOrNull(node);
 
             OnFocusedNodeChanged(m_browser, m_frame, m_node);
 
-            m_node.Dispose();
+            if (m_node != null) m_node.Dispose();
         }
 
         /// <summary>
