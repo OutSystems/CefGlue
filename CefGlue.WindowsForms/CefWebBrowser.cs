@@ -129,10 +129,15 @@
 
         public event EventHandler<StatusMessageEventArgs> StatusMessage;
 
-        protected override void OnSizeChanged(EventArgs e)
+        protected override void OnResize(EventArgs e)
         {
-            ResizeWindow(_browserWindowHandle, Width, Height);
-            base.OnSizeChanged(e);
+            base.OnResize(e);
+
+            var form = TopLevelControl as Form;
+            if (form != null && form.WindowState != FormWindowState.Minimized)
+            {
+                ResizeWindow(_browserWindowHandle, Width, Height);
+            }
         }
 
         private void PaintInDesignMode(object sender, PaintEventArgs e)
