@@ -68,7 +68,7 @@
         /// </summary>
         public char Character
         {
-            get { return _self->character; }
+            get { return (char)_self->character; }
         }
 
         /// <summary>
@@ -77,7 +77,7 @@
         /// </summary>
         public char UnmodifiedCharacter
         {
-            get { return _self->unmodified_character; }
+            get { return (char)_self->unmodified_character; }
         }
 
         /// <summary>
