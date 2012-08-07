@@ -5,7 +5,7 @@
     /// <summary>
     /// Key event types.
     /// </summary>
-    public enum CefKeyEventType
+    public enum CefKeyEventType : int
     {
         RawKeyDown = 0,
         KeyDown,

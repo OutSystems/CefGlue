@@ -6,7 +6,7 @@
     /// Key event modifiers.
     /// </summary>
     [Flags]
-    public enum CefKeyEventModifiers
+    public enum CefKeyEventModifiers : int
     {
         Shift = 1 << 0,
         Ctrl = 1 << 1,
