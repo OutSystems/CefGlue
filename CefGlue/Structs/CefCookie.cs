@@ -26,8 +26,8 @@
                 {
                     Name = cef_string_t.ToString(&ptr->name),
                     Value = cef_string_t.ToString(&ptr->value),
-                    Domain = cef_string_t.ToString(&ptr->value),
-                    Path = cef_string_t.ToString(&ptr->value),
+                    Domain = cef_string_t.ToString(&ptr->domain),
+                    Path = cef_string_t.ToString(&ptr->path),
                     Secure = ptr->secure,
                     HttpOnly = ptr->httponly,
                     Creation = cef_time_t.ToDateTime(&ptr->creation),
