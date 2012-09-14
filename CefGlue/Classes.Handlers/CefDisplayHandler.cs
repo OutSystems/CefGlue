@@ -88,14 +88,14 @@ namespace Xilium.CefGlue
         }
 
 
-        private void on_status_message(cef_display_handler_t* self, cef_browser_t* browser, cef_string_t* value, CefStatusMessageType type)
+        private void on_status_message(cef_display_handler_t* self, cef_browser_t* browser, cef_string_t* value)
         {
             CheckSelf(self);
 
             var mBrowser = CefBrowser.FromNative(browser);
             var mValue = cef_string_t.ToString(value);
 
-            OnStatusMessage(mBrowser, mValue, type);
+            OnStatusMessage(mBrowser, mValue);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Xilium.CefGlue
         /// that will be displayed in the status message and |type| indicates the
         /// status message type.
         /// </summary>
-        protected virtual void OnStatusMessage(CefBrowser browser, string value, CefStatusMessageType type)
+        protected virtual void OnStatusMessage(CefBrowser browser, string value)
         {
         }
 

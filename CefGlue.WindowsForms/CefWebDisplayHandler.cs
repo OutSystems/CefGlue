@@ -27,9 +27,9 @@
             }
         }
 
-        protected override void OnStatusMessage(CefBrowser browser, string value, CefStatusMessageType type)
+        protected override void OnStatusMessage(CefBrowser browser, string value)
         {
-            _core.OnStatusMessage(value, type);
+            _core.OnStatusMessage(value);
         }
     }
 }

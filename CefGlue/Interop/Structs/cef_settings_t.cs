@@ -28,7 +28,7 @@ namespace Xilium.CefGlue.Interop
         public CefLogSeverity log_severity;
         public cef_string_t javascript_flags;
         public bool_t auto_detect_proxy_settings_enabled;
-        public cef_string_t pack_file_path;
+        public cef_string_t resources_dir_path;
         public cef_string_t locales_dir_path;
         public bool_t pack_loading_disabled;
         public int remote_debugging_port;

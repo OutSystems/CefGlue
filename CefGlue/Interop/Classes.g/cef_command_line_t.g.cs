@@ -19,6 +19,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _init_from_argv;
         internal IntPtr _init_from_string;
         internal IntPtr _reset;
+        internal IntPtr _get_argv;
         internal IntPtr _get_command_line_string;
         internal IntPtr _get_program;
         internal IntPtr _set_program;
@@ -93,6 +94,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate void reset_delegate(cef_command_line_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void get_argv_delegate(cef_command_line_t* self, cef_string_list* argv);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -319,206 +326,223 @@ namespace Xilium.CefGlue.Interop
             d(self);
         }
         
-        // GetCommandLineString
+        // GetArgv
         private static IntPtr _p9;
-        private static get_command_line_string_delegate _d9;
+        private static get_argv_delegate _d9;
+        
+        public static void get_argv(cef_command_line_t* self, cef_string_list* argv)
+        {
+            get_argv_delegate d;
+            var p = self->_get_argv;
+            if (p == _p9) { d = _d9; }
+            else
+            {
+                d = (get_argv_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_argv_delegate));
+                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
+            }
+            d(self, argv);
+        }
+        
+        // GetCommandLineString
+        private static IntPtr _pa;
+        private static get_command_line_string_delegate _da;
         
         public static cef_string_userfree* get_command_line_string(cef_command_line_t* self)
         {
             get_command_line_string_delegate d;
             var p = self->_get_command_line_string;
-            if (p == _p9) { d = _d9; }
-            else
-            {
-                d = (get_command_line_string_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_command_line_string_delegate));
-                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
-            }
-            return d(self);
-        }
-        
-        // GetProgram
-        private static IntPtr _pa;
-        private static get_program_delegate _da;
-        
-        public static cef_string_userfree* get_program(cef_command_line_t* self)
-        {
-            get_program_delegate d;
-            var p = self->_get_program;
             if (p == _pa) { d = _da; }
             else
             {
-                d = (get_program_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_program_delegate));
+                d = (get_command_line_string_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_command_line_string_delegate));
                 if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
             }
             return d(self);
         }
         
-        // SetProgram
+        // GetProgram
         private static IntPtr _pb;
-        private static set_program_delegate _db;
+        private static get_program_delegate _db;
+        
+        public static cef_string_userfree* get_program(cef_command_line_t* self)
+        {
+            get_program_delegate d;
+            var p = self->_get_program;
+            if (p == _pb) { d = _db; }
+            else
+            {
+                d = (get_program_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_program_delegate));
+                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
+            }
+            return d(self);
+        }
+        
+        // SetProgram
+        private static IntPtr _pc;
+        private static set_program_delegate _dc;
         
         public static void set_program(cef_command_line_t* self, cef_string_t* program)
         {
             set_program_delegate d;
             var p = self->_set_program;
-            if (p == _pb) { d = _db; }
+            if (p == _pc) { d = _dc; }
             else
             {
                 d = (set_program_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_program_delegate));
-                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
+                if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
             }
             d(self, program);
         }
         
         // HasSwitches
-        private static IntPtr _pc;
-        private static has_switches_delegate _dc;
+        private static IntPtr _pd;
+        private static has_switches_delegate _dd;
         
         public static int has_switches(cef_command_line_t* self)
         {
             has_switches_delegate d;
             var p = self->_has_switches;
-            if (p == _pc) { d = _dc; }
+            if (p == _pd) { d = _dd; }
             else
             {
                 d = (has_switches_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_switches_delegate));
-                if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
+                if (_pd == IntPtr.Zero) { _dd = d; _pd = p; }
             }
             return d(self);
         }
         
         // HasSwitch
-        private static IntPtr _pd;
-        private static has_switch_delegate _dd;
+        private static IntPtr _pe;
+        private static has_switch_delegate _de;
         
         public static int has_switch(cef_command_line_t* self, cef_string_t* name)
         {
             has_switch_delegate d;
             var p = self->_has_switch;
-            if (p == _pd) { d = _dd; }
-            else
-            {
-                d = (has_switch_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_switch_delegate));
-                if (_pd == IntPtr.Zero) { _dd = d; _pd = p; }
-            }
-            return d(self, name);
-        }
-        
-        // GetSwitchValue
-        private static IntPtr _pe;
-        private static get_switch_value_delegate _de;
-        
-        public static cef_string_userfree* get_switch_value(cef_command_line_t* self, cef_string_t* name)
-        {
-            get_switch_value_delegate d;
-            var p = self->_get_switch_value;
             if (p == _pe) { d = _de; }
             else
             {
-                d = (get_switch_value_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_switch_value_delegate));
+                d = (has_switch_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_switch_delegate));
                 if (_pe == IntPtr.Zero) { _de = d; _pe = p; }
             }
             return d(self, name);
         }
         
-        // GetSwitches
+        // GetSwitchValue
         private static IntPtr _pf;
-        private static get_switches_delegate _df;
+        private static get_switch_value_delegate _df;
+        
+        public static cef_string_userfree* get_switch_value(cef_command_line_t* self, cef_string_t* name)
+        {
+            get_switch_value_delegate d;
+            var p = self->_get_switch_value;
+            if (p == _pf) { d = _df; }
+            else
+            {
+                d = (get_switch_value_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_switch_value_delegate));
+                if (_pf == IntPtr.Zero) { _df = d; _pf = p; }
+            }
+            return d(self, name);
+        }
+        
+        // GetSwitches
+        private static IntPtr _p10;
+        private static get_switches_delegate _d10;
         
         public static void get_switches(cef_command_line_t* self, cef_string_map* switches)
         {
             get_switches_delegate d;
             var p = self->_get_switches;
-            if (p == _pf) { d = _df; }
+            if (p == _p10) { d = _d10; }
             else
             {
                 d = (get_switches_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_switches_delegate));
-                if (_pf == IntPtr.Zero) { _df = d; _pf = p; }
+                if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
             }
             d(self, switches);
         }
         
         // AppendSwitch
-        private static IntPtr _p10;
-        private static append_switch_delegate _d10;
+        private static IntPtr _p11;
+        private static append_switch_delegate _d11;
         
         public static void append_switch(cef_command_line_t* self, cef_string_t* name)
         {
             append_switch_delegate d;
             var p = self->_append_switch;
-            if (p == _p10) { d = _d10; }
+            if (p == _p11) { d = _d11; }
             else
             {
                 d = (append_switch_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(append_switch_delegate));
-                if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
+                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
             }
             d(self, name);
         }
         
         // AppendSwitchWithValue
-        private static IntPtr _p11;
-        private static append_switch_with_value_delegate _d11;
+        private static IntPtr _p12;
+        private static append_switch_with_value_delegate _d12;
         
         public static void append_switch_with_value(cef_command_line_t* self, cef_string_t* name, cef_string_t* value)
         {
             append_switch_with_value_delegate d;
             var p = self->_append_switch_with_value;
-            if (p == _p11) { d = _d11; }
+            if (p == _p12) { d = _d12; }
             else
             {
                 d = (append_switch_with_value_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(append_switch_with_value_delegate));
-                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
+                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
             }
             d(self, name, value);
         }
         
         // HasArguments
-        private static IntPtr _p12;
-        private static has_arguments_delegate _d12;
+        private static IntPtr _p13;
+        private static has_arguments_delegate _d13;
         
         public static int has_arguments(cef_command_line_t* self)
         {
             has_arguments_delegate d;
             var p = self->_has_arguments;
-            if (p == _p12) { d = _d12; }
+            if (p == _p13) { d = _d13; }
             else
             {
                 d = (has_arguments_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_arguments_delegate));
-                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
+                if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
             }
             return d(self);
         }
         
         // GetArguments
-        private static IntPtr _p13;
-        private static get_arguments_delegate _d13;
+        private static IntPtr _p14;
+        private static get_arguments_delegate _d14;
         
         public static void get_arguments(cef_command_line_t* self, cef_string_list* arguments)
         {
             get_arguments_delegate d;
             var p = self->_get_arguments;
-            if (p == _p13) { d = _d13; }
+            if (p == _p14) { d = _d14; }
             else
             {
                 d = (get_arguments_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_arguments_delegate));
-                if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
+                if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
             }
             d(self, arguments);
         }
         
         // AppendArgument
-        private static IntPtr _p14;
-        private static append_argument_delegate _d14;
+        private static IntPtr _p15;
+        private static append_argument_delegate _d15;
         
         public static void append_argument(cef_command_line_t* self, cef_string_t* argument)
         {
             append_argument_delegate d;
             var p = self->_append_argument;
-            if (p == _p14) { d = _d14; }
+            if (p == _p15) { d = _d15; }
             else
             {
                 d = (append_argument_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(append_argument_delegate));
-                if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
+                if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
             }
             d(self, argument);
         }

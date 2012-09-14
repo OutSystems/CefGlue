@@ -91,12 +91,12 @@
         public bool AutoDetectProxySettingsEnabled { get; set; }
 
         /// <summary>
-        /// The fully qualified path for the cef.pak file. If this value is empty
-        /// the cef.pak file must be located in the module directory. This value is
-        /// ignored on Mac OS X where pack files are always loaded from the app bundle
-        /// resource directory.
+        /// The fully qualified path for the resources directory. If this value is
+        /// empty the cef.pak and/or devtools_resources.pak files must be located in
+        /// the module directory on Windows/Linux or the app bundle Resources directory
+        /// on Mac OS X.
         /// </summary>
-        public string PackFilePath { get; set; }
+        public string ResourcesDirPath { get; set; }
 
         /// <summary>
         /// The fully qualified path for the locales directory. If this value is empty
@@ -138,7 +138,7 @@
             ptr->log_severity = LogSeverity;
             cef_string_t.Copy(JavaScriptFlags, &ptr->javascript_flags);
             ptr->auto_detect_proxy_settings_enabled = AutoDetectProxySettingsEnabled;
-            cef_string_t.Copy(PackFilePath, &ptr->pack_file_path);
+            cef_string_t.Copy(ResourcesDirPath, &ptr->resources_dir_path);
             cef_string_t.Copy(LocalesDirPath, &ptr->locales_dir_path);
             ptr->pack_loading_disabled = PackLoadingDisabled;
             ptr->remote_debugging_port = RemoteDebuggingPort;
@@ -154,7 +154,7 @@
             libcef.string_clear(&ptr->locale);
             libcef.string_clear(&ptr->log_file);
             libcef.string_clear(&ptr->javascript_flags);
-            libcef.string_clear(&ptr->pack_file_path);
+            libcef.string_clear(&ptr->resources_dir_path);
             libcef.string_clear(&ptr->locales_dir_path);
         }
 

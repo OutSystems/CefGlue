@@ -121,10 +121,10 @@
 
         public event EventHandler AddressChanged;
 
-        internal void OnStatusMessage(string value, CefStatusMessageType type)
+        internal void OnStatusMessage(string value)
         {
             var handler = StatusMessage;
-            if (handler != null) handler(this, new StatusMessageEventArgs(value, type));
+            if (handler != null) handler(this, new StatusMessageEventArgs(value));
         }
 
         public event EventHandler<StatusMessageEventArgs> StatusMessage;

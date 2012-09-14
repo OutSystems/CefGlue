@@ -193,7 +193,6 @@
     <Compile Include="Enums\CefValueType.cs" />
     <Compile Include="Enums\CefXmlEncodingType.cs" />
     <Compile Include="Enums\CefXmlNodeType.cs" />
-    <Compile Include="Enums\CefStatusMessageType.cs" />
     <Compile Include="Enums\CefProxyType.cs" />
     <Compile Include="Enums\CefJSDialogType.cs" />
     <Compile Include="Enums\CefMenuId.cs" />

@@ -89,6 +89,19 @@
         }
 
         /// <summary>
+        /// Retrieve the original command line string as a vector of strings.
+        /// The argv array: { program, [(--|-|/)switch[=value]]*, [--], [argument]* }
+        /// </summary>
+        public string[] GetArgv()
+        {
+            var list = libcef.string_list_alloc();
+            cef_command_line_t.get_argv(_self, list);
+            var result = cef_string_list.ToArray(list);
+            libcef.string_list_free(list);
+            return result;
+        }
+
+        /// <summary>
         /// Constructs and returns the represented command line string. Use this method
         /// cautiously because quoting behavior is unclear.
         /// </summary>

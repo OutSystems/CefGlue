@@ -159,7 +159,8 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Get the zoom level. This method can only be called on the UI thread.
+        /// Get the current zoom level. The default zoom level is 0.0. This method can
+        /// only be called on the UI thread.
         /// </summary>
         public double GetZoomLevel()
         {
@@ -167,7 +168,10 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Change the zoom level to the specified value.
+        /// Change the zoom level to the specified value. Specify 0.0 to reset the
+        /// zoom level. If called on the UI thread the change will be applied
+        /// immediately. Otherwise, the change will be applied asynchronously on the
+        /// UI thread.
         /// </summary>
         public void SetZoomLevel(double value)
         {
