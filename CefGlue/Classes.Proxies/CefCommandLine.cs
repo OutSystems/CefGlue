@@ -266,5 +266,19 @@
                 cef_command_line_t.append_argument(_self, &n_value);
             }
         }
+
+        /// <summary>
+        /// Insert a command before the current command.
+        /// Common for debuggers, like "valgrind" or "gdb --args".
+        /// </summary>
+        public void PrependWrapper(string wrapper)
+        {
+            fixed (char* wrapper_str = wrapper)
+            {
+                var n_wrapper = new cef_string_t(wrapper_str, wrapper.Length);
+
+                cef_command_line_t.prepend_wrapper(_self, &n_wrapper);
+            }
+        }
     }
 }

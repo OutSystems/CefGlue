@@ -18,6 +18,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_resource_bundle_handler;
         internal IntPtr _get_browser_process_handler;
         internal IntPtr _get_render_process_handler;
+        internal IntPtr _append_extra_command_line_switches;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -66,6 +67,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate cef_render_process_handler_t* get_render_process_handler_delegate(cef_app_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void append_extra_command_line_switches_delegate(cef_app_t* self, cef_command_line_t* command_line);
         
         private static int _sizeof;
         

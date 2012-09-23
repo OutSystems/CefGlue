@@ -38,7 +38,7 @@
     internal unsafe struct cef_main_args_t_posix
     {
         public int argc;
-        public byte** argv;
+        public IntPtr argv;
 
         #region Alloc & Free
         private static int _sizeof;

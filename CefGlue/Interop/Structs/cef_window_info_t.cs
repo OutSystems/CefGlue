@@ -2,7 +2,6 @@
 // This file manually written from:
 //     cef/include/internal/cef_types_win.h.
 //
-//
 namespace Xilium.CefGlue.Interop
 {
     using System;
@@ -95,7 +94,7 @@ namespace Xilium.CefGlue.Interop
 
         // NSView pointer for the new browser view.
         public IntPtr view;
-        
+
         #region Alloc & Free
         private static int _sizeof;
 

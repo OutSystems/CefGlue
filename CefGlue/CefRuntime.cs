@@ -72,13 +72,14 @@
         /// Loads CEF runtime.
         /// </summary>
         /// <exception cref="DllNotFoundException"></exception>
+        /// <exception cref="CefVersionMismatchException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         public static void Load()
         {
             if (_loaded) return;
 
             var rev = BuildRevision;
-            if (rev != libcef.CEF_REVISION) throw ExceptionBuilder.VersionMismatch(rev, libcef.CEF_REVISION);
+            if (rev != libcef.CEF_REVISION) throw ExceptionBuilder.RuntimeVersionMismatch(rev, libcef.CEF_REVISION);
 
             _loaded = true;
         }

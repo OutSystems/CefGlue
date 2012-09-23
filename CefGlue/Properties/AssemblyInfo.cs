@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Xilium CefGlue")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Xilium Software")]
+[assembly: AssemblyCompany("Xilium Project")]
 [assembly: AssemblyProduct("Xilium CefGlue")]
-[assembly: AssemblyCopyright("Copyright © Xilium Software 2012")]
+[assembly: AssemblyCopyright("Copyright © Xilium Project 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,11 +34,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("3.0.0.0")]
 [assembly: AssemblyFileVersion("3.0.0.0")]
-
-[assembly: InternalsVisibleTo("Xilium.CefGlue.Interop.Tests, PublicKey="
-    + "0024000004800000940000000602000000240000525341310004000001000100a3cd92d348dcf1"
-    + "8ecd658330726caf159cbb439f98811b2a0eaa4aa4e7c8b0ca1cf07b4f7704da2c5e187ec20837"
-    + "ca04a4da817cee0a937463614e6c6411475b9e5a03a7e8608f79979526b77976b7d48976d40fd5"
-    + "b70331366b06050c430e3b261473d0c28dc3a098b800957544bf3d5fae917a38b33281961e07fa"
-    + "01a6e188"
-    )]

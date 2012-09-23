@@ -32,6 +32,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _has_arguments;
         internal IntPtr _get_arguments;
         internal IntPtr _append_argument;
+        internal IntPtr _prepend_wrapper;
         
         // CreateCommandLine
         [DllImport(libcef.DllName, EntryPoint = "cef_command_line_create", CallingConvention = libcef.CEF_CALL)]
@@ -172,6 +173,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate void append_argument_delegate(cef_command_line_t* self, cef_string_t* argument);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void prepend_wrapper_delegate(cef_command_line_t* self, cef_string_t* wrapper);
         
         // AddRef
         private static IntPtr _p0;
@@ -545,6 +552,23 @@ namespace Xilium.CefGlue.Interop
                 if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
             }
             d(self, argument);
+        }
+        
+        // PrependWrapper
+        private static IntPtr _p16;
+        private static prepend_wrapper_delegate _d16;
+        
+        public static void prepend_wrapper(cef_command_line_t* self, cef_string_t* wrapper)
+        {
+            prepend_wrapper_delegate d;
+            var p = self->_prepend_wrapper;
+            if (p == _p16) { d = _d16; }
+            else
+            {
+                d = (prepend_wrapper_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(prepend_wrapper_delegate));
+                if (_p16 == IntPtr.Zero) { _d16 = d; _p16 = p; }
+            }
+            d(self, wrapper);
         }
         
     }

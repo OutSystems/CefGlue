@@ -20,7 +20,7 @@
                 MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 1;
             }
-            catch (CefVersionMismatchException ex)
+            catch (CefRuntimeException ex)
             {
                 MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 2;

@@ -108,21 +108,38 @@
 
         internal cef_window_info_t* ToNative()
         {
-            var ptr = cef_window_info_t_windows.Alloc();
+            switch (CefRuntime.Platform)
+            {
+                case CefRuntimePlatform.Windows:
+                    {
+                        var ptr = cef_window_info_t_windows.Alloc();
 
-            ptr->style = (uint)(WindowStyles.WS_CHILD
-                | WindowStyles.WS_CLIPCHILDREN
-                | WindowStyles.WS_CLIPSIBLINGS
-                | WindowStyles.WS_TABSTOP
-                | WindowStyles.WS_VISIBLE);
+                        ptr->style = (uint)(WindowStyles.WS_CHILD
+                            | WindowStyles.WS_CLIPCHILDREN
+                            | WindowStyles.WS_CLIPSIBLINGS
+                            | WindowStyles.WS_TABSTOP
+                            | WindowStyles.WS_VISIBLE);
 
-            ptr->parent_window = Parent;
-            ptr->x = 0;
-            ptr->y = 0;
-            ptr->width = 400;
-            ptr->height = 600;
+                        ptr->parent_window = Parent;
+                        ptr->x = 0;
+                        ptr->y = 0;
+                        ptr->width = 400;
+                        ptr->height = 600;
 
-            return (cef_window_info_t*)ptr;
+                        return (cef_window_info_t*)ptr;
+                    }
+
+                case CefRuntimePlatform.Linux:
+                    {
+                        var ptr = cef_window_info_t_linux.Alloc();
+                        ptr->parent_widget = Parent;
+                        return (cef_window_info_t*)ptr;
+                    }
+
+                case CefRuntimePlatform.MacOSX:
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         /*

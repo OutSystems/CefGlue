@@ -7,7 +7,7 @@
 
     internal static class ExceptionBuilder
     {
-        public static Exception VersionMismatch(int actual, int expected)
+        public static CefVersionMismatchException RuntimeVersionMismatch(int actual, int expected)
         {
             return new CefVersionMismatchException(string.Format(CultureInfo.InvariantCulture,
                 "CEF runtime version mismatch: loaded revision {0}, but supported {1}.",

@@ -115,5 +115,22 @@
         {
             return null;
         }
+
+
+        private void append_extra_command_line_switches(cef_app_t* self, cef_command_line_t* command_line)
+        {
+            CheckSelf(self);
+
+            var m_commandLine = CefCommandLine.FromNative(command_line);
+            AppendExtraCommandLineSwitches(m_commandLine);
+            m_commandLine.Dispose();
+        }
+
+        /// <summary>
+        /// Append extra command line switches.
+        /// </summary>
+        protected virtual void AppendExtraCommandLineSwitches(CefCommandLine commandLine)
+        {
+        }
     }
 }

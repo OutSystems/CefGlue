@@ -211,6 +211,7 @@
     <Compile Include="Enums\CefPathKey.cs" />
     <Compile Include="ExceptionBuilder.cs" />
     <Compile Include="Exceptions\CefVersionMismatchException.cs" />
+    <Compile Include="Exceptions\CefRuntimeException.cs" />
     <Compile Include="Interop\Base\bool_t.cs" />
     <Compile Include="Interop\Base\cefglue_userdata_t.cs" />
     <Compile Include="Interop\Base\cef_base_t.cs" />

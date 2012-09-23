@@ -36,6 +36,8 @@ namespace Xilium.CefGlue
                 var n_success = cef_browser_host_t.create_browser(n_windowInfo, n_client, &n_url, n_settings);
                 if (n_success != 1) throw ExceptionBuilder.FailedToCreateBrowser();
             }
+
+            // TODO: free n_ structs
         }
 
         public static void CreateBrowser(CefWindowInfo windowInfo, CefClient client, CefBrowserSettings settings, Uri url)
