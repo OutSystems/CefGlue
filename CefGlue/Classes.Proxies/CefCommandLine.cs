@@ -280,5 +280,21 @@
                 cef_command_line_t.prepend_wrapper(_self, &n_wrapper);
             }
         }
+
+        /// <summary>
+        /// Insert an argument to the beginning of the command line.
+        /// Unlike PrependWrapper this method doesn't strip argument by spaces.
+        /// </summary>
+        public void PrependArgument(string argument)
+        {
+            if (argument.IndexOf(' ') >= 0)
+            {
+                // When argument contains spaces, we just prepend command line with dummy wrapper
+                // and then replace it with actual argument.
+                PrependWrapper(".");
+                SetProgram(argument);
+            }
+            else PrependWrapper(argument);
+        }
     }
 }

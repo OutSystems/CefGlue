@@ -40,10 +40,8 @@
                     var path = new Uri(Assembly.GetEntryAssembly().CodeBase).LocalPath;
                     commandLine.SetProgram(path);
 
-                    commandLine.PrependWrapper("-");
-
                     var mono = CefRuntime.Platform == CefRuntimePlatform.Linux ? "/usr/bin/mono" : @"C:\Program Files\Mono-2.10.8\bin\monow.exe";
-                    commandLine.SetProgram(mono);
+                    commandLine.PrependArgument(mono);
 
                     commandLine.AppendSwitch("cefglue", "w");
                 }
