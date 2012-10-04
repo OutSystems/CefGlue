@@ -26,8 +26,10 @@ namespace Xilium.CefGlue
         private cef_request_handler_t.get_resource_handler_delegate _ds4;
         private cef_request_handler_t.on_resource_redirect_delegate _ds5;
         private cef_request_handler_t.get_auth_credentials_delegate _ds6;
-        private cef_request_handler_t.get_cookie_manager_delegate _ds7;
-        private cef_request_handler_t.on_protocol_execution_delegate _ds8;
+        private cef_request_handler_t.on_quota_request_delegate _ds7;
+        private cef_request_handler_t.get_cookie_manager_delegate _ds8;
+        private cef_request_handler_t.on_protocol_execution_delegate _ds9;
+        private cef_request_handler_t.on_before_plugin_load_delegate _dsa;
         
         protected CefRequestHandler()
         {
@@ -47,10 +49,14 @@ namespace Xilium.CefGlue
             _self->_on_resource_redirect = Marshal.GetFunctionPointerForDelegate(_ds5);
             _ds6 = new cef_request_handler_t.get_auth_credentials_delegate(get_auth_credentials);
             _self->_get_auth_credentials = Marshal.GetFunctionPointerForDelegate(_ds6);
-            _ds7 = new cef_request_handler_t.get_cookie_manager_delegate(get_cookie_manager);
-            _self->_get_cookie_manager = Marshal.GetFunctionPointerForDelegate(_ds7);
-            _ds8 = new cef_request_handler_t.on_protocol_execution_delegate(on_protocol_execution);
-            _self->_on_protocol_execution = Marshal.GetFunctionPointerForDelegate(_ds8);
+            _ds7 = new cef_request_handler_t.on_quota_request_delegate(on_quota_request);
+            _self->_on_quota_request = Marshal.GetFunctionPointerForDelegate(_ds7);
+            _ds8 = new cef_request_handler_t.get_cookie_manager_delegate(get_cookie_manager);
+            _self->_get_cookie_manager = Marshal.GetFunctionPointerForDelegate(_ds8);
+            _ds9 = new cef_request_handler_t.on_protocol_execution_delegate(on_protocol_execution);
+            _self->_on_protocol_execution = Marshal.GetFunctionPointerForDelegate(_ds9);
+            _dsa = new cef_request_handler_t.on_before_plugin_load_delegate(on_before_plugin_load);
+            _self->_on_before_plugin_load = Marshal.GetFunctionPointerForDelegate(_dsa);
         }
         
         ~CefRequestHandler()

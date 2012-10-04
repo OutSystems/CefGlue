@@ -89,5 +89,37 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_visit_web_plugin_info", CallingConvention = libcef.CEF_CALL)]
         public static extern void visit_web_plugin_info(cef_web_plugin_info_visitor_t* visitor);
         
+        // CefRefreshWebPlugins
+        [DllImport(libcef.DllName, EntryPoint = "cef_refresh_web_plugins", CallingConvention = libcef.CEF_CALL)]
+        public static extern void refresh_web_plugins();
+        
+        // CefAddWebPluginPath
+        [DllImport(libcef.DllName, EntryPoint = "cef_add_web_plugin_path", CallingConvention = libcef.CEF_CALL)]
+        public static extern void add_web_plugin_path(cef_string_t* path);
+        
+        // CefAddWebPluginDirectory
+        [DllImport(libcef.DllName, EntryPoint = "cef_add_web_plugin_directory", CallingConvention = libcef.CEF_CALL)]
+        public static extern void add_web_plugin_directory(cef_string_t* dir);
+        
+        // CefRemoveWebPluginPath
+        [DllImport(libcef.DllName, EntryPoint = "cef_remove_web_plugin_path", CallingConvention = libcef.CEF_CALL)]
+        public static extern void remove_web_plugin_path(cef_string_t* path);
+        
+        // CefUnregisterInternalWebPlugin
+        [DllImport(libcef.DllName, EntryPoint = "cef_unregister_internal_web_plugin", CallingConvention = libcef.CEF_CALL)]
+        public static extern void unregister_internal_web_plugin(cef_string_t* path);
+        
+        // CefForceWebPluginShutdown
+        [DllImport(libcef.DllName, EntryPoint = "cef_force_web_plugin_shutdown", CallingConvention = libcef.CEF_CALL)]
+        public static extern void force_web_plugin_shutdown(cef_string_t* path);
+        
+        // CefRegisterWebPluginCrash
+        [DllImport(libcef.DllName, EntryPoint = "cef_register_web_plugin_crash", CallingConvention = libcef.CEF_CALL)]
+        public static extern void register_web_plugin_crash(cef_string_t* path);
+        
+        // CefIsWebPluginUnstable
+        [DllImport(libcef.DllName, EntryPoint = "cef_is_web_plugin_unstable", CallingConvention = libcef.CEF_CALL)]
+        public static extern void is_web_plugin_unstable(cef_string_t* path, cef_web_plugin_unstable_callback_t* callback);
+        
     }
 }

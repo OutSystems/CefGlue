@@ -26,6 +26,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>
+    </DocumentationFile>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -83,6 +87,7 @@
     <Compile Include="Classes.g\CefPostDataElement.g.cs" />
     <Compile Include="Classes.g\CefProcessMessage.g.cs" />
     <Compile Include="Classes.g\CefProxyHandler.g.cs" />
+    <Compile Include="Classes.g\CefQuotaCallback.g.cs" />
     <Compile Include="Classes.g\CefReadHandler.g.cs" />
     <Compile Include="Classes.g\CefRenderProcessHandler.g.cs" />
     <Compile Include="Classes.g\CefRequest.g.cs" />
@@ -108,6 +113,7 @@
     <Compile Include="Classes.g\CefV8Value.g.cs" />
     <Compile Include="Classes.g\CefWebPluginInfo.g.cs" />
     <Compile Include="Classes.g\CefWebPluginInfoVisitor.g.cs" />
+    <Compile Include="Classes.g\CefWebPluginUnstableCallback.g.cs" />
     <Compile Include="Classes.g\CefWriteHandler.g.cs" />
     <Compile Include="Classes.g\CefXmlReader.g.cs" />
     <Compile Include="Classes.g\CefZipReader.g.cs" />
@@ -139,6 +145,7 @@
     <Compile Include="Classes.Handlers\CefV8Accessor.cs" />
     <Compile Include="Classes.Handlers\CefV8Handler.cs" />
     <Compile Include="Classes.Handlers\CefWebPluginInfoVisitor.cs" />
+    <Compile Include="Classes.Handlers\CefWebPluginUnstableCallback.cs" />
     <Compile Include="Classes.Handlers\CefWriteHandler.cs" />
     <Compile Include="Classes.Proxies\CefAuthCallback.cs" />
     <Compile Include="Classes.Proxies\CefBeforeDownloadCallback.cs" />
@@ -164,6 +171,7 @@
     <Compile Include="Classes.Proxies\CefPostData.cs" />
     <Compile Include="Classes.Proxies\CefPostDataElement.cs" />
     <Compile Include="Classes.Proxies\CefProcessMessage.cs" />
+    <Compile Include="Classes.Proxies\CefQuotaCallback.cs" />
     <Compile Include="Classes.Proxies\CefRequest.cs" />
     <Compile Include="Classes.Proxies\CefResponse.cs" />
     <Compile Include="Classes.Proxies\CefSchemeRegistrar.cs" />
@@ -235,6 +243,7 @@
     <Compile Include="Interop\Classes.g\cef_jsdialog_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_keyboard_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_menu_model_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_quota_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_scheme_registrar_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_urlrequest_client_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_urlrequest_t.g.cs" />
@@ -243,6 +252,7 @@
     <Compile Include="Interop\Classes.g\cef_v8stack_trace_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_web_plugin_info_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_web_plugin_info_visitor_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_web_plugin_unstable_callback_t.g.cs" />
     <Compile Include="Interop\Structs\cef_key_event_t.cs" />
     <Compile Include="Structs\CefCookie.cs" />
     <Compile Include="Structs\CefKeyEvent.cs" />
@@ -325,9 +335,7 @@
     <Compile Include="StringHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interop\Enums\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

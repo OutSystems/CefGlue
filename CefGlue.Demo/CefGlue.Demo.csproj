@@ -55,6 +55,7 @@
     <Compile Include="Browser\WebLifeSpanHandler.cs" />
     <Compile Include="Browser\WebBrowser.cs" />
     <Compile Include="Command.cs" />
+    <Compile Include="Common\DemoBrowserProcessHandler.cs" />
     <Compile Include="Common\DemoCefApp.cs" />
     <Compile Include="DemoApp.cs" />
     <Compile Include="IMainView.cs" />

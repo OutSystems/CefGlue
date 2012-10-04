@@ -25,13 +25,6 @@ namespace Xilium.CefGlue
         IOPending,
 
         /// <summary>
-        /// Request was successful but was handled by an external program, so there
-        /// is no response data. This usually means the current page should not be
-        /// navigated, but no error should be displayed.
-        /// </summary>
-        HandledExternally,
-
-        /// <summary>
         /// Request was canceled programatically.
         /// </summary>
         Canceled,

@@ -8,7 +8,7 @@ namespace Xilium.CefGlue
 
     /// <summary>
     /// Interface to implement for visiting web plugin information. The methods of
-    /// this class will be called on the UI thread.
+    /// this class will be called on the browser process UI thread.
     /// </summary>
     public abstract unsafe partial class CefWebPluginInfoVisitor
     {

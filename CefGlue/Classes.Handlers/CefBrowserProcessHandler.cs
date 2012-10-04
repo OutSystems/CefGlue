@@ -46,5 +46,23 @@ namespace Xilium.CefGlue
         protected virtual void OnContextInitialized()
         {
         }
+
+
+        private void on_before_child_process_launch(cef_browser_process_handler_t* self, cef_command_line_t* command_line)
+        {
+            CheckSelf(self);
+
+            var m_commandLine = CefCommandLine.FromNative(command_line);
+            OnBeforeChildProcessLaunch(m_commandLine);
+            m_commandLine.Dispose();
+        }
+
+        /// <summary>
+        /// Called on the browser process IO thread before a child process is launched.
+        /// Provides an opportunity to modify the child process command line.
+        /// </summary>
+        protected virtual void OnBeforeChildProcessLaunch(CefCommandLine commandLine)
+        {
+        }
     }
 }

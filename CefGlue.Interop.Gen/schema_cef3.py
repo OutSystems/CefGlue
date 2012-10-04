@@ -74,4 +74,6 @@ classdef = {
     'CefDownloadItemCallback': { 'role': ROLE_PROXY },
     'CefDownloadHandler': { 'role': ROLE_HANDLER },
     'CefDownloadItem': { 'role': ROLE_PROXY },
+    'CefQuotaCallback': { 'role': ROLE_PROXY },
+    'CefWebPluginUnstableCallback': { 'role': ROLE_HANDLER },
     }

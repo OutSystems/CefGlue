@@ -170,14 +170,6 @@ class CefApp : public virtual CefBase {
   virtual CefRefPtr<CefRenderProcessHandler> GetRenderProcessHandler() {
     return NULL;
   }
-
-  ///
-  // Append extra command line switches.
-  ///
-  /*--cef()--*/
-  virtual void AppendExtraCommandLineSwitches(
-      CefRefPtr<CefCommandLine> command_line) {
-  }
 };
 
 #endif  // CEF_INCLUDE_CEF_APP_H_
