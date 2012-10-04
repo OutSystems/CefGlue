@@ -11,33 +11,33 @@ namespace Xilium.CefGlue
     {
         /// <summary>
         /// Current directory.
-        /// <summary>
+        /// </summary>
         Current,
 
         /// <summary>
         /// Directory containing PK_FILE_EXE.
-        /// <summary>
+        /// </summary>
         DirExe,
 
         /// <summary>
-        // Directory containing PK_FILE_MODULE.
-        /// <summary>
+        /// Directory containing PK_FILE_MODULE.
+        /// </summary>
         DirModule,
 
         /// <summary>
-        // Temporary directory.
-        /// <summary>
+        /// Temporary directory.
+        /// </summary>
         DirTemp,
 
         /// <summary>
-        // Path and filename of the current executable.
-        /// <summary>
+        /// Path and filename of the current executable.
+        /// </summary>
         FileExe,
 
         /// <summary>
-        // Path and filename of the module containing the CEF code (usually the libcef
-        // module).
-        /// <summary>
+        /// Path and filename of the module containing the CEF code (usually the libcef
+        /// module).
+        /// </summary>
         FileModule,
     }
 }

@@ -51,7 +51,9 @@ namespace Xilium.CefGlue
         /// return false. The resource data will not be copied and must remain resident
         /// in memory. Supported resource IDs are listed in cef_pack_resources.h.
         /// </summary>
-        // protected abstract int GetDataResource(int resource_id, void** data, UIntPtr* data_size);
-
+        protected virtual bool GetDataResource(int resource_id, void** data, UIntPtr* data_size)
+        {
+            return false;
+        }
     }
 }

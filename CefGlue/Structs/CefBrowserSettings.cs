@@ -25,7 +25,7 @@
         }
 
 
-        /// The below values map to WebPreferences settings.
+        // The below values map to WebPreferences settings.
 
         /// <summary>
         /// Font settings.
@@ -283,7 +283,7 @@
         }
 
         /// <summary>
-        /// Set to <c>true</c> to disable hyperlink pings (<a ping> and window.sendPing).
+        /// Set to <c>true</c> to disable hyperlink pings (&lt;a ping&gt; and window.sendPing).
         /// </summary>
         public bool HyperlinkAuditingDisabled
         {
