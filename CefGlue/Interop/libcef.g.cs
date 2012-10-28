@@ -33,6 +33,10 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_quit_message_loop", CallingConvention = libcef.CEF_CALL)]
         public static extern void quit_message_loop();
         
+        // CefGetGeolocation
+        [DllImport(libcef.DllName, EntryPoint = "cef_get_geolocation", CallingConvention = libcef.CEF_CALL)]
+        public static extern int get_geolocation(cef_get_geolocation_callback_t* callback);
+        
         // CefAddCrossOriginWhitelistEntry
         [DllImport(libcef.DllName, EntryPoint = "cef_add_cross_origin_whitelist_entry", CallingConvention = libcef.CEF_CALL)]
         public static extern int add_cross_origin_whitelist_entry(cef_string_t* source_origin, cef_string_t* target_protocol, cef_string_t* target_domain, int allow_target_subdomains);
@@ -72,6 +76,18 @@ namespace Xilium.CefGlue.Interop
         // CefPostDelayedTask
         [DllImport(libcef.DllName, EntryPoint = "cef_post_delayed_task", CallingConvention = libcef.CEF_CALL)]
         public static extern int post_delayed_task(CefThreadId threadId, cef_task_t* task, long delay_ms);
+        
+        // CefBeginTracing
+        [DllImport(libcef.DllName, EntryPoint = "cef_begin_tracing", CallingConvention = libcef.CEF_CALL)]
+        public static extern int begin_tracing(cef_trace_client_t* client, cef_string_t* categories);
+        
+        // CefGetTraceBufferPercentFullAsync
+        [DllImport(libcef.DllName, EntryPoint = "cef_get_trace_buffer_percent_full_async", CallingConvention = libcef.CEF_CALL)]
+        public static extern int get_trace_buffer_percent_full_async();
+        
+        // CefEndTracingAsync
+        [DllImport(libcef.DllName, EntryPoint = "cef_end_tracing_async", CallingConvention = libcef.CEF_CALL)]
+        public static extern int end_tracing_async();
         
         // CefParseURL
         [DllImport(libcef.DllName, EntryPoint = "cef_parse_url", CallingConvention = libcef.CEF_CALL)]

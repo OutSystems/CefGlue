@@ -249,6 +249,14 @@
 
         #endregion
 
+        #region cef_geolocation
+
+        // TODO: CefGetGeolocation
+        // [DllImport(libcef.DllName, EntryPoint = "cef_get_geolocation", CallingConvention = libcef.CEF_CALL)]
+        // public static extern int get_geolocation(cef_get_geolocation_callback_t* callback);
+
+        #endregion
+
         #region cef_origin_whitelist
 
         /// <summary>
@@ -384,6 +392,23 @@
         }
 
         #endregion
+
+        #region cef_trace
+
+        // TODO: CefBeginTracing
+        //[DllImport(libcef.DllName, EntryPoint = "cef_begin_tracing", CallingConvention = libcef.CEF_CALL)]
+        //public static extern int begin_tracing(cef_trace_client_t* client, cef_string_t* categories);
+
+        // TODO: CefGetTraceBufferPercentFullAsync
+        //[DllImport(libcef.DllName, EntryPoint = "cef_get_trace_buffer_percent_full_async", CallingConvention = libcef.CEF_CALL)]
+        //public static extern int get_trace_buffer_percent_full_async();
+
+        // TODO: CefEndTracingAsync
+        //[DllImport(libcef.DllName, EntryPoint = "cef_end_tracing_async", CallingConvention = libcef.CEF_CALL)]
+        //public static extern int end_tracing_async();
+
+        #endregion
+
 
         #region cef_url
         // TODO: CefRuntime.ParseUrl

@@ -179,5 +179,32 @@ namespace Xilium.CefGlue
         {
             cef_browser_host_t.set_zoom_level(_self, value);
         }
+
+        /// <summary>
+        /// Call to run a file chooser dialog. Only a single file chooser dialog may be
+        /// pending at any given time. |mode| represents the type of dialog to display.
+        /// |title| to the title to be used for the dialog and may be empty to show the
+        /// default title ("Open" or "Save" depending on the mode). |default_file_name|
+        /// is the default file name to select in the dialog. |accept_types| is a list
+        /// of valid lower-cased MIME types or file extensions specified in an input
+        /// element and is used to restrict selectable files to such types. |callback|
+        /// will be executed after the dialog is dismissed or immediately if another
+        /// dialog is already pending. The dialog will be initiated asynchronously on
+        /// the UI thread.
+        /// </summary>
+        public void RunFileDialog(CefFileDialogMode mode, string title, string defaultFileName, string[] acceptTypes, CefRunFileDialogCallback callback)
+        {
+            fixed (char* title_ptr = title)
+            fixed (char* defaultFileName_ptr = defaultFileName)
+            {
+                var n_title = new cef_string_t(title_ptr, title != null ? title.Length : 0);
+                var n_defaultFileName = new cef_string_t(defaultFileName_ptr, defaultFileName != null ? defaultFileName.Length : 0);
+                var n_acceptTypes = cef_string_list.From(acceptTypes);
+
+                cef_browser_host_t.run_file_dialog(_self, mode, &n_title, &n_defaultFileName, n_acceptTypes, callback.ToNative());
+
+                libcef.string_list_free(n_acceptTypes);
+            }
+        }
     }
 }

@@ -76,4 +76,10 @@ classdef = {
     'CefDownloadItem': { 'role': ROLE_PROXY },
     'CefQuotaCallback': { 'role': ROLE_PROXY },
     'CefWebPluginUnstableCallback': { 'role': ROLE_HANDLER },
+    # R880
+    'CefRunFileDialogCallback': { 'role': ROLE_HANDLER },
+    'CefFileDialogCallback': { 'role': ROLE_PROXY },
+    'CefDialogHandler': { 'role': ROLE_HANDLER },
+    'CefGetGeolocationCallback': { 'role': ROLE_HANDLER },
+    'CefTraceClient': { 'role': ROLE_HANDLER },
     }

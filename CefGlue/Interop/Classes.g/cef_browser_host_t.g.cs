@@ -23,6 +23,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_dev_tools_url;
         internal IntPtr _get_zoom_level;
         internal IntPtr _set_zoom_level;
+        internal IntPtr _run_file_dialog;
         
         // CreateBrowser
         [DllImport(libcef.DllName, EntryPoint = "cef_browser_host_create_browser", CallingConvention = libcef.CEF_CALL)]
@@ -109,6 +110,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate void set_zoom_level_delegate(cef_browser_host_t* self, double zoomLevel);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void run_file_dialog_delegate(cef_browser_host_t* self, CefFileDialogMode mode, cef_string_t* title, cef_string_t* default_file_name, cef_string_list* accept_types, cef_run_file_dialog_callback_t* callback);
         
         // AddRef
         private static IntPtr _p0;
@@ -329,6 +336,23 @@ namespace Xilium.CefGlue.Interop
                 if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
             }
             d(self, zoomLevel);
+        }
+        
+        // RunFileDialog
+        private static IntPtr _pd;
+        private static run_file_dialog_delegate _dd;
+        
+        public static void run_file_dialog(cef_browser_host_t* self, CefFileDialogMode mode, cef_string_t* title, cef_string_t* default_file_name, cef_string_list* accept_types, cef_run_file_dialog_callback_t* callback)
+        {
+            run_file_dialog_delegate d;
+            var p = self->_run_file_dialog;
+            if (p == _pd) { d = _dd; }
+            else
+            {
+                d = (run_file_dialog_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(run_file_dialog_delegate));
+                if (_pd == IntPtr.Zero) { _dd = d; _pd = p; }
+            }
+            d(self, mode, title, default_file_name, accept_types, callback);
         }
         
     }

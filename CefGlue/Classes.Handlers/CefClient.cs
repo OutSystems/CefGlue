@@ -25,6 +25,23 @@ namespace Xilium.CefGlue
         }
 
 
+        private cef_dialog_handler_t* get_dialog_handler(cef_client_t* self)
+        {
+            CheckSelf(self);
+            var result = GetDialogHandler();
+            return result != null ? result.ToNative() : null;
+        }
+
+        /// <summary>
+        /// Return the handler for dialogs. If no handler is provided the default
+        /// implementation will be used.
+        /// </summary>
+        protected virtual CefDialogHandler GetDialogHandler()
+        {
+            return null;
+        }
+
+
         private cef_display_handler_t* get_display_handler(cef_client_t* self)
         {
             CheckSelf(self);

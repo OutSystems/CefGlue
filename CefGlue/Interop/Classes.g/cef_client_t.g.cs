@@ -14,6 +14,7 @@ namespace Xilium.CefGlue.Interop
     {
         internal cef_base_t _base;
         internal IntPtr _get_context_menu_handler;
+        internal IntPtr _get_dialog_handler;
         internal IntPtr _get_display_handler;
         internal IntPtr _get_download_handler;
         internal IntPtr _get_focus_handler;
@@ -48,6 +49,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate cef_context_menu_handler_t* get_context_menu_handler_delegate(cef_client_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate cef_dialog_handler_t* get_dialog_handler_delegate(cef_client_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

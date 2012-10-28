@@ -103,6 +103,8 @@ c2cs_enumtypes = {
     'cef_urlrequest_status_t': 'CefUrlRequestStatus',
     'cef_termination_status_t': 'CefTerminationStatus',
     'cef_path_key_t': 'CefPathKey',
+    'cef_file_dialog_mode_t': 'CefFileDialogMode',
+    'cef_geoposition_error_code_t': 'CefGeopositionErrorCode',
     }
 
 c2cs_structtypes = { }
