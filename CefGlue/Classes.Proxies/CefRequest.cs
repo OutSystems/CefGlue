@@ -2,6 +2,7 @@ namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Diagnostics;
     using System.Runtime.InteropServices;
     using Xilium.CefGlue.Interop;
@@ -94,30 +95,29 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Get the header values.
         /// </summary>
-        public void GetHeaderMap()
+        public NameValueCollection GetHeaderMap()
         {
             var headerMap = libcef.string_multimap_alloc();
             cef_request_t.get_header_map(_self, headerMap);
-            // var result = 0; // move to collection
+            var result = cef_string_multimap.ToNameValueCollection(headerMap);
             libcef.string_multimap_free(headerMap);
-            //return result;
-            throw new NotImplementedException(); // TODO: CefRequest.GetHeaderMap
+            return result;
         }
 
         /// <summary>
         /// Set the header values.
         /// </summary>
-        public void SetHeaderMap()
+        public void SetHeaderMap(NameValueCollection headers)
         {
-            throw new NotImplementedException(); // TODO: CefRequest.SetHeaderMap
-            cef_string_multimap* headerMap = null;
+            var headerMap = cef_string_multimap.From(headers);
             cef_request_t.set_header_map(_self, headerMap);
+            libcef.string_multimap_free(headerMap);
         }
 
         /// <summary>
         /// Set all values at one time.
         /// </summary>
-        public void Set(string url, string method, CefPostData postData) // , cef_string_multimap* headerMap)
+        public void Set(string url, string method, CefPostData postData, NameValueCollection headers)
         {
             fixed (char* url_str = url)
             fixed (char* method_str = method)
@@ -125,8 +125,9 @@ namespace Xilium.CefGlue
                 var n_url = new cef_string_t(url_str, url != null ? url.Length : 0);
                 var n_method = new cef_string_t(method_str, method_str != null ? method.Length : 0);
                 var n_postData = postData != null ? postData.ToNative() : null;
-                var n_headerMap = (cef_string_multimap*)null; // TODO: CefRequest.Set (headerMap)
+                var n_headerMap = cef_string_multimap.From(headers);
                 cef_request_t.set(_self, &n_url, &n_method, n_postData, n_headerMap);
+                libcef.string_multimap_free(n_headerMap);
             }
         }
 

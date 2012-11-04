@@ -2,6 +2,7 @@ namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Diagnostics;
     using System.Runtime.InteropServices;
     using Xilium.CefGlue.Interop;
@@ -97,19 +98,23 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Get all response header fields.
         /// </summary>
-        public void GetHeaderMap()
+        public NameValueCollection GetHeaderMap()
         {
-            // cef_response_t.get_header_map(_self, headerMap);
-            throw new NotImplementedException(); // TODO: CefResponse.GetHeaderMap
+            var headerMap = libcef.string_multimap_alloc();
+            cef_response_t.get_header_map(_self, headerMap);
+            var result = cef_string_multimap.ToNameValueCollection(headerMap);
+            libcef.string_multimap_free(headerMap);
+            return result;
         }
 
         /// <summary>
         /// Set all response header fields.
         /// </summary>
-        public void SetHeaderMap()
+        public void SetHeaderMap(NameValueCollection headers)
         {
-            // cef_response_t.set_header_map(_self, headerMap);
-            throw new NotImplementedException(); // TODO: CefResponse.SetHeaderMap
+            var headerMap = cef_string_multimap.From(headers);
+            cef_response_t.set_header_map(_self, headerMap);
+            libcef.string_multimap_free(headerMap);
         }
     }
 }
