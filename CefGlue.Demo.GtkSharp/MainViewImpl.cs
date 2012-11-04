@@ -145,5 +145,25 @@
         {
             Title = string.IsNullOrEmpty(title) ? _applicationTitle : title + " - " + _applicationTitle;
         }
+
+        private WebNavigationBox GetCurrentNavBox()
+        {
+            var widget = _tabs.CurrentPageWidget;
+            var container = (widget as Gtk.Container);
+            foreach (var w in container.Children)
+            {
+                if (w is WebNavigationBox)
+                {
+                    return (WebNavigationBox)w;
+                }
+            }
+            return null;
+        }
+
+        public void NavigateTo(string url)
+        {
+            var navBox = GetCurrentNavBox();
+            navBox.NavigateTo(url);
+        }
     }
 }

@@ -6,6 +6,8 @@
 
     public abstract class DemoApp : IDisposable
     {
+        private const string DumpRequestDomain = "dump-request.demoapp.cefglue.xilium.local";
+
         private IMainView _mainView;
 
         protected DemoApp()
@@ -69,6 +71,10 @@
 
             CefRuntime.Initialize(mainArgs, settings, app);
 
+            // register custom scheme handler
+            CefRuntime.RegisterSchemeHandlerFactory("http", DumpRequestDomain, new DemoAppSchemeHandlerFactory());
+            // CefRuntime.AddCrossOriginWhitelistEntry("http://localhost", "http", "", true);
+
             PlatformInitialize();
 
             var mainMenu = CreateMainMenu();
@@ -99,8 +105,8 @@
                     new MenuItem(new Command("Exit", FileExitCommand)),
                     }),
                 new MenuItem("Samples", new [] {
-                    new MenuItem("Hello, world #1"),
-                    new MenuItem("Hello, world #2"),
+                    new MenuItem(new Command("Scheme Handler: Dump Request", SchemeHandlerDumpRequestCommand)),
+                    // new MenuItem("Hello, world #2"),
                     }),
                 new MenuItem("Help", new [] {
                     new MenuItem(new Command("About", HelpAboutCommand)),
@@ -130,9 +136,14 @@
             MainView.Close();
         }
 
+        private void SchemeHandlerDumpRequestCommand(object sender, EventArgs e)
+        {
+            MainView.NavigateTo("http://" + DumpRequestDomain);
+        }
+
         private void HelpAboutCommand(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         #endregion

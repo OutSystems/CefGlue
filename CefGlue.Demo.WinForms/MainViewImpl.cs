@@ -131,5 +131,25 @@
         {
             Text = string.IsNullOrEmpty(title) ? _applicationTitle : title + " - " + _applicationTitle;
         }
+
+        private WebNavigationBox GetCurrentNavBox()
+        {
+            var tab = _tabs.SelectedTab;
+            if (tab == null) return null;
+            foreach (var c in tab.Controls)
+            {
+                if (c is WebNavigationBox)
+                {
+                    return (WebNavigationBox)c;
+                }
+            }
+            return null;
+        }
+
+        public void NavigateTo(string url)
+        {
+            var navBox = GetCurrentNavBox();
+            navBox.NavigateTo(url);
+        }
     }
 }

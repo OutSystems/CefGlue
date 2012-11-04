@@ -111,6 +111,16 @@
             _browser = browser;
         }
 
+        public void NavigateTo(string url)
+        {
+            if (_browser != null)
+            {
+                _browser.CefBrowser.StopLoad();
+                Address = url;
+                _browser.CefBrowser.GetMainFrame().LoadUrl(url);
+            }
+        }
+
         private void OnGoBack(object sender, EventArgs e)
         {
             if (_browser != null)

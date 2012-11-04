@@ -109,6 +109,16 @@
             }
         }
 
+        public void NavigateTo(string url)
+        {
+            if (_browser != null)
+            {
+                _browser.CefBrowser.StopLoad();
+                Address = url;
+                _browser.CefBrowser.GetMainFrame().LoadUrl(url);
+            }
+        }
+
         internal void Attach(WebBrowser browser)
         {
             _browser = browser;

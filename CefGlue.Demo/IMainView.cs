@@ -8,5 +8,7 @@
     {
         void NewTab(string url);
         void Close();
+
+        void NavigateTo(string url);
     }
 }
