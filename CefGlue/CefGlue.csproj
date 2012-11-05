@@ -229,6 +229,7 @@
     <Compile Include="Enums\CefUrlRequestStatus.cs" />
     <Compile Include="Enums\CefTerminationStatus.cs" />
     <Compile Include="Enums\CefPathKey.cs" />
+    <Compile Include="Enums\CefContextSafetyImplementation.cs" />
     <Compile Include="ExceptionBuilder.cs" />
     <Compile Include="Exceptions\CefVersionMismatchException.cs" />
     <Compile Include="Exceptions\CefRuntimeException.cs" />

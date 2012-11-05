@@ -35,6 +35,7 @@ c2cs_types = {
     'uint32': 'uint',
     'int64': 'long',
     'uint64': 'ulong',
+    'float': 'float',
     'double': 'double',
     'size_t': 'UIntPtr',
 
@@ -61,6 +62,7 @@ c2cs_types = {
     'cef_cookie_t': 'cef_cookie_t',
     'cef_settings_t': 'cef_settings_t',
     'cef_key_event_t': 'cef_key_event_t',
+    'cef_geoposition_t': 'cef_geoposition_t',
 
     # platform dependend structs
     'cef_main_args_t': 'cef_main_args_t',

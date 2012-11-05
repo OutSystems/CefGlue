@@ -32,6 +32,8 @@ namespace Xilium.CefGlue.Interop
         public cef_string_t locales_dir_path;
         public bool_t pack_loading_disabled;
         public int remote_debugging_port;
+        public int uncaught_exception_stack_size;
+        public int context_safety_implementation;
 
         #region Alloc & Free
         private static int _sizeof;

@@ -13,6 +13,7 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_v8stack_trace_t
     {
         internal cef_base_t _base;
+        internal IntPtr _is_valid;
         internal IntPtr _get_frame_count;
         internal IntPtr _get_frame;
         
@@ -37,6 +38,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int get_refct_delegate(cef_v8stack_trace_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate int is_valid_delegate(cef_v8stack_trace_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -101,36 +108,53 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetFrameCount
+        // IsValid
         private static IntPtr _p3;
-        private static get_frame_count_delegate _d3;
+        private static is_valid_delegate _d3;
         
-        public static int get_frame_count(cef_v8stack_trace_t* self)
+        public static int is_valid(cef_v8stack_trace_t* self)
         {
-            get_frame_count_delegate d;
-            var p = self->_get_frame_count;
+            is_valid_delegate d;
+            var p = self->_is_valid;
             if (p == _p3) { d = _d3; }
             else
             {
-                d = (get_frame_count_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_count_delegate));
+                d = (is_valid_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_valid_delegate));
                 if (_p3 == IntPtr.Zero) { _d3 = d; _p3 = p; }
             }
             return d(self);
         }
         
-        // GetFrame
+        // GetFrameCount
         private static IntPtr _p4;
-        private static get_frame_delegate _d4;
+        private static get_frame_count_delegate _d4;
+        
+        public static int get_frame_count(cef_v8stack_trace_t* self)
+        {
+            get_frame_count_delegate d;
+            var p = self->_get_frame_count;
+            if (p == _p4) { d = _d4; }
+            else
+            {
+                d = (get_frame_count_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_count_delegate));
+                if (_p4 == IntPtr.Zero) { _d4 = d; _p4 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetFrame
+        private static IntPtr _p5;
+        private static get_frame_delegate _d5;
         
         public static cef_v8stack_frame_t* get_frame(cef_v8stack_trace_t* self, int index)
         {
             get_frame_delegate d;
             var p = self->_get_frame;
-            if (p == _p4) { d = _d4; }
+            if (p == _p5) { d = _d5; }
             else
             {
                 d = (get_frame_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_delegate));
-                if (_p4 == IntPtr.Zero) { _d4 = d; _p4 = p; }
+                if (_p5 == IntPtr.Zero) { _d5 = d; _p5 = p; }
             }
             return d(self, index);
         }

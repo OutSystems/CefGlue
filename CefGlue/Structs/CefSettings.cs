@@ -122,6 +122,33 @@
         /// </summary>
         public int RemoteDebuggingPort { get; set; }
 
+        /// <summary>
+        /// The number of stack trace frames to capture for uncaught exceptions.
+        /// Specify a positive value to enable the CefV8ContextHandler::
+        /// OnUncaughtException() callback. Specify 0 (default value) and
+        /// OnUncaughtException() will not be called.
+        /// </summary>
+        public int UncaughtExceptionStackSize { get; set; }
+
+        /// <summary>
+        /// By default CEF V8 references will be invalidated (the IsValid() method will
+        /// return false) after the owning context has been released. This reduces the
+        /// need for external record keeping and avoids crashes due to the use of V8
+        /// references after the associated context has been released.
+        ///
+        /// CEF currently offers two context safety implementations with different
+        /// performance characteristics. The default implementation (value of 0) uses a
+        /// map of hash values and should provide better performance in situations with
+        /// a small number contexts. The alternate implementation (value of 1) uses a
+        /// hidden value attached to each context and should provide better performance
+        /// in situations with a large number of contexts.
+        ///
+        /// If you need better performance in the creation of V8 references and you
+        /// plan to manually track context lifespan you can disable context safety by
+        /// specifying a value of -1.
+        /// </summary>
+        public CefContextSafetyImplementation ContextSafetyImplementation { get; set; }
+
 
         internal cef_settings_t* ToNative()
         {
@@ -142,6 +169,8 @@
             cef_string_t.Copy(LocalesDirPath, &ptr->locales_dir_path);
             ptr->pack_loading_disabled = PackLoadingDisabled;
             ptr->remote_debugging_port = RemoteDebuggingPort;
+            ptr->uncaught_exception_stack_size = UncaughtExceptionStackSize;
+            ptr->context_safety_implementation = (int)ContextSafetyImplementation;
             return ptr;
         }
 

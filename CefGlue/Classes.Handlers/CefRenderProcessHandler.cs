@@ -115,6 +115,29 @@ namespace Xilium.CefGlue
         }
 
 
+        private void on_uncaught_exception(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8context_t* context, cef_v8exception_t* exception, cef_v8stack_trace_t* stackTrace)
+        {
+            CheckSelf(self);
+
+            var mBrowser = CefBrowser.FromNative(browser);
+            var mFrame = CefFrame.FromNative(frame);
+            var mContext = CefV8Context.FromNative(context);
+            var mException = CefV8Exception.FromNative(exception);
+            var mStackTrace = CefV8StackTrace.FromNative(stackTrace);
+
+            OnUncaughtException(mBrowser, mFrame, mContext, mException, mStackTrace);
+        }
+
+        /// <summary>
+        /// Called for global uncaught exceptions. Execution of this callback is
+        /// disabled by default. To enable set
+        /// CefSettings.UncaughtExceptionStackSize &gt; 0.
+        /// </summary>
+        protected virtual void OnUncaughtException(CefBrowser browser, CefFrame frame, CefV8Context context, CefV8Exception exception, CefV8StackTrace stackTrace)
+        {
+        }
+
+
         private void on_focused_node_changed(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_domnode_t* node)
         {
             CheckSelf(self);

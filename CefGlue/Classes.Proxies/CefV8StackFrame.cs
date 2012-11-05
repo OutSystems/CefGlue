@@ -13,6 +13,15 @@ namespace Xilium.CefGlue
     public sealed unsafe partial class CefV8StackFrame
     {
         /// <summary>
+        /// Returns true if this object is valid. Do not call any other methods if this
+        /// method returns false.
+        /// </summary>
+        public bool IsValid
+        {
+            get { return cef_v8stack_frame_t.is_valid(_self) != 0; }
+        }
+
+        /// <summary>
         /// Returns the name of the resource script that contains the function.
         /// </summary>
         public string ScriptName

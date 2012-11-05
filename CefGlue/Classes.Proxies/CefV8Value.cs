@@ -147,6 +147,15 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
+        /// Returns true if this object is valid. Do not call any other methods if this
+        /// method returns false.
+        /// </summary>
+        public bool IsValid
+        {
+            get { return cef_v8value_t.is_valid(_self) != 0; }
+        }
+
+        /// <summary>
         /// True if the value type is undefined.
         /// </summary>
         public bool IsUndefined
