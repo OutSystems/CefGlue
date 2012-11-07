@@ -407,6 +407,8 @@
         //[DllImport(libcef.DllName, EntryPoint = "cef_end_tracing_async", CallingConvention = libcef.CEF_CALL)]
         //public static extern int end_tracing_async();
 
+        // TODO: functions from cef_trace_event.h (not generated automatically)
+
         #endregion
 
 

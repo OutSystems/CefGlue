@@ -29,7 +29,6 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_suggested_file_name;
         internal IntPtr _get_content_disposition;
         internal IntPtr _get_mime_type;
-        internal IntPtr _get_referrer_charset;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -144,12 +143,6 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate cef_string_userfree* get_mime_type_delegate(cef_download_item_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        private delegate cef_string_userfree* get_referrer_charset_delegate(cef_download_item_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -470,23 +463,6 @@ namespace Xilium.CefGlue.Interop
             {
                 d = (get_mime_type_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_mime_type_delegate));
                 if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
-            }
-            return d(self);
-        }
-        
-        // GetReferrerCharset
-        private static IntPtr _p13;
-        private static get_referrer_charset_delegate _d13;
-        
-        public static cef_string_userfree* get_referrer_charset(cef_download_item_t* self)
-        {
-            get_referrer_charset_delegate d;
-            var p = self->_get_referrer_charset;
-            if (p == _p13) { d = _d13; }
-            else
-            {
-                d = (get_referrer_charset_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_referrer_charset_delegate));
-                if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
             }
             return d(self);
         }

@@ -168,17 +168,5 @@ namespace Xilium.CefGlue
                 return cef_string_userfree.ToString(n_result);
             }
         }
-
-        /// <summary>
-        /// Returns the referrer character set.
-        /// </summary>
-        public string ReferrerCharset
-        {
-            get
-            {
-                var n_result = cef_download_item_t.get_referrer_charset(_self);
-                return cef_string_userfree.ToString(n_result);
-            }
-        }
     }
 }
