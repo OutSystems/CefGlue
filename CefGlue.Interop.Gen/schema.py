@@ -107,6 +107,7 @@ c2cs_enumtypes = {
     'cef_path_key_t': 'CefPathKey',
     'cef_file_dialog_mode_t': 'CefFileDialogMode',
     'cef_geoposition_error_code_t': 'CefGeopositionErrorCode',
+    'cef_navigation_type_t': 'CefNavigationType',
     }
 
 c2cs_structtypes = { }

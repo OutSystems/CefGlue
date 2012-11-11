@@ -26,11 +26,12 @@ namespace Xilium.CefGlue
         private cef_render_process_handler_t.on_web_kit_initialized_delegate _ds4;
         private cef_render_process_handler_t.on_browser_created_delegate _ds5;
         private cef_render_process_handler_t.on_browser_destroyed_delegate _ds6;
-        private cef_render_process_handler_t.on_context_created_delegate _ds7;
-        private cef_render_process_handler_t.on_context_released_delegate _ds8;
-        private cef_render_process_handler_t.on_uncaught_exception_delegate _ds9;
-        private cef_render_process_handler_t.on_focused_node_changed_delegate _dsa;
-        private cef_render_process_handler_t.on_process_message_received_delegate _dsb;
+        private cef_render_process_handler_t.on_before_navigation_delegate _ds7;
+        private cef_render_process_handler_t.on_context_created_delegate _ds8;
+        private cef_render_process_handler_t.on_context_released_delegate _ds9;
+        private cef_render_process_handler_t.on_uncaught_exception_delegate _dsa;
+        private cef_render_process_handler_t.on_focused_node_changed_delegate _dsb;
+        private cef_render_process_handler_t.on_process_message_received_delegate _dsc;
         
         protected CefRenderProcessHandler()
         {
@@ -50,16 +51,18 @@ namespace Xilium.CefGlue
             _self->_on_browser_created = Marshal.GetFunctionPointerForDelegate(_ds5);
             _ds6 = new cef_render_process_handler_t.on_browser_destroyed_delegate(on_browser_destroyed);
             _self->_on_browser_destroyed = Marshal.GetFunctionPointerForDelegate(_ds6);
-            _ds7 = new cef_render_process_handler_t.on_context_created_delegate(on_context_created);
-            _self->_on_context_created = Marshal.GetFunctionPointerForDelegate(_ds7);
-            _ds8 = new cef_render_process_handler_t.on_context_released_delegate(on_context_released);
-            _self->_on_context_released = Marshal.GetFunctionPointerForDelegate(_ds8);
-            _ds9 = new cef_render_process_handler_t.on_uncaught_exception_delegate(on_uncaught_exception);
-            _self->_on_uncaught_exception = Marshal.GetFunctionPointerForDelegate(_ds9);
-            _dsa = new cef_render_process_handler_t.on_focused_node_changed_delegate(on_focused_node_changed);
-            _self->_on_focused_node_changed = Marshal.GetFunctionPointerForDelegate(_dsa);
-            _dsb = new cef_render_process_handler_t.on_process_message_received_delegate(on_process_message_received);
-            _self->_on_process_message_received = Marshal.GetFunctionPointerForDelegate(_dsb);
+            _ds7 = new cef_render_process_handler_t.on_before_navigation_delegate(on_before_navigation);
+            _self->_on_before_navigation = Marshal.GetFunctionPointerForDelegate(_ds7);
+            _ds8 = new cef_render_process_handler_t.on_context_created_delegate(on_context_created);
+            _self->_on_context_created = Marshal.GetFunctionPointerForDelegate(_ds8);
+            _ds9 = new cef_render_process_handler_t.on_context_released_delegate(on_context_released);
+            _self->_on_context_released = Marshal.GetFunctionPointerForDelegate(_ds9);
+            _dsa = new cef_render_process_handler_t.on_uncaught_exception_delegate(on_uncaught_exception);
+            _self->_on_uncaught_exception = Marshal.GetFunctionPointerForDelegate(_dsa);
+            _dsb = new cef_render_process_handler_t.on_focused_node_changed_delegate(on_focused_node_changed);
+            _self->_on_focused_node_changed = Marshal.GetFunctionPointerForDelegate(_dsb);
+            _dsc = new cef_render_process_handler_t.on_process_message_received_delegate(on_process_message_received);
+            _self->_on_process_message_received = Marshal.GetFunctionPointerForDelegate(_dsc);
         }
         
         ~CefRenderProcessHandler()
