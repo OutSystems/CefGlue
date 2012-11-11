@@ -71,7 +71,9 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Called before a browser is destroyed.
         /// </summary>
-        protected abstract void OnBrowserDestroyed(CefBrowser browser);
+        protected virtual void OnBrowserDestroyed(CefBrowser browser)
+        {
+        }
 
 
         private int on_before_navigation(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_request_t* request, CefNavigationType navigation_type, int is_redirect)

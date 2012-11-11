@@ -9,6 +9,7 @@
     internal sealed class DemoCefApp : CefApp
     {
         private CefBrowserProcessHandler _browserProcessHandler = new DemoBrowserProcessHandler();
+        private CefRenderProcessHandler _renderProcessHandler = new DemoRenderProcessHandler();
 
         protected override void OnBeforeCommandLineProcessing(string processType, CefCommandLine commandLine)
         {
@@ -31,6 +32,11 @@
         protected override CefBrowserProcessHandler GetBrowserProcessHandler()
         {
             return _browserProcessHandler;
+        }
+
+        protected override CefRenderProcessHandler GetRenderProcessHandler()
+        {
+            return _renderProcessHandler;
         }
     }
 }
