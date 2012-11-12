@@ -36,5 +36,11 @@
         {
             _core.OnTargetUrlChanged(value);
         }
+
+        protected override bool OnTooltip(CefBrowser browser, string text)
+        {
+        	Console.WriteLine("OnTooltip: {0}", text);
+        	return false;
+        }
     }
 }
