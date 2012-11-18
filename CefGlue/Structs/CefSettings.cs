@@ -5,6 +5,11 @@
     using System.Text;
     using Xilium.CefGlue.Interop;
 
+    /// <summary>
+    /// Initialization settings. Specify <c>null</c> or 0 to get the recommended default
+    /// values. Many of these and other settings can also configured using command-
+    /// line flags.
+    /// </summary>
     public sealed unsafe class CefSettings
     {
         /// <summary>

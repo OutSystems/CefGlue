@@ -5,6 +5,12 @@
     using System.Text;
     using Xilium.CefGlue.Interop;
 
+    /// <summary>
+    /// Browser initialization settings. Specify <c>null</c> or 0 to get the recommended
+    /// default values. The consequences of using custom values may not be well
+    /// tested. Many of these and other settings can also configured using command-
+    /// line flags.
+    /// </summary>
     public sealed unsafe class CefBrowserSettings
     {
         private cef_browser_settings_t* _self;
@@ -394,24 +400,6 @@
         }
 
         /// <summary>
-        /// Set to <c>true</c> to enable accelerated painting.
-        /// </summary>
-        public bool AcceleratedPaintingEnabled
-        {
-            get { return _self->accelerated_painting_enabled; }
-            set { _self->accelerated_painting_enabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to enable accelerated filters.
-        /// </summary>
-        public bool AcceleratedFiltersEnabled
-        {
-            get { return _self->accelerated_filters_enabled; }
-            set { _self->accelerated_filters_enabled = value; }
-        }
-
-        /// <summary>
         /// Set to <c>true</c> to disable accelerated plugins.
         /// </summary>
         public bool AcceleratedPluginsDisabled
@@ -427,15 +415,6 @@
         {
             get { return _self->developer_tools_disabled; }
             set { _self->developer_tools_disabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to enable fullscreen mode.
-        /// </summary>
-        public bool FullscreenEnabled
-        {
-            get { return _self->fullscreen_enabled; }
-            set { _self->fullscreen_enabled = value; }
         }
 
 

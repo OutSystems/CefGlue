@@ -53,11 +53,8 @@ namespace Xilium.CefGlue.Interop
         public bool_t accelerated_layers_disabled;
         public bool_t accelerated_video_disabled;
         public bool_t accelerated_2d_canvas_disabled;
-        public bool_t accelerated_painting_enabled;
-        public bool_t accelerated_filters_enabled;
         public bool_t accelerated_plugins_disabled;
         public bool_t developer_tools_disabled;
-        public bool_t fullscreen_enabled;
 
         #region Alloc & Free
         private static int _sizeof;
