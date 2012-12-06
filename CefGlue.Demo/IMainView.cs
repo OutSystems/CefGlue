@@ -10,5 +10,7 @@
         void Close();
 
         void NavigateTo(string url);
+
+        CefBrowser CurrentBrowser { get; }
     }
 }

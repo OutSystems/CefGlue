@@ -106,7 +106,7 @@
                     }),
                 new MenuItem("Samples", new [] {
                     new MenuItem(new Command("Scheme Handler: Dump Request", SchemeHandlerDumpRequestCommand)),
-                    // new MenuItem("Hello, world #2"),
+                    new MenuItem(new Command("Send Process Message", SendProcessMessageCommand)),
                     }),
                 new MenuItem("Help", new [] {
                     new MenuItem(new Command("About", HelpAboutCommand)),
@@ -139,6 +139,22 @@
         private void SchemeHandlerDumpRequestCommand(object sender, EventArgs e)
         {
             MainView.NavigateTo("http://" + DumpRequestDomain);
+        }
+
+        private void SendProcessMessageCommand(object sender, EventArgs e)
+        {
+            var browser = MainView.CurrentBrowser;
+            if (browser != null)
+            {
+                var message = CefProcessMessage.Create("myMessage1");
+                var arguments = message.Arguments;
+                arguments.SetString(0, "hello");
+                arguments.SetInt(1, 12345);
+                arguments.SetDouble(2, 12345.6789);
+                arguments.SetBool(3, true);
+
+                browser.SendProcessMessage(CefProcessId.Renderer, message);
+            }
         }
 
         private void HelpAboutCommand(object sender, EventArgs e)

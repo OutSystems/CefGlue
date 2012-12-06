@@ -165,5 +165,15 @@
             var navBox = GetCurrentNavBox();
             navBox.NavigateTo(url);
         }
+
+        public CefBrowser CurrentBrowser
+        {
+            get
+            {
+                var navBox = GetCurrentNavBox();
+                if (navBox == null) return null;
+                return navBox.GetBrowser();
+            }
+        }
     }
 }

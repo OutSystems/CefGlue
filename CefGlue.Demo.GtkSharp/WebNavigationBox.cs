@@ -171,5 +171,10 @@
                 _browser.CefBrowser.GetMainFrame().LoadUrl(_addressEntry.Text);
             }
         }
+
+        public CefBrowser GetBrowser()
+        {
+            return _browser.CefBrowser;
+        }
     }
 }
