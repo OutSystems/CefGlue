@@ -58,10 +58,34 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Called on the browser process IO thread before a child process is launched.
-        /// Provides an opportunity to modify the child process command line.
+        /// Called before a child process is launched. Will be called on the browser
+        /// process UI thread when launching a render process and on the browser
+        /// process IO thread when launching a GPU or plugin process. Provides an
+        /// opportunity to modify the child process command line. Do not keep a
+        /// reference to |command_line| outside of this method.
         /// </summary>
         protected virtual void OnBeforeChildProcessLaunch(CefCommandLine commandLine)
+        {
+        }
+
+
+        private void on_render_process_thread_created(cef_browser_process_handler_t* self, cef_list_value_t* extra_info)
+        {
+            CheckSelf(self);
+
+            var mExtraInfo = CefListValue.FromNative(extra_info);
+            OnRenderProcessThreadCreated(mExtraInfo);
+            mExtraInfo.Dispose();
+        }
+
+        /// <summary>
+        /// Called on the browser process IO thread after the main thread has been
+        /// created for a new render process. Provides an opportunity to specify extra
+        /// information that will be passed to
+        /// CefRenderProcessHandler::OnRenderThreadCreated() in the render process. Do
+        /// not keep a reference to |extra_info| outside of this method.
+        /// </summary>
+        protected virtual void OnRenderProcessThreadCreated(CefListValue extraInfo)
         {
         }
     }
