@@ -206,5 +206,94 @@ namespace Xilium.CefGlue
                 libcef.string_list_free(n_acceptTypes);
             }
         }
+
+        /// <summary>
+        /// Returns true if window rendering is disabled.
+        /// </summary>
+        public bool IsWindowRenderingDisabled
+        {
+            get
+            {
+                return cef_browser_host_t.is_window_rendering_disabled(_self) != 0;
+            }
+        }
+
+        /// <summary>
+        /// Notify the browser that the widget has been resized. The browser will first
+        /// call CefRenderHandler::GetViewRect to get the new size and then call
+        /// CefRenderHandler::OnPaint asynchronously with the updated regions. This
+        /// method is only used when window rendering is disabled.
+        /// </summary>
+        public void WasResized()
+        {
+            cef_browser_host_t.was_resized(_self);
+        }
+
+        /// <summary>
+        /// Invalidate the |dirtyRect| region of the view. The browser will call
+        /// CefRenderHandler::OnPaint asynchronously with the updated regions. This
+        /// method is only used when window rendering is disabled.
+        /// </summary>
+        public void Invalidate(CefRectangle dirtyRect)
+        {
+            var n_dirtyRect = new cef_rect_t(dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height);
+            cef_browser_host_t.invalidate(_self, &n_dirtyRect);
+        }
+
+        /// <summary>
+        /// Send a key event to the browser.
+        /// </summary>
+        public void SendKeyEvent(CefKeyEvent keyEvent)
+        {
+            // TODO: use CefKeyEvent 
+            var n_event = new cef_key_event_t();
+            var todo = new CefKeyEvent(&n_event);
+            todo.Dispose();
+            cef_browser_host_t.send_key_event(_self, &n_event);
+        }
+
+        /// <summary>
+        /// Send a mouse click event to the browser. The |x| and |y| coordinates are
+        /// relative to the upper-left corner of the view.
+        /// </summary>
+        public void SendMouseClickEvent(int x, int y, CefMouseButtonType type, bool mouseUp, int clickCount)
+        {
+            cef_browser_host_t.send_mouse_click_event(_self, x, y, type, mouseUp ? 1 : 0, clickCount);
+        }
+
+        /// <summary>
+        /// Send a mouse move event to the browser. The |x| and |y| coordinates are
+        /// relative to the upper-left corner of the view.
+        /// </summary>
+        public void SendMouseMoveEvent(int x, int y, bool mouseLeave)
+        {
+            cef_browser_host_t.send_mouse_move_event(_self, x, y, mouseLeave ? 1 : 0);
+        }
+
+        /// <summary>
+        /// Send a mouse wheel event to the browser. The |x| and |y| coordinates are
+        /// relative to the upper-left corner of the view. The |deltaX| and |deltaY|
+        /// values represent the movement delta in the X and Y directions respectively.
+        /// </summary>
+        public void SendMouseWheelEvent(int x, int y, int deltaX, int deltaY)
+        {
+            cef_browser_host_t.send_mouse_wheel_event(_self, x, y, deltaX, deltaY);
+        }
+
+        /// <summary>
+        /// Send a focus event to the browser.
+        /// </summary>
+        public void SendFocusEvent(bool setFocus)
+        {
+            cef_browser_host_t.send_focus_event(_self, setFocus ? 1 : 0);
+        }
+
+        /// <summary>
+        /// Send a capture lost event to the browser.
+        /// </summary>
+        public void SendCaptureLostEvent()
+        {
+            cef_browser_host_t.send_capture_lost_event(_self);
+        }
     }
 }

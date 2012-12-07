@@ -81,6 +81,8 @@ namespace Xilium.CefGlue
         /// text that will be displayed in the tooltip. To handle the display of the
         /// tooltip yourself return true. Otherwise, you can optionally modify |text|
         /// and then return false to allow the browser to display the tooltip.
+        /// When window rendering is disabled the application is responsible for
+        /// drawing tooltips and the return value is ignored.
         /// </summary>
         protected virtual bool OnTooltip(CefBrowser browser, string text)
         {

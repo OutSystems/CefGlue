@@ -181,6 +181,23 @@ namespace Xilium.CefGlue
         }
 
 
+        private cef_render_handler_t* get_render_handler(cef_client_t* self)
+        {
+            CheckSelf(self);
+
+            var result = GetRenderHandler();
+            return result != null ? result.ToNative() : null;
+        }
+
+        /// <summary>
+        /// Return the handler for off-screen rendering events.
+        /// </summary>
+        protected virtual CefRenderHandler GetRenderHandler()
+        {
+            return null;
+        }
+
+
         private cef_request_handler_t* get_request_handler(cef_client_t* self)
         {
             CheckSelf(self);

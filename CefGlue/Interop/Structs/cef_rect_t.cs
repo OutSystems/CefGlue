@@ -13,5 +13,13 @@ namespace Xilium.CefGlue.Interop
         public int y;
         public int width;
         public int height;
+
+        public cef_rect_t(int x, int y, int width, int height)
+        {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
     }
 }

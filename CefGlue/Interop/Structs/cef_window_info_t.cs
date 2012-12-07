@@ -25,8 +25,14 @@ namespace Xilium.CefGlue.Interop
         public IntPtr parent_window;
         public IntPtr menu;
 
+        // If window rendering is disabled no browser window will be created. Set
+        // |parent_window| to be used for identifying monitor info
+        // (MonitorFromWindow). If |parent_window| is not provided the main screen
+        // monitor will be used.
+        public int window_rendering_disabled;
+
         // Set to true to enable transparent painting.
-        public bool_t transparent_painting;
+        public int transparent_painting;
 
         // Handle for the new browser window.
         public IntPtr window;

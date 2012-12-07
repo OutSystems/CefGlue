@@ -82,4 +82,6 @@ classdef = {
     'CefDialogHandler': { 'role': ROLE_HANDLER },
     'CefGetGeolocationCallback': { 'role': ROLE_HANDLER },
     'CefTraceClient': { 'role': ROLE_HANDLER },
+    # R929
+    'CefRenderHandler': { 'role': ROLE_HANDLER },
     }

@@ -11,6 +11,7 @@
         private bool _disposed;
 
         private IntPtr _parentWindowHandle;
+        private bool _windowRenderingDisabled;
 
         public CefWindowInfo()
         {
@@ -64,7 +65,7 @@
                         }
 
                     default:
-                        throw new NotImplementedException();
+                        throw new NotSupportedException();
                 }
             }
             set
@@ -101,10 +102,91 @@
                         }
 
                     default:
-                        throw new NotImplementedException();
+                        throw new NotSupportedException();
                 }
             }
         }
+
+        // If window rendering is disabled no browser window will be created. Set
+        // |parent_window| to be used for identifying monitor info
+        // (MonitorFromWindow). If |parent_window| is not provided the main screen
+        // monitor will be used.
+        public bool WindowRenderingDisabled
+        {
+            get
+            {
+                ThrowIfObjectDisposed();
+
+                if (_self == null) return _windowRenderingDisabled;
+
+                switch (CefRuntime.Platform)
+                {
+                    case CefRuntimePlatform.Windows:
+                        {
+                            var self = (cef_window_info_t_windows*)_self;
+                            return self->window_rendering_disabled != 0;
+                        }
+
+                    case CefRuntimePlatform.Linux:
+                        {
+                            throw new NotSupportedException();
+                            var self = (cef_window_info_t_linux*)_self;
+                            // return self->window_rendering_disabled != 0;
+                        }
+
+                    case CefRuntimePlatform.MacOSX:
+                        {
+                            throw new NotSupportedException();
+                            var self = (cef_window_info_t_mac*)_self;
+                            // return self->window_rendering_disabled != 0;
+                        }
+
+                    default:
+                        throw new NotSupportedException();
+                }
+            }
+            set
+            {
+                ThrowIfObjectDisposed();
+
+                if (_self == null)
+                {
+                    _windowRenderingDisabled = value;
+                }
+
+                switch (CefRuntime.Platform)
+                {
+                    case CefRuntimePlatform.Windows:
+                        {
+                            var self = (cef_window_info_t_windows*)_self;
+                            self->window_rendering_disabled = value ? 1 : 0;
+                            return;
+                        }
+
+                    case CefRuntimePlatform.Linux:
+                        {
+                            throw new NotSupportedException();
+                            var self = (cef_window_info_t_linux*)_self;
+                            // self->window_rendering_disabled = value ? 1 : 0;
+                            return;
+                        }
+
+                    case CefRuntimePlatform.MacOSX:
+                        {
+                            throw new NotSupportedException();
+                            var self = (cef_window_info_t_mac*)_self;
+                            // self->window_rendering_disabled = value ? 1 : 0;
+                            return;
+                        }
+
+                    default:
+                        throw new NotSupportedException();
+                }
+            }
+        }
+
+
+
 
         internal cef_window_info_t* ToNative()
         {
@@ -125,6 +207,7 @@
                         ptr->y = 0;
                         ptr->width = 400;
                         ptr->height = 600;
+                        ptr->window_rendering_disabled = WindowRenderingDisabled ? 1 : 0;
 
                         return (cef_window_info_t*)ptr;
                     }
@@ -142,32 +225,50 @@
             }
         }
 
-        /*
-  void SetAsChild(HWND hWndParent, RECT windowRect) {
-    style = WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_TABSTOP |
-            WS_VISIBLE;
-    parent_window = hWndParent;
-    x = windowRect.left;
-    y = windowRect.top;
-    width = windowRect.right - windowRect.left;
-    height = windowRect.bottom - windowRect.top;
-  }
 
-  void SetAsPopup(HWND hWndParent, const CefString& windowName) {
-    style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS |
-            WS_VISIBLE;
-    parent_window = hWndParent;
-    x = CW_USEDEFAULT;
-    y = CW_USEDEFAULT;
-    width = CW_USEDEFAULT;
-    height = CW_USEDEFAULT;
+        public void SetAsChild(IntPtr parent, CefRectangle rect)
+        {
+            ThrowIfObjectDisposed();
+            throw new NotImplementedException();
+            //style = WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_TABSTOP |
+            //        WS_VISIBLE;
+            //parent_window = hWndParent;
+            //x = windowRect.left;
+            //y = windowRect.top;
+            //width = windowRect.right - windowRect.left;
+            //height = windowRect.bottom - windowRect.top;
+        }
 
-    cef_string_copy(windowName.c_str(), windowName.length(), &window_name);
-  }
+        public void SetAsPopup(IntPtr hWndParent, string windowName)
+        {
+            ThrowIfObjectDisposed();
+            throw new NotImplementedException();
 
-  void SetTransparentPainting(BOOL transparentPainting) {
-    transparent_painting = transparentPainting;
-  }
-*/
+            //style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS |
+            //        WS_VISIBLE;
+            //parent_window = hWndParent;
+            //x = CW_USEDEFAULT;
+            //y = CW_USEDEFAULT;
+            //width = CW_USEDEFAULT;
+            //height = CW_USEDEFAULT;
+
+            //cef_string_copy(windowName.c_str(), windowName.length(), &window_name);
+        }
+
+        public void SetTransparentPainting(bool transparentPainting)
+        {
+            ThrowIfObjectDisposed();
+            throw new NotImplementedException();
+            //transparent_painting = transparentPainting;
+        }
+
+        public void SetAsOffScreen(IntPtr hWndParent)
+        {
+            ThrowIfObjectDisposed();
+            throw new NotImplementedException();
+
+            //window_rendering_disabled = TRUE;
+            //parent_window = hWndParent;
+        }
     }
 }

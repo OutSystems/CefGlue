@@ -50,6 +50,7 @@ c2cs_types = {
 
     'cef_window_handle_t': 'IntPtr',
     'cef_event_handle_t': 'IntPtr',
+    'cef_cursor_handle_t': 'IntPtr',
 
     'cef_base_t': 'cef_base_t',
 
@@ -108,6 +109,8 @@ c2cs_enumtypes = {
     'cef_file_dialog_mode_t': 'CefFileDialogMode',
     'cef_geoposition_error_code_t': 'CefGeopositionErrorCode',
     'cef_navigation_type_t': 'CefNavigationType',
+    'cef_mouse_button_type_t': 'CefMouseButtonType',
+    'cef_paint_element_type_t': 'CefPaintElementType',
     }
 
 c2cs_structtypes = { }
