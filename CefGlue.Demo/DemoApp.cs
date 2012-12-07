@@ -46,6 +46,7 @@
 
             var settings = new CefSettings();
             settings.MultiThreadedMessageLoop = CefRuntime.Platform == CefRuntimePlatform.Windows;
+            settings.ReleaseDCheckEnabled = true;
             settings.LogSeverity = CefLogSeverity.Verbose;
             settings.LogFile = "cef.log";
             settings.ResourcesDirPath = System.IO.Path.GetDirectoryName(new Uri(System.Reflection.Assembly.GetEntryAssembly().CodeBase).LocalPath);

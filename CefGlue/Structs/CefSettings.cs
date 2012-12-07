@@ -83,6 +83,11 @@
         public CefLogSeverity LogSeverity { get; set; }
 
         /// <summary>
+        /// Enable DCHECK in release mode to ease debugging.
+        /// </summary>
+        public bool ReleaseDCheckEnabled { get; set; }
+
+        /// <summary>
         /// Custom flags that will be used when initializing the V8 JavaScript engine.
         /// The consequences of using custom flags may not be well tested.
         /// </summary>
@@ -168,6 +173,7 @@
             cef_string_t.Copy(Locale, &ptr->locale);
             cef_string_t.Copy(LogFile, &ptr->log_file);
             ptr->log_severity = LogSeverity;
+            ptr->release_dcheck_enabled = ReleaseDCheckEnabled;
             cef_string_t.Copy(JavaScriptFlags, &ptr->javascript_flags);
             ptr->auto_detect_proxy_settings_enabled = AutoDetectProxySettingsEnabled;
             cef_string_t.Copy(ResourcesDirPath, &ptr->resources_dir_path);
