@@ -77,7 +77,7 @@ namespace Xilium.CefGlue
         /// </summary>
         public CefResponse GetResponse()
         {
-            return CefResponse.FromNative(
+            return CefResponse.FromNativeOrNull(
                 cef_urlrequest_t.get_response(_self)
                 );
         }
