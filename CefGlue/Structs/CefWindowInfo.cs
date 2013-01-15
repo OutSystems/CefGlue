@@ -7,6 +7,30 @@
     using Xilium.CefGlue.Platform;
     using Xilium.CefGlue.Platform.Windows;
 
+    /// <summary>
+    /// Class representing window information.
+    /// </summary>
+    /// <remarks>
+    /// Meanings for handles:
+    /// <list type="table">
+    ///     <listheader>
+    ///         <item>Platform</item>
+    ///         <description>Description</description>
+    ///     </listheader>
+    ///     <item>
+    ///         <item>Windows</item>
+    ///         <description>Window handle (HWND)</description>
+    ///     </item>
+    ///     <item>
+    ///         <item>Mac OS X</item>
+    ///         <description>NSView pointer for the parent view (NSView*)</description>
+    ///     </item>
+    ///     <item>
+    ///         <item>Linux</item>
+    ///         <description>Pointer for the new browser widget (GtkWidget*)</description>
+    ///     </item>
+    /// </list>
+    /// </remarks>
     public unsafe abstract class CefWindowInfo
     {
         public static CefWindowInfo Create()
@@ -72,7 +96,14 @@
         protected internal abstract void DisposeNativePointer();
 
         // Common properties for all platforms
+        /// <summary>
+        /// Handle for the parent window.
+        /// </summary>
         public abstract IntPtr ParentHandle { get; set; }
+
+        /// <summary>
+        /// Handle for the new browser window.
+        /// </summary>
         public abstract IntPtr Handle { get; set; }
 
         // Common properties for windows & macosx
@@ -87,8 +118,23 @@
         public abstract WindowStyleEx StyleEx { get; set; }
         public abstract IntPtr MenuHandle { get; set; }
 
-        // Features
+        // Mac-specific
+        public abstract bool Hidden { get; set; }
+
+        /// <summary>
+        /// If window rendering is disabled no browser window will be created. Set
+        /// |parent_window| to be used for identifying monitor info
+        /// (MonitorFromWindow). If |parent_window| is not provided the main screen
+        /// monitor will be used.
+        /// </summary>
         public abstract bool WindowRenderingDisabled { get; set; }
+
+        /// <summary>
+        /// Set to true to enable transparent painting.
+        /// If window rendering is disabled and |transparent_painting| is set to true
+        /// WebKit rendering will draw on a transparent background (RGBA=0x00000000).
+        /// When this value is false the background will be white and opaque.
+        /// </summary>
         public abstract bool TransparentPainting { get; set; }
 
         public void SetAsChild(IntPtr parentHandle, CefRectangle rect)

@@ -97,6 +97,12 @@
             set { ThrowIfDisposed(); _self->menu = value; }
         }
 
+        public override bool Hidden
+        {
+            get { return default(bool); }
+            set { }
+        }
+
         public override bool WindowRenderingDisabled
         {
             get { ThrowIfDisposed(); return _self->window_rendering_disabled != 0; }

@@ -97,6 +97,12 @@
             set { }
         }
 
+        public override bool Hidden
+        {
+            get { ThrowIfDisposed(); return _self->hidden != 0; }
+            set { ThrowIfDisposed(); _self->hidden = value ? 1 : 0; }
+        }
+
         public override bool WindowRenderingDisabled
         {
             get { return default(bool); }

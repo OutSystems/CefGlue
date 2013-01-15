@@ -97,6 +97,12 @@
             set { }
         }
 
+        public override bool Hidden
+        {
+            get { return default(bool); }
+            set { }
+        }
+
         public override bool WindowRenderingDisabled
         {
             get { return default(bool); }
