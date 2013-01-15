@@ -175,5 +175,10 @@
                 return navBox.GetBrowser();
             }
         }
+
+        public void NewWebView(string url, bool transparent)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

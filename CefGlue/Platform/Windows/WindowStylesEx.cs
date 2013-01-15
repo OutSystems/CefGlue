@@ -1,11 +1,11 @@
-﻿namespace Xilium.CefGlue.Interop
+﻿namespace Xilium.CefGlue.Platform.Windows
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
 
     [Flags]
-    internal enum WindowStylesEx : uint
+    public enum WindowStyleEx : uint
     {
         /// <summary>
         /// Specifies that a window created with this style accepts drag-drop files.

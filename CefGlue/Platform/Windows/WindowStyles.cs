@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue.Interop
+﻿namespace Xilium.CefGlue.Platform.Windows
 {
     using System;
     using System.Collections.Generic;
@@ -6,10 +6,11 @@
 
     /// <summary>
     /// Window Styles.
-    /// The following styles can be specified wherever a window style is required. After the control has been created, these styles cannot be modified, except as noted.
+    /// The following styles can be specified wherever a window style is required.
+    /// After the control has been created, these styles cannot be modified, except as noted.
     /// </summary>
     [Flags]
-    internal enum WindowStyles : uint
+    public enum WindowStyle : uint
     {
         /// <summary>The window has a thin-line border.</summary>
         WS_BORDER = 0x800000,

@@ -161,5 +161,10 @@
                 return navBox.GetBrowser();
             }
         }
+
+        public void NewWebView(string url, bool transparent)
+        {
+            var view = new CefWebView(url, transparent);
+        }
     }
 }

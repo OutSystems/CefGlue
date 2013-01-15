@@ -12,5 +12,7 @@
         void NavigateTo(string url);
 
         CefBrowser CurrentBrowser { get; }
+
+        void NewWebView(string url, bool transparent);
     }
 }

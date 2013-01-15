@@ -75,17 +75,17 @@
 
             ChildVisible = true;
 
-            var windowInfo = new CefWindowInfo();
+            var windowInfo = CefWindowInfo.Create();
             switch (CefRuntime.Platform)
             {
                 case CefRuntimePlatform.Windows:
-                    windowInfo.Parent = gdk_win32_drawable_get_handle(GdkWindow.Handle);
+                    windowInfo.ParentHandle = gdk_win32_drawable_get_handle(GdkWindow.Handle);
                     // set windowInfo - x, y, width, height ?
                     break;
 
                 case CefRuntimePlatform.Linux:
                 	Console.WriteLine("REALIZED - RAW = {0}, HANDLE = {1}", Raw, Handle);
-                    windowInfo.Parent = Handle;
+                    windowInfo.ParentHandle = Handle;
                     break;
 
                 case CefRuntimePlatform.MacOSX:

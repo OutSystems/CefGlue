@@ -54,7 +54,11 @@ namespace Xilium.CefGlue.Interop
 
         public static void Free(cef_window_info_t_windows* ptr)
         {
-            Marshal.FreeHGlobal((IntPtr)ptr);
+            if (ptr != null)
+            {
+                libcef.string_clear(&ptr->window_name);
+                Marshal.FreeHGlobal((IntPtr)ptr);
+            }
         }
         #endregion
     }
@@ -81,7 +85,10 @@ namespace Xilium.CefGlue.Interop
 
         public static void Free(cef_window_info_t_linux* ptr)
         {
-            Marshal.FreeHGlobal((IntPtr)ptr);
+            if (ptr != null)
+            {
+                Marshal.FreeHGlobal((IntPtr)ptr);
+            }
         }
         #endregion
     }
@@ -118,7 +125,11 @@ namespace Xilium.CefGlue.Interop
 
         public static void Free(cef_window_info_t_mac* ptr)
         {
-            Marshal.FreeHGlobal((IntPtr)ptr);
+            if (ptr != null)
+            {
+                libcef.string_clear(&ptr->window_name);
+                Marshal.FreeHGlobal((IntPtr)ptr);
+            }
         }
         #endregion
     }

@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\CefWebView.cs" />
     <Compile Include="Control\NativeMethods.cs" />
     <Compile Include="Control\SetWindowPosFlags.cs" />
     <Compile Include="Control\CefWebBrowser.cs">

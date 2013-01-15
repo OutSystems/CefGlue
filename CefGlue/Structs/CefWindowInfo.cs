@@ -4,271 +4,140 @@
     using System.Collections.Generic;
     using System.Text;
     using Xilium.CefGlue.Interop;
+    using Xilium.CefGlue.Platform;
+    using Xilium.CefGlue.Platform.Windows;
 
-    public sealed unsafe class CefWindowInfo
+    public unsafe abstract class CefWindowInfo
     {
-        private readonly cef_window_info_t* _self;
-        private bool _disposed;
-
-        private IntPtr _parentWindowHandle;
-        private bool _windowRenderingDisabled;
-
-        public CefWindowInfo()
+        public static CefWindowInfo Create()
         {
-            _self = null;
+            switch (CefRuntime.Platform)
+            {
+                case CefRuntimePlatform.Windows: return new CefWindowInfoWindowsImpl();
+                case CefRuntimePlatform.Linux: return new CefWindowInfoLinuxImpl();
+                case CefRuntimePlatform.MacOSX: return new CefWindowInfoMacImpl();
+                default: throw new NotSupportedException();
+            }
         }
 
-        internal CefWindowInfo(cef_window_info_t* ptr)
+        internal static CefWindowInfo FromNative(cef_window_info_t* ptr)
         {
-            if (ptr == null) throw new ArgumentNullException("ptr");
+            switch (CefRuntime.Platform)
+            {
+                case CefRuntimePlatform.Windows: return new CefWindowInfoWindowsImpl(ptr);
+                case CefRuntimePlatform.Linux: return new CefWindowInfoLinuxImpl(ptr);
+                case CefRuntimePlatform.MacOSX: return new CefWindowInfoMacImpl(ptr);
+                default: throw new NotSupportedException();
+            }
+        }
 
-            _self = ptr;
+        private bool _own;
+        private bool _disposed;
+
+        protected internal CefWindowInfo(bool own)
+        {
+            _own = own;
+        }
+
+        ~CefWindowInfo()
+        {
+            Dispose();
         }
 
         internal void Dispose()
         {
             _disposed = true;
+            if (_own)
+            {
+                DisposeNativePointer();
+            }
+            GC.SuppressFinalize(this);
         }
 
-        private void ThrowIfObjectDisposed()
+        internal cef_window_info_t* ToNative()
+        {
+            var ptr = GetNativePointer();
+            _own = false;
+            return ptr;
+        }
+
+        protected internal void ThrowIfDisposed()
         {
             if (_disposed) throw ExceptionBuilder.ObjectDisposed();
         }
 
-        public IntPtr Parent
+        public bool Disposed { get { return _disposed; } }
+
+        internal abstract cef_window_info_t* GetNativePointer();
+        protected internal abstract void DisposeNativePointer();
+
+        // Common properties for all platforms
+        public abstract IntPtr ParentHandle { get; set; }
+        public abstract IntPtr Handle { get; set; }
+
+        // Common properties for windows & macosx
+        public abstract string Name { get; set; }
+        public abstract int X { get; set; }
+        public abstract int Y { get; set; }
+        public abstract int Width { get; set; }
+        public abstract int Height { get; set; }
+
+        // Windows-specific
+        public abstract WindowStyle Style { get; set; }
+        public abstract WindowStyleEx StyleEx { get; set; }
+        public abstract IntPtr MenuHandle { get; set; }
+
+        // Features
+        public abstract bool WindowRenderingDisabled { get; set; }
+        public abstract bool TransparentPainting { get; set; }
+
+        public void SetAsChild(IntPtr parentHandle, CefRectangle rect)
         {
-            get
-            {
-                ThrowIfObjectDisposed();
+            ThrowIfDisposed();
 
-                if (_self == null)
-                    return _parentWindowHandle;
+            Style = WindowStyle.WS_CHILD
+                  | WindowStyle.WS_CLIPCHILDREN
+                  | WindowStyle.WS_CLIPSIBLINGS
+                  | WindowStyle.WS_TABSTOP
+                  | WindowStyle.WS_VISIBLE;
 
-                switch (CefRuntime.Platform)
-                {
-                    case CefRuntimePlatform.Windows:
-                        {
-                            var self = (cef_window_info_t_windows*)_self;
-                            return self->parent_window;
-                        }
+            ParentHandle = parentHandle;
 
-                    case CefRuntimePlatform.Linux:
-                        {
-                            var self = (cef_window_info_t_linux*)_self;
-                            return self->parent_widget;
-                        }
-
-                    case CefRuntimePlatform.MacOSX:
-                        {
-                            var self = (cef_window_info_t_mac*)_self;
-                            return self->parent_view;
-                        }
-
-                    default:
-                        throw new NotSupportedException();
-                }
-            }
-            set
-            {
-                ThrowIfObjectDisposed();
-
-                if (_self == null)
-                {
-                    _parentWindowHandle = value;
-                    return;
-                }
-
-                switch (CefRuntime.Platform)
-                {
-                    case CefRuntimePlatform.Windows:
-                        {
-                            var self = (cef_window_info_t_windows*)_self;
-                            self->parent_window = value;
-                            return;
-                        }
-
-                    case CefRuntimePlatform.Linux:
-                        {
-                            var self = (cef_window_info_t_linux*)_self;
-                            self->parent_widget = value;
-                            return;
-                        }
-
-                    case CefRuntimePlatform.MacOSX:
-                        {
-                            var self = (cef_window_info_t_mac*)_self;
-                            self->parent_view = value;
-                            return;
-                        }
-
-                    default:
-                        throw new NotSupportedException();
-                }
-            }
+            X = rect.X;
+            Y = rect.Y;
+            Width = rect.Width;
+            Height = rect.Height;
         }
 
-        // If window rendering is disabled no browser window will be created. Set
-        // |parent_window| to be used for identifying monitor info
-        // (MonitorFromWindow). If |parent_window| is not provided the main screen
-        // monitor will be used.
-        public bool WindowRenderingDisabled
+        public void SetAsPopup(IntPtr parentHandle, string name)
         {
-            get
-            {
-                ThrowIfObjectDisposed();
+            ThrowIfDisposed();
 
-                if (_self == null) return _windowRenderingDisabled;
+            Style = WindowStyle.WS_OVERLAPPEDWINDOW
+                  | WindowStyle.WS_CLIPCHILDREN
+                  | WindowStyle.WS_CLIPSIBLINGS
+                  | WindowStyle.WS_VISIBLE;
 
-                switch (CefRuntime.Platform)
-                {
-                    case CefRuntimePlatform.Windows:
-                        {
-                            var self = (cef_window_info_t_windows*)_self;
-                            return self->window_rendering_disabled != 0;
-                        }
+            ParentHandle = parentHandle;
 
-                    case CefRuntimePlatform.Linux:
-                        {
-                            throw new NotSupportedException();
-                            var self = (cef_window_info_t_linux*)_self;
-                            // return self->window_rendering_disabled != 0;
-                        }
+            // CW_USEDEFAULT
+            X = int.MinValue;
+            Y = int.MinValue;
+            Width = int.MinValue;
+            Height = int.MinValue;
 
-                    case CefRuntimePlatform.MacOSX:
-                        {
-                            throw new NotSupportedException();
-                            var self = (cef_window_info_t_mac*)_self;
-                            // return self->window_rendering_disabled != 0;
-                        }
-
-                    default:
-                        throw new NotSupportedException();
-                }
-            }
-            set
-            {
-                ThrowIfObjectDisposed();
-
-                if (_self == null)
-                {
-                    _windowRenderingDisabled = value;
-                }
-
-                switch (CefRuntime.Platform)
-                {
-                    case CefRuntimePlatform.Windows:
-                        {
-                            var self = (cef_window_info_t_windows*)_self;
-                            self->window_rendering_disabled = value ? 1 : 0;
-                            return;
-                        }
-
-                    case CefRuntimePlatform.Linux:
-                        {
-                            throw new NotSupportedException();
-                            var self = (cef_window_info_t_linux*)_self;
-                            // self->window_rendering_disabled = value ? 1 : 0;
-                            return;
-                        }
-
-                    case CefRuntimePlatform.MacOSX:
-                        {
-                            throw new NotSupportedException();
-                            var self = (cef_window_info_t_mac*)_self;
-                            // self->window_rendering_disabled = value ? 1 : 0;
-                            return;
-                        }
-
-                    default:
-                        throw new NotSupportedException();
-                }
-            }
-        }
-
-
-
-
-        internal cef_window_info_t* ToNative()
-        {
-            switch (CefRuntime.Platform)
-            {
-                case CefRuntimePlatform.Windows:
-                    {
-                        var ptr = cef_window_info_t_windows.Alloc();
-
-                        ptr->style = (uint)(WindowStyles.WS_CHILD
-                            | WindowStyles.WS_CLIPCHILDREN
-                            | WindowStyles.WS_CLIPSIBLINGS
-                            | WindowStyles.WS_TABSTOP
-                            | WindowStyles.WS_VISIBLE);
-
-                        ptr->parent_window = Parent;
-                        ptr->x = 0;
-                        ptr->y = 0;
-                        ptr->width = 400;
-                        ptr->height = 600;
-                        ptr->window_rendering_disabled = WindowRenderingDisabled ? 1 : 0;
-
-                        return (cef_window_info_t*)ptr;
-                    }
-
-                case CefRuntimePlatform.Linux:
-                    {
-                        var ptr = cef_window_info_t_linux.Alloc();
-                        ptr->parent_widget = Parent;
-                        return (cef_window_info_t*)ptr;
-                    }
-
-                case CefRuntimePlatform.MacOSX:
-                default:
-                    throw new NotImplementedException();
-            }
-        }
-
-
-        public void SetAsChild(IntPtr parent, CefRectangle rect)
-        {
-            ThrowIfObjectDisposed();
-            throw new NotImplementedException();
-            //style = WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_TABSTOP |
-            //        WS_VISIBLE;
-            //parent_window = hWndParent;
-            //x = windowRect.left;
-            //y = windowRect.top;
-            //width = windowRect.right - windowRect.left;
-            //height = windowRect.bottom - windowRect.top;
-        }
-
-        public void SetAsPopup(IntPtr hWndParent, string windowName)
-        {
-            ThrowIfObjectDisposed();
-            throw new NotImplementedException();
-
-            //style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS |
-            //        WS_VISIBLE;
-            //parent_window = hWndParent;
-            //x = CW_USEDEFAULT;
-            //y = CW_USEDEFAULT;
-            //width = CW_USEDEFAULT;
-            //height = CW_USEDEFAULT;
-
-            //cef_string_copy(windowName.c_str(), windowName.length(), &window_name);
+            Name = name;
         }
 
         public void SetTransparentPainting(bool transparentPainting)
         {
-            ThrowIfObjectDisposed();
-            throw new NotImplementedException();
-            //transparent_painting = transparentPainting;
+            TransparentPainting = transparentPainting;
         }
 
-        public void SetAsOffScreen(IntPtr hWndParent)
+        public void SetAsOffScreen(IntPtr parentHandle)
         {
-            ThrowIfObjectDisposed();
-            throw new NotImplementedException();
-
-            //window_rendering_disabled = TRUE;
-            //parent_window = hWndParent;
+            WindowRenderingDisabled = true;
+            ParentHandle = parentHandle;
         }
     }
 }

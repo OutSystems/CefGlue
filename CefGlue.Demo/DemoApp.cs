@@ -108,6 +108,8 @@
                 new MenuItem("Samples", new [] {
                     new MenuItem(new Command("Scheme Handler: Dump Request", SchemeHandlerDumpRequestCommand)),
                     new MenuItem(new Command("Send Process Message", SendProcessMessageCommand)),
+                    new MenuItem(new Command("Popup Window", PopupWindowCommand)),
+                    new MenuItem(new Command("Transparent Popup Window", TransparentPopupWindowCommand)),
                     }),
                 new MenuItem("Help", new [] {
                     new MenuItem(new Command("About", HelpAboutCommand)),
@@ -156,6 +158,18 @@
 
                 browser.SendProcessMessage(CefProcessId.Renderer, message);
             }
+        }
+
+        private void PopupWindowCommand(object sender, EventArgs e)
+        {
+            var url = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(new Uri(typeof(DemoApp).Assembly.CodeBase).LocalPath), "transparency.html");
+            MainView.NewWebView(url, false);
+        }
+
+        private void TransparentPopupWindowCommand(object sender, EventArgs e)
+        {
+            var url = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(new Uri(typeof(DemoApp).Assembly.CodeBase).LocalPath), "transparency.html");
+            MainView.NewWebView(url, true);
         }
 
         private void HelpAboutCommand(object sender, EventArgs e)

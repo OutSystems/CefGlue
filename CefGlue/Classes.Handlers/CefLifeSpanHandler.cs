@@ -18,7 +18,7 @@ namespace Xilium.CefGlue
 
             var m_parentBrowser = CefBrowser.FromNative(parentBrowser);
             var m_popupFeatures = new CefPopupFeatures(popupFeatures);
-            var m_windowInfo = new CefWindowInfo(windowInfo);
+            var m_windowInfo = CefWindowInfo.FromNative(windowInfo);
             var m_url = cef_string_t.ToString(url);
             var m_client = CefClient.FromNative(*client);
             var m_settings = new CefBrowserSettings(settings);

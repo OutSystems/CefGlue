@@ -279,6 +279,11 @@
     <Compile Include="Interop\Classes.g\cef_web_plugin_unstable_callback_t.g.cs" />
     <Compile Include="Interop\Structs\cef_geoposition_t.cs" />
     <Compile Include="Interop\Structs\cef_key_event_t.cs" />
+    <Compile Include="Platform\Linux\CefWindowInfoLinuxImpl.cs" />
+    <Compile Include="Platform\Mac\CefWindowInfoMacImpl.cs" />
+    <Compile Include="Platform\Windows\CefWindowInfoWindowsImpl.cs" />
+    <Compile Include="Platform\Windows\WindowStyles.cs" />
+    <Compile Include="Platform\Windows\WindowStylesEx.cs" />
     <Compile Include="Structs\CefCookie.cs" />
     <Compile Include="Structs\CefGeoposition.cs" />
     <Compile Include="Structs\CefKeyEvent.cs" />
@@ -291,8 +296,6 @@
     <Compile Include="Structs\CefBrowserSettings.cs" />
     <Compile Include="Interop\_Platform\NativeMethods.cs" />
     <Compile Include="Interop\_Platform\RECT.cs" />
-    <Compile Include="Interop\_Platform\WindowStyles.cs" />
-    <Compile Include="Interop\_Platform\WindowStylesEx.cs" />
     <None Include="..\Xilium.CefGlue.snk">
       <Link>Properties\Xilium.CefGlue.snk</Link>
     </None>

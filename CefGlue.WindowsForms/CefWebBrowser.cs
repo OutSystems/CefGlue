@@ -58,8 +58,8 @@
             }
             else
             {
-                var windowInfo = new CefWindowInfo();
-                windowInfo.Parent = Handle;
+                var windowInfo = CefWindowInfo.Create();
+                windowInfo.SetAsChild(Handle, new CefRectangle { X = 0, Y = 0, Width = Width, Height = Height });
 
                 var client = new CefWebClient(this);
 
