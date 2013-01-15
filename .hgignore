@@ -7,6 +7,9 @@ obj
 *.user
 *.suo
 
+# monodevelop
+*.userprefs
+
 # python
 *.pyc
 
