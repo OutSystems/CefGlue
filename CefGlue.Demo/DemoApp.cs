@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using System.Diagnostics;
 
     public abstract class DemoApp : IDisposable
     {
@@ -50,6 +51,7 @@
             settings.LogSeverity = CefLogSeverity.Verbose;
             settings.LogFile = "cef.log";
             settings.ResourcesDirPath = System.IO.Path.GetDirectoryName(new Uri(System.Reflection.Assembly.GetEntryAssembly().CodeBase).LocalPath);
+            settings.RemoteDebuggingPort = 20480;
 
             var argv = args;
             if (CefRuntime.Platform != CefRuntimePlatform.Windows)
@@ -110,6 +112,7 @@
                     new MenuItem(new Command("Send Process Message", SendProcessMessageCommand)),
                     new MenuItem(new Command("Popup Window", PopupWindowCommand)),
                     new MenuItem(new Command("Transparent Popup Window", TransparentPopupWindowCommand)),
+                    new MenuItem(new Command("Open Developer Tools...", OpenDeveloperToolsCommand)),
                     }),
                 new MenuItem("Help", new [] {
                     new MenuItem(new Command("About", HelpAboutCommand)),
@@ -170,6 +173,12 @@
         {
             var url = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(new Uri(typeof(DemoApp).Assembly.CodeBase).LocalPath), "transparency.html");
             MainView.NewWebView(url, true);
+        }
+
+        private void OpenDeveloperToolsCommand(object sender, EventArgs e)
+        {
+            var devToolsUrl = MainView.CurrentBrowser.GetHost().GetDevToolsUrl(true);
+            Process.Start(devToolsUrl);
         }
 
         private void HelpAboutCommand(object sender, EventArgs e)
