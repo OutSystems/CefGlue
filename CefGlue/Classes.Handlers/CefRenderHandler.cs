@@ -34,8 +34,7 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Called to retrieve the root window rectangle in screen coordinates. Return
-        /// true if the rectangle was provided. Return false if the screen rectangle is
-        /// the same as the view rectangle.
+        /// true if the rectangle was provided.
         /// </summary>
         protected virtual bool GetRootScreenRect(CefBrowser browser, ref CefRectangle rect)
         {
@@ -117,7 +116,6 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Called when the browser wants to show or hide the popup widget. The popup
         /// should be shown if |show| is true and hidden if |show| is false.
-        /// NOTE: Popup widgets are not yet supported.
         /// </summary>
         protected virtual void OnPopupShow(CefBrowser browser, bool show)
         {
@@ -137,7 +135,6 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Called when the browser wants to move or resize the popup widget. |rect|
         /// contains the new location and size.
-        /// NOTE: Popup widgets are not yet supported.
         /// </summary>
         protected abstract void OnPopupSize(CefBrowser browser, CefRectangle rect);
 
@@ -172,7 +169,6 @@ namespace Xilium.CefGlue
         /// for the whole image. |dirtyRects| contains the set of rectangles that need
         /// to be repainted. On Windows |buffer| will be |width|*|height|*4 bytes
         /// in size and represents a BGRA image with an upper-left origin.
-        /// NOTE: Popup widgets are not yet supported.
         /// </summary>
         protected abstract void OnPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr buffer, int width, int height);
 

@@ -7,7 +7,7 @@
     internal unsafe struct cef_key_event_t
     {
         public CefKeyEventType type;
-        public CefKeyEventModifiers modifiers;
+        public CefEventFlags modifiers;
         public int windows_key_code;
         public int native_key_code;
         public bool_t is_system_key;

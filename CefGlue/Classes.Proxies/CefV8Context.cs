@@ -7,8 +7,11 @@ namespace Xilium.CefGlue
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Class that encapsulates a V8 context handle. The methods of this class may
-    /// only be called on the render process main thread.
+    /// Class representing a V8 context handle. V8 handles can only be accessed from
+    /// the thread on which they are created. Valid threads for creating a V8 handle
+    /// include the render process main thread (TID_RENDERER) and WebWorker threads.
+    /// A task runner for posting tasks on the associated thread can be retrieved via
+    /// the CefV8Context::GetTaskRunner() method.
     /// </summary>
     public sealed unsafe partial class CefV8Context
     {
@@ -41,8 +44,21 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Returns true if this object is valid. Do not call any other methods if this
-        /// method returns false.
+        /// Returns the task runner associated with this context. V8 handles can only
+        /// be accessed from the thread on which they are created. This method can be
+        /// called on any render process thread.
+        /// </summary>
+        public CefTaskRunner GetTaskRunner()
+        {
+            return CefTaskRunner.FromNative(
+                cef_v8context_t.get_task_runner(_self)
+                );
+        }
+
+        /// <summary>
+        /// Returns true if the underlying handle is valid and it can be accessed on
+        /// the current thread. Do not call any other methods if this method returns
+        /// false.
         /// </summary>
         public bool IsValid
         {
@@ -50,21 +66,23 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Returns the browser for this context.
+        /// Returns the browser for this context. This method will return an empty
+        /// reference for WebWorker contexts.
         /// </summary>
         public CefBrowser GetBrowser()
         {
-            return CefBrowser.FromNative(
+            return CefBrowser.FromNativeOrNull(
                 cef_v8context_t.get_browser(_self)
                 );
         }
 
         /// <summary>
-        /// Returns the frame for this context.
+        /// Returns the frame for this context. This method will return an empty
+        /// reference for WebWorker contexts.
         /// </summary>
         public CefFrame GetFrame()
         {
-            return CefFrame.FromNative(
+            return CefFrame.FromNativeOrNull(
                 cef_v8context_t.get_frame(_self)
                 );
         }

@@ -98,6 +98,16 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
+        /// Returns true if this object is pointing to the same handle as |that|
+        /// object.
+        /// </summary>
+        public bool IsSame(CefBrowser that)
+        {
+            if (that == null) return false;
+            return cef_browser_t.is_same(_self, that.ToNative()) != 0;
+        }
+
+        /// <summary>
         /// Returns true if the window is a popup window.
         /// </summary>
         public bool IsPopup

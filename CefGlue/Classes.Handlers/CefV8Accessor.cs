@@ -7,9 +7,8 @@ namespace Xilium.CefGlue
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Interface that should be implemented to handle V8 accessor calls. Accessor
-    /// identifiers are registered by calling CefV8Value::SetValue(). The methods
-    /// of this class will always be called on the render process main thread.
+    /// Interface that should be implemented to handle V8 function calls. The methods
+    /// of this class will be called on the thread associated with the V8 function.
     /// </summary>
     public abstract unsafe partial class CefV8Accessor
     {

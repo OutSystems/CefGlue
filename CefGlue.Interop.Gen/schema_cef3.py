@@ -84,4 +84,6 @@ classdef = {
     'CefTraceClient': { 'role': ROLE_HANDLER },
     # R929
     'CefRenderHandler': { 'role': ROLE_HANDLER },
+    # R980
+    'CefTaskRunner': { 'role': ROLE_PROXY },
     }

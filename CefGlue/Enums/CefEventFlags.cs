@@ -10,28 +10,28 @@ namespace Xilium.CefGlue
     /// Supported event bit flags.
     /// </summary>
     [Flags]
-    public enum CefEventFlags
+    public enum CefEventFlags : uint
     {
-        None = 0,
+        None              = 0,
 
-        CapsLockDown = 1 << 0,
+        CapsLockOn        = 1 << 0,
 
-        ShiftDown = 1 << 1,
-        ControlDown = 1 << 2,
-        AltDown = 1 << 3,
+        ShiftDown         = 1 << 1,
+        ControlDown       = 1 << 2,
+        AltDown           = 1 << 3,
 
-        LeftMouseButton = 1 << 4,
+        LeftMouseButton   = 1 << 4,
         MiddleMouseButton = 1 << 5,
-        RightMouseButton = 1 << 6,
+        RightMouseButton  = 1 << 6,
 
         /// <summary>
         /// Mac OS-X command key.
         /// </summary>
-        CommandDown = 1 << 7,
+        CommandDown       = 1 << 7,
 
-        /// <summary>
-        /// Windows extended key (see WM_KEYDOWN doc).
-        /// </summary>
-        Extended = 1 << 8,
+        NumLockOn         = 1 << 8,
+        IsKeyPad          = 1 << 9,
+        IsLeft            = 1 << 10,
+        IsRight           = 1 << 11,
     }
 }

@@ -7,7 +7,8 @@ namespace Xilium.CefGlue
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Class representing a V8 exception.
+    /// Class representing a V8 exception. The methods of this class may be called on
+    /// any render process thread.
     /// </summary>
     public sealed unsafe partial class CefV8Exception
     {

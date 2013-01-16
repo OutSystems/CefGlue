@@ -27,9 +27,9 @@
 
         /// <summary>
         /// Bit flags describing any pressed modifier keys. See
-        /// cef_key_event_modifiers_t for values.
+        /// cef_event_flags_t for values.
         /// </summary>
-        public CefKeyEventModifiers Modifiers
+        public CefEventFlags Modifiers
         {
             get { return _self->modifiers; }
         }

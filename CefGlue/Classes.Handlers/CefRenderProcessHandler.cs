@@ -8,7 +8,8 @@ namespace Xilium.CefGlue
 
     /// <summary>
     /// Class used to implement render process callbacks. The methods of this class
-    /// will always be called on the render process main thread.
+    /// will be called on the render process main thread (TID_RENDERER) unless
+    /// otherwise indicated.
     /// </summary>
     public abstract unsafe partial class CefRenderProcessHandler
     {
@@ -54,7 +55,9 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Called after a browser has been created.
+        /// Called after a browser has been created. When browsing cross-origin a new
+        /// browser will be created before the old browser with the same identifier is
+        /// destroyed.
         /// </summary>
         protected virtual void OnBrowserCreated(CefBrowser browser)
         {
@@ -116,7 +119,9 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Called immediately after the V8 context for a frame has been created. To
         /// retrieve the JavaScript 'window' object use the CefV8Context::GetGlobal()
-        /// method.
+        /// method. V8 handles can only be accessed from the thread on which they are
+        /// created. A task runner for posting tasks on the associated thread can be
+        /// retrieved via the CefV8Context::GetTaskRunner() method.
         /// </summary>
         protected virtual void OnContextCreated(CefBrowser browser, CefFrame frame, CefV8Context context)
         {
@@ -157,11 +162,77 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Called for global uncaught exceptions. Execution of this callback is
-        /// disabled by default. To enable set
-        /// CefSettings.UncaughtExceptionStackSize &gt; 0.
+        /// Called for global uncaught exceptions in a frame. Execution of this
+        /// callback is disabled by default. To enable set
+        /// CefSettings.uncaught_exception_stack_size &gt; 0.
         /// </summary>
         protected virtual void OnUncaughtException(CefBrowser browser, CefFrame frame, CefV8Context context, CefV8Exception exception, CefV8StackTrace stackTrace)
+        {
+        }
+
+
+        private void on_worker_context_created(cef_render_process_handler_t* self, int worker_id, cef_string_t* url, cef_v8context_t* context)
+        {
+            CheckSelf(self);
+
+            var m_url = cef_string_t.ToString(url);
+            var m_context = CefV8Context.FromNative(context);
+
+            OnWorkerContextCreated(worker_id, m_url, m_context);
+        }
+
+        /// <summary>
+        /// Called on the WebWorker thread immediately after the V8 context for a new
+        /// WebWorker has been created. To retrieve the JavaScript 'self' object use
+        /// the CefV8Context::GetGlobal() method. V8 handles can only be accessed from
+        /// the thread on which they are created. A task runner for posting tasks on
+        /// the associated thread can be retrieved via the
+        /// CefV8Context::GetTaskRunner() method.
+        /// </summary>
+        protected virtual void OnWorkerContextCreated(int workerId, string url, CefV8Context context)
+        {
+        }
+
+
+        private void on_worker_context_released(cef_render_process_handler_t* self, int worker_id, cef_string_t* url, cef_v8context_t* context)
+        {
+            CheckSelf(self);
+
+            var m_url = cef_string_t.ToString(url);
+            var m_context = CefV8Context.FromNative(context);
+
+            OnWorkerContextReleased(worker_id, m_url, m_context);
+        }
+
+        /// <summary>
+        /// Called on the WebWorker thread immediately before the V8 context for a
+        /// WebWorker is released. No references to the context should be kept after
+        /// this method is called. Any tasks posted or pending on the WebWorker
+        /// thread after this method is called may not be executed.
+        /// </summary>
+        protected virtual void OnWorkerContextReleased(int workerId, string url, CefV8Context context)
+        {
+        }
+
+
+        private void on_worker_uncaught_exception(cef_render_process_handler_t* self, int worker_id, cef_string_t* url, cef_v8context_t* context, cef_v8exception_t* exception, cef_v8stack_trace_t* stackTrace)
+        {
+            CheckSelf(self);
+
+            var m_url = cef_string_t.ToString(url);
+            var m_context = CefV8Context.FromNative(context);
+            var m_exception = CefV8Exception.FromNative(exception);
+            var m_stackTrace = CefV8StackTrace.FromNative(stackTrace);
+
+            OnWorkerUncaughtException(worker_id, m_url, m_context, m_exception, m_stackTrace);
+        }
+
+        /// <summary>
+        /// Called on the WebWorker thread for global uncaught exceptions in a
+        /// WebWorker. Execution of this callback is disabled by default. To enable set
+        /// CefSettings.uncaught_exception_stack_size > 0.
+        /// </summary>
+        protected virtual void OnWorkerUncaughtException(int workerId, string url, CefV8Context context, CefV8Exception exception, CefV8StackTrace stackTrace)
         {
         }
 

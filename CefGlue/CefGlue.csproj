@@ -106,6 +106,7 @@
     <Compile Include="Classes.g\CefStreamWriter.g.cs" />
     <Compile Include="Classes.g\CefStringVisitor.g.cs" />
     <Compile Include="Classes.g\CefTask.g.cs" />
+    <Compile Include="Classes.g\CefTaskRunner.g.cs" />
     <Compile Include="Classes.g\CefTraceClient.g.cs" />
     <Compile Include="Classes.g\CefUrlRequest.g.cs" />
     <Compile Include="Classes.g\CefUrlRequestClient.g.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="Classes.Proxies\CefSchemeRegistrar.cs" />
     <Compile Include="Classes.Proxies\CefStreamReader.cs" />
     <Compile Include="Classes.Proxies\CefStreamWriter.cs" />
+    <Compile Include="Classes.Proxies\CefTaskRunner.cs" />
     <Compile Include="Classes.Proxies\CefUrlRequest.cs" />
     <Compile Include="Classes.Proxies\CefV8Context.cs" />
     <Compile Include="Classes.Proxies\CefV8Exception.cs" />
@@ -201,7 +203,6 @@
     <Compile Include="Enums\CefFileDialogMode.cs" />
     <Compile Include="Enums\CefFocusSource.cs" />
     <Compile Include="Enums\CefGeopositionErrorCode.cs" />
-    <Compile Include="Enums\CefKeyEventModifiers.cs" />
     <Compile Include="Enums\CefKeyEventType.cs" />
     <Compile Include="Enums\CefLogSeverity.cs" />
     <Compile Include="Enums\CefMouseButtonType.cs" />
@@ -268,6 +269,7 @@
     <Compile Include="Interop\Classes.g\cef_render_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_run_file_dialog_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_scheme_registrar_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_task_runner_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_trace_client_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_urlrequest_client_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_urlrequest_t.g.cs" />
@@ -279,6 +281,7 @@
     <Compile Include="Interop\Classes.g\cef_web_plugin_unstable_callback_t.g.cs" />
     <Compile Include="Interop\Structs\cef_geoposition_t.cs" />
     <Compile Include="Interop\Structs\cef_key_event_t.cs" />
+    <Compile Include="Interop\Structs\cef_mouse_event_t.cs" />
     <Compile Include="Platform\Linux\CefWindowInfoLinuxImpl.cs" />
     <Compile Include="Platform\Mac\CefWindowInfoMacImpl.cs" />
     <Compile Include="Platform\Windows\CefWindowInfoWindowsImpl.cs" />
@@ -296,6 +299,7 @@
     <Compile Include="Structs\CefBrowserSettings.cs" />
     <Compile Include="Interop\_Platform\NativeMethods.cs" />
     <Compile Include="Interop\_Platform\RECT.cs" />
+    <Compile Include="Structs\CefMouseEvent.cs" />
     <None Include="..\Xilium.CefGlue.snk">
       <Link>Properties\Xilium.CefGlue.snk</Link>
     </None>

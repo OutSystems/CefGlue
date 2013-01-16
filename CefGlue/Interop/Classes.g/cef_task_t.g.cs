@@ -37,7 +37,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void execute_delegate(cef_task_t* self, CefThreadId threadId);
+        internal delegate void execute_delegate(cef_task_t* self);
         
         private static int _sizeof;
         

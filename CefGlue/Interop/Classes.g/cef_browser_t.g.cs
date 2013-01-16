@@ -23,6 +23,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _reload_ignore_cache;
         internal IntPtr _stop_load;
         internal IntPtr _get_identifier;
+        internal IntPtr _is_same;
         internal IntPtr _is_popup;
         internal IntPtr _has_document;
         internal IntPtr _get_main_frame;
@@ -111,6 +112,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int get_identifier_delegate(cef_browser_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate int is_same_delegate(cef_browser_t* self, cef_browser_t* that);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -393,172 +400,189 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // IsPopup
+        // IsSame
         private static IntPtr _pd;
-        private static is_popup_delegate _dd;
+        private static is_same_delegate _dd;
+        
+        public static int is_same(cef_browser_t* self, cef_browser_t* that)
+        {
+            is_same_delegate d;
+            var p = self->_is_same;
+            if (p == _pd) { d = _dd; }
+            else
+            {
+                d = (is_same_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_same_delegate));
+                if (_pd == IntPtr.Zero) { _dd = d; _pd = p; }
+            }
+            return d(self, that);
+        }
+        
+        // IsPopup
+        private static IntPtr _pe;
+        private static is_popup_delegate _de;
         
         public static int is_popup(cef_browser_t* self)
         {
             is_popup_delegate d;
             var p = self->_is_popup;
-            if (p == _pd) { d = _dd; }
-            else
-            {
-                d = (is_popup_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_popup_delegate));
-                if (_pd == IntPtr.Zero) { _dd = d; _pd = p; }
-            }
-            return d(self);
-        }
-        
-        // HasDocument
-        private static IntPtr _pe;
-        private static has_document_delegate _de;
-        
-        public static int has_document(cef_browser_t* self)
-        {
-            has_document_delegate d;
-            var p = self->_has_document;
             if (p == _pe) { d = _de; }
             else
             {
-                d = (has_document_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_document_delegate));
+                d = (is_popup_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_popup_delegate));
                 if (_pe == IntPtr.Zero) { _de = d; _pe = p; }
             }
             return d(self);
         }
         
-        // GetMainFrame
+        // HasDocument
         private static IntPtr _pf;
-        private static get_main_frame_delegate _df;
+        private static has_document_delegate _df;
         
-        public static cef_frame_t* get_main_frame(cef_browser_t* self)
+        public static int has_document(cef_browser_t* self)
         {
-            get_main_frame_delegate d;
-            var p = self->_get_main_frame;
+            has_document_delegate d;
+            var p = self->_has_document;
             if (p == _pf) { d = _df; }
             else
             {
-                d = (get_main_frame_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_main_frame_delegate));
+                d = (has_document_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_document_delegate));
                 if (_pf == IntPtr.Zero) { _df = d; _pf = p; }
             }
             return d(self);
         }
         
-        // GetFocusedFrame
+        // GetMainFrame
         private static IntPtr _p10;
-        private static get_focused_frame_delegate _d10;
+        private static get_main_frame_delegate _d10;
         
-        public static cef_frame_t* get_focused_frame(cef_browser_t* self)
+        public static cef_frame_t* get_main_frame(cef_browser_t* self)
         {
-            get_focused_frame_delegate d;
-            var p = self->_get_focused_frame;
+            get_main_frame_delegate d;
+            var p = self->_get_main_frame;
             if (p == _p10) { d = _d10; }
             else
             {
-                d = (get_focused_frame_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_focused_frame_delegate));
+                d = (get_main_frame_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_main_frame_delegate));
                 if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
             }
             return d(self);
         }
         
-        // GetFrame
+        // GetFocusedFrame
         private static IntPtr _p11;
-        private static get_frame_byident_delegate _d11;
+        private static get_focused_frame_delegate _d11;
+        
+        public static cef_frame_t* get_focused_frame(cef_browser_t* self)
+        {
+            get_focused_frame_delegate d;
+            var p = self->_get_focused_frame;
+            if (p == _p11) { d = _d11; }
+            else
+            {
+                d = (get_focused_frame_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_focused_frame_delegate));
+                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetFrame
+        private static IntPtr _p12;
+        private static get_frame_byident_delegate _d12;
         
         public static cef_frame_t* get_frame_byident(cef_browser_t* self, long identifier)
         {
             get_frame_byident_delegate d;
             var p = self->_get_frame_byident;
-            if (p == _p11) { d = _d11; }
+            if (p == _p12) { d = _d12; }
             else
             {
                 d = (get_frame_byident_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_byident_delegate));
-                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
+                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
             }
             return d(self, identifier);
         }
         
         // GetFrame
-        private static IntPtr _p12;
-        private static get_frame_delegate _d12;
+        private static IntPtr _p13;
+        private static get_frame_delegate _d13;
         
         public static cef_frame_t* get_frame(cef_browser_t* self, cef_string_t* name)
         {
             get_frame_delegate d;
             var p = self->_get_frame;
-            if (p == _p12) { d = _d12; }
+            if (p == _p13) { d = _d13; }
             else
             {
                 d = (get_frame_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_delegate));
-                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
+                if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
             }
             return d(self, name);
         }
         
         // GetFrameCount
-        private static IntPtr _p13;
-        private static get_frame_count_delegate _d13;
+        private static IntPtr _p14;
+        private static get_frame_count_delegate _d14;
         
         public static UIntPtr get_frame_count(cef_browser_t* self)
         {
             get_frame_count_delegate d;
             var p = self->_get_frame_count;
-            if (p == _p13) { d = _d13; }
+            if (p == _p14) { d = _d14; }
             else
             {
                 d = (get_frame_count_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_count_delegate));
-                if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
+                if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
             }
             return d(self);
         }
         
         // GetFrameIdentifiers
-        private static IntPtr _p14;
-        private static get_frame_identifiers_delegate _d14;
+        private static IntPtr _p15;
+        private static get_frame_identifiers_delegate _d15;
         
         public static void get_frame_identifiers(cef_browser_t* self, UIntPtr* identifiersCount, long* identifiers)
         {
             get_frame_identifiers_delegate d;
             var p = self->_get_frame_identifiers;
-            if (p == _p14) { d = _d14; }
+            if (p == _p15) { d = _d15; }
             else
             {
                 d = (get_frame_identifiers_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_identifiers_delegate));
-                if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
+                if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
             }
             d(self, identifiersCount, identifiers);
         }
         
         // GetFrameNames
-        private static IntPtr _p15;
-        private static get_frame_names_delegate _d15;
+        private static IntPtr _p16;
+        private static get_frame_names_delegate _d16;
         
         public static void get_frame_names(cef_browser_t* self, cef_string_list* names)
         {
             get_frame_names_delegate d;
             var p = self->_get_frame_names;
-            if (p == _p15) { d = _d15; }
+            if (p == _p16) { d = _d16; }
             else
             {
                 d = (get_frame_names_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_names_delegate));
-                if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
+                if (_p16 == IntPtr.Zero) { _d16 = d; _p16 = p; }
             }
             d(self, names);
         }
         
         // SendProcessMessage
-        private static IntPtr _p16;
-        private static send_process_message_delegate _d16;
+        private static IntPtr _p17;
+        private static send_process_message_delegate _d17;
         
         public static int send_process_message(cef_browser_t* self, CefProcessId target_process, cef_process_message_t* message)
         {
             send_process_message_delegate d;
             var p = self->_send_process_message;
-            if (p == _p16) { d = _d16; }
+            if (p == _p17) { d = _d17; }
             else
             {
                 d = (send_process_message_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(send_process_message_delegate));
-                if (_p16 == IntPtr.Zero) { _d16 = d; _p16 = p; }
+                if (_p17 == IntPtr.Zero) { _d17 = d; _p17 = p; }
             }
             return d(self, target_process, message);
         }

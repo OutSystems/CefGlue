@@ -142,7 +142,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void invalidate_delegate(cef_browser_host_t* self, cef_rect_t* dirtyRect);
+        private delegate void invalidate_delegate(cef_browser_host_t* self, cef_rect_t* dirtyRect, CefPaintElementType type);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -154,19 +154,19 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void send_mouse_click_event_delegate(cef_browser_host_t* self, int x, int y, CefMouseButtonType type, int mouseUp, int clickCount);
+        private delegate void send_mouse_click_event_delegate(cef_browser_host_t* self, cef_mouse_event_t* @event, CefMouseButtonType type, int mouseUp, int clickCount);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void send_mouse_move_event_delegate(cef_browser_host_t* self, int x, int y, int mouseLeave);
+        private delegate void send_mouse_move_event_delegate(cef_browser_host_t* self, cef_mouse_event_t* @event, int mouseLeave);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void send_mouse_wheel_event_delegate(cef_browser_host_t* self, int x, int y, int deltaX, int deltaY);
+        private delegate void send_mouse_wheel_event_delegate(cef_browser_host_t* self, cef_mouse_event_t* @event, int deltaX, int deltaY);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -456,7 +456,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p10;
         private static invalidate_delegate _d10;
         
-        public static void invalidate(cef_browser_host_t* self, cef_rect_t* dirtyRect)
+        public static void invalidate(cef_browser_host_t* self, cef_rect_t* dirtyRect, CefPaintElementType type)
         {
             invalidate_delegate d;
             var p = self->_invalidate;
@@ -466,7 +466,7 @@ namespace Xilium.CefGlue.Interop
                 d = (invalidate_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(invalidate_delegate));
                 if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
             }
-            d(self, dirtyRect);
+            d(self, dirtyRect, type);
         }
         
         // SendKeyEvent
@@ -490,7 +490,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p12;
         private static send_mouse_click_event_delegate _d12;
         
-        public static void send_mouse_click_event(cef_browser_host_t* self, int x, int y, CefMouseButtonType type, int mouseUp, int clickCount)
+        public static void send_mouse_click_event(cef_browser_host_t* self, cef_mouse_event_t* @event, CefMouseButtonType type, int mouseUp, int clickCount)
         {
             send_mouse_click_event_delegate d;
             var p = self->_send_mouse_click_event;
@@ -500,14 +500,14 @@ namespace Xilium.CefGlue.Interop
                 d = (send_mouse_click_event_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(send_mouse_click_event_delegate));
                 if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
             }
-            d(self, x, y, type, mouseUp, clickCount);
+            d(self, @event, type, mouseUp, clickCount);
         }
         
         // SendMouseMoveEvent
         private static IntPtr _p13;
         private static send_mouse_move_event_delegate _d13;
         
-        public static void send_mouse_move_event(cef_browser_host_t* self, int x, int y, int mouseLeave)
+        public static void send_mouse_move_event(cef_browser_host_t* self, cef_mouse_event_t* @event, int mouseLeave)
         {
             send_mouse_move_event_delegate d;
             var p = self->_send_mouse_move_event;
@@ -517,14 +517,14 @@ namespace Xilium.CefGlue.Interop
                 d = (send_mouse_move_event_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(send_mouse_move_event_delegate));
                 if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
             }
-            d(self, x, y, mouseLeave);
+            d(self, @event, mouseLeave);
         }
         
         // SendMouseWheelEvent
         private static IntPtr _p14;
         private static send_mouse_wheel_event_delegate _d14;
         
-        public static void send_mouse_wheel_event(cef_browser_host_t* self, int x, int y, int deltaX, int deltaY)
+        public static void send_mouse_wheel_event(cef_browser_host_t* self, cef_mouse_event_t* @event, int deltaX, int deltaY)
         {
             send_mouse_wheel_event_delegate d;
             var p = self->_send_mouse_wheel_event;
@@ -534,7 +534,7 @@ namespace Xilium.CefGlue.Interop
                 d = (send_mouse_wheel_event_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(send_mouse_wheel_event_delegate));
                 if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
             }
-            d(self, x, y, deltaX, deltaY);
+            d(self, @event, deltaX, deltaY);
         }
         
         // SendFocusEvent

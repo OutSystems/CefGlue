@@ -27,7 +27,8 @@
                 windowInfo.SetTransparentPainting(true);
                 windowInfo.Width = 500;
                 windowInfo.Height = 500;
-                windowInfo.Style = WindowStyle.WS_POPUP | WindowStyle.WS_VISIBLE;
+                //windowInfo.Style = WindowStyle.WS_POPUP | WindowStyle.WS_SIZEFRAME | WindowStyle.WS_VISIBLE;
+                windowInfo.StyleEx = WindowStyleEx.WS_EX_COMPOSITED;
             }
 
             _core.Create(windowInfo);
@@ -48,7 +49,7 @@
         private static extern int DwmExtendFrameIntoClientArea(IntPtr hwnd, ref MARGINS margins);
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct MARGINS
+        private struct MARGINS
         {
             public int leftWidth;
             public int rightWidth;

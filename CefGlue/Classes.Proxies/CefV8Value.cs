@@ -7,8 +7,11 @@ namespace Xilium.CefGlue
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Class representing a V8 value. The methods of this class may only be called
-    /// on the render process main thread.
+    /// Class representing a V8 value handle. V8 handles can only be accessed from
+    /// the thread on which they are created. Valid threads for creating a V8 handle
+    /// include the render process main thread (TID_RENDERER) and WebWorker threads.
+    /// A task runner for posting tasks on the associated thread can be retrieved via
+    /// the CefV8Context::GetTaskRunner() method.
     /// </summary>
     public sealed unsafe partial class CefV8Value
     {
@@ -147,8 +150,9 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Returns true if this object is valid. Do not call any other methods if this
-        /// method returns false.
+        /// Returns true if the underlying handle is valid and it can be accessed on
+        /// the current thread. Do not call any other methods if this method returns
+        /// false.
         /// </summary>
         public bool IsValid
         {

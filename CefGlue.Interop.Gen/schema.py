@@ -64,6 +64,8 @@ c2cs_types = {
     'cef_settings_t': 'cef_settings_t',
     'cef_key_event_t': 'cef_key_event_t',
     'cef_geoposition_t': 'cef_geoposition_t',
+    'cef_rect_t': 'cef_rect_t',
+    'cef_mouse_event_t': 'cef_mouse_event_t',
 
     # platform dependend structs
     'cef_main_args_t': 'cef_main_args_t',
