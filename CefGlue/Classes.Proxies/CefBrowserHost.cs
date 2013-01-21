@@ -245,10 +245,10 @@ namespace Xilium.CefGlue
         /// </summary>
         public void SendKeyEvent(CefKeyEvent keyEvent)
         {
-            // TODO: use CefKeyEvent 
+            if (keyEvent == null) throw new ArgumentNullException("keyEvent");
+
             var n_event = new cef_key_event_t();
-            var todo = new CefKeyEvent(&n_event);
-            todo.Dispose();
+            keyEvent.ToNative(&n_event);
             cef_browser_host_t.send_key_event(_self, &n_event);
         }
 

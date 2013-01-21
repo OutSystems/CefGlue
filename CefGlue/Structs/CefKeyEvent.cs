@@ -3,18 +3,19 @@
     using System;
     using Xilium.CefGlue.Interop;
 
-    public unsafe sealed class CefKeyEvent
+    public sealed class CefKeyEvent
     {
-        private cef_key_event_t* _self;
+        private CefKeyEventType _type;
+        private CefEventFlags _modifiers;
+        private int _windowsKeyCode;
+        private int _nativeKeyCode;
+        private bool _isSystemKey;
+        private char _character;
+        private char _unmodifiedCharacter;
+        private bool _focusOnEditableField;
 
-        internal CefKeyEvent(cef_key_event_t* ptr)
+        public CefKeyEvent()
         {
-            _self = ptr;
-        }
-
-        internal void Dispose()
-        {
-            _self = null;
         }
 
         /// <summary>
@@ -22,7 +23,8 @@
         /// </summary>
         public CefKeyEventType EventType
         {
-            get { return _self->type; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         /// <summary>
@@ -31,7 +33,8 @@
         /// </summary>
         public CefEventFlags Modifiers
         {
-            get { return _self->modifiers; }
+            get { return _modifiers; }
+            set { _modifiers = value; }
         }
 
         /// <summary>
@@ -42,7 +45,8 @@
         /// </summary>
         public int WindowsKeyCode
         {
-            get { return _self->windows_key_code; }
+            get { return _windowsKeyCode; }
+            set { _windowsKeyCode = value; }
         }
 
         /// <summary>
@@ -50,7 +54,8 @@
         /// </summary>
         public int NativeKeyCode
         {
-            get { return _self->native_key_code; }
+            get { return _nativeKeyCode; }
+            set { _nativeKeyCode = value; }
         }
 
         /// <summary>
@@ -60,7 +65,8 @@
         /// </summary>
         public bool IsSystemKey
         {
-            get { return _self->is_system_key; }
+            get { return _isSystemKey; }
+            set { _isSystemKey = value; }
         }
 
         /// <summary>
@@ -68,7 +74,8 @@
         /// </summary>
         public char Character
         {
-            get { return (char)_self->character; }
+            get { return _character; }
+            set { _character = value; }
         }
 
         /// <summary>
@@ -77,7 +84,8 @@
         /// </summary>
         public char UnmodifiedCharacter
         {
-            get { return (char)_self->unmodified_character; }
+            get { return _unmodifiedCharacter; }
+            set { _unmodifiedCharacter = value; }
         }
 
         /// <summary>
@@ -86,7 +94,43 @@
         /// </summary>
         public bool FocusOnEditableField
         {
-            get { return _self->focus_on_editable_field; }
+            get { return _focusOnEditableField; }
+            set { _focusOnEditableField = value; }
         }
+
+        #region Interop
+
+        internal static unsafe CefKeyEvent FromNative(cef_key_event_t* ptr)
+        {
+            if (ptr == null) throw new ArgumentNullException("ptr");
+
+            return new CefKeyEvent
+            {
+                EventType = ptr->type,
+                Modifiers = ptr->modifiers,
+                WindowsKeyCode = ptr->windows_key_code,
+                NativeKeyCode = ptr->native_key_code,
+                IsSystemKey = ptr->is_system_key,
+                Character = (char)ptr->character,
+                UnmodifiedCharacter = (char)ptr->unmodified_character,
+                FocusOnEditableField = ptr->focus_on_editable_field,
+            };
+        }
+
+        internal unsafe void ToNative(cef_key_event_t* ptr)
+        {
+            if (ptr == null) throw new ArgumentNullException("ptr");
+
+            ptr->type = EventType;
+            ptr->modifiers = Modifiers;
+            ptr->windows_key_code = WindowsKeyCode;
+            ptr->native_key_code = NativeKeyCode;
+            ptr->is_system_key = IsSystemKey;
+            ptr->character = Character;
+            ptr->unmodified_character = UnmodifiedCharacter;
+            ptr->focus_on_editable_field = FocusOnEditableField;
+        }
+
+        #endregion
     }
 }

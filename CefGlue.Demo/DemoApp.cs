@@ -113,6 +113,7 @@
                     new MenuItem(new Command("Popup Window", PopupWindowCommand)),
                     new MenuItem(new Command("Transparent Popup Window", TransparentPopupWindowCommand)),
                     new MenuItem(new Command("Open Developer Tools...", OpenDeveloperToolsCommand)),
+                    new MenuItem(new Command("SendKeyEvent", SendKeyEventCommand)),
                     }),
                 new MenuItem("Help", new [] {
                     new MenuItem(new Command("About", HelpAboutCommand)),
@@ -179,6 +180,25 @@
         {
             var devToolsUrl = MainView.CurrentBrowser.GetHost().GetDevToolsUrl(true);
             Process.Start(devToolsUrl);
+        }
+
+        private void SendKeyEventCommand(object sender, EventArgs e)
+        {
+            var host = MainView.CurrentBrowser.GetHost();
+
+            foreach (var c in "This text typed with CefBrowserHost.SendKeyEvent method!")
+            {
+                // little hacky
+                host.SendKeyEvent(new CefKeyEvent
+                    {
+                        EventType = CefKeyEventType.Char,
+                        Modifiers= CefEventFlags.None,
+                        WindowsKeyCode = c,
+                        NativeKeyCode = c,
+                        Character = c,
+                        UnmodifiedCharacter = c,
+                    });
+            }
         }
 
         private void HelpAboutCommand(object sender, EventArgs e)

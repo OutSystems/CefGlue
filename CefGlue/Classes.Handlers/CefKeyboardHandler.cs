@@ -17,7 +17,7 @@ namespace Xilium.CefGlue
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
-            var m_event = new CefKeyEvent(@event);
+            var m_event = CefKeyEvent.FromNative(@event);
             // TODO: wrap cef_event_handle_t (os_event)
             IntPtr m_os_event = IntPtr.Zero;
             if (os_event != IntPtr.Zero)
@@ -28,8 +28,6 @@ namespace Xilium.CefGlue
 
             var result = OnPreKeyEvent(m_browser, m_event, m_os_event, out m_is_keyboard_shortcut);
             *is_keyboard_shortcut = m_is_keyboard_shortcut ? 1 : 0;
-
-            m_event.Dispose();
 
             return result ? 1 : 0;
         }
@@ -53,7 +51,7 @@ namespace Xilium.CefGlue
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
-            var m_event = new CefKeyEvent(@event);
+            var m_event = CefKeyEvent.FromNative(@event);
             // TODO: wrap cef_event_handle_t (os_event)
             IntPtr m_os_event = IntPtr.Zero;
             if (os_event != IntPtr.Zero)
@@ -61,8 +59,6 @@ namespace Xilium.CefGlue
             }
 
             var result = OnKeyEvent(m_browser, m_event, m_os_event);
-
-            m_event.Dispose();
 
             return result ? 1 : 0;
         }
