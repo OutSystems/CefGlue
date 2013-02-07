@@ -536,7 +536,7 @@
             fixed (char* path_str = path)
             {
                 var n_path = new cef_string_t(path_str, path.Length);
-                libcef.unregister_internal_web_plugin(&n_path);
+                libcef.force_web_plugin_shutdown(&n_path);
             }
         }
 
