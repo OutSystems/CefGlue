@@ -8,28 +8,34 @@ namespace Xilium.CefGlue
 
     /// <summary>
     /// Implement this interface to handle events related to browser life span. The
-    /// methods of this class will be called on the UI thread.
+    /// methods of this class will be called on the UI thread unless otherwise
+    /// indicated.
     /// </summary>
     public abstract unsafe partial class CefLifeSpanHandler
     {
-        private int on_before_popup(cef_life_span_handler_t* self, cef_browser_t* parentBrowser, cef_popup_features_t* popupFeatures, cef_window_info_t* windowInfo, cef_string_t* url, cef_client_t** client, cef_browser_settings_t* settings)
+        private int on_before_popup(cef_life_span_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_string_t* target_url, cef_string_t* target_frame_name, cef_popup_features_t* popupFeatures, cef_window_info_t* windowInfo, cef_client_t** client, cef_browser_settings_t* settings, int* no_javascript_access)
         {
             CheckSelf(self);
 
-            var m_parentBrowser = CefBrowser.FromNative(parentBrowser);
+            var m_browser = CefBrowser.FromNative(browser);
+            var m_frame = CefFrame.FromNative(frame);
+            var m_targetUrl = cef_string_t.ToString(target_url);
+            var m_targetFrameName = cef_string_t.ToString(target_frame_name);
             var m_popupFeatures = new CefPopupFeatures(popupFeatures);
             var m_windowInfo = CefWindowInfo.FromNative(windowInfo);
-            var m_url = cef_string_t.ToString(url);
             var m_client = CefClient.FromNative(*client);
             var m_settings = new CefBrowserSettings(settings);
+            var m_noJavascriptAccess = (*no_javascript_access) != 0;
 
             var o_client = m_client;
-            var result = OnBeforePopup(m_parentBrowser, m_popupFeatures, m_windowInfo, m_url, ref m_client, m_settings);
+            var result = OnBeforePopup(m_browser, m_frame, m_targetUrl, m_targetFrameName, m_popupFeatures, m_windowInfo, ref m_client, m_settings, ref m_noJavascriptAccess);
 
             if ((object)o_client != m_client && m_client != null)
             {
                 *client = m_client.ToNative();
             }
+
+            *no_javascript_access = m_noJavascriptAccess ? 1 : 0;
 
             m_popupFeatures.Dispose();
             m_windowInfo.Dispose();
@@ -39,17 +45,19 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Called before a new popup window is created. The |parentBrowser| parameter
-        /// will point to the parent browser window. The |popupFeatures| parameter will
-        /// contain information about the style of popup window requested. Return false
-        /// to have the framework create the new popup window based on the parameters
-        /// in |windowInfo|. Return true to cancel creation of the popup window. By
-        /// default, a newly created popup window will have the same client and
-        /// settings as the parent window. To change the client for the new window
-        /// modify the object that |client| points to. To change the settings for the
-        /// new window modify the |settings| structure.
+        /// Called on the IO thread before a new popup window is created. The |browser|
+        /// and |frame| parameters represent the source of the popup request. The
+        /// |target_url| and |target_frame_name| values may be empty if none were
+        /// specified with the request. The |popupFeatures| structure contains
+        /// information about the requested popup window. To allow creation of the
+        /// popup window optionally modify |windowInfo|, |client|, |settings| and
+        /// |no_javascript_access| and return false. To cancel creation of the popup
+        /// window return true. The |client| and |settings| values will default to the
+        /// source browser's values. The |no_javascript_access| value indicates whether
+        /// the new browser window should be scriptable and in the same process as the
+        /// source browser.
         /// </summary>
-        protected virtual bool OnBeforePopup(CefBrowser parentBrowser, CefPopupFeatures popupFeatures, CefWindowInfo windowInfo, string url, ref CefClient client, CefBrowserSettings settings)
+        protected virtual bool OnBeforePopup(CefBrowser browser, CefFrame frame, string targetUrl, string targetFrameName, CefPopupFeatures popupFeatures, CefWindowInfo windowInfo, ref CefClient client, CefBrowserSettings settings, ref bool noJavascriptAccess)
         {
             return false;
         }

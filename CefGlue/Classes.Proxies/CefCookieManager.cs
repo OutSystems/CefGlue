@@ -28,16 +28,20 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Creates a new cookie manager. If |path| is empty data will be stored in
-        /// memory only. Returns NULL if creation fails.
+        /// memory only. Otherwise, data will be stored at the specified |path|. To
+        /// persist session cookies (cookies without an expiry date or validity
+        /// interval) set |persist_session_cookies| to true. Session cookies are
+        /// generally intended to be transient and most Web browsers do not persist
+        /// them. Returns NULL if creation fails.
         /// </summary>
-        public static CefCookieManager Create(string path)
+        public static CefCookieManager Create(string path, bool persistSessionCookies)
         {
             fixed (char* path_str = path)
             {
                 var n_path = new cef_string_t(path_str, path != null ? path.Length : 0);
 
                 return CefCookieManager.FromNativeOrNull(
-                    cef_cookie_manager_t.create_manager(&n_path)
+                    cef_cookie_manager_t.create_manager(&n_path, persistSessionCookies ? 1 : 0)
                     );
             }
         }
@@ -132,17 +136,32 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Sets the directory path that will be used for storing cookie data. If
-        /// |path| is empty data will be stored in memory only. Returns false if
-        /// cookies cannot be accessed.
+        /// |path| is empty data will be stored in memory only. Otherwise, data will be
+        /// stored at the specified |path|. To persist session cookies (cookies without
+        /// an expiry date or validity interval) set |persist_session_cookies| to true.
+        /// Session cookies are generally intended to be transient and most Web browsers
+        /// do not persist them. Returns false if cookies cannot be accessed.
         /// </summary>
-        public bool SetStoragePath(string path)
+        public bool SetStoragePath(string path, bool persistSessionCookies)
         {
             fixed (char* path_str = path)
             {
                 var n_path = new cef_string_t(path_str, path != null ? path.Length : 0);
 
-                return cef_cookie_manager_t.set_storage_path(_self, &n_path) != 0;
+                return cef_cookie_manager_t.set_storage_path(_self, &n_path, persistSessionCookies ? 1 : 0) != 0;
             }
+        }
+
+        /// <summary>
+        /// Flush the backing store (if any) to disk and execute the specified
+        /// |handler| on the IO thread when done. Returns false if cookies cannot be
+        /// accessed.
+        /// </summary>
+        public bool FlushStore(CefCompletionHandler handler)
+        {
+            var n_handler = handler != null ? handler.ToNative() : null;
+
+            return cef_cookie_manager_t.flush_store(_self, n_handler) != 0;
         }
     }
 }

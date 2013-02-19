@@ -12,26 +12,6 @@ namespace Xilium.CefGlue
     /// </summary>
     public abstract unsafe partial class CefBrowserProcessHandler
     {
-        private cef_proxy_handler_t* get_proxy_handler(cef_browser_process_handler_t* self)
-        {
-            CheckSelf(self);
-
-            var result = GetProxyHandler();
-
-            return result != null ? result.ToNative() : null;
-        }
-
-        /// <summary>
-        /// Return the handler for proxy events. If no handler is returned the default
-        /// system handler will be used. This method is called on the browser process
-        /// IO thread.
-        /// </summary>
-        protected virtual CefProxyHandler GetProxyHandler()
-        {
-            return null;
-        }
-
-
         private void on_context_initialized(cef_browser_process_handler_t* self)
         {
             CheckSelf(self);

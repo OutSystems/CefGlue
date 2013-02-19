@@ -13,7 +13,6 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_browser_process_handler_t
     {
         internal cef_base_t _base;
-        internal IntPtr _get_proxy_handler;
         internal IntPtr _on_context_initialized;
         internal IntPtr _on_before_child_process_launch;
         internal IntPtr _on_render_process_thread_created;
@@ -35,12 +34,6 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate int get_refct_delegate(cef_browser_process_handler_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate cef_proxy_handler_t* get_proxy_handler_delegate(cef_browser_process_handler_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

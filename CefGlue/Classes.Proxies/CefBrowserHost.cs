@@ -208,6 +208,21 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
+        /// Download the file at |url| using CefDownloadHandler.
+        /// </summary>
+        public void StartDownload(string url)
+        {
+            if (string.IsNullOrEmpty(url)) throw new ArgumentNullException("url");
+
+            fixed (char* url_ptr = url)
+            {
+                var n_url = new cef_string_t(url_ptr, url.Length);
+
+                cef_browser_host_t.start_download(_self, &n_url);
+            }
+        }
+
+        /// <summary>
         /// Returns true if window rendering is disabled.
         /// </summary>
         public bool IsWindowRenderingDisabled

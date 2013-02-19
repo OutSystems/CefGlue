@@ -21,6 +21,7 @@ namespace Xilium.CefGlue.Interop
         public bool_t multi_threaded_message_loop;
         public bool_t command_line_args_disabled;
         public cef_string_t cache_path;
+        public bool_t persist_session_cookies;
         public cef_string_t user_agent;
         public cef_string_t product_version;
         public cef_string_t locale;
@@ -28,13 +29,13 @@ namespace Xilium.CefGlue.Interop
         public CefLogSeverity log_severity;
         public bool_t release_dcheck_enabled;
         public cef_string_t javascript_flags;
-        public bool_t auto_detect_proxy_settings_enabled;
         public cef_string_t resources_dir_path;
         public cef_string_t locales_dir_path;
         public bool_t pack_loading_disabled;
         public int remote_debugging_port;
         public int uncaught_exception_stack_size;
         public int context_safety_implementation;
+        public bool_t ignore_certificate_errors;
 
         #region Alloc & Free
         private static int _sizeof;

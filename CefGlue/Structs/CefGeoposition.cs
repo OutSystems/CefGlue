@@ -33,6 +33,7 @@
             _latitude = position->latitude;
             _longitude = position->longitude;
             _altitude = position->altitude;
+            _accuracy = position->accuracy;
             _altitudeAccuracy = position->altitude_accuracy;
             _heading = position->heading;
             _speed = position->speed;

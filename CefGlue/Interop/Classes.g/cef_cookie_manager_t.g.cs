@@ -19,6 +19,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _set_cookie;
         internal IntPtr _delete_cookies;
         internal IntPtr _set_storage_path;
+        internal IntPtr _flush_store;
         
         // GetGlobalManager
         [DllImport(libcef.DllName, EntryPoint = "cef_cookie_manager_get_global_manager", CallingConvention = libcef.CEF_CALL)]
@@ -26,7 +27,7 @@ namespace Xilium.CefGlue.Interop
         
         // CreateManager
         [DllImport(libcef.DllName, EntryPoint = "cef_cookie_manager_create_manager", CallingConvention = libcef.CEF_CALL)]
-        public static extern cef_cookie_manager_t* create_manager(cef_string_t* path);
+        public static extern cef_cookie_manager_t* create_manager(cef_string_t* path, int persist_session_cookies);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -80,7 +81,13 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_storage_path_delegate(cef_cookie_manager_t* self, cef_string_t* path);
+        private delegate int set_storage_path_delegate(cef_cookie_manager_t* self, cef_string_t* path, int persist_session_cookies);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate int flush_store_delegate(cef_cookie_manager_t* self, cef_completion_handler_t* handler);
         
         // AddRef
         private static IntPtr _p0;
@@ -222,7 +229,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p8;
         private static set_storage_path_delegate _d8;
         
-        public static int set_storage_path(cef_cookie_manager_t* self, cef_string_t* path)
+        public static int set_storage_path(cef_cookie_manager_t* self, cef_string_t* path, int persist_session_cookies)
         {
             set_storage_path_delegate d;
             var p = self->_set_storage_path;
@@ -232,7 +239,24 @@ namespace Xilium.CefGlue.Interop
                 d = (set_storage_path_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_storage_path_delegate));
                 if (_p8 == IntPtr.Zero) { _d8 = d; _p8 = p; }
             }
-            return d(self, path);
+            return d(self, path, persist_session_cookies);
+        }
+        
+        // FlushStore
+        private static IntPtr _p9;
+        private static flush_store_delegate _d9;
+        
+        public static int flush_store(cef_cookie_manager_t* self, cef_completion_handler_t* handler)
+        {
+            flush_store_delegate d;
+            var p = self->_flush_store;
+            if (p == _p9) { d = _d9; }
+            else
+            {
+                d = (flush_store_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(flush_store_delegate));
+                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
+            }
+            return d(self, handler);
         }
         
     }

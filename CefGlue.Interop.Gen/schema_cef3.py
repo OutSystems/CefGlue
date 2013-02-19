@@ -86,4 +86,6 @@ classdef = {
     'CefRenderHandler': { 'role': ROLE_HANDLER },
     # R980
     'CefTaskRunner': { 'role': ROLE_PROXY },
+    # R1102
+    'CefCompletionHandler': { 'role': ROLE_HANDLER },
     }

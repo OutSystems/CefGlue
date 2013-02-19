@@ -42,7 +42,11 @@
                 | ControlStyles.Selectable,
                 true);
 
-            _core = new WebBrowser(this, new CefBrowserSettings(), "about:blank");
+            var settings = new CefBrowserSettings();
+            // settings.ImageLoading = CefState.Disabled;
+            // settings.AcceleratedCompositing = CefState.Disabled;
+
+            _core = new WebBrowser(this, settings, "about:blank");
             _core.Created += new EventHandler(BrowserCreated);
         }
 

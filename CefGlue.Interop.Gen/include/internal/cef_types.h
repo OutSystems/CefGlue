@@ -1,4 +1,4 @@
-// Copyright (c) 2010 Marshall A. Greenblatt. All rights reserved.
+// Copyright (c) 2013 Marshall A. Greenblatt. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -129,9 +129,29 @@ enum cef_log_severity_t {
 };
 
 ///
+// Represents the state of a setting.
+///
+enum cef_state_t {
+  ///
+  // Use the default state for the setting.
+  ///
+  STATE_DEFAULT = 0,
+
+  ///
+  // Enable or allow the setting.
+  ///
+  STATE_ENABLED,
+
+  ///
+  // Disable or disallow the setting.
+  ///
+  STATE_DISABLED,
+};
+
+///
 // Initialization settings. Specify NULL or 0 to get the recommended default
 // values. Many of these and other settings can also configured using command-
-// line flags.
+// line switches.
 ///
 typedef struct _cef_settings_t {
   ///
@@ -142,14 +162,16 @@ typedef struct _cef_settings_t {
   ///
   // Set to true (1) to use a single process for the browser and renderer. This
   // run mode is not officially supported by Chromium and is less stable than
-  // the multi-process default.
+  // the multi-process default. Also configurable using the "single-process"
+  // command-line switch.
   ///
   bool single_process;
 
   ///
   // The path to a separate executable that will be launched for sub-processes.
   // By default the browser process executable is used. See the comments on
-  // CefExecuteProcess() for details.
+  // CefExecuteProcess() for details. Also configurable using the
+  // "browser-subprocess-path" command-line switch.
   ///
   cef_string_t browser_subprocess_path;
 
@@ -176,15 +198,27 @@ typedef struct _cef_settings_t {
   cef_string_t cache_path;
 
   ///
+  // To persist session cookies (cookies without an expiry date or validity
+  // interval) by default when using the global cookie manager set this value to
+  // true. Session cookies are generally intended to be transient and most Web
+  // browsers do not persist them. A |cache_path| value must also be specified to
+  // enable this feature. Also configurable using the "persist-session-cookies"
+  // command-line switch.
+  ///
+  bool persist_session_cookies;
+
+  ///
   // Value that will be returned as the User-Agent HTTP header. If empty the
-  // default User-Agent string will be used.
+  // default User-Agent string will be used. Also configurable using the
+  // "user-agent" command-line switch.
   ///
   cef_string_t user_agent;
 
   ///
   // Value that will be inserted as the product portion of the default
   // User-Agent string. If empty the Chromium product version will be used. If
-  // |userAgent| is specified this value will be ignored.
+  // |userAgent| is specified this value will be ignored. Also configurable
+  // using the "product-version" command-line switch.
   ///
   cef_string_t product_version;
 
@@ -192,46 +226,46 @@ typedef struct _cef_settings_t {
   // The locale string that will be passed to WebKit. If empty the default
   // locale of "en-US" will be used. This value is ignored on Linux where locale
   // is determined using environment variable parsing with the precedence order:
-  // LANGUAGE, LC_ALL, LC_MESSAGES and LANG.
+  // LANGUAGE, LC_ALL, LC_MESSAGES and LANG. Also configurable using the "lang"
+  // command-line switch.
   ///
   cef_string_t locale;
 
   ///
   // The directory and file name to use for the debug log. If empty, the
   // default name of "debug.log" will be used and the file will be written
-  // to the application directory.
+  // to the application directory. Also configurable using the "log-file"
+  // command-line switch.
   ///
   cef_string_t log_file;
 
   ///
   // The log severity. Only messages of this severity level or higher will be
-  // logged.
+  // logged. Also configurable using the "log-severity" command-line switch with
+  // a value of "verbose", "info", "warning", "error", "error-report" or
+  // "disable".
   ///
   cef_log_severity_t log_severity;
 
   ///
-  // Enable DCHECK in release mode to ease debugging.
+  // Enable DCHECK in release mode to ease debugging. Also configurable using the
+  // "enable-release-dcheck" command-line switch.
   ///
   bool release_dcheck_enabled;
 
   ///
   // Custom flags that will be used when initializing the V8 JavaScript engine.
-  // The consequences of using custom flags may not be well tested.
+  // The consequences of using custom flags may not be well tested. Also
+  // configurable using the "js-flags" command-line switch.
   ///
   cef_string_t javascript_flags;
-
-  ///
-  // Set to true (1) to use the system proxy resolver on Windows when
-  // "Automatically detect settings" is checked. This setting is disabled
-  // by default for performance reasons.
-  ///
-  bool auto_detect_proxy_settings_enabled;
 
   ///
   // The fully qualified path for the resources directory. If this value is
   // empty the cef.pak and/or devtools_resources.pak files must be located in
   // the module directory on Windows/Linux or the app bundle Resources directory
-  // on Mac OS X.
+  // on Mac OS X. Also configurable using the "resources-dir-path" command-line
+  // switch.
   ///
   cef_string_t resources_dir_path;
 
@@ -239,7 +273,8 @@ typedef struct _cef_settings_t {
   // The fully qualified path for the locales directory. If this value is empty
   // the locales directory must be located in the module directory. This value
   // is ignored on Mac OS X where pack files are always loaded from the app
-  // bundle Resources directory.
+  // bundle Resources directory. Also configurable using the "locales-dir-path"
+  // command-line switch.
   ///
   cef_string_t locales_dir_path;
 
@@ -247,7 +282,8 @@ typedef struct _cef_settings_t {
   // Set to true (1) to disable loading of pack files for resources and locales.
   // A resource bundle handler must be provided for the browser and render
   // processes via CefApp::GetResourceBundleHandler() if loading of pack files
-  // is disabled.
+  // is disabled. Also configurable using the "disable-pack-loading" command-
+  // line switch.
   ///
   bool pack_loading_disabled;
 
@@ -255,7 +291,8 @@ typedef struct _cef_settings_t {
   // Set to a value between 1024 and 65535 to enable remote debugging on the
   // specified port. For example, if 8080 is specified the remote debugging URL
   // will be http://localhost:8080. CEF can be remotely debugged from any CEF or
-  // Chrome browser window.
+  // Chrome browser window. Also configurable using the "remote-debugging-port"
+  // command-line switch.
   ///
   int remote_debugging_port;
 
@@ -263,7 +300,8 @@ typedef struct _cef_settings_t {
   // The number of stack trace frames to capture for uncaught exceptions.
   // Specify a positive value to enable the CefV8ContextHandler::
   // OnUncaughtException() callback. Specify 0 (default value) and
-  // OnUncaughtException() will not be called.
+  // OnUncaughtException() will not be called. Also configurable using the
+  // "uncaught-exception-stack-size" command-line switch.
   ///
   int uncaught_exception_stack_size;
 
@@ -283,15 +321,27 @@ typedef struct _cef_settings_t {
   // If you need better performance in the creation of V8 references and you
   // plan to manually track context lifespan you can disable context safety by
   // specifying a value of -1.
+  //
+  // Also configurable using the "context-safety-implementation" command-line
+  // switch.
   ///
   int context_safety_implementation;
+
+  ///
+  // Set to true (1) to ignore errors related to invalid SSL certificates.
+  // Enabling this setting can lead to potential security vulnerabilities like
+  // "man in the middle" attacks. Applications that load content from the
+  // internet should not enable this setting. Also configurable using the
+  // "ignore-certificate-errors" command-line switch.
+  ///
+  bool ignore_certificate_errors;
 } cef_settings_t;
 
 ///
 // Browser initialization settings. Specify NULL or 0 to get the recommended
 // default values. The consequences of using custom values may not be well
 // tested. Many of these and other settings can also configured using command-
-// line flags.
+// line switches.
 ///
 typedef struct _cef_browser_settings_t {
   ///
@@ -316,185 +366,174 @@ typedef struct _cef_browser_settings_t {
   int minimum_logical_font_size;
 
   ///
-  // Set to true (1) to disable loading of fonts from remote sources.
-  ///
-  bool remote_fonts_disabled;
-
-  ///
-  // Default encoding for Web content. If empty "ISO-8859-1" will be used.
+  // Default encoding for Web content. If empty "ISO-8859-1" will be used. Also
+  // configurable using the "default-encoding" command-line switch.
   ///
   cef_string_t default_encoding;
 
   ///
-  // Set to true (1) to attempt automatic detection of content encoding.
-  ///
-  bool encoding_detector_enabled;
-
-  ///
-  // Set to true (1) to disable JavaScript.
-  ///
-  bool javascript_disabled;
-
-  ///
-  // Set to true (1) to disallow JavaScript from opening windows.
-  ///
-  bool javascript_open_windows_disallowed;
-
-  ///
-  // Set to true (1) to disallow JavaScript from closing windows.
-  ///
-  bool javascript_close_windows_disallowed;
-
-  ///
-  // Set to true (1) to disallow JavaScript from accessing the clipboard.
-  ///
-  bool javascript_access_clipboard_disallowed;
-
-  ///
-  // Set to true (1) to disable DOM pasting in the editor. DOM pasting also
-  // depends on |javascript_cannot_access_clipboard| being false (0).
-  ///
-  bool dom_paste_disabled;
-
-  ///
-  // Set to true (1) to enable drawing of the caret position.
-  ///
-  bool caret_browsing_enabled;
-
-  ///
-  // Set to true (1) to disable Java.
-  ///
-  bool java_disabled;
-
-  ///
-  // Set to true (1) to disable plugins.
-  ///
-  bool plugins_disabled;
-
-  ///
-  // Set to true (1) to allow access to all URLs from file URLs.
-  ///
-  bool universal_access_from_file_urls_allowed;
-
-  ///
-  // Set to true (1) to allow access to file URLs from other file URLs.
-  ///
-  bool file_access_from_file_urls_allowed;
-
-  ///
-  // Set to true (1) to allow risky security behavior such as cross-site
-  // scripting (XSS). Use with extreme care.
-  ///
-  bool web_security_disabled;
-
-  ///
-  // Set to true (1) to enable console warnings about XSS attempts.
-  ///
-  bool xss_auditor_enabled;
-
-  ///
-  // Set to true (1) to suppress the network load of image URLs.  A cached
-  // image will still be rendered if requested.
-  ///
-  bool image_load_disabled;
-
-  ///
-  // Set to true (1) to shrink standalone images to fit the page.
-  ///
-  bool shrink_standalone_images_to_fit;
-
-  ///
-  // Set to true (1) to disable browser backwards compatibility features.
-  ///
-  bool site_specific_quirks_disabled;
-
-  ///
-  // Set to true (1) to disable resize of text areas.
-  ///
-  bool text_area_resize_disabled;
-
-  ///
-  // Set to true (1) to disable use of the page cache.
-  ///
-  bool page_cache_disabled;
-
-  ///
-  // Set to true (1) to not have the tab key advance focus to links.
-  ///
-  bool tab_to_links_disabled;
-
-  ///
-  // Set to true (1) to disable hyperlink pings (<a ping> and window.sendPing).
-  ///
-  bool hyperlink_auditing_disabled;
-
-  ///
-  // Set to true (1) to enable the user style sheet for all pages.
-  ///
-  bool user_style_sheet_enabled;
-
-  ///
-  // Location of the user style sheet. This must be a data URL of the form
-  // "data:text/css;charset=utf-8;base64,csscontent" where "csscontent" is the
-  // base64 encoded contents of the CSS file.
+  // Location of the user style sheet that will be used for all pages. This must
+  // be a data URL of the form "data:text/css;charset=utf-8;base64,csscontent"
+  // where "csscontent" is the base64 encoded contents of the CSS file. Also
+  // configurable using the "user-style-sheet-location" command-line switch.
   ///
   cef_string_t user_style_sheet_location;
 
   ///
-  // Set to true (1) to disable style sheets.
+  // Controls the loading of fonts from remote sources. Also configurable using
+  // the "disable-remote-fonts" command-line switch.
   ///
-  bool author_and_user_styles_disabled;
+  cef_state_t remote_fonts;
 
   ///
-  // Set to true (1) to disable local storage.
+  // Controls whether JavaScript can be executed. Also configurable using the
+  // "disable-javascript" command-line switch.
   ///
-  bool local_storage_disabled;
+  cef_state_t javascript;
 
   ///
-  // Set to true (1) to disable databases.
+  // Controls whether JavaScript can be used for opening windows. Also
+  // configurable using the "disable-javascript-open-windows" command-line
+  // switch.
   ///
-  bool databases_disabled;
+  cef_state_t javascript_open_windows;
 
   ///
-  // Set to true (1) to disable application cache.
+  // Controls whether JavaScript can be used to close windows that were not
+  // opened via JavaScript. JavaScript can still be used to close windows that
+  // were opened via JavaScript. Also configurable using the
+  // "disable-javascript-close-windows" command-line switch.
   ///
-  bool application_cache_disabled;
+  cef_state_t javascript_close_windows;
 
   ///
-  // Set to true (1) to disable WebGL.
+  // Controls whether JavaScript can access the clipboard. Also configurable
+  // using the "disable-javascript-access-clipboard" command-line switch.
   ///
-  bool webgl_disabled;
+  cef_state_t javascript_access_clipboard;
 
   ///
-  // Set to true (1) to disable accelerated compositing.
+  // Controls whether DOM pasting is supported in the editor via
+  // execCommand("paste"). The |javascript_access_clipboard| setting must also
+  // be enabled. Also configurable using the "disable-javascript-dom-paste"
+  // command-line switch.
   ///
-  bool accelerated_compositing_disabled;
+  cef_state_t javascript_dom_paste;
 
   ///
-  // Set to true (1) to disable accelerated layers. This affects features like
-  // 3D CSS transforms.
+  // Controls whether the caret position will be drawn. Also configurable using
+  // the "enable-caret-browsing" command-line switch.
   ///
-  bool accelerated_layers_disabled;
+  cef_state_t caret_browsing;
 
   ///
-  // Set to true (1) to disable accelerated video.
+  // Controls whether the Java plugin will be loaded. Also configurable using
+  // the "disable-java" command-line switch.
   ///
-  bool accelerated_video_disabled;
+  cef_state_t java;
 
   ///
-  // Set to true (1) to disable accelerated 2d canvas.
+  // Controls whether any plugins will be loaded. Also configurable using the
+  // "disable-plugins" command-line switch.
   ///
-  bool accelerated_2d_canvas_disabled;
+  cef_state_t plugins;
 
   ///
-  // Set to true (1) to disable accelerated plugins.
+  // Controls whether file URLs will have access to all URLs. Also configurable
+  // using the "allow-universal-access-from-files" command-line switch.
   ///
-  bool accelerated_plugins_disabled;
+  cef_state_t universal_access_from_file_urls;
 
   ///
-  // Set to true (1) to disable developer tools (WebKit inspector).
+  // Controls whether file URLs will have access to other file URLs. Also
+  // configurable using the "allow-access-from-files" command-line switch.
   ///
-  bool developer_tools_disabled;
+  cef_state_t file_access_from_file_urls;
+
+  ///
+  // Controls whether web security restrictions (same-origin policy) will be
+  // enforced. Disabling this setting is not recommend as it will allow risky
+  // security behavior such as cross-site scripting (XSS). Also configurable
+  // using the "disable-web-security" command-line switch.
+  ///
+  cef_state_t web_security;
+
+  ///
+  // Controls whether image URLs will be loaded from the network. A cached image
+  // will still be rendered if requested. Also configurable using the
+  // "disable-image-loading" command-line switch.
+  ///
+  cef_state_t image_loading;
+
+  ///
+  // Controls whether standalone images will be shrunk to fit the page. Also
+  // configurable using the "image-shrink-standalone-to-fit" command-line
+  // switch.
+  ///
+  cef_state_t image_shrink_standalone_to_fit;
+
+  ///
+  // Controls whether text areas can be resized. Also configurable using the
+  // "disable-text-area-resize" command-line switch.
+  ///
+  cef_state_t text_area_resize;
+
+  ///
+  // Controls whether the fastback (back/forward) page cache will be used. Also
+  // configurable using the "enable-fastback" command-line switch.
+  ///
+  cef_state_t page_cache;
+
+  ///
+  // Controls whether the tab key can advance focus to links. Also configurable
+  // using the "disable-tab-to-links" command-line switch.
+  ///
+  cef_state_t tab_to_links;
+
+  ///
+  // Controls whether style sheets can be used. Also configurable using the
+  // "disable-author-and-user-styles" command-line switch.
+  ///
+  cef_state_t author_and_user_styles;
+
+  ///
+  // Controls whether local storage can be used. Also configurable using the
+  // "disable-local-storage" command-line switch.
+  ///
+  cef_state_t local_storage;
+
+  ///
+  // Controls whether databases can be used. Also configurable using the
+  // "disable-databases" command-line switch.
+  ///
+  cef_state_t databases;
+
+  ///
+  // Controls whether the application cache can be used. Also configurable using
+  // the "disable-application-cache" command-line switch.
+  ///
+  cef_state_t application_cache;
+
+  ///
+  // Controls whether WebGL can be used. Note that WebGL requires hardware
+  // support and may not work on all systems even when enabled. Also
+  // configurable using the "disable-webgl" command-line switch.
+  ///
+  cef_state_t webgl;
+
+  ///
+  // Controls whether content that depends on accelerated compositing can be
+  // used. Note that accelerated compositing requires hardware support and may
+  // not work on all systems even when enabled. Also configurable using the
+  // "disable-accelerated-compositing" command-line switch.
+  ///
+  cef_state_t accelerated_compositing;
+
+  ///
+  // Controls whether developer tools (WebKit inspector) can be used. Also
+  // configurable using the "disable-developer-tools" command-line switch.
+  ///
+  cef_state_t developer_tools;
 } cef_browser_settings_t;
 
 ///
@@ -1276,23 +1315,6 @@ typedef struct _cef_popup_features_t {
   bool dialog;
   cef_string_list_t additionalFeatures;
 } cef_popup_features_t;
-
-///
-// Proxy types.
-///
-enum cef_proxy_type_t {
-  CEF_PROXY_TYPE_DIRECT = 0,
-  CEF_PROXY_TYPE_NAMED,
-  CEF_PROXY_TYPE_PAC_STRING,
-};
-
-///
-// Proxy information.
-///
-typedef struct _cef_proxy_info_t {
-  enum cef_proxy_type_t proxyType;
-  cef_string_t proxyList;
-} cef_proxy_info_t;
 
 ///
 // DOM document types.

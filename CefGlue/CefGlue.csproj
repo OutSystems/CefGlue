@@ -58,6 +58,7 @@
     <Compile Include="Classes.g\CefCallback.g.cs" />
     <Compile Include="Classes.g\CefClient.g.cs" />
     <Compile Include="Classes.g\CefCommandLine.g.cs" />
+    <Compile Include="Classes.g\CefCompletionHandler.g.cs" />
     <Compile Include="Classes.g\CefContextMenuHandler.g.cs" />
     <Compile Include="Classes.g\CefContextMenuParams.g.cs" />
     <Compile Include="Classes.g\CefCookieManager.g.cs" />
@@ -89,7 +90,6 @@
     <Compile Include="Classes.g\CefPostData.g.cs" />
     <Compile Include="Classes.g\CefPostDataElement.g.cs" />
     <Compile Include="Classes.g\CefProcessMessage.g.cs" />
-    <Compile Include="Classes.g\CefProxyHandler.g.cs" />
     <Compile Include="Classes.g\CefQuotaCallback.g.cs" />
     <Compile Include="Classes.g\CefReadHandler.g.cs" />
     <Compile Include="Classes.g\CefRenderHandler.g.cs" />
@@ -127,6 +127,7 @@
     <Compile Include="Classes.Handlers\CefApp.cs" />
     <Compile Include="Classes.Handlers\CefBrowserProcessHandler.cs" />
     <Compile Include="Classes.Handlers\CefClient.cs" />
+    <Compile Include="Classes.Handlers\CefCompletionHandler.cs" />
     <Compile Include="Classes.Handlers\CefContextMenuHandler.cs" />
     <Compile Include="Classes.Handlers\CefCookieVisitor.cs" />
     <Compile Include="Classes.Handlers\CefDialogHandler.cs" />
@@ -141,7 +142,6 @@
     <Compile Include="Classes.Handlers\CefKeyboardHandler.cs" />
     <Compile Include="Classes.Handlers\CefLifeSpanHandler.cs" />
     <Compile Include="Classes.Handlers\CefLoadHandler.cs" />
-    <Compile Include="Classes.Handlers\CefProxyHandler.cs" />
     <Compile Include="Classes.Handlers\CefReadHandler.cs" />
     <Compile Include="Classes.Handlers\CefRenderHandler.cs" />
     <Compile Include="Classes.Handlers\CefRenderProcessHandler.cs" />
@@ -207,6 +207,7 @@
     <Compile Include="Enums\CefLogSeverity.cs" />
     <Compile Include="Enums\CefMouseButtonType.cs" />
     <Compile Include="Enums\CefNavigationType.cs" />
+    <Compile Include="Enums\CefState.cs" />
     <Compile Include="Enums\CefStorageType.cs" />
     <Compile Include="Enums\CefErrorCode.cs" />
     <Compile Include="Enums\CefV8AccessControl.cs" />
@@ -218,7 +219,6 @@
     <Compile Include="Enums\CefValueType.cs" />
     <Compile Include="Enums\CefXmlEncodingType.cs" />
     <Compile Include="Enums\CefXmlNodeType.cs" />
-    <Compile Include="Enums\CefProxyType.cs" />
     <Compile Include="Enums\CefJSDialogType.cs" />
     <Compile Include="Enums\CefMenuId.cs" />
     <Compile Include="Enums\CefEventFlags.cs" />
@@ -245,6 +245,7 @@
     <Compile Include="Interop\Base\cef_string_t.cs" />
     <Compile Include="Interop\Classes.g\cef_before_download_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_browser_process_handler_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_completion_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_context_menu_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_context_menu_params_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_cookie_manager_t.g.cs" />
@@ -292,7 +293,6 @@
     <Compile Include="Structs\CefKeyEvent.cs" />
     <Compile Include="Structs\CefMainArgs.cs" />
     <Compile Include="Structs\CefPopupFeatures.cs" />
-    <Compile Include="Structs\CefProxyInfo.cs" />
     <Compile Include="Structs\CefRectangle.cs" />
     <Compile Include="Structs\CefSettings.cs" />
     <Compile Include="Structs\CefWindowInfo.cs" />
@@ -327,7 +327,6 @@
     <Compile Include="Interop\Classes.g\cef_post_data_element_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_post_data_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_process_message_t.g.cs" />
-    <Compile Include="Interop\Classes.g\cef_proxy_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_read_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_render_process_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_request_handler_t.g.cs" />
@@ -363,7 +362,6 @@
     <Compile Include="Interop\Structs\cef_cookie_t.cs" />
     <Compile Include="Interop\Structs\cef_rect_t.cs" />
     <Compile Include="Interop\Structs\cef_popup_features_t.cs" />
-    <Compile Include="Interop\Structs\cef_proxy_info_t.cs" />
     <Compile Include="Interop\Structs\cef_time_t.cs" />
     <Compile Include="Interop\Structs\cef_window_info_t.cs" />
     <Compile Include="StringHelper.cs" />

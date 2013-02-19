@@ -10,51 +10,51 @@ namespace Xilium.CefGlue.Interop
     
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     [SuppressMessage("Microsoft.Design", "CA1049:TypesThatOwnNativeResourcesShouldBeDisposable")]
-    internal unsafe struct cef_proxy_handler_t
+    internal unsafe struct cef_completion_handler_t
     {
         internal cef_base_t _base;
-        internal IntPtr _get_proxy_for_url;
+        internal IntPtr _on_complete;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int add_ref_delegate(cef_proxy_handler_t* self);
+        internal delegate int add_ref_delegate(cef_completion_handler_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int release_delegate(cef_proxy_handler_t* self);
+        internal delegate int release_delegate(cef_completion_handler_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int get_refct_delegate(cef_proxy_handler_t* self);
+        internal delegate int get_refct_delegate(cef_completion_handler_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void get_proxy_for_url_delegate(cef_proxy_handler_t* self, cef_string_t* url, cef_proxy_info_t* proxy_info);
+        internal delegate void on_complete_delegate(cef_completion_handler_t* self);
         
         private static int _sizeof;
         
-        static cef_proxy_handler_t()
+        static cef_completion_handler_t()
         {
-            _sizeof = Marshal.SizeOf(typeof(cef_proxy_handler_t));
+            _sizeof = Marshal.SizeOf(typeof(cef_completion_handler_t));
         }
         
-        internal static cef_proxy_handler_t* Alloc()
+        internal static cef_completion_handler_t* Alloc()
         {
-            var ptr = (cef_proxy_handler_t*)Marshal.AllocHGlobal(_sizeof);
-            *ptr = new cef_proxy_handler_t();
+            var ptr = (cef_completion_handler_t*)Marshal.AllocHGlobal(_sizeof);
+            *ptr = new cef_completion_handler_t();
             ptr->_base._size = (UIntPtr)_sizeof;
             return ptr;
         }
         
-        internal static void Free(cef_proxy_handler_t* ptr)
+        internal static void Free(cef_completion_handler_t* ptr)
         {
             Marshal.FreeHGlobal((IntPtr)ptr);
         }

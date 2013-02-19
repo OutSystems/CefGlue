@@ -9,7 +9,7 @@
     /// Browser initialization settings. Specify <c>null</c> or 0 to get the recommended
     /// default values. The consequences of using custom values may not be well
     /// tested. Many of these and other settings can also configured using command-
-    /// line flags.
+    /// line switches.
     /// </summary>
     public sealed unsafe class CefBrowserSettings
     {
@@ -30,12 +30,15 @@
             _self = null;
         }
 
+        internal cef_browser_settings_t* ToNative()
+        {
+            return _self;
+        }
 
         // The below values map to WebPreferences settings.
 
-        /// <summary>
-        /// Font settings.
-        /// </summary>
+        #region Font Settings
+
         public string StandardFontFamily
         {
             get { return cef_string_t.ToString(&_self->standard_font_family); }
@@ -96,17 +99,12 @@
             set { _self->minimum_logical_font_size = value; }
         }
 
-        /// <summary>
-        /// Set to <c>true</c> to disable loading of fonts from remote sources.
-        /// </summary>
-        public bool RemoteFontsDisabled
-        {
-            get { return _self->remote_fonts_disabled; }
-            set { _self->remote_fonts_disabled = value;}
-        }
+        #endregion
+
 
         /// <summary>
-        /// Default encoding for Web content. If empty "ISO-8859-1" will be used.
+        /// Default encoding for Web content. If empty "ISO-8859-1" will be used. Also
+        /// configurable using the "default-encoding" command-line switch.
         /// </summary>
         public string DefaultEncoding
         {
@@ -115,201 +113,10 @@
         }
 
         /// <summary>
-        /// Set to <c>true</c> to attempt automatic detection of content encoding.
-        /// </summary>
-        public bool EncodingDetectorEnabled
-        {
-            get { return _self->encoding_detector_enabled; }
-            set { _self->encoding_detector_enabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to disable JavaScript.
-        /// </summary>
-        public bool JavaScriptDisabled
-        {
-            get { return _self->javascript_disabled; }
-            set { _self->javascript_disabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to disallow JavaScript from opening windows.
-        /// </summary>
-        public bool JavaScriptOpenWindowsDisallowed
-        {
-            get { return _self->javascript_open_windows_disallowed; }
-            set { _self->javascript_open_windows_disallowed = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to disallow JavaScript from closing windows.
-        /// </summary>
-        public bool JavaScriptCloseWindowsDisallowed
-        {
-            get { return _self->javascript_close_windows_disallowed; }
-            set { _self->javascript_close_windows_disallowed = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to disallow JavaScript from accessing the clipboard.
-        /// </summary>
-        public bool JavaScriptAccessClipboardDisallowed
-        {
-            get { return _self->javascript_access_clipboard_disallowed; }
-            set { _self->javascript_access_clipboard_disallowed = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to disable DOM pasting in the editor. DOM pasting also
-        /// depends on |javascript_cannot_access_clipboard| being <c>false</c>.
-        /// </summary>
-        public bool DomPasteDisabled
-        {
-            get { return _self->dom_paste_disabled; }
-            set { _self->dom_paste_disabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to enable drawing of the caret position.
-        /// </summary>
-        public bool CaretBrowsingEnabled
-        {
-            get { return _self->caret_browsing_enabled; }
-            set { _self->caret_browsing_enabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to disable Java.
-        /// </summary>
-        public bool JavaDisabled
-        {
-            get { return _self->java_disabled; }
-            set { _self->java_disabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to disable plugins.
-        /// </summary>
-        public bool PluginsDisabled
-        {
-            get { return _self->plugins_disabled; }
-            set { _self->plugins_disabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to allow access to all URLs from file URLs.
-        /// </summary>
-        public bool UniversalAccessFromFileUrlsAllowed
-        {
-            get { return _self->universal_access_from_file_urls_allowed; }
-            set { _self->universal_access_from_file_urls_allowed = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to allow access to file URLs from other file URLs.
-        /// </summary>
-        public bool FileAccessFromFileUrlsAllowed
-        {
-            get { return _self->file_access_from_file_urls_allowed; }
-            set { _self->file_access_from_file_urls_allowed = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to allow risky security behavior such as cross-site
-        /// scripting (XSS). Use with extreme care.
-        /// </summary>
-        public bool WebSecurityDisabled
-        {
-            get { return _self->web_security_disabled; }
-            set { _self->web_security_disabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to enable console warnings about XSS attempts.
-        /// </summary>
-        public bool XssAuditorEnabled
-        {
-            get { return _self->xss_auditor_enabled; }
-            set { _self->xss_auditor_enabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to suppress the network load of image URLs.  A cached
-        /// image will still be rendered if requested.
-        /// </summary>
-        public bool ImageLoadDisabled
-        {
-            get { return _self->image_load_disabled; }
-            set { _self->image_load_disabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to shrink standalone images to fit the page.
-        /// </summary>
-        public bool ShrinkStandaloneImagesToFit
-        {
-            get { return _self->shrink_standalone_images_to_fit; }
-            set { _self->shrink_standalone_images_to_fit = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to disable browser backwards compatibility features.
-        /// </summary>
-        public bool SiteSpecificQuirksDisabled
-        {
-            get { return _self->site_specific_quirks_disabled; }
-            set { _self->site_specific_quirks_disabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to disable resize of text areas.
-        /// </summary>
-        public bool TextAreaResizeDisabled
-        {
-            get { return _self->text_area_resize_disabled; }
-            set { _self->text_area_resize_disabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to disable use of the page cache.
-        /// </summary>
-        public bool PageCacheDisabled
-        {
-            get { return _self->page_cache_disabled; }
-            set { _self->page_cache_disabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to not have the tab key advance focus to links.
-        /// </summary>
-        public bool TabToLinksDisabled
-        {
-            get { return _self->tab_to_links_disabled; }
-            set { _self->tab_to_links_disabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to disable hyperlink pings (&lt;a ping&gt; and window.sendPing).
-        /// </summary>
-        public bool HyperlinkAuditingDisabled
-        {
-            get { return _self->hyperlink_auditing_disabled; }
-            set { _self->hyperlink_auditing_disabled = value; }
-        }
-
-        /// <summary>
-        /// Set to <c>true</c> to enable the user style sheet for all pages.
-        /// </summary>
-        public bool UserStyleSheetEnabled
-        {
-            get { return _self->user_style_sheet_enabled; }
-            set { _self->user_style_sheet_enabled = value; }
-        }
-
-        /// <summary>
-        /// Location of the user style sheet. This must be a data URL of the form
-        /// "data:text/css { get; set; }charset=utf-8 { get; set; }base64,csscontent" where "csscontent" is the
-        /// base64 encoded contents of the CSS file.
+        /// Location of the user style sheet that will be used for all pages. This must
+        /// be a data URL of the form "data:text/css;charset=utf-8;base64,csscontent"
+        /// where "csscontent" is the base64 encoded contents of the CSS file. Also
+        /// configurable using the "user-style-sheet-location" command-line switch.
         /// </summary>
         public string UserStyleSheetLocation
         {
@@ -317,110 +124,257 @@
             set { cef_string_t.Copy(value, &_self->user_style_sheet_location); }
         }
 
+
         /// <summary>
-        /// Set to <c>true</c> to disable style sheets.
+        /// Controls the loading of fonts from remote sources. Also configurable using
+        /// the "disable-remote-fonts" command-line switch.
         /// </summary>
-        public bool AuthorAndUserStylesDisabled
+        public CefState RemoteFonts
         {
-            get { return _self->author_and_user_styles_disabled; }
-            set { _self->author_and_user_styles_disabled = value; }
+            get { return _self->remote_fonts; }
+            set { _self->remote_fonts = value; }
         }
 
         /// <summary>
-        /// Set to <c>true</c> to disable local storage.
+        /// Controls whether JavaScript can be executed. Also configurable using the
+        /// "disable-javascript" command-line switch.
         /// </summary>
-        public bool LocalStorageDisabled
+        public CefState JavaScript
         {
-            get { return _self->local_storage_disabled; }
-            set { _self->local_storage_disabled = value; }
+            get { return _self->javascript; }
+            set { _self->javascript = value; }
         }
 
         /// <summary>
-        /// Set to <c>true</c> to disable databases.
+        /// Controls whether JavaScript can be used for opening windows. Also
+        /// configurable using the "disable-javascript-open-windows" command-line
+        /// switch.
         /// </summary>
-        public bool DatabasesDisabled
+        public CefState JavaScriptOpenWindows
         {
-            get { return _self->databases_disabled; }
-            set { _self->databases_disabled = value; }
+            get { return _self->javascript_open_windows; }
+            set { _self->javascript_open_windows = value; }
         }
 
         /// <summary>
-        /// Set to <c>true</c> to disable application cache.
+        /// Controls whether JavaScript can be used to close windows that were not
+        /// opened via JavaScript. JavaScript can still be used to close windows that
+        /// were opened via JavaScript. Also configurable using the
+        /// "disable-javascript-close-windows" command-line switch.
         /// </summary>
-        public bool ApplicationCacheDisabled
+        public CefState JavaScriptCloseWindows
         {
-            get { return _self->application_cache_disabled; }
-            set { _self->application_cache_disabled = value; }
+            get { return _self->javascript_close_windows; }
+            set { _self->javascript_close_windows = value; }
         }
 
         /// <summary>
-        /// Set to <c>true</c> to disable WebGL.
+        /// Controls whether JavaScript can access the clipboard. Also configurable
+        /// using the "disable-javascript-access-clipboard" command-line switch.
         /// </summary>
-        public bool WebGLDisabled
+        public CefState JavaScriptAccessClipboard
         {
-            get { return _self->webgl_disabled; }
-            set { _self->webgl_disabled = value; }
+            get { return _self->javascript_access_clipboard; }
+            set { _self->javascript_access_clipboard = value; }
         }
 
         /// <summary>
-        /// Set to <c>true</c> to disable accelerated compositing.
+        /// Controls whether DOM pasting is supported in the editor via
+        /// execCommand("paste"). The |javascript_access_clipboard| setting must also
+        /// be enabled. Also configurable using the "disable-javascript-dom-paste"
+        /// command-line switch.
         /// </summary>
-        public bool AcceleratedCompositingDisabled
+        public CefState JavaScriptDomPaste
         {
-            get { return _self->accelerated_compositing_disabled; }
-            set { _self->accelerated_compositing_disabled = value; }
+            get { return _self->javascript_dom_paste; }
+            set { _self->javascript_dom_paste = value; }
         }
 
         /// <summary>
-        /// Set to <c>true</c> to disable accelerated layers. This affects features like
-        /// 3D CSS transforms.
+        /// Controls whether the caret position will be drawn. Also configurable using
+        /// the "enable-caret-browsing" command-line switch.
         /// </summary>
-        public bool AcceleratedLayersDisabled
+        public CefState CaretBrowsing
         {
-            get { return _self->accelerated_layers_disabled; }
-            set { _self->accelerated_layers_disabled = value; }
+            get { return _self->caret_browsing; }
+            set { _self->caret_browsing = value; }
         }
 
         /// <summary>
-        /// Set to <c>true</c> to disable accelerated video.
+        /// Controls whether the Java plugin will be loaded. Also configurable using
+        /// the "disable-java" command-line switch.
         /// </summary>
-        public bool AcceleratedVideoDisabled
+        public CefState Java
         {
-            get { return _self->accelerated_video_disabled; }
-            set { _self->accelerated_video_disabled = value; }
+            get { return _self->java; }
+            set { _self->java = value; }
         }
 
         /// <summary>
-        /// Set to <c>true</c> to disable accelerated 2d canvas.
+        /// Controls whether any plugins will be loaded. Also configurable using the
+        /// "disable-plugins" command-line switch.
         /// </summary>
-        public bool Accelerated2DCanvasDisabled
+        public CefState Plugins
         {
-            get { return _self->accelerated_2d_canvas_disabled; }
-            set { _self->accelerated_2d_canvas_disabled = value; }
+            get { return _self->plugins; }
+            set { _self->plugins = value; }
         }
 
         /// <summary>
-        /// Set to <c>true</c> to disable accelerated plugins.
+        /// Controls whether file URLs will have access to all URLs. Also configurable
+        /// using the "allow-universal-access-from-files" command-line switch.
         /// </summary>
-        public bool AcceleratedPluginsDisabled
+        public CefState UniversalAccessFromFileUrls
         {
-            get { return _self->accelerated_plugins_disabled; }
-            set { _self->accelerated_plugins_disabled = value; }
+            get { return _self->universal_access_from_file_urls; }
+            set { _self->universal_access_from_file_urls = value; }
         }
 
         /// <summary>
-        /// Set to <c>true</c> to disable developer tools (WebKit inspector).
+        /// Controls whether file URLs will have access to other file URLs. Also
+        /// configurable using the "allow-access-from-files" command-line switch.
         /// </summary>
-        public bool DeveloperToolsDisabled
+        public CefState FileAccessFromFileUrls
         {
-            get { return _self->developer_tools_disabled; }
-            set { _self->developer_tools_disabled = value; }
+            get { return _self->file_access_from_file_urls; }
+            set { _self->file_access_from_file_urls = value; }
         }
 
-
-        internal cef_browser_settings_t* ToNative()
+        /// <summary>
+        /// Controls whether web security restrictions (same-origin policy) will be
+        /// enforced. Disabling this setting is not recommend as it will allow risky
+        /// security behavior such as cross-site scripting (XSS). Also configurable
+        /// using the "disable-web-security" command-line switch.
+        /// </summary>
+        public CefState WebSecurity
         {
-            return _self;
+            get { return _self->web_security; }
+            set { _self->web_security = value; }
+        }
+
+        /// <summary>
+        /// Controls whether image URLs will be loaded from the network. A cached image
+        /// will still be rendered if requested. Also configurable using the
+        /// "disable-image-loading" command-line switch.
+        /// </summary>
+        public CefState ImageLoading
+        {
+            get { return _self->image_loading; }
+            set { _self->image_loading = value; }
+        }
+
+        /// <summary>
+        /// Controls whether standalone images will be shrunk to fit the page. Also
+        /// configurable using the "image-shrink-standalone-to-fit" command-line
+        /// switch.
+        /// </summary>
+        public CefState ImageShrinkStandaloneToFit
+        {
+            get { return _self->image_shrink_standalone_to_fit; }
+            set { _self->image_shrink_standalone_to_fit = value; }
+        }
+
+        /// <summary>
+        /// Controls whether text areas can be resized. Also configurable using the
+        /// "disable-text-area-resize" command-line switch.
+        /// </summary>
+        public CefState TextAreaResize
+        {
+            get { return _self->text_area_resize; }
+            set { _self->text_area_resize = value; }
+        }
+
+        /// <summary>
+        /// Controls whether the fastback (back/forward) page cache will be used. Also
+        /// configurable using the "enable-fastback" command-line switch.
+        /// </summary>
+        public CefState PageCache
+        {
+            get { return _self->page_cache; }
+            set { _self->page_cache = value; }
+        }
+
+        /// <summary>
+        /// Controls whether the tab key can advance focus to links. Also configurable
+        /// using the "disable-tab-to-links" command-line switch.
+        /// </summary>
+        public CefState TabToLinks
+        {
+            get { return _self->tab_to_links; }
+            set { _self->tab_to_links = value; }
+        }
+
+        /// <summary>
+        /// Controls whether style sheets can be used. Also configurable using the
+        /// "disable-author-and-user-styles" command-line switch.
+        /// </summary>
+        public CefState AuthorAndUserStyles
+        {
+            get { return _self->author_and_user_styles; }
+            set { _self->author_and_user_styles = value; }
+        }
+
+        /// <summary>
+        /// Controls whether local storage can be used. Also configurable using the
+        /// "disable-local-storage" command-line switch.
+        /// </summary>
+        public CefState LocalStorage
+        {
+            get { return _self->local_storage; }
+            set { _self->local_storage = value; }
+        }
+
+        /// <summary>
+        /// Controls whether databases can be used. Also configurable using the
+        /// "disable-databases" command-line switch.
+        /// </summary>
+        public CefState Databases
+        {
+            get { return _self->databases; }
+            set { _self->databases = value; }
+        }
+
+        /// <summary>
+        /// Controls whether the application cache can be used. Also configurable using
+        /// the "disable-application-cache" command-line switch.
+        /// </summary>
+        public CefState ApplicationCache
+        {
+            get { return _self->application_cache; }
+            set { _self->application_cache = value; }
+        }
+
+        /// <summary>
+        /// Controls whether WebGL can be used. Note that WebGL requires hardware
+        /// support and may not work on all systems even when enabled. Also
+        /// configurable using the "disable-webgl" command-line switch.
+        /// </summary>
+        public CefState WebGL
+        {
+            get { return _self->webgl; }
+            set { _self->webgl = value; }
+        }
+
+        /// <summary>
+        /// Controls whether content that depends on accelerated compositing can be
+        /// used. Note that accelerated compositing requires hardware support and may
+        /// not work on all systems even when enabled. Also configurable using the
+        /// "disable-accelerated-compositing" command-line switch.
+        /// </summary>
+        public CefState AcceleratedCompositing
+        {
+            get { return _self->accelerated_compositing; }
+            set { _self->accelerated_compositing = value; }
+        }
+
+        /// <summary>
+        /// Controls whether developer tools (WebKit inspector) can be used. Also
+        /// configurable using the "disable-developer-tools" command-line switch.
+        /// </summary>
+        public CefState DeveloperTools
+        {
+            get { return _self->developer_tools; }
+            set { _self->developer_tools = value; }
         }
     }
 }

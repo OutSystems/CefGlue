@@ -10,35 +10,35 @@ namespace Xilium.CefGlue
     using Xilium.CefGlue.Interop;
     
     // Role: HANDLER
-    public abstract unsafe partial class CefProxyHandler
+    public abstract unsafe partial class CefCompletionHandler
     {
-        private static Dictionary<IntPtr, CefProxyHandler> _roots = new Dictionary<IntPtr, CefProxyHandler>();
+        private static Dictionary<IntPtr, CefCompletionHandler> _roots = new Dictionary<IntPtr, CefCompletionHandler>();
         
         private int _refct;
-        private cef_proxy_handler_t* _self;
+        private cef_completion_handler_t* _self;
         
         protected object SyncRoot { get { return this; } }
         
-        private cef_proxy_handler_t.add_ref_delegate _ds0;
-        private cef_proxy_handler_t.release_delegate _ds1;
-        private cef_proxy_handler_t.get_refct_delegate _ds2;
-        private cef_proxy_handler_t.get_proxy_for_url_delegate _ds3;
+        private cef_completion_handler_t.add_ref_delegate _ds0;
+        private cef_completion_handler_t.release_delegate _ds1;
+        private cef_completion_handler_t.get_refct_delegate _ds2;
+        private cef_completion_handler_t.on_complete_delegate _ds3;
         
-        protected CefProxyHandler()
+        protected CefCompletionHandler()
         {
-            _self = cef_proxy_handler_t.Alloc();
+            _self = cef_completion_handler_t.Alloc();
         
-            _ds0 = new cef_proxy_handler_t.add_ref_delegate(add_ref);
+            _ds0 = new cef_completion_handler_t.add_ref_delegate(add_ref);
             _self->_base._add_ref = Marshal.GetFunctionPointerForDelegate(_ds0);
-            _ds1 = new cef_proxy_handler_t.release_delegate(release);
+            _ds1 = new cef_completion_handler_t.release_delegate(release);
             _self->_base._release = Marshal.GetFunctionPointerForDelegate(_ds1);
-            _ds2 = new cef_proxy_handler_t.get_refct_delegate(get_refct);
+            _ds2 = new cef_completion_handler_t.get_refct_delegate(get_refct);
             _self->_base._get_refct = Marshal.GetFunctionPointerForDelegate(_ds2);
-            _ds3 = new cef_proxy_handler_t.get_proxy_for_url_delegate(get_proxy_for_url);
-            _self->_get_proxy_for_url = Marshal.GetFunctionPointerForDelegate(_ds3);
+            _ds3 = new cef_completion_handler_t.on_complete_delegate(on_complete);
+            _self->_on_complete = Marshal.GetFunctionPointerForDelegate(_ds3);
         }
         
-        ~CefProxyHandler()
+        ~CefCompletionHandler()
         {
             Dispose(false);
         }
@@ -47,12 +47,12 @@ namespace Xilium.CefGlue
         {
             if (_self != null)
             {
-                cef_proxy_handler_t.Free(_self);
+                cef_completion_handler_t.Free(_self);
                 _self = null;
             }
         }
         
-        private int add_ref(cef_proxy_handler_t* self)
+        private int add_ref(cef_completion_handler_t* self)
         {
             lock (SyncRoot)
             {
@@ -65,7 +65,7 @@ namespace Xilium.CefGlue
             }
         }
         
-        private int release(cef_proxy_handler_t* self)
+        private int release(cef_completion_handler_t* self)
         {
             lock (SyncRoot)
             {
@@ -78,19 +78,19 @@ namespace Xilium.CefGlue
             }
         }
         
-        private int get_refct(cef_proxy_handler_t* self)
+        private int get_refct(cef_completion_handler_t* self)
         {
             return _refct;
         }
         
-        internal cef_proxy_handler_t* ToNative()
+        internal cef_completion_handler_t* ToNative()
         {
             add_ref(_self);
             return _self;
         }
         
         [Conditional("DEBUG")]
-        private void CheckSelf(cef_proxy_handler_t* self)
+        private void CheckSelf(cef_completion_handler_t* self)
         {
             if (_self != self) throw ExceptionBuilder.InvalidSelfReference();
         }
