@@ -25,6 +25,7 @@ namespace Xilium.CefGlue
             if (windowInfo == null) throw new ArgumentNullException("windowInfo");
             if (client == null) throw new ArgumentNullException("client");
             if (settings == null) throw new ArgumentNullException("settings");
+            // TODO: [ApiUsage] if windowInfo.WindowRenderingDisabled && client doesn't provide RenderHandler implementation -> throw exception
 
             var n_windowInfo = windowInfo.ToNative();
             var n_client = client.ToNative();
@@ -37,7 +38,7 @@ namespace Xilium.CefGlue
                 if (n_success != 1) throw ExceptionBuilder.FailedToCreateBrowser();
             }
 
-            // TODO: free n_ structs
+            // TODO: free n_ structs ?
         }
 
         public static void CreateBrowser(CefWindowInfo windowInfo, CefClient client, CefBrowserSettings settings, Uri url)
@@ -60,6 +61,7 @@ namespace Xilium.CefGlue
             if (windowInfo == null) throw new ArgumentNullException("windowInfo");
             if (client == null) throw new ArgumentNullException("client");
             if (settings == null) throw new ArgumentNullException("settings");
+            // TODO: [ApiUsage] if windowInfo.WindowRenderingDisabled && client doesn't provide RenderHandler implementation -> throw exception
 
             var n_windowInfo = windowInfo.ToNative();
             var n_client = client.ToNative();
@@ -71,6 +73,8 @@ namespace Xilium.CefGlue
                 var n_browser = cef_browser_host_t.create_browser_sync(n_windowInfo, n_client, &n_url, n_settings);
                 return CefBrowser.FromNative(n_browser);
             }
+
+            // TODO: free n_ structs ?
         }
 
         public static CefBrowser CreateBrowserSync(CefWindowInfo windowInfo, CefClient client, CefBrowserSettings settings, Uri url)
@@ -82,6 +86,7 @@ namespace Xilium.CefGlue
         {
             return CreateBrowserSync(windowInfo, client, settings, string.Empty);
         }
+
 
         /// <summary>
         /// Returns the hosted browser object.
