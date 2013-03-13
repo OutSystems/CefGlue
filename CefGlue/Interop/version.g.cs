@@ -9,6 +9,6 @@ namespace Xilium.CefGlue.Interop
     
     internal static unsafe partial class libcef
     {
-        public const int CEF_REVISION = 1135;
+        public const int CEF_REVISION = 1138;
     }
 }
