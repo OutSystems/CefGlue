@@ -99,7 +99,8 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Call this method before destroying a contained browser window. This method
         /// performs any internal cleanup that may be needed before the browser window
-        /// is destroyed.
+        /// is destroyed. See CefLifeSpanHandler::DoClose() documentation for
+        /// additional usage information.
         /// </summary>
         public void ParentWindowWillClose()
         {
@@ -107,11 +108,18 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Closes this browser window.
+        /// Request that the browser close. The JavaScript 'onbeforeunload' event will
+        /// be fired. If |force_close| is false the event handler, if any, will be
+        /// allowed to prompt the user and the user can optionally cancel the close.
+        /// If |force_close| is true the prompt will not be displayed and the close
+        /// will proceed. Results in a call to CefLifeSpanHandler::DoClose() if the
+        /// event handler allows the close or if |force_close| is true. See
+        /// CefLifeSpanHandler::DoClose() documentation for additional usage
+        /// information.
         /// </summary>
-        public void CloseBrowser()
+        public void CloseBrowser(bool forceClose = false)
         {
-            cef_browser_host_t.close_browser(_self);
+            cef_browser_host_t.close_browser(_self, forceClose ? 1 : 0);
         }
 
         /// <summary>

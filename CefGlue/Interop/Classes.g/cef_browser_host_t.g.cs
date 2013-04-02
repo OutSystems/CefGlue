@@ -77,7 +77,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void close_browser_delegate(cef_browser_host_t* self);
+        private delegate void close_browser_delegate(cef_browser_host_t* self, int force_close);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -276,7 +276,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p5;
         private static close_browser_delegate _d5;
         
-        public static void close_browser(cef_browser_host_t* self)
+        public static void close_browser(cef_browser_host_t* self, int force_close)
         {
             close_browser_delegate d;
             var p = self->_close_browser;
@@ -286,7 +286,7 @@ namespace Xilium.CefGlue.Interop
                 d = (close_browser_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(close_browser_delegate));
                 if (_p5 == IntPtr.Zero) { _d5 = d; _p5 = p; }
             }
-            d(self);
+            d(self, force_close);
         }
         
         // SetFocus
