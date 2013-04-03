@@ -137,8 +137,6 @@ namespace Xilium.CefGlue
         /// </summary>
         public void LoadString(string content, string url)
         {
-            if (string.IsNullOrEmpty(url)) throw new ArgumentNullException("url");
-
             fixed (char* content_str = content)
             fixed (char* url_str = url)
             {
