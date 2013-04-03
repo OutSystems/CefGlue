@@ -16,14 +16,15 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            var m_browser = browser != null ? CefBrowser.FromNative(browser) : null;
-            var m_frame = frame != null ? CefFrame.FromNative(frame) : null;
+            var m_browser = CefBrowser.FromNativeOrNull(browser);
+            var m_frame = CefFrame.FromNativeOrNull(frame);
             var m_schemeName = cef_string_t.ToString(scheme_name);
             var m_request = CefRequest.FromNative(request);
 
             var handler = Create(m_browser, m_frame, m_schemeName, m_request);
 
-            return handler.ToNative();
+            // TODO: [ApiUsage] method can return null, only when schemeName is built-in scheme, in other cases it is incorrect.
+            return handler != null ? handler.ToNative() : null;
         }
 
         /// <summary>
