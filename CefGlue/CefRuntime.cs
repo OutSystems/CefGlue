@@ -78,11 +78,65 @@
         {
             if (_loaded) return;
 
-            var rev = BuildRevision;
-            if (rev != libcef.CEF_REVISION) throw ExceptionBuilder.RuntimeVersionMismatch(rev, libcef.CEF_REVISION);
+            CheckVersion();
 
             _loaded = true;
         }
+
+        #region cef_version
+
+        private static void CheckVersion()
+        {
+            try
+            {
+                CheckVersionByApiHash();
+            }
+            catch (NotSupportedException) // TODO: once load options will be implemented, we can control how perform version
+            {
+                CheckVersionByBuildRevision();
+            }
+        }
+
+        private static void CheckVersionByApiHash()
+        {
+            // get CEF_API_HASH_PLATFORM
+            string actual;
+            try
+            {
+                var n_actual = libcef.api_hash(0);
+                actual = n_actual != null ? new string(n_actual) : null;
+            }
+            catch (EntryPointNotFoundException ex)
+            {
+                throw new NotSupportedException("cef_api_hash call is not supported.", ex);
+            }
+            if (string.IsNullOrEmpty(actual)) throw new NotSupportedException();
+
+            string expected;
+            switch (CefRuntime.Platform)
+            {
+                case CefRuntimePlatform.Windows: expected = libcef.CEF_API_HASH_PLATFORM_WIN; break;
+                case CefRuntimePlatform.MacOSX: expected = libcef.CEF_API_HASH_PLATFORM_MACOSX; break;
+                case CefRuntimePlatform.Linux: expected = libcef.CEF_API_HASH_PLATFORM_LINUX; break;
+                default: throw new PlatformNotSupportedException();
+            }
+
+            if (string.Compare(actual, expected, StringComparison.OrdinalIgnoreCase) != 0)
+            {
+                throw ExceptionBuilder.RuntimeVersionApiHashMismatch(actual, expected);
+            }
+        }
+
+        private static void CheckVersionByBuildRevision()
+        {
+            var revision = libcef.build_revision();
+            if (revision != libcef.CEF_REVISION)
+            {
+                throw ExceptionBuilder.RuntimeVersionBuildRevisionMismatch(revision, libcef.CEF_REVISION);
+            }
+        }
+
+        #endregion
 
         #region cef_app
 
@@ -238,15 +292,6 @@
 
             return libcef.post_delayed_task(threadId, task.ToNative(), delay) != 0;
         }
-        #endregion
-
-        #region cef_version
-
-        internal static int BuildRevision
-        {
-            get { return libcef.build_revision(); }
-        }
-
         #endregion
 
         #region cef_geolocation

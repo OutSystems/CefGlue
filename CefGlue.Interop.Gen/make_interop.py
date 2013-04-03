@@ -673,11 +673,22 @@ def append_xmldoc(result, lines):
 def make_version_cs(content):
     result = []
 
-    m = re.search('^#define\s+CEF_REVISION\s+(\d+)', content, re.MULTILINE)
-    if m is None:
-    	raise Exception('Could not find CEF_REVISION constant.');
+    result.append('public const int CEF_VERSION_MAJOR = %s;' % __get_version_constant(content, "CEF_VERSION_MAJOR"))
+    result.append('public const int CEF_REVISION = %s;' % __get_version_constant(content, "CEF_REVISION"))
+    result.append('public const int COPYRIGHT_YEAR = %s;' % __get_version_constant(content, "COPYRIGHT_YEAR"))
+    result.append("");
 
-    result.append('public const int CEF_REVISION = %s;' % m.group(1))
+    result.append('public const int CHROME_VERSION_MAJOR = %s;' % __get_version_constant(content, "CHROME_VERSION_MAJOR"))
+    result.append('public const int CHROME_VERSION_MINOR = %s;' % __get_version_constant(content, "CHROME_VERSION_MINOR"))
+    result.append('public const int CHROME_VERSION_BUILD = %s;' % __get_version_constant(content, "CHROME_VERSION_BUILD"))
+    result.append('public const int CHROME_VERSION_PATCH = %s;' % __get_version_constant(content, "CHROME_VERSION_PATCH"))
+    result.append("");
+
+    result.append('public const string CEF_API_HASH_UNIVERSAL = %s;' % __get_version_constant(content, "CEF_API_HASH_UNIVERSAL"))
+    result.append("");
+    result.append('public const string CEF_API_HASH_PLATFORM_WIN = %s;' % __get_version_constant(content, "CEF_API_HASH_PLATFORM", "WIN"))
+    result.append('public const string CEF_API_HASH_PLATFORM_MACOSX = %s;' % __get_version_constant(content, "CEF_API_HASH_PLATFORM", "MACOSX"))
+    result.append('public const string CEF_API_HASH_PLATFORM_LINUX = %s;' % __get_version_constant(content, "CEF_API_HASH_PLATFORM", "LINUX"))
 
     body = []
     body.append('using System;')
@@ -699,7 +710,19 @@ def make_version_cs(content):
         'namespace': schema.interop_namespace,
         'body': indent + ('\n'+indent).join(body)
       }
-	
+
+def __get_version_constant(content, name, platform = None):
+    if platform is None:
+        m = re.search('^#define\s+' + name + '\s+(.*?)\n', content, re.MULTILINE)
+        if m is None:
+            raise Exception('Could not find ' + name + ' constant.');
+        value = m.group(1)
+    else:
+        m = re.search('\n#e?l?if defined\(OS_' + platform + '\)\n+#define\s+' + name + '\s+(.*?)\n', content, re.DOTALL)
+        if m is None:
+            raise Exception('Could not find ' + name + ' constant.');
+        value = m.group(1)
+    return value
 
 #
 # Main

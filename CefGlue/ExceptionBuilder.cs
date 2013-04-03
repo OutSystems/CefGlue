@@ -7,10 +7,19 @@
 
     internal static class ExceptionBuilder
     {
-        public static CefVersionMismatchException RuntimeVersionMismatch(int actual, int expected)
+        public static CefVersionMismatchException RuntimeVersionBuildRevisionMismatch(int actual, int expected)
         {
             return new CefVersionMismatchException(string.Format(CultureInfo.InvariantCulture,
                 "CEF runtime version mismatch: loaded revision {0}, but supported {1}.",
+                actual,
+                expected
+                ));
+        }
+
+        public static CefVersionMismatchException RuntimeVersionApiHashMismatch(string actual, string expected)
+        {
+            return new CefVersionMismatchException(string.Format(CultureInfo.InvariantCulture,
+                "CEF runtime version mismatch: loaded version API hash \"{0}\", but supported \"{1}\".",
                 actual,
                 expected
                 ));
