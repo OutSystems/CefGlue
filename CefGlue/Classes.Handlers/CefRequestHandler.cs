@@ -140,7 +140,7 @@ namespace Xilium.CefGlue
         /// size via the webkitStorageInfo.requestQuota function. |origin_url| is the
         /// origin of the page making the request. |new_size| is the requested quota
         /// size in bytes. Return true and call CefQuotaCallback::Continue() either in
-        /// this function or at a later time to grant or deny the request. Return false
+        /// this method or at a later time to grant or deny the request. Return false
         /// to cancel the request.
         /// </summary>
         protected abstract bool OnQuotaRequest(CefBrowser browser, string originUrl, long newSize, CefQuotaCallback callback);
@@ -216,6 +216,33 @@ namespace Xilium.CefGlue
         /// true to block loading of the plugin.
         /// </summary>
         protected virtual bool OnBeforePluginLoad(CefBrowser browser, string url, string policyUrl, CefWebPluginInfo info)
+        {
+            return false;
+        }
+
+
+        private int on_certificate_error(cef_request_handler_t* self, CefErrorCode cert_error, cef_string_t* request_url, cef_allow_certificate_error_callback_t* callback)
+        {
+            CheckSelf(self);
+
+            var m_requestUrl = cef_string_t.ToString(request_url);
+            var m_callback = CefAllowCertificateErrorCallback.FromNative(callback);
+
+            var m_result = OnCertificateError(cert_error, m_requestUrl, m_callback);
+
+            return m_result ? 1 : 0;
+        }
+
+        /// <summary>
+        /// Called on the UI thread to handle requests for URLs with an invalid
+        /// SSL certificate. Return true and call CefAllowCertificateErrorCallback::
+        /// Continue() either in this method or at a later time to continue or cancel
+        /// the request. Return false to cancel the request immediately. If |callback|
+        /// is empty the error cannot be recovered from and the request will be
+        /// canceled automatically. If CefSettings.ignore_certificate_errors is set
+        /// all invalid certificates will be accepted without calling this method.
+        /// </summary>
+        protected virtual bool OnCertificateError(CefErrorCode certError, string requestUrl, CefAllowCertificateErrorCallback callback)
         {
             return false;
         }

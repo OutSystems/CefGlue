@@ -88,4 +88,6 @@ classdef = {
     'CefTaskRunner': { 'role': ROLE_PROXY },
     # R1102
     'CefCompletionHandler': { 'role': ROLE_HANDLER },
+    # R1177
+    'CefAllowCertificateErrorCallback': { 'role': ROLE_PROXY },
     }

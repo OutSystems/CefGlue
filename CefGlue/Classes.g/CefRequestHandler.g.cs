@@ -30,6 +30,7 @@ namespace Xilium.CefGlue
         private cef_request_handler_t.get_cookie_manager_delegate _ds8;
         private cef_request_handler_t.on_protocol_execution_delegate _ds9;
         private cef_request_handler_t.on_before_plugin_load_delegate _dsa;
+        private cef_request_handler_t.on_certificate_error_delegate _dsb;
         
         protected CefRequestHandler()
         {
@@ -57,6 +58,8 @@ namespace Xilium.CefGlue
             _self->_on_protocol_execution = Marshal.GetFunctionPointerForDelegate(_ds9);
             _dsa = new cef_request_handler_t.on_before_plugin_load_delegate(on_before_plugin_load);
             _self->_on_before_plugin_load = Marshal.GetFunctionPointerForDelegate(_dsa);
+            _dsb = new cef_request_handler_t.on_certificate_error_delegate(on_certificate_error);
+            _self->_on_certificate_error = Marshal.GetFunctionPointerForDelegate(_dsb);
         }
         
         ~CefRequestHandler()

@@ -21,6 +21,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_cookie_manager;
         internal IntPtr _on_protocol_execution;
         internal IntPtr _on_before_plugin_load;
+        internal IntPtr _on_certificate_error;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -87,6 +88,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate int on_before_plugin_load_delegate(cef_request_handler_t* self, cef_browser_t* browser, cef_string_t* url, cef_string_t* policy_url, cef_web_plugin_info_t* info);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int on_certificate_error_delegate(cef_request_handler_t* self, CefErrorCode cert_error, cef_string_t* request_url, cef_allow_certificate_error_callback_t* callback);
         
         private static int _sizeof;
         
