@@ -354,6 +354,18 @@ class CefBrowserHost : public virtual CefBase {
   virtual void StartDownload(const CefString& url) =0;
 
   ///
+  // Set whether mouse cursor change is disabled.
+  ///
+  /*--cef()--*/
+  virtual void SetMouseCursorChangeDisabled(bool disabled) =0;
+
+  ///
+  // Returns true if mouse cursor change is disabled.
+  ///
+  /*--cef()--*/
+  virtual bool IsMouseCursorChangeDisabled() =0;
+
+  ///
   // Returns true if window rendering is disabled.
   ///
   /*--cef()--*/
@@ -367,6 +379,14 @@ class CefBrowserHost : public virtual CefBase {
   ///
   /*--cef()--*/
   virtual void WasResized() =0;
+
+  ///
+  // Notify the browser that it has been hidden or shown. Layouting and
+  // CefRenderHandler::OnPaint notification will stop when the browser is
+  // hidden. This method is only used when window rendering is disabled.
+  ///
+  /*--cef()--*/
+  virtual void WasHidden(bool hidden) =0;
 
   ///
   // Invalidate the |dirtyRect| region of the view. The browser will call

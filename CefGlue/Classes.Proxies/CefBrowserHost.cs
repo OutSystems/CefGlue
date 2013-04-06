@@ -236,6 +236,25 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
+        /// Set whether mouse cursor change is disabled.
+        /// </summary>
+        public void SetMouseCursorChangeDisabled(bool disabled)
+        {
+            cef_browser_host_t.set_mouse_cursor_change_disabled(_self, disabled ? 1 : 0);
+        }
+
+        /// <summary>
+        /// Returns true if mouse cursor change is disabled.
+        /// </summary>
+        public bool IsMouseCursorChangeDisabled
+        {
+            get
+            {
+                return cef_browser_host_t.is_mouse_cursor_change_disabled(_self) != 0;
+            }
+        }
+
+        /// <summary>
         /// Returns true if window rendering is disabled.
         /// </summary>
         public bool IsWindowRenderingDisabled
@@ -255,6 +274,16 @@ namespace Xilium.CefGlue
         public void WasResized()
         {
             cef_browser_host_t.was_resized(_self);
+        }
+
+        /// <summary>
+        /// Notify the browser that it has been hidden or shown. Layouting and
+        /// CefRenderHandler::OnPaint notification will stop when the browser is
+        /// hidden. This method is only used when window rendering is disabled.
+        /// </summary>
+        public void WasHidden(bool hidden)
+        {
+            cef_browser_host_t.was_hidden(_self, hidden ? 1 : 0);
         }
 
         /// <summary>
