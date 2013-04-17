@@ -556,8 +556,15 @@ namespace Xilium.CefGlue.WPF
 
         internal void HandleViewPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr buffer, int width, int height)
         {
+            // When browser size changed - we just skip frame updating.
+            // This is dirty precheck to do not do Invoke whenever is possible.
+            if (_browserSizeChanged && (width != _browserWidth || height != _browserHeight)) return;
+
             _mainUiDispatcher.Invoke(DispatcherPriority.Render, new Action(delegate
             {
+                // Actual browser size changed check.
+                if (_browserSizeChanged && (width != _browserWidth || height != _browserHeight)) return;
+
                 try
                 {
                     if (_browserSizeChanged)
