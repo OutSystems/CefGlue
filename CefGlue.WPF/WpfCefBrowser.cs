@@ -127,7 +127,7 @@ namespace Xilium.CefGlue.WPF
                 var newWidth = size.Width;
                 var newHeight = size.Height;
 
-                _logger.Debug("BrowserResize: {0}x{1}.", newWidth, newHeight);
+                _logger.Debug("BrowserResize. Old H{0}xW{1}; New H{2}xW{3}.", _browserHeight, _browserWidth, newHeight, newWidth);
 
                 if (newWidth > 0 && newHeight > 0)
                 {
@@ -503,8 +503,8 @@ namespace Xilium.CefGlue.WPF
             CefRectangle browserRect = new CefRectangle();
 
             // TODO: simplify this
-            _mainUiDispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
-            {
+            //_mainUiDispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+            //{
                 try
                 {
                     // The simulated screen and view rectangle are the same. This is necessary
@@ -514,24 +514,20 @@ namespace Xilium.CefGlue.WPF
                     browserRect.Height = (int)_browserHeight;
 
                     rectProvided = true;
-
-                    // 					// The simulated screen and view rectangle are the same. This is necessary
-                    // 					// for popup menus to be located and sized inside the view.
-                    // 					tempRect.X = tempRect.Y = 0;
-                    // 					tempRect.Width = this.browserWidth;
-                    // 					tempRect.Height = this.browserHeight;
-                    // 
-                    // 					rectProvided = true;
                 }
                 catch (Exception ex)
                 {
                     _logger.ErrorException("WpfCefBrowser: Caught exception in GetViewRect()", ex);
                     rectProvided = false;
                 }
-            }));
+            //}));
 
             if (rectProvided)
+            {
                 rect = browserRect;
+            }
+
+            _logger.Debug("GetViewRect result provided:{0} Rect: X{1} Y{2} H{3} W{4}", rectProvided, browserRect.X, browserRect.Y, browserRect.Height, browserRect.Width);
 
             return rectProvided;
         }
