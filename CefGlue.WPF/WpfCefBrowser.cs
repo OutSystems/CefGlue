@@ -582,10 +582,10 @@ namespace Xilium.CefGlue.WPF
 
         private void DoRenderBrowser(WriteableBitmap bitmap, int browserWidth, int browserHeight, CefRectangle[] dirtyRects, IntPtr sourceBuffer)
         {
-            int stride = browserWidth * IntPtr.Size;
+            int stride = browserWidth * 4;
             int sourceBufferSize = stride * browserHeight;
 
-            _logger.Debug("Bitmap {0}x{1}, browser {2}x{3}", bitmap.Height, bitmap.Width, browserHeight, browserWidth);
+            _logger.Debug("DoRenderBrowser() Bitmap H{0}xW{1}, Browser H{2}xW{3}", bitmap.Height, bitmap.Width, browserHeight, browserWidth);
 
             if (browserWidth == 0 || browserHeight == 0)
             {
