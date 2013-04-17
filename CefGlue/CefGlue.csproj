@@ -293,6 +293,7 @@
     <Compile Include="Interop\Structs\cef_geoposition_t.cs" />
     <Compile Include="Interop\Structs\cef_key_event_t.cs" />
     <Compile Include="Interop\Structs\cef_mouse_event_t.cs" />
+    <Compile Include="Interop\Structs\cef_screen_info_t.cs" />
     <Compile Include="Platform\Linux\CefWindowInfoLinuxImpl.cs" />
     <Compile Include="Platform\Mac\CefWindowInfoMacImpl.cs" />
     <Compile Include="Platform\Windows\CefWindowInfoWindowsImpl.cs" />
@@ -310,6 +311,7 @@
     <Compile Include="Interop\_Platform\NativeMethods.cs" />
     <Compile Include="Interop\_Platform\RECT.cs" />
     <Compile Include="Structs\CefMouseEvent.cs" />
+    <Compile Include="Structs\CefScreenInfo.cs" />
     <None Include="..\Xilium.CefGlue.snk">
       <Link>Properties\Xilium.CefGlue.snk</Link>
     </None>

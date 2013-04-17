@@ -50,6 +50,11 @@ namespace Xilium.CefGlue.WPF
             return true;
         }
 
+        protected override bool GetScreenInfo(CefBrowser browser, CefScreenInfo screenInfo)
+        {
+            return false;
+        }
+
         protected override void OnPopupShow(CefBrowser browser, bool show)
         {
         }

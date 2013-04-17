@@ -122,10 +122,19 @@
         public abstract bool Hidden { get; set; }
 
         /// <summary>
+        /// -- Windows --
         /// If window rendering is disabled no browser window will be created. Set
         /// |parent_window| to be used for identifying monitor info
         /// (MonitorFromWindow). If |parent_window| is not provided the main screen
         /// monitor will be used.
+        /// 
+        /// -- MacOSX --
+        /// If window rendering is disabled no browser window will be created. Set
+        /// |parent_view| to the window that will act as the parent for popup menus,
+        /// dialog boxes, etc.
+        /// 
+        /// -- Linux --
+        /// Unsupported
         /// </summary>
         public abstract bool WindowRenderingDisabled { get; set; }
 

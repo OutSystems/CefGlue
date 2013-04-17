@@ -287,6 +287,19 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
+        /// Send a notification to the browser that the screen info has changed. The
+        /// browser will then call CefRenderHandler::GetScreenInfo to update the
+        /// screen information with the new values. This simulates moving the webview
+        /// window from one display to another, or changing the properties of the
+        /// current display. This method is only used when window rendering is
+        /// disabled.
+        /// </summary>
+        public void NotifyScreenInfoChanged()
+        {
+            cef_browser_host_t.notify_screen_info_changed(_self);
+        }
+
+        /// <summary>
         /// Invalidate the |dirtyRect| region of the view. The browser will call
         /// CefRenderHandler::OnPaint asynchronously with the updated regions. This
         /// method is only used when window rendering is disabled.

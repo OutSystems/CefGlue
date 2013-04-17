@@ -105,6 +105,9 @@ namespace Xilium.CefGlue.Interop
         // NSView pointer for the parent view.
         public IntPtr parent_view;
 
+        public bool_t window_rendering_disabled;
+        public bool_t transparent_painting;
+
         // NSView pointer for the new browser view.
         public IntPtr view;
 

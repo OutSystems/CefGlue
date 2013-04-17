@@ -104,6 +104,32 @@ namespace Xilium.CefGlue
         }
 
 
+        private int get_screen_info(cef_render_handler_t* self, cef_browser_t* browser, cef_screen_info_t* screen_info)
+        {
+            CheckSelf(self);
+
+            var m_browser = CefBrowser.FromNative(browser);
+            var m_screenInfo = new CefScreenInfo(screen_info);
+
+            var result = GetScreenInfo(m_browser, m_screenInfo);
+
+            m_screenInfo.Dispose();
+            m_browser.Dispose();
+
+            return result ? 1 : 0;
+        }
+
+        /// <summary>
+        /// Called to allow the client to fill in the CefScreenInfo object with
+        /// appropriate values. Return true if the |screen_info| structure has been
+        /// modified.
+        /// If the screen info rectangle is left empty the rectangle from GetViewRect
+        /// will be used. If the rectangle is still empty or invalid popups may not be
+        /// drawn correctly.
+        /// </summary>
+        protected abstract bool GetScreenInfo(CefBrowser browser, CefScreenInfo screenInfo);
+
+
         private void on_popup_show(cef_render_handler_t* self, cef_browser_t* browser, int show)
         {
             CheckSelf(self);

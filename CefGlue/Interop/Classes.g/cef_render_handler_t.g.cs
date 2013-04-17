@@ -16,6 +16,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_root_screen_rect;
         internal IntPtr _get_view_rect;
         internal IntPtr _get_screen_point;
+        internal IntPtr _get_screen_info;
         internal IntPtr _on_popup_show;
         internal IntPtr _on_popup_size;
         internal IntPtr _on_paint;
@@ -56,6 +57,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate int get_screen_point_delegate(cef_render_handler_t* self, cef_browser_t* browser, int viewX, int viewY, int* screenX, int* screenY);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int get_screen_info_delegate(cef_render_handler_t* self, cef_browser_t* browser, cef_screen_info_t* screen_info);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

@@ -25,10 +25,11 @@ namespace Xilium.CefGlue
         private cef_render_handler_t.get_root_screen_rect_delegate _ds3;
         private cef_render_handler_t.get_view_rect_delegate _ds4;
         private cef_render_handler_t.get_screen_point_delegate _ds5;
-        private cef_render_handler_t.on_popup_show_delegate _ds6;
-        private cef_render_handler_t.on_popup_size_delegate _ds7;
-        private cef_render_handler_t.on_paint_delegate _ds8;
-        private cef_render_handler_t.on_cursor_change_delegate _ds9;
+        private cef_render_handler_t.get_screen_info_delegate _ds6;
+        private cef_render_handler_t.on_popup_show_delegate _ds7;
+        private cef_render_handler_t.on_popup_size_delegate _ds8;
+        private cef_render_handler_t.on_paint_delegate _ds9;
+        private cef_render_handler_t.on_cursor_change_delegate _dsa;
         
         protected CefRenderHandler()
         {
@@ -46,14 +47,16 @@ namespace Xilium.CefGlue
             _self->_get_view_rect = Marshal.GetFunctionPointerForDelegate(_ds4);
             _ds5 = new cef_render_handler_t.get_screen_point_delegate(get_screen_point);
             _self->_get_screen_point = Marshal.GetFunctionPointerForDelegate(_ds5);
-            _ds6 = new cef_render_handler_t.on_popup_show_delegate(on_popup_show);
-            _self->_on_popup_show = Marshal.GetFunctionPointerForDelegate(_ds6);
-            _ds7 = new cef_render_handler_t.on_popup_size_delegate(on_popup_size);
-            _self->_on_popup_size = Marshal.GetFunctionPointerForDelegate(_ds7);
-            _ds8 = new cef_render_handler_t.on_paint_delegate(on_paint);
-            _self->_on_paint = Marshal.GetFunctionPointerForDelegate(_ds8);
-            _ds9 = new cef_render_handler_t.on_cursor_change_delegate(on_cursor_change);
-            _self->_on_cursor_change = Marshal.GetFunctionPointerForDelegate(_ds9);
+            _ds6 = new cef_render_handler_t.get_screen_info_delegate(get_screen_info);
+            _self->_get_screen_info = Marshal.GetFunctionPointerForDelegate(_ds6);
+            _ds7 = new cef_render_handler_t.on_popup_show_delegate(on_popup_show);
+            _self->_on_popup_show = Marshal.GetFunctionPointerForDelegate(_ds7);
+            _ds8 = new cef_render_handler_t.on_popup_size_delegate(on_popup_size);
+            _self->_on_popup_size = Marshal.GetFunctionPointerForDelegate(_ds8);
+            _ds9 = new cef_render_handler_t.on_paint_delegate(on_paint);
+            _self->_on_paint = Marshal.GetFunctionPointerForDelegate(_ds9);
+            _dsa = new cef_render_handler_t.on_cursor_change_delegate(on_cursor_change);
+            _self->_on_cursor_change = Marshal.GetFunctionPointerForDelegate(_dsa);
         }
         
         ~CefRenderHandler()

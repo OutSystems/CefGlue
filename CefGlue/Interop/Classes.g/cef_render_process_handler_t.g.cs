@@ -21,9 +21,6 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _on_context_created;
         internal IntPtr _on_context_released;
         internal IntPtr _on_uncaught_exception;
-        internal IntPtr _on_worker_context_created;
-        internal IntPtr _on_worker_context_released;
-        internal IntPtr _on_worker_uncaught_exception;
         internal IntPtr _on_focused_node_changed;
         internal IntPtr _on_process_message_received;
         
@@ -92,24 +89,6 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_uncaught_exception_delegate(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8context_t* context, cef_v8exception_t* exception, cef_v8stack_trace_t* stackTrace);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate void on_worker_context_created_delegate(cef_render_process_handler_t* self, int worker_id, cef_string_t* url, cef_v8context_t* context);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate void on_worker_context_released_delegate(cef_render_process_handler_t* self, int worker_id, cef_string_t* url, cef_v8context_t* context);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate void on_worker_uncaught_exception_delegate(cef_render_process_handler_t* self, int worker_id, cef_string_t* url, cef_v8context_t* context, cef_v8exception_t* exception, cef_v8stack_trace_t* stackTrace);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
