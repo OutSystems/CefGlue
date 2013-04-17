@@ -1,17 +1,15 @@
-﻿namespace Xilium.CefGlue.Samples.WpfOsr
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Input;
-    using System.Windows.Interop;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-    using System.Windows.Threading;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using Xilium.CefGlue.Helpers.Log;
 
+namespace Xilium.CefGlue.WPF
+{
     public class WpfCefBrowser : ContentControl, IDisposable
     {
         private bool _disposed;
@@ -30,8 +28,21 @@
 
         Dispatcher _mainUiDispatcher;
 
-        public WpfCefBrowser()
+        private readonly ILogger _logger;
+
+        public WpfCefBrowser() : this(new NLogLogger("WpfCefBrowser"))
         {
+        }
+
+        public WpfCefBrowser(ILogger logger)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException("logger");
+            }
+
+            _logger = logger;
+
             StartUrl = "about:blank";
 
             KeyboardNavigation.SetAcceptsReturn(this, true);
@@ -62,7 +73,9 @@
                 }
 
                 if (_browserPageBitmap != null)
+                {
                     _browserPageBitmap = null;
+                }
 
                 // 					if (this.browserPageD3dImage != null)
                 // 						this.browserPageD3dImage = null;
@@ -114,7 +127,7 @@
                 var newWidth = size.Width;
                 var newHeight = size.Height;
 
-                //Debug.WriteLine("BrowserResize: {0}x{1}.", newWidth, newHeight);
+                _logger.Debug("BrowserResize. Old H{0}xW{1}; New H{2}xW{3}.", _browserHeight, _browserWidth, newHeight, newWidth);
 
                 if (newWidth > 0 && newHeight > 0)
                 {
@@ -156,7 +169,9 @@
 
                             // If the window has already been created, just resize it
                             if (_browserHost != null)
+                            {
                                 _browserHost.WasResized();
+                            }
                         }
                     }
                 }
@@ -177,8 +192,9 @@
                         _browserHost.SendFocusEvent(true);
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in GotFocus()", ex);
                 }
             };
 
@@ -192,8 +208,9 @@
                         _browserHost.SendFocusEvent(false);
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in LostFocus()", ex);
                 }
             };
 
@@ -204,11 +221,12 @@
                     if (_browserHost != null)
                     {
                         _browserHost.SendCaptureLostEvent();
-                        //Debug.WriteLine("Browser_LostMouseCapture");
+                        //_logger.Debug("Browser_LostMouseCapture");
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in LostMouseCapture()", ex);
                 }
             };
 
@@ -225,11 +243,12 @@
                         };
 
                         _browserHost.SendMouseMoveEvent(mouseEvent, true);
-                        //Debug.WriteLine("Browser_MouseLeave");
+                        //_logger.Debug("Browser_MouseLeave");
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in MouseLeave()", ex);
                 }
             };
 
@@ -249,11 +268,12 @@
 
                         _browserHost.SendMouseMoveEvent(mouseEvent, false);
 
-                        //Debug.WriteLine(string.Format("Browser_MouseMove: ({0},{1})", cursorPos.X, cursorPos.Y));
+                        //_logger.Debug(string.Format("Browser_MouseMove: ({0},{1})", cursorPos.X, cursorPos.Y));
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in MouseMove()", ex);
                 }
 
                 arg.Handled = true;
@@ -285,11 +305,12 @@
                         else if (arg.ChangedButton == MouseButton.Right)
                             _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Right, false, 1);
 
-                        //Debug.WriteLine(string.Format("Browser_MouseDown: ({0},{1})", cursorPos.X, cursorPos.Y));
+                        //_logger.Debug(string.Format("Browser_MouseDown: ({0},{1})", cursorPos.X, cursorPos.Y));
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in MouseDown()", ex);
                 }
 
                 arg.Handled = true;
@@ -318,13 +339,14 @@
                         else if (arg.ChangedButton == MouseButton.Right)
                             _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Right, true, 1);
 
-                        //Debug.WriteLine(string.Format("Browser_MouseUp: ({0},{1})", cursorPos.X, cursorPos.Y));
+                        //_logger.Debug(string.Format("Browser_MouseUp: ({0},{1})", cursorPos.X, cursorPos.Y));
 
                         ReleaseMouseCapture();
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in MouseUp()", ex);
                 }
 
                 arg.Handled = true;
@@ -347,8 +369,9 @@
                         _browserHost.SendMouseWheelEvent(mouseEvent, 0, arg.Delta);
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in MouseWheel()", ex);
                 }
 
                 arg.Handled = true;
@@ -359,7 +382,7 @@
             {
                 if (_browserHost != null)
                 {
-                    // Debug.WriteLine(string.Format("TextInput: text {0}", arg.Text));
+                    _logger.Debug("TextInput: text {0}", arg.Text);
 
                     foreach (var c in arg.Text)
                     {
@@ -384,7 +407,7 @@
                 {
                     if (_browserHost != null)
                     {
-                        // Debug.WriteLine(string.Format("KeyDown: system key {0}, key {1}", arg.SystemKey, arg.Key));
+                        //_logger.Debug(string.Format("KeyDown: system key {0}, key {1}", arg.SystemKey, arg.Key));
                         CefKeyEvent keyEvent = new CefKeyEvent()
                         {
                             EventType = CefKeyEventType.RawKeyDown,
@@ -396,8 +419,9 @@
                         _browserHost.SendKeyEvent(keyEvent);
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in PreviewKeyDown()", ex);
                 }
 
                 arg.Handled = false;
@@ -410,7 +434,7 @@
                 {
                     if (_browserHost != null)
                     {
-                        // Debug.WriteLine(string.Format("KeyUp: system key {0}, key {1}", arg.SystemKey, arg.Key));
+                        //_logger.Debug(string.Format("KeyUp: system key {0}, key {1}", arg.SystemKey, arg.Key));
                         CefKeyEvent keyEvent = new CefKeyEvent()
                         {
                             EventType = CefKeyEventType.KeyUp,
@@ -422,8 +446,9 @@
                         _browserHost.SendKeyEvent(keyEvent);
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in PreviewKeyUp()", ex);
                 }
 
                 arg.Handled = false;
@@ -478,8 +503,8 @@
             CefRectangle browserRect = new CefRectangle();
 
             // TODO: simplify this
-            _mainUiDispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
-            {
+            //_mainUiDispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+            //{
                 try
                 {
                     // The simulated screen and view rectangle are the same. This is necessary
@@ -489,24 +514,20 @@
                     browserRect.Height = (int)_browserHeight;
 
                     rectProvided = true;
-
-                    // 					// The simulated screen and view rectangle are the same. This is necessary
-                    // 					// for popup menus to be located and sized inside the view.
-                    // 					tempRect.X = tempRect.Y = 0;
-                    // 					tempRect.Width = this.browserWidth;
-                    // 					tempRect.Height = this.browserHeight;
-                    // 
-                    // 					rectProvided = true;
                 }
                 catch (Exception ex)
                 {
-                    //LogWriter.WriteMsg(LogLevel.Error, "WpfCefBrowser: Caught exception in HandleGetRect(): {0} - {1}", ex.GetType(), ex.Message);
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in GetViewRect()", ex);
                     rectProvided = false;
                 }
-            }));
+            //}));
 
             if (rectProvided)
+            {
                 rect = browserRect;
+            }
+
+            _logger.Debug("GetViewRect result provided:{0} Rect: X{1} Y{2} H{3} W{4}", rectProvided, browserRect.X, browserRect.Y, browserRect.Height, browserRect.Width);
 
             return rectProvided;
         }
@@ -524,7 +545,7 @@
                 }
                 catch (Exception ex)
                 {
-                    //LogWriter.WriteMsg(LogLevel.Error, "WpfCefBrowser: Caught exception in HandleGetScreenPoint(): {0} - {1}", ex.GetType(), ex.Message);
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in GetScreenPoint()", ex);
                 }
             }));
 
@@ -547,14 +568,14 @@
                     }
 
                     if (_browserPageBitmap != null)
+                    {
                         DoRenderBrowser(_browserPageBitmap, width, height, dirtyRects, buffer);
+                    }
 
-                    // 					Debug.WriteLine(string.Format("HandleViewPaint: Dirty rect [{0},{1},{2},{3}]. Browser dimensions are {4}x{5}.",
-                    // 						dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height, browserWidth, browserHeight));
                 }
                 catch (Exception ex)
                 {
-                    //LogWriter.WriteMsg(LogLevel.Error, "WpfCefBrowser: Caught exception in HandleViewPaint(): {0} - {1}", ex.GetType(), ex.Message);
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in HandleViewPaint()", ex);
                 }
             }));
         }
@@ -564,19 +585,34 @@
             int stride = browserWidth * 4;
             int sourceBufferSize = stride * browserHeight;
 
+            _logger.Debug("DoRenderBrowser() Bitmap H{0}xW{1}, Browser H{2}xW{3}", bitmap.Height, bitmap.Width, browserHeight, browserWidth);
+
+            if (browserWidth == 0 || browserHeight == 0)
+            {
+                return;
+            }
+
             foreach (CefRectangle dirtyRect in dirtyRects)
             {
-                if (dirtyRect.X > bitmap.Width || dirtyRect.Y > bitmap.Height || dirtyRect.Width == 0 || dirtyRect.Height == 0 || browserWidth == 0 || browserHeight == 0)
-                    return;
+                _logger.Debug(string.Format("Dirty rect [{0},{1},{2},{3}]", dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height));
+
+                if (dirtyRect.Width == 0 || dirtyRect.Height == 0)
+                {
+                    continue;
+                }
 
                 // If the window has been resized, make sure we never try to render too much
                 int adjustedWidth = (int)dirtyRect.Width;
-                if (dirtyRect.X + dirtyRect.Width > (int)bitmap.Width)
-                    adjustedWidth = (int)bitmap.Width - (int)dirtyRect.X;
+                //if (dirtyRect.X + dirtyRect.Width > (int) bitmap.Width)
+                //{
+                //    adjustedWidth = (int) bitmap.Width - (int) dirtyRect.X;
+                //}
 
                 int adjustedHeight = (int)dirtyRect.Height;
-                if (dirtyRect.Y + dirtyRect.Height > (int)bitmap.Height)
-                    adjustedHeight = (int)bitmap.Height - (int)dirtyRect.Y;
+                //if (dirtyRect.Y + dirtyRect.Height > (int) bitmap.Height)
+                //{
+                //    adjustedHeight = (int) bitmap.Height - (int) dirtyRect.Y;
+                //}
 
                 // Update the dirty region
                 Int32Rect sourceRect = new Int32Rect((int)dirtyRect.X, (int)dirtyRect.Y, adjustedWidth, adjustedHeight);

@@ -1,11 +1,7 @@
-﻿namespace Xilium.CefGlue.Samples.WpfOsr
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using Xilium.CefGlue;
+﻿using System;
 
+namespace Xilium.CefGlue.WPF
+{
     internal sealed class WpfCefDisplayHandler : CefDisplayHandler
     {
         WpfCefBrowser _owner;

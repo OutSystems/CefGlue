@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Xilium.CefGlue.Samples.WpfOsr.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:xi="clr-namespace:Xilium.CefGlue.Samples.WpfOsr"
+        xmlns:wpf="clr-namespace:Xilium.CefGlue.WPF;assembly=Xilium.CefGlue.WPF"
         Title="MainWindow" Height="500" Width="700">
     <Grid>
         <Grid.RowDefinitions>
@@ -9,7 +9,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <TextBox Grid.Row="0" Text="" Name="addressTextBox" KeyDown="addressTextBox_KeyDown_1" />
-        <xi:WpfCefBrowser Grid.Row="1" StartUrl="http://www.google.com" x:Name="browser">
+        <wpf:WpfCefBrowser Grid.Row="1" StartUrl="http://www.google.com" x:Name="browser">
                 <!--
             <xi:WpfCefBrowser.RenderTransform>
                 <TransformGroup>
@@ -18,6 +18,6 @@
                 </TransformGroup>
             </xi:WpfCefBrowser.RenderTransform>
             -->
-        </xi:WpfCefBrowser>
+        </wpf:WpfCefBrowser>
     </Grid>
 </Window>

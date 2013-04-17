@@ -1,11 +1,8 @@
-﻿namespace Xilium.CefGlue.Samples.WpfOsr
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Text;
+﻿using System;
+using Xilium.CefGlue.Helpers.Log;
 
+namespace Xilium.CefGlue.WPF
+{
     internal sealed class WpfCefClient : CefClient
     {
         private WpfCefBrowser _owner;
@@ -22,7 +19,7 @@
 
             _lifeSpanHandler = new WpfCefLifeSpanHandler(owner);
             _displayHandler = new WpfCefDisplayHandler(owner);
-            _renderHandler = new WpfCefRenderHandler(owner);
+            _renderHandler = new WpfCefRenderHandler(owner, new NLogLogger("WpfCefRenderHandler"), new UiHelper(new NLogLogger("WpfCefRenderHandler")));
         }
 
         protected override CefLifeSpanHandler GetLifeSpanHandler()
