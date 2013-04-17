@@ -18,8 +18,8 @@ namespace Xilium.CefGlue.WPF
         private Image _browserPageImage;
         private WriteableBitmap _browserPageBitmap;
 
-        private double _browserWidth;
-        private double _browserHeight;
+        private int _browserWidth;
+        private int _browserHeight;
         private bool _browserSizeChanged;
 
         private CefBrowser _browser;
@@ -124,8 +124,8 @@ namespace Xilium.CefGlue.WPF
 
             if (_browserPageImage != null)
             {
-                var newWidth = size.Width;
-                var newHeight = size.Height;
+                var newWidth = (int)size.Width;
+                var newHeight = (int)size.Height;
 
                 _logger.Debug("BrowserResize. Old H{0}xW{1}; New H{2}xW{3}.", _browserHeight, _browserWidth, newHeight, newWidth);
 
@@ -170,6 +170,7 @@ namespace Xilium.CefGlue.WPF
                             // If the window has already been created, just resize it
                             if (_browserHost != null)
                             {
+                                _logger.Trace("CefBrowserHost::WasResized to {0}x{1}.", newWidth, newHeight);
                                 _browserHost.WasResized();
                             }
                         }
