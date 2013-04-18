@@ -43,9 +43,6 @@
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.2.0.1.2\lib\net20\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -246,8 +243,6 @@
     <Compile Include="ExceptionBuilder.cs" />
     <Compile Include="Exceptions\CefVersionMismatchException.cs" />
     <Compile Include="Exceptions\CefRuntimeException.cs" />
-    <Compile Include="Helpers\Log\ILogger.cs" />
-    <Compile Include="Helpers\Log\NLogLogger.cs" />
     <Compile Include="Interop\Base\bool_t.cs" />
     <Compile Include="Interop\Base\cefglue_userdata_t.cs" />
     <Compile Include="Interop\Base\cef_base_t.cs" />
@@ -378,7 +373,6 @@
     <Compile Include="Interop\Structs\cef_window_info_t.cs" />
     <Compile Include="StringHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

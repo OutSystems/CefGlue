@@ -66,6 +66,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\Log\ILogger.cs" />
+    <Compile Include="Helpers\Log\NLogLogger.cs" />
     <Compile Include="IUiHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
