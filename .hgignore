@@ -13,5 +13,8 @@ obj
 # python
 *.pyc
 
+# SHFB user preferences file
+*.shfbproj_*
+
 relre:^CefGlue.Interop.Gen/Classes.Handlers.tmpl/
 relre:^CefGlue.Interop.Gen/Classes.Proxies.tmpl/
