@@ -17,7 +17,7 @@
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 2.0</FrameworkVersion>
     <OutputPath>./bin/doc/</OutputPath>
-    <HtmlHelpName>Documentation</HtmlHelpName>
+    <HtmlHelpName>Xilium.CefGlue</HtmlHelpName>
     <Language>en-US</Language>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpFileFormat>Website</HelpFileFormat>
@@ -32,7 +32,7 @@
     <PresentationStyle>VS2010</PresentationStyle>
     <Preliminary>True</Preliminary>
     <NamingMethod>HashedMemberName</NamingMethod>
-    <HelpTitle>CefGlue Documented Class Library</HelpTitle>
+    <HelpTitle>Xilium.CefGlue</HelpTitle>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <HelpFileVersion>1.0.0.0</HelpFileVersion>
     <PlugInNamespaces>ms.vsipcc+, ms.vsexpresscc+</PlugInNamespaces>
@@ -47,6 +47,8 @@
     <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
     <IncludeFavorites>False</IncludeFavorites>
     <BinaryTOC>False</BinaryTOC>
+    <CopyrightText>Copyright %28C%29 2013 Xilium Project</CopyrightText>
+    <FeedbackEMailAddress>xiliumhq%40gmail.com</FeedbackEMailAddress>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in
        order for Visual Studio to perform the build.  The others are optional
