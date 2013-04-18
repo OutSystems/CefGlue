@@ -327,10 +327,11 @@
         /// |source_origin| URL (like http://www.example.com) will be allowed access to
         /// all resources hosted on the specified |target_protocol| and |target_domain|.
         /// If |target_domain| is non-empty and |allow_target_subdomains| if false only
-        /// exact domain matches will be allowed. If |target_domain| is non-empty and
-        /// |allow_target_subdomains| is true sub-domain matches will be allowed. If
-        /// |target_domain| is empty and |allow_target_subdomains| if true all domains
-        /// and IP addresses will be allowed.
+        /// exact domain matches will be allowed. If |target_domain| contains a top-
+        /// level domain component (like "example.com") and |allow_target_subdomains| is
+        /// true sub-domain matches will be allowed. If |target_domain| is empty and
+        /// |allow_target_subdomains| if true all domains and IP addresses will be
+        /// allowed.
         ///
         /// This method cannot be used to bypass the restrictions on local or display
         /// isolated schemes. See the comments on CefRegisterCustomScheme for more
@@ -406,11 +407,12 @@
         /// will cause the factory to match all domain names. The |domain_name| value
         /// will be ignored for non-standard schemes. If |scheme_name| is a built-in
         /// scheme and no handler is returned by |factory| then the built-in scheme
-        /// handler factory will be called. If |scheme_name| is a custom scheme the
-        /// CefRegisterCustomScheme() function should be called for that scheme.
+        /// handler factory will be called. If |scheme_name| is a custom scheme then
+        /// also implement the CefApp::OnRegisterCustomSchemes() method in all processes.
         /// This function may be called multiple times to change or remove the factory
         /// that matches the specified |scheme_name| and optional |domain_name|.
-        /// Returns false if an error occurs. This function may be called on any thread.
+        /// Returns false if an error occurs. This function may be called on any thread
+        /// in the browser process.
         /// </summary>
         public static bool RegisterSchemeHandlerFactory(string schemeName, string domainName, CefSchemeHandlerFactory factory)
         {
@@ -429,7 +431,7 @@
 
         /// <summary>
         /// Clear all registered scheme handler factories. Returns false on error. This
-        /// function may be called on any thread.
+        /// function may be called on any thread in the browser process.
         /// </summary>
         public static bool ClearSchemeHandlerFactories()
         {
