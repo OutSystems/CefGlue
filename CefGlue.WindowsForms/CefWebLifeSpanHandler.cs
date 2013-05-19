@@ -17,7 +17,7 @@
         {
             base.OnAfterCreated(browser);
 
-            _core.BrowserAfterCreated(browser);
+        	_core.InvokeIfRequired(() => _core.OnBrowserAfterCreated(browser));
         }
 
         protected override bool DoClose(CefBrowser browser)
@@ -25,5 +25,23 @@
             // TODO: ... dispose core
             return false;
         }
+
+		protected override void OnBeforeClose(CefBrowser browser)
+		{
+			_core.InvokeIfRequired(_core.OnBeforeClose);
+		}
+
+		protected override bool OnBeforePopup(CefBrowser browser, CefFrame frame, string targetUrl, string targetFrameName, CefPopupFeatures popupFeatures, CefWindowInfo windowInfo, ref CefClient client, CefBrowserSettings settings, ref bool noJavascriptAccess)
+		{
+			var e = new BeforePopupEventArgs(frame, targetUrl, targetFrameName, popupFeatures, windowInfo, client, settings,
+								 noJavascriptAccess);
+
+			_core.InvokeIfRequired(() => _core.OnBeforePopup(e));
+
+			client = e.Client;
+			noJavascriptAccess = e.NoJavascriptAccess;
+
+			return e.Handled;
+		}
     }
 }

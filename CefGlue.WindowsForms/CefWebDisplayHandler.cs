@@ -16,20 +16,41 @@
 
         protected override void  OnTitleChange(CefBrowser browser, string title)
         {
-            _core.OnTitleChanged(title);
+            _core.InvokeIfRequired(() => _core.OnTitleChanged(new TitleChangedEventArgs(title)));
         }
 
         protected override void OnAddressChange(CefBrowser browser, CefFrame frame, string url)
         {
             if (frame.IsMain)
             {
-                _core.OnAddressChanged(url);
+               _core.InvokeIfRequired(() => _core.OnAddressChanged(new AddressChangedEventArgs(frame, url)));
             }
         }
 
         protected override void OnStatusMessage(CefBrowser browser, string value)
         {
-            _core.OnStatusMessage(value);
+            _core.InvokeIfRequired(() => _core.OnStatusMessage(new StatusMessageEventArgs(value)));
         }
+
+		protected override bool OnConsoleMessage(CefBrowser browser, string message, string source, int line)
+		{
+			var e = new ConsoleMessageEventArgs(message, source, line);
+			_core.InvokeIfRequired(() => _core.OnConsoleMessage(e));
+
+			return e.Handled;
+		}
+
+		protected override void OnLoadingStateChange(CefBrowser browser, bool isLoading, bool canGoBack, bool canGoForward)
+		{
+			_core.InvokeIfRequired(() => _core.OnLoadingStateChange(new LoadingStateChangeEventArgs(isLoading, canGoBack, canGoForward)));
+		}
+
+		protected override bool OnTooltip(CefBrowser browser, string text)
+		{
+			var e = new TooltipEventArgs(text);
+			_core.InvokeIfRequired(()=> _core.OnTooltip(e));
+			return e.Handled;
+		}
+
     }
 }

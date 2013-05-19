@@ -47,7 +47,7 @@
 
         internal void OnCreated(CefBrowser browser)
         {
-            if (_created) throw new InvalidOperationException("Browser already created.");
+            //if (_created) throw new InvalidOperationException("Browser already created.");
             _created = true;
             _browser = browser;
 

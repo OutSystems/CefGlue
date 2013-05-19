@@ -9,12 +9,14 @@
         private readonly CefWebBrowser _core;
         private readonly CefWebLifeSpanHandler _lifeSpanHandler;
         private readonly CefWebDisplayHandler _displayHandler;
+    	private readonly CefWebLoadHandler _loadHandler;
 
         public CefWebClient(CefWebBrowser core)
         {
             _core = core;
             _lifeSpanHandler = new CefWebLifeSpanHandler(_core);
             _displayHandler = new CefWebDisplayHandler(_core);
+        	_loadHandler = new CefWebLoadHandler(_core);
         }
 
         protected override CefLifeSpanHandler GetLifeSpanHandler()
@@ -27,6 +29,9 @@
             return _displayHandler;
         }
 
-
+		protected override CefLoadHandler GetLoadHandler()
+		{
+			return _loadHandler;
+		}
     }
 }
