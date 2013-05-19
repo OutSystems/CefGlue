@@ -28,7 +28,10 @@
 
 		protected override void OnBeforeClose(CefBrowser browser)
 		{
-			_core.InvokeIfRequired(_core.OnBeforeClose);
+			if (_core.InvokeRequired)
+				_core.BeginInvoke((Action)_core.OnBeforeClose);
+			else
+				_core.OnBeforeClose();
 		}
 
 		protected override bool OnBeforePopup(CefBrowser browser, CefFrame frame, string targetUrl, string targetFrameName, CefPopupFeatures popupFeatures, CefWindowInfo windowInfo, ref CefClient client, CefBrowserSettings settings, ref bool noJavascriptAccess)

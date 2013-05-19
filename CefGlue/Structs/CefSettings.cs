@@ -212,6 +212,7 @@
             ptr->uncaught_exception_stack_size = UncaughtExceptionStackSize;
             ptr->context_safety_implementation = (int)ContextSafetyImplementation;
             ptr->ignore_certificate_errors = IgnoreCertificateErrors;
+        	ptr->persist_session_cookies = PersistSessionCookies;
             return ptr;
         }
 

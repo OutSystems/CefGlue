@@ -51,7 +51,7 @@
 		internal void InvokeIfRequired(Action a)
 		{
 			if (InvokeRequired)
-				a();
+				Invoke(a);
 			else
 				a();
 		}
@@ -228,12 +228,6 @@
 
 		internal protected virtual void OnBeforeClose()
 		{
-			if (InvokeRequired)
-			{
-				Invoke((Action)OnBeforeClose);
-				return;
-			}
-
 			if (BeforeClose != null)
 				BeforeClose(this, EventArgs.Empty);
 		}
