@@ -25,6 +25,7 @@ namespace Xilium.CefGlue
         private cef_jsdialog_handler_t.on_jsdialog_delegate _ds3;
         private cef_jsdialog_handler_t.on_before_unload_dialog_delegate _ds4;
         private cef_jsdialog_handler_t.on_reset_dialog_state_delegate _ds5;
+        private cef_jsdialog_handler_t.on_dialog_closed_delegate _ds6;
         
         protected CefJSDialogHandler()
         {
@@ -42,6 +43,8 @@ namespace Xilium.CefGlue
             _self->_on_before_unload_dialog = Marshal.GetFunctionPointerForDelegate(_ds4);
             _ds5 = new cef_jsdialog_handler_t.on_reset_dialog_state_delegate(on_reset_dialog_state);
             _self->_on_reset_dialog_state = Marshal.GetFunctionPointerForDelegate(_ds5);
+            _ds6 = new cef_jsdialog_handler_t.on_dialog_closed_delegate(on_dialog_closed);
+            _self->_on_dialog_closed = Marshal.GetFunctionPointerForDelegate(_ds6);
         }
         
         ~CefJSDialogHandler()

@@ -77,6 +77,8 @@
     <Compile Include="Classes.g\CefDownloadHandler.g.cs" />
     <Compile Include="Classes.g\CefDownloadItem.g.cs" />
     <Compile Include="Classes.g\CefDownloadItemCallback.g.cs" />
+    <Compile Include="Classes.g\CefDragData.g.cs" />
+    <Compile Include="Classes.g\CefDragHandler.g.cs" />
     <Compile Include="Classes.g\CefFileDialogCallback.g.cs" />
     <Compile Include="Classes.g\CefFocusHandler.g.cs" />
     <Compile Include="Classes.g\CefFrame.g.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="Classes.Handlers\CefDomEventListener.cs" />
     <Compile Include="Classes.Handlers\CefDomVisitor.cs" />
     <Compile Include="Classes.Handlers\CefDownloadHandler.cs" />
+    <Compile Include="Classes.Handlers\CefDragHandler.cs" />
     <Compile Include="Classes.Handlers\CefFocusHandler.cs" />
     <Compile Include="Classes.Handlers\CefGeolocationHandler.cs" />
     <Compile Include="Classes.Handlers\CefGetGeolocationCallback.cs" />
@@ -179,6 +182,7 @@
     <Compile Include="Classes.Proxies\CefDomNode.cs" />
     <Compile Include="Classes.Proxies\CefDownloadItem.cs" />
     <Compile Include="Classes.Proxies\CefDownloadItemCallback.cs" />
+    <Compile Include="Classes.Proxies\CefDragData.cs" />
     <Compile Include="Classes.Proxies\CefFileDialogCallback.cs" />
     <Compile Include="Classes.Proxies\CefFrame.cs" />
     <Compile Include="Classes.Proxies\CefGeolocationCallback.cs" />
@@ -204,6 +208,7 @@
     <Compile Include="Classes.Proxies\CefWebPluginInfo.cs" />
     <Compile Include="Classes.Proxies\CefXmlReader.cs" />
     <Compile Include="Classes.Proxies\CefZipReader.cs" />
+    <Compile Include="Enums\CefDragOperationsMask.cs" />
     <Compile Include="Enums\CefFileDialogMode.cs" />
     <Compile Include="Enums\CefFocusSource.cs" />
     <Compile Include="Enums\CefGeopositionErrorCode.cs" />
@@ -264,6 +269,8 @@
     <Compile Include="Interop\Classes.g\cef_download_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_download_item_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_download_item_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_drag_data_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_drag_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_file_dialog_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_focus_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_get_geolocation_callback_t.g.cs" />

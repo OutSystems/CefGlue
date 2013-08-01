@@ -38,6 +38,9 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _send_mouse_wheel_event;
         internal IntPtr _send_focus_event;
         internal IntPtr _send_capture_lost_event;
+        internal IntPtr _get_nstext_input_context;
+        internal IntPtr _handle_key_event_before_text_input_client;
+        internal IntPtr _handle_key_event_after_text_input_client;
         
         // CreateBrowser
         [DllImport(libcef.DllName, EntryPoint = "cef_browser_host_create_browser", CallingConvention = libcef.CEF_CALL)]
@@ -214,6 +217,24 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate void send_capture_lost_event_delegate(cef_browser_host_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void get_nstext_input_context_delegate(cef_browser_host_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void handle_key_event_before_text_input_client_delegate(cef_browser_host_t* self, IntPtr keyEvent);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void handle_key_event_after_text_input_client_delegate(cef_browser_host_t* self, IntPtr keyEvent);
         
         // AddRef
         private static IntPtr _p0;
@@ -689,6 +710,57 @@ namespace Xilium.CefGlue.Interop
                 if (_p1b == IntPtr.Zero) { _d1b = d; _p1b = p; }
             }
             d(self);
+        }
+        
+        // GetNSTextInputContext
+        private static IntPtr _p1c;
+        private static get_nstext_input_context_delegate _d1c;
+        
+        public static void get_nstext_input_context(cef_browser_host_t* self)
+        {
+            get_nstext_input_context_delegate d;
+            var p = self->_get_nstext_input_context;
+            if (p == _p1c) { d = _d1c; }
+            else
+            {
+                d = (get_nstext_input_context_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_nstext_input_context_delegate));
+                if (_p1c == IntPtr.Zero) { _d1c = d; _p1c = p; }
+            }
+            d(self);
+        }
+        
+        // HandleKeyEventBeforeTextInputClient
+        private static IntPtr _p1d;
+        private static handle_key_event_before_text_input_client_delegate _d1d;
+        
+        public static void handle_key_event_before_text_input_client(cef_browser_host_t* self, IntPtr keyEvent)
+        {
+            handle_key_event_before_text_input_client_delegate d;
+            var p = self->_handle_key_event_before_text_input_client;
+            if (p == _p1d) { d = _d1d; }
+            else
+            {
+                d = (handle_key_event_before_text_input_client_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(handle_key_event_before_text_input_client_delegate));
+                if (_p1d == IntPtr.Zero) { _d1d = d; _p1d = p; }
+            }
+            d(self, keyEvent);
+        }
+        
+        // HandleKeyEventAfterTextInputClient
+        private static IntPtr _p1e;
+        private static handle_key_event_after_text_input_client_delegate _d1e;
+        
+        public static void handle_key_event_after_text_input_client(cef_browser_host_t* self, IntPtr keyEvent)
+        {
+            handle_key_event_after_text_input_client_delegate d;
+            var p = self->_handle_key_event_after_text_input_client;
+            if (p == _p1e) { d = _d1e; }
+            else
+            {
+                d = (handle_key_event_after_text_input_client_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(handle_key_event_after_text_input_client_delegate));
+                if (_p1e == IntPtr.Zero) { _d1e = d; _p1e = p; }
+            }
+            d(self, keyEvent);
         }
         
     }

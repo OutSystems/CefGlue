@@ -370,5 +370,32 @@ namespace Xilium.CefGlue
         {
             cef_browser_host_t.send_capture_lost_event(_self);
         }
+
+        /// <summary>
+        /// Get the NSTextInputContext implementation for enabling IME on Mac when
+        /// window rendering is disabled.
+        /// </summary>
+        public void GetNSTextInputContext()
+        {
+            cef_browser_host_t.get_nstext_input_context(_self);
+        }
+
+        /// <summary>
+        /// Handles a keyDown event prior to passing it through the NSTextInputClient
+        /// machinery.
+        /// </summary>
+        public void HandleKeyEventBeforeTextInputClient(IntPtr keyEvent)
+        {
+            cef_browser_host_t.handle_key_event_before_text_input_client(_self, keyEvent);
+        }
+
+        /// <summary>
+        /// Performs any additional actions after NSTextInputClient handles the event.
+        /// </summary>
+        public void HandleKeyEventAfterTextInputClient(IntPtr keyEvent)
+        {
+            cef_browser_host_t.handle_key_event_after_text_input_client(_self, keyEvent);
+        }
+
     }
 }

@@ -16,6 +16,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _on_jsdialog;
         internal IntPtr _on_before_unload_dialog;
         internal IntPtr _on_reset_dialog_state;
+        internal IntPtr _on_dialog_closed;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -52,6 +53,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_reset_dialog_state_delegate(cef_jsdialog_handler_t* self, cef_browser_t* browser);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void on_dialog_closed_delegate(cef_jsdialog_handler_t* self, cef_browser_t* browser);
         
         private static int _sizeof;
         

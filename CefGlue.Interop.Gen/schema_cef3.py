@@ -90,4 +90,7 @@ classdef = {
     'CefCompletionHandler': { 'role': ROLE_HANDLER },
     # R1177
     'CefAllowCertificateErrorCallback': { 'role': ROLE_PROXY },
+	#R1293
+	'CefDragData': { 'role': ROLE_PROXY },
+	'CefDragHandler': { 'role': ROLE_HANDLER }
     }
