@@ -87,5 +87,9 @@ namespace Xilium.CefGlue.WPF
                     _owner.Cursor = cursor;
                 });
         }
+
+        protected override void OnScrollOffsetChange(CefBrowser browser)
+        {
+        }
     }
 }

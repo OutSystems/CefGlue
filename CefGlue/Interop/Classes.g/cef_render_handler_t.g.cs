@@ -21,6 +21,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _on_popup_size;
         internal IntPtr _on_paint;
         internal IntPtr _on_cursor_change;
+        internal IntPtr _on_scroll_offset_change;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -87,6 +88,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_cursor_change_delegate(cef_render_handler_t* self, cef_browser_t* browser, IntPtr cursor);
+
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void on_scroll_offset_change_delegate(cef_render_handler_t* self, cef_browser_t* browser);
         
         private static int _sizeof;
         
