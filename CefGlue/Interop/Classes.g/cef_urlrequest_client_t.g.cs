@@ -17,6 +17,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _on_upload_progress;
         internal IntPtr _on_download_progress;
         internal IntPtr _on_download_data;
+        internal IntPtr _get_auth_credentials;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -59,6 +60,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_download_data_delegate(cef_urlrequest_client_t* self, cef_urlrequest_t* request, void* data, UIntPtr data_length);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int get_auth_credentials_delegate(cef_urlrequest_client_t* self, int isProxy, cef_string_t* host, int port, cef_string_t* realm, cef_string_t* scheme, cef_auth_callback_t* callback);
         
         private static int _sizeof;
         

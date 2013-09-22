@@ -10,7 +10,7 @@ namespace Xilium.CefGlue
     /// <summary>
     /// Interface that should be implemented by the CefURLRequest client. The
     /// methods of this class will be called on the same thread that created the
-    /// request.
+    /// request unless otherwise documented.
     /// </summary>
     public abstract unsafe partial class CefUrlRequestClient
     {
@@ -84,5 +84,34 @@ namespace Xilium.CefGlue
         /// UR_FLAG_NO_DOWNLOAD_DATA flag is set on the request.
         /// </summary>
         protected abstract void OnDownloadData(CefUrlRequest request, Stream data);
+
+
+        private int get_auth_credentials(cef_urlrequest_client_t* self, int isProxy, cef_string_t* host, int port, cef_string_t* realm, cef_string_t* scheme, cef_auth_callback_t* callback)
+        {
+            CheckSelf(self);
+
+            var m_isProxy = isProxy != 0;
+            var m_host = cef_string_t.ToString(host);
+            var m_realm = cef_string_t.ToString(realm);
+            var m_scheme = cef_string_t.ToString(scheme);
+            var m_callback = CefAuthCallback.FromNative(callback);
+
+            var m_result = GetAuthCredentials(m_isProxy, m_host, port, m_realm, m_scheme, m_callback);
+
+            return m_result ? 1 : 0;
+        }
+
+        /// <summary>
+        /// Called on the IO thread when the browser needs credentials from the user.
+        /// |isProxy| indicates whether the host is a proxy server. |host| contains the
+        /// hostname and |port| contains the port number. Return true to continue the
+        /// request and call CefAuthCallback::Continue() when the authentication
+        /// information is available. Return false to cancel the request. This method
+        /// will only be called for requests initiated from the browser process.
+        /// </summary>
+        protected virtual bool GetAuthCredentials(bool isProxy, string host, int port, string realm, string scheme, CefAuthCallback callback)
+        {
+            return false;
+        }
     }
 }

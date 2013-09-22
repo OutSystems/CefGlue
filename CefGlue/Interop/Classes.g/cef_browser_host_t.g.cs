@@ -222,7 +222,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void get_nstext_input_context_delegate(cef_browser_host_t* self);
+        private delegate IntPtr get_nstext_input_context_delegate(cef_browser_host_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -716,7 +716,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1c;
         private static get_nstext_input_context_delegate _d1c;
         
-        public static void get_nstext_input_context(cef_browser_host_t* self)
+        public static IntPtr get_nstext_input_context(cef_browser_host_t* self)
         {
             get_nstext_input_context_delegate d;
             var p = self->_get_nstext_input_context;
@@ -726,7 +726,7 @@ namespace Xilium.CefGlue.Interop
                 d = (get_nstext_input_context_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_nstext_input_context_delegate));
                 if (_p1c == IntPtr.Zero) { _d1c = d; _p1c = p; }
             }
-            d(self);
+            return d(self);
         }
         
         // HandleKeyEventBeforeTextInputClient

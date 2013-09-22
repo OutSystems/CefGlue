@@ -88,7 +88,7 @@ namespace Xilium.CefGlue.WPF
                 });
         }
 
-        protected override void OnScrollOffsetChange(CefBrowser browser)
+        protected override void OnScrollOffsetChanged(CefBrowser browser)
         {
         }
     }

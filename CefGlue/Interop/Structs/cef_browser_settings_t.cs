@@ -40,7 +40,6 @@ namespace Xilium.CefGlue.Interop
         public CefState image_loading;
         public CefState image_shrink_standalone_to_fit;
         public CefState text_area_resize;
-        public CefState page_cache;
         public CefState tab_to_links;
         public CefState author_and_user_styles;
         public CefState local_storage;
@@ -48,7 +47,6 @@ namespace Xilium.CefGlue.Interop
         public CefState application_cache;
         public CefState webgl;
         public CefState accelerated_compositing;
-        public CefState developer_tools;
 
         #region Alloc & Free
         private static int _sizeof;

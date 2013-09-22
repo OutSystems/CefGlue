@@ -1,4 +1,4 @@
-// Copyright (c) 2010 Marshall A. Greenblatt. All rights reserved.
+// Copyright (c) 2013 Marshall A. Greenblatt. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -26,59 +26,39 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// ---------------------------------------------------------------------------
+//
+// The contents of this file must follow a specific format in order to
+// support the CEF translator tool. See the translator.README.txt file in the
+// tools directory for more information.
+//
 
-
-#ifndef CEF_INCLUDE_INTERNAL_CEF_TYPES_LINUX_H_
-#define CEF_INCLUDE_INTERNAL_CEF_TYPES_LINUX_H_
+#ifndef CEF_INCLUDE_CEF_AUTH_CALLBACK_H_
+#define CEF_INCLUDE_CEF_AUTH_CALLBACK_H_
 #pragma once
 
-#include "include/internal/cef_build.h"
-
-#if defined(OS_LINUX)
-#include <gtk/gtk.h>
-#include "include/internal/cef_string.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-// Handle types.
-#define cef_cursor_handle_t GdkCursor*
-#define cef_event_handle_t GdkEvent*
-#define cef_window_handle_t GtkWidget*
-#define cef_text_input_context_t void*
+#include "include/cef_base.h"
 
 ///
-// Structure representing CefExecuteProcess arguments.
+// Callback interface used for asynchronous continuation of authentication
+// requests.
 ///
-typedef struct _cef_main_args_t {
-  int argc;
-  char** argv;
-} cef_main_args_t;
+/*--cef(source=library)--*/
+class CefAuthCallback : public virtual CefBase {
+ public:
+  ///
+  // Continue the authentication request.
+  ///
+  /*--cef(capi_name=cont)--*/
+  virtual void Continue(const CefString& username,
+                        const CefString& password) =0;
 
-///
-// Class representing window information.
-///
-typedef struct _cef_window_info_t {
-  // Pointer for the parent GtkBox widget.
-  cef_window_handle_t parent_widget;
+  ///
+  // Cancel the authentication request.
+  ///
+  /*--cef()--*/
+  virtual void Cancel() =0;
+};
 
-  // If window rendering is disabled no browser window will be created. Set
-  // |parent_widget| to the window that will act as the parent for popup menus,
-  // dialog boxes, etc.
-  bool window_rendering_disabled;
-
-  // Set to true to enable transparent painting.
-  bool transparent_painting;
-
-  // Pointer for the new browser widget.
-  cef_window_handle_t widget;
-} cef_window_info_t;
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif  // OS_LINUX
-
-#endif  // CEF_INCLUDE_INTERNAL_CEF_TYPES_LINUX_H_
+#endif  // CEF_INCLUDE_CEF_AUTH_CALLBACK_H_

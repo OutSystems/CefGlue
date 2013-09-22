@@ -17,9 +17,10 @@ namespace Xilium.CefGlue
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
-            var m_drag_data = CefDragData.FromNative(dragData);
+            var m_dragData = CefDragData.FromNative(dragData);
+            var m_result = OnDragEnter(m_browser, m_dragData, mask);
 
-            return OnDragEnter(m_browser, m_drag_data, mask);
+            return m_result ? 1 : 0;
         }
 
         /// <summary>
@@ -28,6 +29,6 @@ namespace Xilium.CefGlue
         /// operation. Return false for default drag handling behavior or true to
         /// cancel the drag event.
         /// </summary>
-        protected abstract int OnDragEnter(CefBrowser browser, CefDragData dragData, CefDragOperationsMask mask);
+        protected abstract bool OnDragEnter(CefBrowser browser, CefDragData dragData, CefDragOperationsMask mask);
     }
 }

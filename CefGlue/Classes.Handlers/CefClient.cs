@@ -76,9 +76,11 @@ namespace Xilium.CefGlue
             return null;
         }
 
+
         private cef_drag_handler_t* get_drag_handler(cef_client_t* self)
         {
             CheckSelf(self);
+
             var result = GetDragHandler();
             return result != null ? result.ToNative() : null;
         }
@@ -90,6 +92,7 @@ namespace Xilium.CefGlue
         {
             return null;
         }
+
 
         private cef_focus_handler_t* get_focus_handler(cef_client_t* self)
         {

@@ -44,6 +44,7 @@ namespace Xilium.CefGlue
         private cef_urlrequest_client_t.on_upload_progress_delegate _ds4;
         private cef_urlrequest_client_t.on_download_progress_delegate _ds5;
         private cef_urlrequest_client_t.on_download_data_delegate _ds6;
+        private cef_urlrequest_client_t.get_auth_credentials_delegate _ds7;
         
         protected CefUrlRequestClient()
         {
@@ -63,6 +64,8 @@ namespace Xilium.CefGlue
             _self->_on_download_progress = Marshal.GetFunctionPointerForDelegate(_ds5);
             _ds6 = new cef_urlrequest_client_t.on_download_data_delegate(on_download_data);
             _self->_on_download_data = Marshal.GetFunctionPointerForDelegate(_ds6);
+            _ds7 = new cef_urlrequest_client_t.get_auth_credentials_delegate(get_auth_credentials);
+            _self->_get_auth_credentials = Marshal.GetFunctionPointerForDelegate(_ds7);
         }
         
         ~CefUrlRequestClient()

@@ -105,14 +105,14 @@
 
         public override bool WindowRenderingDisabled
         {
-            get { return default(bool); }
-            set { }
+            get { ThrowIfDisposed(); return _self->window_rendering_disabled; }
+            set { ThrowIfDisposed(); _self->window_rendering_disabled = value; }
         }
 
         public override bool TransparentPainting
         {
-            get { return default(bool); }
-            set { }
+            get { ThrowIfDisposed(); return _self->window_rendering_disabled; }
+            set { ThrowIfDisposed(); _self->window_rendering_disabled = value; }
         }
     }
 }

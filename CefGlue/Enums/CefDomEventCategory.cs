@@ -28,8 +28,6 @@ namespace Xilium.CefGlue
         PopState = 0x2000,
         Progress = 0x4000,
         XmlHttpRequestProgress = 0x8000,
-        WebKitAnimation = 0x10000,
-        WebKitTransition = 0x20000,
-        BeforeLoad = 0x40000,
+        BeforeLoad = 0x10000,
     }
 }

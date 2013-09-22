@@ -253,6 +253,15 @@
             libcef.quit_message_loop();
         }
 
+        /// <summary>
+        /// Set to true before calling Windows APIs like TrackPopupMenu that enter a
+        /// modal message loop. Set to false after exiting the modal message loop.
+        /// </summary>
+        public void SetOSModalLoop(bool osModalLoop)
+        {
+            libcef.set_osmodal_loop(osModalLoop ? 1 : 0);
+        }
+
         #endregion
 
         #region cef_task

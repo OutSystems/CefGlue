@@ -85,6 +85,7 @@ namespace Xilium.CefGlue
         /// </summary>
         protected abstract void OnResetDialogState(CefBrowser browser);
 
+
         private void on_dialog_closed(cef_jsdialog_handler_t* self, cef_browser_t* browser)
         {
             CheckSelf(self);
@@ -98,6 +99,5 @@ namespace Xilium.CefGlue
         /// Called when the default implementation dialog is closed.
         /// </summary>
         protected abstract void OnDialogClosed(CefBrowser browser);
-
     }
 }

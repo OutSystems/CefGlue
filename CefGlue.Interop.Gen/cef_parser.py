@@ -270,7 +270,7 @@ def format_translation_includes(body):
     """
     result = ''
     
-    if body.find('cef_build_revision()') > 0:
+    if body.find('cef_api_hash(') > 0:
         result += '#include "include/cef_version.h"\n'
     
     # identify what CppToC classes are being used
@@ -376,6 +376,7 @@ _simpletypes = {
     'CefCursorHandle' : ['cef_cursor_handle_t', 'NULL'],
     'CefEventHandle' : ['cef_event_handle_t', 'NULL'],
     'CefWindowHandle' : ['cef_window_handle_t', 'NULL'],
+    'CefTextInputContext' : ['cef_text_input_context_t' ,'NULL'],
     'CefRect' : ['cef_rect_t', 'CefRect()'],
     'CefThreadId' : ['cef_thread_id_t', 'TID_UI'],
     'CefTime' : ['cef_time_t', 'CefTime()'],
@@ -463,11 +464,13 @@ class obj_header:
         self.funcs = []
         self.classes = []
     
-    def add_directory(self, directory):
+    def add_directory(self, directory, excluded_files = []):
         """ Add all header files from the specified directory. """
         files = get_files(os.path.join(directory, '*.h'))
         for file in files:
-            self.add_file(file)
+            if len(excluded_files) == 0 or \
+                not os.path.split(file)[1] in excluded_files:
+                self.add_file(file)
 
     def add_file(self, filepath):
         """ Add a header file. """

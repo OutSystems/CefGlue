@@ -285,16 +285,6 @@
         }
 
         /// <summary>
-        /// Controls whether the fastback (back/forward) page cache will be used. Also
-        /// configurable using the "enable-fastback" command-line switch.
-        /// </summary>
-        public CefState PageCache
-        {
-            get { return _self->page_cache; }
-            set { _self->page_cache = value; }
-        }
-
-        /// <summary>
         /// Controls whether the tab key can advance focus to links. Also configurable
         /// using the "disable-tab-to-links" command-line switch.
         /// </summary>
@@ -365,16 +355,6 @@
         {
             get { return _self->accelerated_compositing; }
             set { _self->accelerated_compositing = value; }
-        }
-
-        /// <summary>
-        /// Controls whether developer tools (WebKit inspector) can be used. Also
-        /// configurable using the "disable-developer-tools" command-line switch.
-        /// </summary>
-        public CefState DeveloperTools
-        {
-            get { return _self->developer_tools; }
-            set { _self->developer_tools = value; }
         }
     }
 }
