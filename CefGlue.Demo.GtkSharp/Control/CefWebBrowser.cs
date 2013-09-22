@@ -79,13 +79,13 @@
             switch (CefRuntime.Platform)
             {
                 case CefRuntimePlatform.Windows:
-                    windowInfo.ParentHandle = gdk_win32_drawable_get_handle(GdkWindow.Handle);
-                    // set windowInfo - x, y, width, height ?
+                    var parentHandle = gdk_win32_drawable_get_handle(GdkWindow.Handle);
+                    windowInfo.SetAsChild(parentHandle, new CefRectangle(0, 0, 0, 0)); // TODO: set correct  x, y, width, height  to do not waiting OnSizeAllocated event
                     break;
 
                 case CefRuntimePlatform.Linux:
-                	Console.WriteLine("REALIZED - RAW = {0}, HANDLE = {1}", Raw, Handle);
-                    windowInfo.ParentHandle = Handle;
+                    Console.WriteLine("REALIZED - RAW = {0}, HANDLE = {1}", Raw, Handle);
+                    windowInfo.SetAsChild(Handle, new CefRectangle(0, 0, 0, 0));
                     break;
 
                 case CefRuntimePlatform.MacOSX:
