@@ -160,5 +160,30 @@ namespace Xilium.CefGlue
                 }
             }
         }
+
+        /// <summary>
+        /// Get the resource type for this request. Accurate resource type information
+        /// may only be available in the browser process.
+        /// </summary>
+        public CefResourceType ResourceType
+        {
+            get
+            {
+                return cef_request_t.get_resource_type(_self);
+            }
+        }
+
+        /// <summary>
+        /// Get the transition type for this request. Only available in the browser
+        /// process and only applies to requests that represent a main frame or
+        /// sub-frame navigation.
+        /// </summary>
+        public CefTransitionType TransitionType
+        {
+            get
+            {
+                return cef_request_t.get_transition_type(_self);
+            }
+        }
     }
 }

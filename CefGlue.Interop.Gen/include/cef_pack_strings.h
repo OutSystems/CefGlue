@@ -58,6 +58,10 @@
 #define IDS_APP_IMAGE_FILES 28016
 #define IDS_APP_TEXT_FILES 28017
 #define IDS_APP_VIDEO_FILES 28018
+#define IDS_DEFAULT_PRINT_DOCUMENT_TITLE 28019
+#define IDS_PRINT_SPOOL_FAILED_TITLE_TEXT 28020
+#define IDS_PRINT_SPOOL_FAILED_ERROR_TEXT 28021
+#define IDS_PRINT_PREVIEW_INVALID_PRINTER_SETTINGS 28022
 
 // ---------------------------------------------------------------------------
 // From ui_strings.h:

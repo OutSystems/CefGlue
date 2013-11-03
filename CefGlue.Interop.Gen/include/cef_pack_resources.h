@@ -47,6 +47,7 @@
 #define IDR_CEF_VERSION_HTML 27505
 #define IDR_CEF_TRACING_HTML 27506
 #define IDR_CEF_TRACING_JS 27507
+#define IDR_PRINT_PREVIEW_PAGE 27508
 
 // ---------------------------------------------------------------------------
 // From content_resources.h:

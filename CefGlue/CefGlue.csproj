@@ -216,9 +216,11 @@
     <Compile Include="Enums\CefLogSeverity.cs" />
     <Compile Include="Enums\CefMouseButtonType.cs" />
     <Compile Include="Enums\CefNavigationType.cs" />
+    <Compile Include="Enums\CefResourceType.cs" />
     <Compile Include="Enums\CefState.cs" />
     <Compile Include="Enums\CefStorageType.cs" />
     <Compile Include="Enums\CefErrorCode.cs" />
+    <Compile Include="Enums\CefTransitionType.cs" />
     <Compile Include="Enums\CefV8AccessControl.cs" />
     <Compile Include="Enums\CefV8PropertyAttribute.cs" />
     <Compile Include="Enums\CefPostDataElementType.cs" />

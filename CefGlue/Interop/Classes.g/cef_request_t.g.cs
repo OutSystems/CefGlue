@@ -27,6 +27,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _set_flags;
         internal IntPtr _get_first_party_for_cookies;
         internal IntPtr _set_first_party_for_cookies;
+        internal IntPtr _get_resource_type;
+        internal IntPtr _get_transition_type;
         
         // Create
         [DllImport(libcef.DllName, EntryPoint = "cef_request_create", CallingConvention = libcef.CEF_CALL)]
@@ -133,6 +135,18 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate void set_first_party_for_cookies_delegate(cef_request_t* self, cef_string_t* url);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate CefResourceType get_resource_type_delegate(cef_request_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate CefTransitionType get_transition_type_delegate(cef_request_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -421,6 +435,40 @@ namespace Xilium.CefGlue.Interop
                 if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
             }
             d(self, url);
+        }
+        
+        // GetResourceType
+        private static IntPtr _p11;
+        private static get_resource_type_delegate _d11;
+        
+        public static CefResourceType get_resource_type(cef_request_t* self)
+        {
+            get_resource_type_delegate d;
+            var p = self->_get_resource_type;
+            if (p == _p11) { d = _d11; }
+            else
+            {
+                d = (get_resource_type_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_resource_type_delegate));
+                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetTransitionType
+        private static IntPtr _p12;
+        private static get_transition_type_delegate _d12;
+        
+        public static CefTransitionType get_transition_type(cef_request_t* self)
+        {
+            get_transition_type_delegate d;
+            var p = self->_get_transition_type;
+            if (p == _p12) { d = _d12; }
+            else
+            {
+                d = (get_transition_type_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_transition_type_delegate));
+                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
+            }
+            return d(self);
         }
         
     }

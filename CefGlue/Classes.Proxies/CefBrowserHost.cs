@@ -236,6 +236,39 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
+        /// Print the current browser contents.
+        /// </summary>
+        public void Print()
+        {
+            cef_browser_host_t.print(_self);
+        }
+
+        /// <summary>
+        /// Search for |searchText|. |identifier| can be used to have multiple searches
+        /// running simultaniously. |forward| indicates whether to search forward or
+        /// backward within the page. |matchCase| indicates whether the search should
+        /// be case-sensitive. |findNext| indicates whether this is the first request
+        /// or a follow-up.
+        /// </summary>
+        public void Find(int identifier, string searchText, bool forward, bool matchCase, bool findNext)
+        {
+            fixed (char* searchText_ptr = searchText)
+            {
+                var n_searchText = new cef_string_t(searchText_ptr, searchText.Length);
+
+                cef_browser_host_t.find(_self, identifier, &n_searchText, forward ? 1 : 0, matchCase ? 1 : 0, findNext ? 1 : 0);
+            }
+        }
+
+        /// <summary>
+        /// Cancel all searches that are currently going on.
+        /// </summary>
+        public void StopFinding(bool clearSelection)
+        {
+            cef_browser_host_t.stop_finding(_self, clearSelection ? 1 : 0);
+        }
+
+        /// <summary>
         /// Set whether mouse cursor change is disabled.
         /// </summary>
         public void SetMouseCursorChangeDisabled(bool disabled)

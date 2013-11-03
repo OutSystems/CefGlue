@@ -12,6 +12,36 @@ namespace Xilium.CefGlue
     /// </summary>
     public abstract unsafe partial class CefRequestHandler
     {
+        private int on_before_browse(cef_request_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_request_t* request, int is_redirect)
+        {
+            CheckSelf(self);
+
+            var m_browser = CefBrowser.FromNative(browser);
+            var m_frame = CefFrame.FromNative(frame);
+            var m_request = CefRequest.FromNative(request);
+            var m_isRedirect = is_redirect != 0;
+
+            var result = OnBeforeBrowse(m_browser, m_frame, m_request, m_isRedirect);
+
+            return result ? 1 : 0;
+        }
+
+        /// <summary>
+        /// Called on the UI thread before browser navigation. Return true to cancel
+        /// the navigation or false to allow the navigation to proceed. The |request|
+        /// object cannot be modified in this callback.
+        /// CefDisplayHandler::OnLoadingStateChange will be called twice in all cases.
+        /// If the navigation is allowed CefLoadHandler::OnLoadStart and
+        /// CefLoadHandler::OnLoadEnd will be called. If the navigation is canceled
+        /// CefLoadHandler::OnLoadError will be called with an |errorCode| value of
+        /// ERR_ABORTED.
+        /// </summary>
+        protected virtual bool OnBeforeBrowse(CefBrowser browser, CefFrame frame, CefRequest request, bool isRedirect)
+        {
+            return false;
+        }
+
+
         private int on_before_resource_load(cef_request_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_request_t* request)
         {
             CheckSelf(self);

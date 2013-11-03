@@ -22,7 +22,10 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Called when the loading state has changed.
+        /// Called when the loading state has changed. This callback will be executed
+        /// twice -- once when loading is initiated either programmatically or by user
+        /// action, and once when loading is terminated due to completion, cancellation
+        /// of failure.
         /// </summary>
         protected virtual void OnLoadingStateChange(CefBrowser browser, bool isLoading, bool canGoBack, bool canGoForward)
         {
