@@ -19,7 +19,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_link_url;
         internal IntPtr _get_unfiltered_link_url;
         internal IntPtr _get_source_url;
-        internal IntPtr _is_image_blocked;
+        internal IntPtr _has_image_contents;
         internal IntPtr _get_page_url;
         internal IntPtr _get_frame_url;
         internal IntPtr _get_frame_charset;
@@ -88,7 +88,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int is_image_blocked_delegate(cef_context_menu_params_t* self);
+        private delegate int has_image_contents_delegate(cef_context_menu_params_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -297,18 +297,18 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // IsImageBlocked
+        // HasImageContents
         private static IntPtr _p9;
-        private static is_image_blocked_delegate _d9;
+        private static has_image_contents_delegate _d9;
         
-        public static int is_image_blocked(cef_context_menu_params_t* self)
+        public static int has_image_contents(cef_context_menu_params_t* self)
         {
-            is_image_blocked_delegate d;
-            var p = self->_is_image_blocked;
+            has_image_contents_delegate d;
+            var p = self->_has_image_contents;
             if (p == _p9) { d = _d9; }
             else
             {
-                d = (is_image_blocked_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_image_blocked_delegate));
+                d = (has_image_contents_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_image_contents_delegate));
                 if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
             }
             return d(self);

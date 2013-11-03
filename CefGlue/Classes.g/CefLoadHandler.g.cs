@@ -22,11 +22,10 @@ namespace Xilium.CefGlue
         private cef_load_handler_t.add_ref_delegate _ds0;
         private cef_load_handler_t.release_delegate _ds1;
         private cef_load_handler_t.get_refct_delegate _ds2;
-        private cef_load_handler_t.on_load_start_delegate _ds3;
-        private cef_load_handler_t.on_load_end_delegate _ds4;
-        private cef_load_handler_t.on_load_error_delegate _ds5;
-        private cef_load_handler_t.on_render_process_terminated_delegate _ds6;
-        private cef_load_handler_t.on_plugin_crashed_delegate _ds7;
+        private cef_load_handler_t.on_loading_state_change_delegate _ds3;
+        private cef_load_handler_t.on_load_start_delegate _ds4;
+        private cef_load_handler_t.on_load_end_delegate _ds5;
+        private cef_load_handler_t.on_load_error_delegate _ds6;
         
         protected CefLoadHandler()
         {
@@ -38,16 +37,14 @@ namespace Xilium.CefGlue
             _self->_base._release = Marshal.GetFunctionPointerForDelegate(_ds1);
             _ds2 = new cef_load_handler_t.get_refct_delegate(get_refct);
             _self->_base._get_refct = Marshal.GetFunctionPointerForDelegate(_ds2);
-            _ds3 = new cef_load_handler_t.on_load_start_delegate(on_load_start);
-            _self->_on_load_start = Marshal.GetFunctionPointerForDelegate(_ds3);
-            _ds4 = new cef_load_handler_t.on_load_end_delegate(on_load_end);
-            _self->_on_load_end = Marshal.GetFunctionPointerForDelegate(_ds4);
-            _ds5 = new cef_load_handler_t.on_load_error_delegate(on_load_error);
-            _self->_on_load_error = Marshal.GetFunctionPointerForDelegate(_ds5);
-            _ds6 = new cef_load_handler_t.on_render_process_terminated_delegate(on_render_process_terminated);
-            _self->_on_render_process_terminated = Marshal.GetFunctionPointerForDelegate(_ds6);
-            _ds7 = new cef_load_handler_t.on_plugin_crashed_delegate(on_plugin_crashed);
-            _self->_on_plugin_crashed = Marshal.GetFunctionPointerForDelegate(_ds7);
+            _ds3 = new cef_load_handler_t.on_loading_state_change_delegate(on_loading_state_change);
+            _self->_on_loading_state_change = Marshal.GetFunctionPointerForDelegate(_ds3);
+            _ds4 = new cef_load_handler_t.on_load_start_delegate(on_load_start);
+            _self->_on_load_start = Marshal.GetFunctionPointerForDelegate(_ds4);
+            _ds5 = new cef_load_handler_t.on_load_end_delegate(on_load_end);
+            _self->_on_load_end = Marshal.GetFunctionPointerForDelegate(_ds5);
+            _ds6 = new cef_load_handler_t.on_load_error_delegate(on_load_error);
+            _self->_on_load_error = Marshal.GetFunctionPointerForDelegate(_ds6);
         }
         
         ~CefLoadHandler()

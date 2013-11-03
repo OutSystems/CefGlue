@@ -30,7 +30,7 @@ namespace Xilium.CefGlue
         /// Called on the UI thread before browser navigation. Return true to cancel
         /// the navigation or false to allow the navigation to proceed. The |request|
         /// object cannot be modified in this callback.
-        /// CefDisplayHandler::OnLoadingStateChange will be called twice in all cases.
+        /// CefLoadHandler::OnLoadingStateChange will be called twice in all cases.
         /// If the navigation is allowed CefLoadHandler::OnLoadStart and
         /// CefLoadHandler::OnLoadEnd will be called. If the navigation is canceled
         /// CefLoadHandler::OnLoadError will be called with an |errorCode| value of
@@ -176,31 +176,6 @@ namespace Xilium.CefGlue
         protected abstract bool OnQuotaRequest(CefBrowser browser, string originUrl, long newSize, CefQuotaCallback callback);
 
 
-        private cef_cookie_manager_t* get_cookie_manager(cef_request_handler_t* self, cef_browser_t* browser, cef_string_t* main_url)
-        {
-            CheckSelf(self);
-
-            var m_browser = CefBrowser.FromNative(browser);
-            var m_mainUrl = cef_string_t.ToString(main_url);
-
-            var manager = GetCookieManager(m_browser, m_mainUrl);
-
-            return manager != null ? manager.ToNative() : null;
-        }
-
-        /// <summary>
-        /// Called on the IO thread to retrieve the cookie manager. |main_url| is the
-        /// URL of the top-level frame. Cookies managers can be unique per browser or
-        /// shared across multiple browsers. The global cookie manager will be used if
-        /// this method returns NULL.
-        /// </summary>
-        protected virtual CefCookieManager GetCookieManager(CefBrowser browser, string mainUrl)
-        {
-            return null;
-        }
-
-
-
         private void on_protocol_execution(cef_request_handler_t* self, cef_browser_t* browser, cef_string_t* url, int* allow_os_execution)
         {
             CheckSelf(self);
@@ -224,6 +199,33 @@ namespace Xilium.CefGlue
         protected virtual void OnProtocolExecution(CefBrowser browser, string url, out bool allowOSExecution)
         {
             allowOSExecution = true;
+        }
+
+
+        private int on_certificate_error(cef_request_handler_t* self, CefErrorCode cert_error, cef_string_t* request_url, cef_allow_certificate_error_callback_t* callback)
+        {
+            CheckSelf(self);
+
+            var m_request_url = cef_string_t.ToString(request_url);
+            var m_callback = CefAllowCertificateErrorCallback.FromNativeOrNull(callback);
+
+            var result = OnCertificateError(cert_error, m_request_url, m_callback);
+
+            return result ? 1 : 0;
+        }
+
+        /// <summary>
+        /// Called on the UI thread to handle requests for URLs with an invalid
+        /// SSL certificate. Return true and call CefAllowCertificateErrorCallback::
+        /// Continue() either in this method or at a later time to continue or cancel
+        /// the request. Return false to cancel the request immediately. If |callback|
+        /// is empty the error cannot be recovered from and the request will be
+        /// canceled automatically. If CefSettings.ignore_certificate_errors is set
+        /// all invalid certificates will be accepted without calling this method.
+        /// </summary>
+        protected virtual bool OnCertificateError(CefErrorCode certError, string requestUrl, CefAllowCertificateErrorCallback callback)
+        {
+            return false;
         }
 
 
@@ -251,30 +253,41 @@ namespace Xilium.CefGlue
         }
 
 
-        private int on_certificate_error(cef_request_handler_t* self, CefErrorCode cert_error, cef_string_t* request_url, cef_allow_certificate_error_callback_t* callback)
+        private void on_plugin_crashed(cef_request_handler_t* self, cef_browser_t* browser, cef_string_t* plugin_path)
         {
             CheckSelf(self);
 
-            var m_requestUrl = cef_string_t.ToString(request_url);
-            var m_callback = CefAllowCertificateErrorCallback.FromNative(callback);
+            var m_browser = CefBrowser.FromNative(browser);
+            var m_plugin_path = cef_string_t.ToString(plugin_path);
 
-            var m_result = OnCertificateError(cert_error, m_requestUrl, m_callback);
-
-            return m_result ? 1 : 0;
+            OnPluginCrashed(m_browser, m_plugin_path);
         }
 
         /// <summary>
-        /// Called on the UI thread to handle requests for URLs with an invalid
-        /// SSL certificate. Return true and call CefAllowCertificateErrorCallback::
-        /// Continue() either in this method or at a later time to continue or cancel
-        /// the request. Return false to cancel the request immediately. If |callback|
-        /// is empty the error cannot be recovered from and the request will be
-        /// canceled automatically. If CefSettings.ignore_certificate_errors is set
-        /// all invalid certificates will be accepted without calling this method.
+        /// Called on the browser process UI thread when a plugin has crashed.
+        /// |plugin_path| is the path of the plugin that crashed.
         /// </summary>
-        protected virtual bool OnCertificateError(CefErrorCode certError, string requestUrl, CefAllowCertificateErrorCallback callback)
+        protected virtual void OnPluginCrashed(CefBrowser browser, string pluginPath)
         {
-            return false;
+        }
+
+
+        private void on_render_process_terminated(cef_request_handler_t* self, cef_browser_t* browser, CefTerminationStatus status)
+        {
+            CheckSelf(self);
+
+            var m_browser = CefBrowser.FromNative(browser);
+
+            OnRenderProcessTerminated(m_browser, status);
+        }
+
+        /// <summary>
+        /// Called on the browser process UI thread when the render process
+        /// terminates unexpectedly. |status| indicates how the process
+        /// terminated.
+        /// </summary>
+        protected virtual void OnRenderProcessTerminated(CefBrowser browser, CefTerminationStatus status)
+        {
         }
     }
 }

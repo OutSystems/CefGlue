@@ -27,11 +27,6 @@
             }
         }
 
-        protected override void OnLoadingStateChange(CefBrowser browser, bool isLoading, bool canGoBack, bool canGoForward)
-        {
-            _core.OnLoadingStateChanged(isLoading, canGoBack, canGoForward);
-        }
-
         protected override void OnStatusMessage(CefBrowser browser, string value)
         {
             _core.OnTargetUrlChanged(value);

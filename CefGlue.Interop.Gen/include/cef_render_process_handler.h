@@ -42,6 +42,7 @@
 #include "include/cef_browser.h"
 #include "include/cef_dom.h"
 #include "include/cef_frame.h"
+#include "include/cef_load_handler.h"
 #include "include/cef_process_message.h"
 #include "include/cef_v8.h"
 #include "include/cef_values.h"
@@ -54,8 +55,6 @@
 /*--cef(source=client)--*/
 class CefRenderProcessHandler : public virtual CefBase {
  public:
-  typedef cef_navigation_type_t NavigationType;
-
   ///
   // Called after the render process main thread has been created. |extra_info|
   // is a read-only value originating from
@@ -86,16 +85,12 @@ class CefRenderProcessHandler : public virtual CefBase {
   virtual void OnBrowserDestroyed(CefRefPtr<CefBrowser> browser) {}
 
   ///
-  // Called before browser navigation. Return true to cancel the navigation or
-  // false to allow the navigation to proceed. The |request| object cannot be
-  // modified in this callback.
+  // Return the handler for browser load status events.
   ///
   /*--cef()--*/
-  virtual bool OnBeforeNavigation(CefRefPtr<CefBrowser> browser,
-                                  CefRefPtr<CefFrame> frame,
-                                  CefRefPtr<CefRequest> request,
-                                  NavigationType navigation_type,
-                                  bool is_redirect) { return false; }
+  virtual CefRefPtr<CefLoadHandler> GetLoadHandler() {
+    return NULL;
+  }
 
   ///
   // Called immediately after the V8 context for a frame has been created. To

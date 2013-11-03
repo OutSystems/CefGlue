@@ -192,8 +192,9 @@ typedef struct _cef_settings_t {
 
   ///
   // The location where cache data will be stored on disk. If empty an in-memory
-  // cache will be used. HTML5 databases such as localStorage will only persist
-  // across sessions if a cache path is specified.
+  // cache will be used for some features and a temporary disk cache for others.
+  // HTML5 databases such as localStorage will only persist across sessions if a
+  // cache path is specified.
   ///
   cef_string_t cache_path;
 
@@ -1483,18 +1484,6 @@ enum cef_focus_source_t {
   // The source is a system-generated focus event.
   ///
   FOCUS_SOURCE_SYSTEM,
-};
-
-///
-// Navigation types.
-///
-enum cef_navigation_type_t {
-  NAVIGATION_LINK_CLICKED = 0,
-  NAVIGATION_FORM_SUBMITTED,
-  NAVIGATION_BACK_FORWARD,
-  NAVIGATION_RELOAD,
-  NAVIGATION_FORM_RESUBMITTED,
-  NAVIGATION_OTHER,
 };
 
 ///

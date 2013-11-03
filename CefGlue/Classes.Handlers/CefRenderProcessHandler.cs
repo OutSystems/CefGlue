@@ -81,27 +81,21 @@ namespace Xilium.CefGlue
         }
 
 
-        private int on_before_navigation(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_request_t* request, CefNavigationType navigation_type, int is_redirect)
+        private cef_load_handler_t* get_load_handler(cef_render_process_handler_t* self)
         {
             CheckSelf(self);
 
-            var mBrowser = CefBrowser.FromNative(browser);
-            var mFrame = CefFrame.FromNative(frame);
-            var mRequest = CefRequest.FromNative(request);
+            var result = GetLoadHandler();
 
-            var result = OnBeforeNavigation(mBrowser, mFrame, mRequest, navigation_type, is_redirect != 0);
-
-            return result ? 1 : 0;
+            return result != null ? result.ToNative() : null;
         }
 
         /// <summary>
-        /// Called before browser navigation. Return true to cancel the navigation or
-        /// false to allow the navigation to proceed. The |request| object cannot be
-        /// modified in this callback.
+        /// Return the handler for browser load status events.
         /// </summary>
-        protected virtual bool OnBeforeNavigation(CefBrowser browser, CefFrame frame, CefRequest request, CefNavigationType navigationType, bool isRedirect)
+        protected virtual CefLoadHandler GetLoadHandler()
         {
-            return false;
+            return null;
         }
 
 

@@ -118,7 +118,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int get_id_delegate(cef_download_item_t* self);
+        private delegate uint get_id_delegate(cef_download_item_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -386,7 +386,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pe;
         private static get_id_delegate _de;
         
-        public static int get_id(cef_download_item_t* self)
+        public static uint get_id(cef_download_item_t* self)
         {
             get_id_delegate d;
             var p = self->_get_id;

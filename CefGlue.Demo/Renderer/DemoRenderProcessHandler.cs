@@ -7,17 +7,6 @@
 
     class DemoRenderProcessHandler : CefRenderProcessHandler
     {
-        protected override bool OnBeforeNavigation(CefBrowser browser, CefFrame frame, CefRequest request, CefNavigationType navigationType, bool isRedirect)
-        {
-            Console.WriteLine("OnBeforeNavigation: Request.Url={0} NavigationType={1} IsRedirect={2}",
-                request.Url,
-                navigationType,
-                isRedirect
-                );
-
-            return false;
-        }
-
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
         {
             Console.WriteLine("Render::OnProcessMessageReceived: SourceProcess={0}", sourceProcess);

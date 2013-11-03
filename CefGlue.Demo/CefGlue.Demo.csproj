@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Browser\WebLoadHandler.cs" />
     <Compile Include="Browser\EventArgs\AddressChangedEventArgs.cs" />
     <Compile Include="Browser\EventArgs\LoadingStateChangedEventArgs.cs" />
     <Compile Include="Browser\EventArgs\TargetUrlChangedEventArgs.cs" />

@@ -13,7 +13,6 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_display_handler_t
     {
         internal cef_base_t _base;
-        internal IntPtr _on_loading_state_change;
         internal IntPtr _on_address_change;
         internal IntPtr _on_title_change;
         internal IntPtr _on_tooltip;
@@ -37,12 +36,6 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate int get_refct_delegate(cef_display_handler_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate void on_loading_state_change_delegate(cef_display_handler_t* self, cef_browser_t* browser, int isLoading, int canGoBack, int canGoForward);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

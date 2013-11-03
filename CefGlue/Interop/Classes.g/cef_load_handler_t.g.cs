@@ -13,11 +13,10 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_load_handler_t
     {
         internal cef_base_t _base;
+        internal IntPtr _on_loading_state_change;
         internal IntPtr _on_load_start;
         internal IntPtr _on_load_end;
         internal IntPtr _on_load_error;
-        internal IntPtr _on_render_process_terminated;
-        internal IntPtr _on_plugin_crashed;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -41,6 +40,12 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
+        internal delegate void on_loading_state_change_delegate(cef_load_handler_t* self, cef_browser_t* browser, int isLoading, int canGoBack, int canGoForward);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
         internal delegate void on_load_start_delegate(cef_load_handler_t* self, cef_browser_t* browser, cef_frame_t* frame);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
@@ -54,18 +59,6 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_load_error_delegate(cef_load_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, CefErrorCode errorCode, cef_string_t* errorText, cef_string_t* failedUrl);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate void on_render_process_terminated_delegate(cef_load_handler_t* self, cef_browser_t* browser, CefTerminationStatus status);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate void on_plugin_crashed_delegate(cef_load_handler_t* self, cef_browser_t* browser, cef_string_t* plugin_path);
         
         private static int _sizeof;
         

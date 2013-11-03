@@ -100,6 +100,8 @@
     <Compile Include="Classes.g\CefRenderHandler.g.cs" />
     <Compile Include="Classes.g\CefRenderProcessHandler.g.cs" />
     <Compile Include="Classes.g\CefRequest.g.cs" />
+    <Compile Include="Classes.g\CefRequestContext.g.cs" />
+    <Compile Include="Classes.g\CefRequestContextHandler.g.cs" />
     <Compile Include="Classes.g\CefRequestHandler.g.cs" />
     <Compile Include="Classes.g\CefResourceBundleHandler.g.cs" />
     <Compile Include="Classes.g\CefResourceHandler.g.cs" />
@@ -151,6 +153,7 @@
     <Compile Include="Classes.Handlers\CefReadHandler.cs" />
     <Compile Include="Classes.Handlers\CefRenderHandler.cs" />
     <Compile Include="Classes.Handlers\CefRenderProcessHandler.cs" />
+    <Compile Include="Classes.Handlers\CefRequestContextHandler.cs" />
     <Compile Include="Classes.Handlers\CefRequestHandler.cs" />
     <Compile Include="Classes.Handlers\CefResourceBundleHandler.cs" />
     <Compile Include="Classes.Handlers\CefResourceHandler.cs" />
@@ -194,6 +197,7 @@
     <Compile Include="Classes.Proxies\CefProcessMessage.cs" />
     <Compile Include="Classes.Proxies\CefQuotaCallback.cs" />
     <Compile Include="Classes.Proxies\CefRequest.cs" />
+    <Compile Include="Classes.Proxies\CefRequestContext.cs" />
     <Compile Include="Classes.Proxies\CefResponse.cs" />
     <Compile Include="Classes.Proxies\CefSchemeRegistrar.cs" />
     <Compile Include="Classes.Proxies\CefStreamReader.cs" />
@@ -215,7 +219,6 @@
     <Compile Include="Enums\CefKeyEventType.cs" />
     <Compile Include="Enums\CefLogSeverity.cs" />
     <Compile Include="Enums\CefMouseButtonType.cs" />
-    <Compile Include="Enums\CefNavigationType.cs" />
     <Compile Include="Enums\CefResourceType.cs" />
     <Compile Include="Enums\CefState.cs" />
     <Compile Include="Enums\CefStorageType.cs" />
@@ -282,6 +285,8 @@
     <Compile Include="Interop\Classes.g\cef_menu_model_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_quota_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_render_handler_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_request_context_handler_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_request_context_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_run_file_dialog_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_scheme_registrar_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_task_runner_t.g.cs" />

@@ -10,12 +10,14 @@
         private readonly WebBrowser _core;
         private readonly WebLifeSpanHandler _lifeSpanHandler;
         private readonly WebDisplayHandler _displayHandler;
+        private readonly WebLoadHandler _loadHandler;
 
         public WebClient(WebBrowser core)
         {
             _core = core;
             _lifeSpanHandler = new WebLifeSpanHandler(_core);
             _displayHandler = new WebDisplayHandler(_core);
+            _loadHandler = new WebLoadHandler(_core);
         }
 
         protected override CefLifeSpanHandler GetLifeSpanHandler()
@@ -26,6 +28,11 @@
         protected override CefDisplayHandler GetDisplayHandler()
         {
             return _displayHandler;
+        }
+
+        protected override CefLoadHandler GetLoadHandler()
+        {
+            return _loadHandler;
         }
 
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)

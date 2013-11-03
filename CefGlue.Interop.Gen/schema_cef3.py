@@ -93,4 +93,7 @@ classdef = {
     # R
     'CefDragData': { 'role': ROLE_PROXY },
     'CefDragHandler': { 'role': ROLE_HANDLER },
+    # 1650.1503
+    'CefRequestContext': { 'role': ROLE_PROXY },
+    'CefRequestContextHandler': { 'role': ROLE_HANDLER, 'reversible': True },
     }

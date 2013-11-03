@@ -116,7 +116,7 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Returns the unique identifier for this download.
         /// </summary>
-        public int Id
+        public uint Id
         {
             get { return cef_download_item_t.get_id(_self); }
         }

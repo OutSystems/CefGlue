@@ -79,11 +79,12 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Returns true if the context menu was invoked on a blocked image.
+        /// Returns true if the context menu was invoked on an image which has
+        /// non-empty contents.
         /// </summary>
-        public bool IsImageBlocked
+        public bool HasImageContents
         {
-            get { return cef_context_menu_params_t.is_image_blocked(_self) != 0; }
+            get { return cef_context_menu_params_t.has_image_contents(_self) != 0; }
         }
 
         /// <summary>

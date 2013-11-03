@@ -8,10 +8,31 @@ namespace Xilium.CefGlue
 
     /// <summary>
     /// Implement this interface to handle events related to browser load status. The
-    /// methods of this class will be called on the UI thread.
+    /// methods of this class will be called on the browser process UI thread or
+    /// render process main thread (TID_RENDERER).
     /// </summary>
     public abstract unsafe partial class CefLoadHandler
     {
+        private void on_loading_state_change(cef_load_handler_t* self, cef_browser_t* browser, int isLoading, int canGoBack, int canGoForward)
+        {
+            CheckSelf(self);
+
+            var mBrowser = CefBrowser.FromNative(browser);
+
+            OnLoadingStateChange(mBrowser, isLoading != 0, canGoBack != 0, canGoForward != 0);
+        }
+
+        /// <summary>
+        /// Called when the loading state has changed. This callback will be executed
+        /// twice -- once when loading is initiated either programmatically or by user
+        /// action, and once when loading is terminated due to completion, cancellation
+        /// of failure.
+        /// </summary>
+        protected virtual void OnLoadingStateChange(CefBrowser browser, bool isLoading, bool canGoBack, bool canGoForward)
+        {
+        }
+
+
         private void on_load_start(cef_load_handler_t* self, cef_browser_t* browser, cef_frame_t* frame)
         {
             CheckSelf(self);
@@ -29,7 +50,7 @@ namespace Xilium.CefGlue
         /// start or continue loading after the main frame load has ended. This method
         /// may not be called for a particular frame if the load request for that frame
         /// fails. For notification of overall browser load status use
-        /// CefDisplayHandler::OnLoadingStateChange instead.
+        /// OnLoadingStateChange instead.
         /// </summary>
         protected virtual void OnLoadStart(CefBrowser browser, CefFrame frame)
         {
@@ -78,41 +99,6 @@ namespace Xilium.CefGlue
         /// for complete descriptions of the error codes.
         /// </summary>
         protected virtual void OnLoadError(CefBrowser browser, CefFrame frame, CefErrorCode errorCode, string errorText, string failedUrl)
-        {
-        }
-
-
-        private void on_render_process_terminated(cef_load_handler_t* self, cef_browser_t* browser, CefTerminationStatus status)
-        {
-            CheckSelf(self);
-
-            var m_browser = CefBrowser.FromNative(browser);
-            OnRenderProcessTerminated(m_browser, status);
-        }
-
-        /// <summary>
-        /// Called when the render process terminates unexpectedly. |status| indicates
-        /// how the process terminated.
-        /// </summary>
-        protected virtual void OnRenderProcessTerminated(CefBrowser browser, CefTerminationStatus status)
-        {
-        }
-
-
-        private void on_plugin_crashed(cef_load_handler_t* self, cef_browser_t* browser, cef_string_t* plugin_path)
-        {
-            CheckSelf(self);
-
-            var m_browser = CefBrowser.FromNative(browser);
-            var m_plugin_path = cef_string_t.ToString(plugin_path);
-            OnPluginCrashed(m_browser, m_plugin_path);
-        }
-
-        /// <summary>
-        /// Called when a plugin has crashed. |plugin_path| is the path of the plugin
-        /// that crashed.
-        /// </summary>
-        protected virtual void OnPluginCrashed(CefBrowser browser, string pluginPath)
         {
         }
     }
