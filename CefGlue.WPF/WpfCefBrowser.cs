@@ -99,6 +99,17 @@ namespace Xilium.CefGlue.WPF
 
         #endregion
 
+        public event LoadingStateChangeEventHandler LoadingStateChange;
+
+        internal void OnLoadingStateChange(bool isLoading, bool canGoBack, bool canGoForward)
+        {
+            if (this.LoadingStateChange != null)
+            {
+                var e = new LoadingStateChangeEventArgs(isLoading, canGoBack, canGoForward);
+                this.LoadingStateChange(this, e);
+            }
+        }
+
         public string StartUrl { get; set; }
 
         public override void OnApplyTemplate()

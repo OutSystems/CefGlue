@@ -69,6 +69,8 @@
     <Compile Include="Helpers\Log\ILogger.cs" />
     <Compile Include="Helpers\Log\NLogLogger.cs" />
     <Compile Include="IUiHelper.cs" />
+    <Compile Include="LoadingStateChangeEventArgs.cs" />
+    <Compile Include="LoadingStateChangeEventHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -87,6 +89,7 @@
     <Compile Include="WpfCefClient.cs" />
     <Compile Include="WpfCefDisplayHandler.cs" />
     <Compile Include="WpfCefLifeSpanHandler.cs" />
+    <Compile Include="WpfCefLoadHandler.cs" />
     <Compile Include="WpfCefRenderHandler.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
