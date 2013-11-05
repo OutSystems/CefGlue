@@ -181,9 +181,9 @@ namespace Xilium.CefGlue.WPF
             return size;
         }
 
-        private void AttachEventHandlers(UIElement uiElement)
+        private void AttachEventHandlers(WpfCefBrowser browser)
         {
-            uiElement.GotFocus += (sender, arg) =>
+            browser.GotFocus += (sender, arg) =>
             {
                 try
                 {
@@ -199,7 +199,7 @@ namespace Xilium.CefGlue.WPF
                 }
             };
 
-            uiElement.LostFocus += (sender, arg) =>
+            browser.LostFocus += (sender, arg) =>
             {
                 try
                 {
@@ -215,7 +215,7 @@ namespace Xilium.CefGlue.WPF
                 }
             };
 
-            uiElement.LostMouseCapture += (sender, arg) =>
+            browser.LostMouseCapture += (sender, arg) =>
             {
                 try
                 {
@@ -231,7 +231,7 @@ namespace Xilium.CefGlue.WPF
                 }
             };
 
-            uiElement.MouseLeave += (sender, arg) =>
+            browser.MouseLeave += (sender, arg) =>
             {
                 try
                 {
@@ -253,7 +253,7 @@ namespace Xilium.CefGlue.WPF
                 }
             };
 
-            uiElement.MouseMove += (sender, arg) =>
+            browser.MouseMove += (sender, arg) =>
             {
                 try
                 {
@@ -280,7 +280,7 @@ namespace Xilium.CefGlue.WPF
                 arg.Handled = true;
             };
 
-            uiElement.MouseDown += (sender, arg) =>
+            browser.MouseDown += (sender, arg) =>
             {
                 try
                 {
@@ -317,7 +317,7 @@ namespace Xilium.CefGlue.WPF
                 arg.Handled = true;
             };
 
-            uiElement.MouseUp += (sender, arg) =>
+            browser.MouseUp += (sender, arg) =>
             {
                 try
                 {
@@ -353,7 +353,44 @@ namespace Xilium.CefGlue.WPF
                 arg.Handled = true;
             };
 
-            uiElement.MouseWheel += (sender, arg) =>
+            browser.MouseDoubleClick += (sender, arg) =>
+            {
+                try
+                {
+                    if (_browserHost != null)
+                    {
+                        CaptureMouse();
+                        Keyboard.Focus(this);
+
+                        Point cursorPos = arg.GetPosition(this);
+
+                        CefMouseEvent mouseEvent = new CefMouseEvent()
+                        {
+                            X = (int)cursorPos.X,
+                            Y = (int)cursorPos.Y,
+                        };
+
+                        mouseEvent.Modifiers = GetMouseModifiers();
+
+                        if (arg.ChangedButton == MouseButton.Left)
+                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Left, false, 2);
+                        else if (arg.ChangedButton == MouseButton.Middle)
+                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Middle, false, 2);
+                        else if (arg.ChangedButton == MouseButton.Right)
+                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Right, false, 2);
+
+                        //_logger.Debug(string.Format("Browser_MouseDoubleClick: ({0},{1})", cursorPos.X, cursorPos.Y));
+                    }
+                }
+                catch(Exception ex)
+                {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in MouseDoubleClick()", ex);
+                }
+
+                arg.Handled = true;
+            };
+
+            browser.MouseWheel += (sender, arg) =>
             {
                 try
                 {
@@ -379,7 +416,7 @@ namespace Xilium.CefGlue.WPF
             };
 
             // TODO: require more intelligent processing
-            uiElement.PreviewTextInput += (sender, arg) =>
+            browser.PreviewTextInput += (sender, arg) =>
             {
                 if (_browserHost != null)
                 {
@@ -402,7 +439,7 @@ namespace Xilium.CefGlue.WPF
             };
 
             // TODO: require more intelligent processing
-            uiElement.PreviewKeyDown += (sender, arg) =>
+            browser.PreviewKeyDown += (sender, arg) =>
             {
                 try
                 {
@@ -429,7 +466,7 @@ namespace Xilium.CefGlue.WPF
             };
 
             // TODO: require more intelligent processing
-            uiElement.PreviewKeyUp += (sender, arg) =>
+            browser.PreviewKeyUp += (sender, arg) =>
             {
                 try
                 {
