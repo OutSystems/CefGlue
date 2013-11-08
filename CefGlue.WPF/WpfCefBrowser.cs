@@ -417,6 +417,25 @@ namespace Xilium.CefGlue.WPF
                             IsSystemKey = arg.Key == Key.System,
                         };
 
+                        switch (Keyboard.Modifiers)
+                        {
+                            case ModifierKeys.Alt:
+                                keyEvent.Modifiers = CefEventFlags.AltDown;
+                                break;
+
+                            case ModifierKeys.Control:
+                                keyEvent.Modifiers = CefEventFlags.ControlDown;
+                                break;
+
+                            case ModifierKeys.Shift:
+                                keyEvent.Modifiers = CefEventFlags.ShiftDown;
+                                break;
+
+                            default:
+                                keyEvent.Modifiers = CefEventFlags.None;
+                                break;
+                        }
+
                         _browserHost.SendKeyEvent(keyEvent);
                     }
                 }
@@ -443,6 +462,25 @@ namespace Xilium.CefGlue.WPF
                             NativeKeyCode = 0,
                             IsSystemKey = arg.Key == Key.System,
                         };
+
+                        switch (Keyboard.Modifiers)
+                        {
+                            case ModifierKeys.Alt:
+                                keyEvent.Modifiers = CefEventFlags.AltDown;
+                                break;
+
+                            case ModifierKeys.Control:
+                                keyEvent.Modifiers = CefEventFlags.ControlDown;
+                                break;
+
+                            case ModifierKeys.Shift:
+                                keyEvent.Modifiers = CefEventFlags.ShiftDown;
+                                break;
+
+                            default:
+                                keyEvent.Modifiers = CefEventFlags.None;
+                                break;
+                        }
 
                         _browserHost.SendKeyEvent(keyEvent);
                     }
