@@ -86,6 +86,16 @@
     <Compile Include="WpfCefBrowser.cs" />
     <Compile Include="WpfCefClient.cs" />
     <Compile Include="WpfCefDisplayHandler.cs" />
+    <Compile Include="WpfCefJSAlert.xaml.cs">
+      <DependentUpon>WpfCefJSAlert.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WpfCefJSConfirm.xaml.cs">
+      <DependentUpon>WpfCefJSConfirm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WpfCefJSDialogHandler.cs" />
+    <Compile Include="WpfCefJSPrompt.xaml.cs">
+      <DependentUpon>WpfCefJSPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WpfCefLifeSpanHandler.cs" />
     <Compile Include="WpfCefRenderHandler.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -107,6 +117,20 @@
       <Project>{703ff300-34b9-48d4-a5d6-e741f48d5f95}</Project>
       <Name>CefGlue</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="WpfCefJSAlert.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WpfCefJSConfirm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WpfCefJSPrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
