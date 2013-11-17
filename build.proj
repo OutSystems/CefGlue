@@ -4,11 +4,20 @@
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+                <!-- TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v3.5</TargetFrameworkVersion -->
 	</PropertyGroup>
 
 	<Target Name="Build">
 		<MSBuild Projects="Xilium.CefGlue.sln"
 			Targets="Build"
+			Properties="Configuration=$(Configuration);Platform=$(Platform)"
+			/>
+		<!-- TODO: reset TargetFrameworkProfile= when building from xbuild -->
+	</Target>
+
+	<Target Name="Clean">
+		<MSBuild Projects="Xilium.CefGlue.sln"
+			Targets="Clean"
 			Properties="Configuration=$(Configuration);Platform=$(Platform)"
 			/>
 		<!-- TODO: reset TargetFrameworkProfile= when building from xbuild -->
