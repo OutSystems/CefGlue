@@ -24,14 +24,9 @@
 			_core.InvokeIfRequired(() => _core.OnLoadStart(new LoadStartEventArgs(frame)));
 		}
 
-		protected override void OnPluginCrashed(CefBrowser browser, string pluginPath)
-		{
-			_core.InvokeIfRequired(() => _core.OnPluginCrashed(new PluginCrashedEventArgs(pluginPath)));
-		}
-
-		protected override void OnRenderProcessTerminated(CefBrowser browser, CefTerminationStatus status)
-		{
-			_core.InvokeIfRequired(() => _core.OnRenderProcessTerminated(new RenderProcessTerminatedEventArgs(status)));
-		}
-	}
+        protected override void OnLoadingStateChange(CefBrowser browser, bool isLoading, bool canGoBack, bool canGoForward)
+        {
+            _core.InvokeIfRequired(() => _core.OnLoadingStateChange(new LoadingStateChangeEventArgs(isLoading, canGoBack, canGoForward)));
+        }
+    }
 }

@@ -173,7 +173,11 @@ namespace Xilium.CefGlue
         /// this method or at a later time to grant or deny the request. Return false
         /// to cancel the request.
         /// </summary>
-        protected abstract bool OnQuotaRequest(CefBrowser browser, string originUrl, long newSize, CefQuotaCallback callback);
+        protected virtual bool OnQuotaRequest(CefBrowser browser, string originUrl, long newSize, CefQuotaCallback callback)
+        {
+            callback.Continue(true);
+            return true;
+        }
 
 
         private void on_protocol_execution(cef_request_handler_t* self, cef_browser_t* browser, cef_string_t* url, int* allow_os_execution)

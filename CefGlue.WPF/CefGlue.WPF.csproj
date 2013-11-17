@@ -64,6 +64,7 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xaml" Condition="$(TargetFrameworkVersion)!='v3.5'" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\Log\ILogger.cs" />

@@ -40,17 +40,11 @@
 			return e.Handled;
 		}
 
-		protected override void OnLoadingStateChange(CefBrowser browser, bool isLoading, bool canGoBack, bool canGoForward)
-		{
-			_core.InvokeIfRequired(() => _core.OnLoadingStateChange(new LoadingStateChangeEventArgs(isLoading, canGoBack, canGoForward)));
-		}
-
 		protected override bool OnTooltip(CefBrowser browser, string text)
 		{
 			var e = new TooltipEventArgs(text);
 			_core.InvokeIfRequired(()=> _core.OnTooltip(e));
 			return e.Handled;
 		}
-
     }
 }
