@@ -84,7 +84,7 @@
 
         protected override void Dispose(bool disposing)
         {
-            if (_browser != null)
+            if (_browser != null && disposing) // TODO: ugly hack to avoid crashes when CefWebBrowser are Finalized and underlying objects already finalized
             {
                 var host = _browser.GetHost();
                 host.CloseBrowser();
