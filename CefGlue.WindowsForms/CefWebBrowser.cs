@@ -146,9 +146,15 @@
         {
             base.OnResize(e);
 
-            var form = TopLevelControl as Form;
-            if (form != null && form.WindowState != FormWindowState.Minimized)
+            if (_browserWindowHandle != IntPtr.Zero)
             {
+                // Ignore size changes when form are minimized.
+                var form = TopLevelControl as Form;
+                if (form != null && form.WindowState == FormWindowState.Minimized)
+                {
+                    return;
+                }
+
                 ResizeWindow(_browserWindowHandle, Width, Height);
             }
         }
@@ -228,6 +234,7 @@
 
 		internal protected virtual void OnBeforeClose()
 		{
+			_browserWindowHandle = IntPtr.Zero;
 			if (BeforeClose != null)
 				BeforeClose(this, EventArgs.Empty);
 		}
