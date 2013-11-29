@@ -48,6 +48,9 @@
         [DefaultValue("about:blank")]
         public string StartUrl { get; set; }
 
+        [Browsable(false)]
+        public CefBrowserSettings BrowserSettings { get; set; }
+
 		internal void InvokeIfRequired(Action a)
 		{
 			if (InvokeRequired)
@@ -71,10 +74,8 @@
 
                 var client = new CefWebClient(this);
 
-                var settings = new CefBrowserSettings
-                {
-                    // AuthorAndUserStylesDisabled = false,
-                };
+                var settings = BrowserSettings;
+                if (settings == null) settings = new CefBrowserSettings { };
 
                 CefBrowserHost.CreateBrowser(windowInfo, client, settings, StartUrl);
             }
