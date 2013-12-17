@@ -448,6 +448,8 @@ namespace Xilium.CefGlue.WPF
                             // Character = c,
                         };
 
+                        keyEvent.Modifiers = GetKeyboardModifiers();
+
                         _browserHost.SendKeyEvent(keyEvent);
                     }
                 }
@@ -470,6 +472,8 @@ namespace Xilium.CefGlue.WPF
                             NativeKeyCode = 0,
                             IsSystemKey = arg.Key == Key.System,
                         };
+
+                        keyEvent.Modifiers = GetKeyboardModifiers();
 
                         _browserHost.SendKeyEvent(keyEvent);
                     }
@@ -498,6 +502,8 @@ namespace Xilium.CefGlue.WPF
                             IsSystemKey = arg.Key == Key.System,
                         };
 
+                        keyEvent.Modifiers = GetKeyboardModifiers();
+                       
                         _browserHost.SendKeyEvent(keyEvent);
                     }
                 }
@@ -731,6 +737,22 @@ namespace Xilium.CefGlue.WPF
 
             if (Mouse.RightButton == MouseButtonState.Pressed)
                 modifiers |= CefEventFlags.RightMouseButton;
+
+            return modifiers;
+        }
+
+        private static CefEventFlags GetKeyboardModifiers()
+        {
+            CefEventFlags modifiers = new CefEventFlags();
+
+            if (Keyboard.Modifiers == ModifierKeys.Alt)
+                modifiers |= CefEventFlags.AltDown;
+
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+                modifiers |= CefEventFlags.ControlDown;
+
+            if (Keyboard.Modifiers == ModifierKeys.Shift)
+                modifiers |= CefEventFlags.ShiftDown;
 
             return modifiers;
         }
