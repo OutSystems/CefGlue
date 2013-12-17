@@ -260,6 +260,8 @@ namespace Xilium.CefGlue.WPF
                             Y = 0
                         };
 
+                        mouseEvent.Modifiers = GetMouseModifiers();
+
                         _browserHost.SendMouseMoveEvent(mouseEvent, true);
                         //_logger.Debug("Browser_MouseLeave");
                     }
@@ -283,6 +285,8 @@ namespace Xilium.CefGlue.WPF
                             X = (int)cursorPos.X,
                             Y = (int)cursorPos.Y
                         };
+
+                        mouseEvent.Modifiers = GetMouseModifiers();
 
                         _browserHost.SendMouseMoveEvent(mouseEvent, false);
 
