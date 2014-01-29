@@ -309,6 +309,7 @@
     <Compile Include="Platform\Windows\CefWindowInfoWindowsImpl.cs" />
     <Compile Include="Platform\Windows\WindowStyles.cs" />
     <Compile Include="Platform\Windows\WindowStylesEx.cs" />
+    <Compile Include="Structs\CefColor.cs" />
     <Compile Include="Structs\CefCookie.cs" />
     <Compile Include="Structs\CefGeoposition.cs" />
     <Compile Include="Structs\CefKeyEvent.cs" />

@@ -36,6 +36,7 @@ namespace Xilium.CefGlue.Interop
         public int uncaught_exception_stack_size;
         public int context_safety_implementation;
         public bool_t ignore_certificate_errors;
+        public uint background_color;
 
         #region Alloc & Free
         private static int _sizeof;

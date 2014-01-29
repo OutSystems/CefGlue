@@ -190,6 +190,12 @@
         /// </summary>
         public bool IgnoreCertificateErrors { get; set; }
 
+        /// <summary>
+        /// Used on Mac OS X to specify the background color for hardware accelerated
+        /// content.
+        /// </summary>
+        public CefColor BackgroundColor { get; set; }
+
         internal cef_settings_t* ToNative()
         {
             var ptr = cef_settings_t.Alloc();
@@ -213,6 +219,7 @@
             ptr->uncaught_exception_stack_size = UncaughtExceptionStackSize;
             ptr->context_safety_implementation = (int)ContextSafetyImplementation;
             ptr->ignore_certificate_errors = IgnoreCertificateErrors;
+            ptr->background_color = BackgroundColor.ToArgb();
             return ptr;
         }
 
