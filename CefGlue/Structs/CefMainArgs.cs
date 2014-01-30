@@ -39,13 +39,7 @@
         private cef_main_args_t_windows* ToNativeWindows()
         {
             var ptr = cef_main_args_t_windows.Alloc();
-
-            using (Process process = Process.GetCurrentProcess())
-            using (ProcessModule module = process.MainModule)
-            {
-                ptr->instance = Windows.NativeMethods.GetModuleHandle(module.ModuleName);
-            }
-
+            ptr->instance = Windows.NativeMethods.GetModuleHandle(null);
             return ptr;
         }
 
