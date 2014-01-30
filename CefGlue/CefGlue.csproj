@@ -307,6 +307,7 @@
     <Compile Include="Platform\Linux\CefWindowInfoLinuxImpl.cs" />
     <Compile Include="Platform\Mac\CefWindowInfoMacImpl.cs" />
     <Compile Include="Platform\Windows\CefWindowInfoWindowsImpl.cs" />
+    <Compile Include="Platform\Windows\NativeMethods.cs" />
     <Compile Include="Platform\Windows\WindowStyles.cs" />
     <Compile Include="Platform\Windows\WindowStylesEx.cs" />
     <Compile Include="Structs\CefColor.cs" />
