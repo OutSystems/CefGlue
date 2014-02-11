@@ -59,6 +59,11 @@
 				a();
 		}
 
+        protected virtual CefWebClient CreateWebClient()
+        {
+            return new CefWebClient(this);
+        }
+
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
@@ -72,7 +77,7 @@
                 var windowInfo = CefWindowInfo.Create();
                 windowInfo.SetAsChild(Handle, new CefRectangle { X = 0, Y = 0, Width = Width, Height = Height });
 
-                var client = new CefWebClient(this);
+                var client = CreateWebClient();
 
                 var settings = BrowserSettings;
                 if (settings == null) settings = new CefBrowserSettings { };

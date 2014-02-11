@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Xilium.CefGlue;
 
-    internal sealed class CefWebClient : CefClient
+    public class CefWebClient : CefClient
     {
         private readonly CefWebBrowser _core;
         private readonly CefWebLifeSpanHandler _lifeSpanHandler;
@@ -20,6 +20,8 @@
             _loadHandler = new CefWebLoadHandler(_core);
             _requestHandler = new CefWebRequestHandler(_core);
         }
+
+        protected CefWebBrowser Core { get { return _core; } }
 
         protected override CefLifeSpanHandler GetLifeSpanHandler()
         {
