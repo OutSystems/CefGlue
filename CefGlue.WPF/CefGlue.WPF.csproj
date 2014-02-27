@@ -70,8 +70,14 @@
     <Compile Include="Helpers\Log\ILogger.cs" />
     <Compile Include="Helpers\Log\NLogLogger.cs" />
     <Compile Include="IUiHelper.cs" />
+    <Compile Include="LoadEndEventArgs.cs" />
+    <Compile Include="LoadEndEventHandler.cs" />
+    <Compile Include="LoadErrorEventArgs.cs" />
+    <Compile Include="LoadErrorEventHandler.cs" />
     <Compile Include="LoadingStateChangeEventArgs.cs" />
     <Compile Include="LoadingStateChangeEventHandler.cs" />
+    <Compile Include="LoadStartEventArgs.cs" />
+    <Compile Include="LoadStartEventHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

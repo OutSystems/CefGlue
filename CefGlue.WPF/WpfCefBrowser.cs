@@ -99,14 +99,43 @@ namespace Xilium.CefGlue.WPF
 
         #endregion
 
+        public event LoadStartEventHandler LoadStart;
+        public event LoadEndEventHandler LoadEnd;
         public event LoadingStateChangeEventHandler LoadingStateChange;
+        public event LoadErrorEventHandler LoadError;
 
+
+        internal void OnLoadStart(CefFrame frame)
+        { 
+            if (this.LoadStart != null)
+            {
+                var e = new LoadStartEventArgs(frame);
+                this.LoadStart(this, e);
+            }
+        }
+
+        internal void OnLoadEnd(CefFrame frame, int httpStatusCode)
+        {
+            if(this.LoadEnd != null)
+            {
+                var e = new LoadEndEventArgs(frame, httpStatusCode);
+                this.LoadEnd(this, e);
+            }
+        }
         internal void OnLoadingStateChange(bool isLoading, bool canGoBack, bool canGoForward)
         {
             if (this.LoadingStateChange != null)
             {
                 var e = new LoadingStateChangeEventArgs(isLoading, canGoBack, canGoForward);
                 this.LoadingStateChange(this, e);
+            }
+        }
+        internal void OnLoadError(CefFrame frame, CefErrorCode errorCode, string errorText, string failedUrl)
+        {
+            if (this.LoadError != null)
+            {
+                var e = new LoadErrorEventArgs(frame, errorCode, errorText, failedUrl);
+                this.LoadError(this, e);
             }
         }
 
