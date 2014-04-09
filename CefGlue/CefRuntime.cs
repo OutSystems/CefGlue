@@ -148,9 +148,11 @@
         /// called for the browser process (identified by no "type" command-line value)
         /// it will return immediately with a value of -1. If called for a recognized
         /// secondary process it will block until the process should exit and then return
-        /// the process exit code. The |application| parameter may be empty.
+        /// the process exit code. The |application| parameter may be empty. The
+        /// |windows_sandbox_info| parameter is only used on Windows and may be NULL (see
+        /// cef_sandbox_win.h for details).
         /// </summary>
-        public static int ExecuteProcess(CefMainArgs args, CefApp application)
+        public static int ExecuteProcess(CefMainArgs args, CefApp application, IntPtr windowsSandboxInfo)
         {
             LoadIfNeed();
 
@@ -159,7 +161,7 @@
 
             try
             {
-                return libcef.execute_process(n_args, n_app);
+                return libcef.execute_process(n_args, n_app, (void*)windowsSandboxInfo);
             }
             finally
             {
@@ -167,12 +169,21 @@
             }
         }
 
+        [Obsolete]
+        public static int ExecuteProcess(CefMainArgs args, CefApp application)
+        {
+            return ExecuteProcess(args, application, IntPtr.Zero);
+        }
+
+
         /// <summary>
         /// This function should be called on the main application thread to initialize
         /// the CEF browser process. The |application| parameter may be empty. A return
         /// value of true indicates that it succeeded and false indicates that it failed.
+        /// The |windows_sandbox_info| parameter is only used on Windows and may be NULL
+        /// (see cef_sandbox_win.h for details).
         /// </summary>
-        public static void Initialize(CefMainArgs args, CefSettings settings, CefApp application)
+        public static void Initialize(CefMainArgs args, CefSettings settings, CefApp application, IntPtr windowsSandboxInfo)
         {
             LoadIfNeed();
 
@@ -187,7 +198,7 @@
 
             try
             {
-                if (libcef.initialize(n_main_args, n_settings, n_app) != 0)
+                if (libcef.initialize(n_main_args, n_settings, n_app, (void*)windowsSandboxInfo) != 0)
                 {
                     _initialized = true;
                 }
@@ -202,6 +213,13 @@
                 CefSettings.Free(n_settings);
             }
         }
+
+        [Obsolete]
+        public static void Initialize(CefMainArgs args, CefSettings settings, CefApp application)
+        {
+            Initialize(args, settings, application, IntPtr.Zero);
+        }
+
 
         /// <summary>
         /// This function should be called on the main application thread to shut down
@@ -747,6 +765,10 @@
             return libcef.launch_process(commandLine.ToNative()) != 0;
         }
 
+        #endregion
+
+        #region cef_sandbox_win
+        // TODO: investigate using of sandbox on windows and .net
         #endregion
 
         private static void LoadIfNeed()

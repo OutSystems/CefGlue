@@ -10,23 +10,23 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_popup_features_t
     {
         public int x;
-        public bool_t xSet;
+        public int xSet;
         public int y;
-        public bool_t ySet;
+        public int ySet;
         public int width;
-        public bool_t widthSet;
+        public int widthSet;
         public int height;
-        public bool_t heightSet;
+        public int heightSet;
 
-        public bool_t menuBarVisible;
-        public bool_t statusBarVisible;
-        public bool_t toolBarVisible;
-        public bool_t locationBarVisible;
-        public bool_t scrollbarsVisible;
-        public bool_t resizable;
+        public int menuBarVisible;
+        public int statusBarVisible;
+        public int toolBarVisible;
+        public int locationBarVisible;
+        public int scrollbarsVisible;
+        public int resizable;
 
-        public bool_t fullscreen;
-        public bool_t dialog;
+        public int fullscreen;
+        public int dialog;
         public cef_string_list* additionalFeatures;
     }
 }

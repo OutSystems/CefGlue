@@ -112,18 +112,6 @@
             set { cef_string_t.Copy(value, &_self->default_encoding); }
         }
 
-        /// <summary>
-        /// Location of the user style sheet that will be used for all pages. This must
-        /// be a data URL of the form "data:text/css;charset=utf-8;base64,csscontent"
-        /// where "csscontent" is the base64 encoded contents of the CSS file. Also
-        /// configurable using the "user-style-sheet-location" command-line switch.
-        /// </summary>
-        public string UserStyleSheetLocation
-        {
-            get { return cef_string_t.ToString(&_self->user_style_sheet_location); }
-            set { cef_string_t.Copy(value, &_self->user_style_sheet_location); }
-        }
-
 
         /// <summary>
         /// Controls the loading of fonts from remote sources. Also configurable using
@@ -292,16 +280,6 @@
         {
             get { return _self->tab_to_links; }
             set { _self->tab_to_links = value; }
-        }
-
-        /// <summary>
-        /// Controls whether style sheets can be used. Also configurable using the
-        /// "disable-author-and-user-styles" command-line switch.
-        /// </summary>
-        public CefState AuthorAndUserStyles
-        {
-            get { return _self->author_and_user_styles; }
-            set { _self->author_and_user_styles = value; }
         }
 
         /// <summary>

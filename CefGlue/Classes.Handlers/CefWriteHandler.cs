@@ -69,5 +69,20 @@ namespace Xilium.CefGlue
         /// Flush the stream.
         /// </summary>
         protected abstract bool Flush();
+
+
+        private int may_block(cef_write_handler_t* self)
+        {
+            CheckSelf(self);
+
+            return MayBlock() ? 1 : 0;
+        }
+
+        /// <summary>
+        /// Return true if this handler performs work like accessing the file system
+        /// which may block. Used as a hint for determining the thread to access the
+        /// handler from.
+        /// </summary>
+        protected abstract bool MayBlock();
     }
 }

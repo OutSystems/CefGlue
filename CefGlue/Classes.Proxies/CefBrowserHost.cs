@@ -207,20 +207,6 @@ namespace Xilium.CefGlue
 
 
         /// <summary>
-        /// Returns the DevTools URL for this browser. If |http_scheme| is true the
-        /// returned URL will use the http scheme instead of the chrome-devtools
-        /// scheme. Remote debugging can be enabled by specifying the
-        /// "remote-debugging-port" command-line flag or by setting the
-        /// CefSettings.remote_debugging_port value. If remote debugging is not enabled
-        /// this method will return an empty string.
-        /// </summary>
-        public string GetDevToolsUrl(bool httpScheme)
-        {
-            var n_url = cef_browser_host_t.get_dev_tools_url(_self, httpScheme ? 1 : 0);
-            return cef_string_userfree.ToString(n_url);
-        }
-
-        /// <summary>
         /// Get the current zoom level. The default zoom level is 0.0. This method can
         /// only be called on the UI thread.
         /// </summary>
@@ -313,6 +299,23 @@ namespace Xilium.CefGlue
         public void StopFinding(bool clearSelection)
         {
             cef_browser_host_t.stop_finding(_self, clearSelection ? 1 : 0);
+        }
+
+        /// <summary>
+        /// Open developer tools in its own window.
+        /// </summary>
+        public void ShowDevTools(CefWindowInfo windowInfo, CefClient client, CefBrowserSettings browserSettings)
+        {
+            cef_browser_host_t.show_dev_tools(_self, windowInfo.ToNative(), client.ToNative(), browserSettings.ToNative());
+        }
+
+        /// <summary>
+        /// Explicitly close the developer tools window if one exists for this browser
+        /// instance.
+        /// </summary>
+        public void CloseDevTools()
+        {
+            cef_browser_host_t.close_dev_tools(_self);
         }
 
         /// <summary>

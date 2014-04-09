@@ -28,11 +28,11 @@
                     Value = cef_string_t.ToString(&ptr->value),
                     Domain = cef_string_t.ToString(&ptr->domain),
                     Path = cef_string_t.ToString(&ptr->path),
-                    Secure = ptr->secure,
-                    HttpOnly = ptr->httponly,
+                    Secure = ptr->secure != 0,
+                    HttpOnly = ptr->httponly != 0,
                     Creation = cef_time_t.ToDateTime(&ptr->creation),
                     LastAccess = cef_time_t.ToDateTime(&ptr->last_access),
-                    Expires = ptr->has_expires ? (DateTime?)cef_time_t.ToDateTime(&ptr->expires) : null,
+                    Expires = ptr->has_expires != 0 ? (DateTime?)cef_time_t.ToDateTime(&ptr->expires) : null,
                 };
         }
 
@@ -44,11 +44,11 @@
             cef_string_t.Copy(Value, &ptr->value);
             cef_string_t.Copy(Domain, &ptr->domain);
             cef_string_t.Copy(Path, &ptr->path);
-            ptr->secure = Secure;
-            ptr->httponly = HttpOnly;
+            ptr->secure = Secure ? 1 : 0;
+            ptr->httponly = HttpOnly ? 1 : 0;
             ptr->creation = new cef_time_t(Creation);
             ptr->last_access = new cef_time_t(LastAccess);
-            ptr->has_expires = Expires != null;
+            ptr->has_expires = Expires != null ? 1 : 0;
             ptr->expires = Expires != null ? new cef_time_t(Expires.Value) : new cef_time_t();
 
             return ptr;

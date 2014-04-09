@@ -269,27 +269,31 @@ def format_translation_includes(body):
     body.
     """
     result = ''
-    
+
+    # <algorithm> required for VS2013.
+    if body.find('std::min') > 0 or body.find('std::max') > 0:
+        result += '#include <algorithm>\n'
+
     if body.find('cef_api_hash(') > 0:
         result += '#include "include/cef_version.h"\n'
-    
+
     # identify what CppToC classes are being used
     p = re.compile('([A-Za-z0-9_]{1,})CppToC')
     list = sorted(set(p.findall(body)))
     for item in list:
         result += '#include "libcef_dll/cpptoc/'+ \
                   get_capi_name(item[3:], False)+'_cpptoc.h"\n'
-    
+
     # identify what CToCpp classes are being used
     p = re.compile('([A-Za-z0-9_]{1,})CToCpp')
     list = sorted(set(p.findall(body)))
     for item in list:
         result += '#include "libcef_dll/ctocpp/'+ \
                   get_capi_name(item[3:], False)+'_ctocpp.h"\n'
-    
+
     if body.find('transfer_') > 0:
         result += '#include "libcef_dll/transfer_util.h"\n'
-        
+
     return result
 
 def str_to_dict(str):
@@ -510,7 +514,11 @@ class obj_header:
                 comment = get_comment(data, retval+'('+argval+');')
                 self.funcs.append(obj_function(self, filename, attrib, retval,
                                                argval, comment))
-        
+
+        # extract includes
+        p = re.compile('\n#include \"include/'+_cre_cfname+'.h')
+        includes = p.findall(data)
+
         # extract forward declarations
         p = re.compile('\nclass'+_cre_space+_cre_cfname+';')
         forward_declares = p.findall(data)
@@ -530,7 +538,7 @@ class obj_header:
                 comment = get_comment(data, name+' : public virtual CefBase')
                 self.classes.append(
                     obj_class(self, filename, attrib, name, body, comment,
-                              forward_declares))
+                              includes, forward_declares))
 
         if added:
             # a global function or class was read from the header file
@@ -670,7 +678,7 @@ class obj_class:
     """ Class representing a C++ class. """
     
     def __init__(self, parent, filename, attrib, name, body, comment,
-                 forward_declares):
+                 includes, forward_declares):
         if not isinstance(parent, obj_header):
             raise Exception('Invalid parent object type')
         
@@ -679,6 +687,7 @@ class obj_class:
         self.attribs = str_to_dict(attrib)
         self.name = name
         self.comment = comment
+        self.includes = includes
         self.forward_declares = forward_declares
         
         # extract typedefs
@@ -769,6 +778,11 @@ class obj_class:
     def get_comment(self):
         """ Return the class comment as an array of lines. """
         return self.comment
+    
+    def get_includes(self):
+        """ Return the list of classes that are included from this class'
+            header file. """
+        return self.includes
     
     def get_forward_declares(self):
         """ Return the list of classes that are forward declared for this
@@ -1657,8 +1671,6 @@ class obj_analysis:
                 result += 'const '
             if not self.result_value in defined_structs:
                 result += 'struct _'
-        else:
-            result += 'enum '
         result += self.result_value
         if not is_enum:
             result += '*'

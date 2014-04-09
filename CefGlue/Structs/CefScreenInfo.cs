@@ -56,8 +56,8 @@
         /// </summary>
         public bool IsMonochrome
         {
-            get { return _self->is_monochrome; }
-            set { _self->is_monochrome = value; }
+            get { return _self->is_monochrome != 0; }
+            set { _self->is_monochrome = value ? 1 : 0; }
         }
 
         /// <summary>

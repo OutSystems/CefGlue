@@ -26,6 +26,7 @@ namespace Xilium.CefGlue
         private cef_read_handler_t.seek_delegate _ds4;
         private cef_read_handler_t.tell_delegate _ds5;
         private cef_read_handler_t.eof_delegate _ds6;
+        private cef_read_handler_t.may_block_delegate _ds7;
         
         protected CefReadHandler()
         {
@@ -45,6 +46,8 @@ namespace Xilium.CefGlue
             _self->_tell = Marshal.GetFunctionPointerForDelegate(_ds5);
             _ds6 = new cef_read_handler_t.eof_delegate(eof);
             _self->_eof = Marshal.GetFunctionPointerForDelegate(_ds6);
+            _ds7 = new cef_read_handler_t.may_block_delegate(may_block);
+            _self->_may_block = Marshal.GetFunctionPointerForDelegate(_ds7);
         }
         
         ~CefReadHandler()

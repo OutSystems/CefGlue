@@ -178,8 +178,15 @@
 
         private void OpenDeveloperToolsCommand(object sender, EventArgs e)
         {
-            var devToolsUrl = MainView.CurrentBrowser.GetHost().GetDevToolsUrl(true);
-            Process.Start(devToolsUrl);
+            var host = MainView.CurrentBrowser.GetHost();
+            var wi = CefWindowInfo.Create();
+            wi.SetAsPopup(IntPtr.Zero, "DevTools");
+            host.ShowDevTools(wi, new DevToolsWebClient(), new CefBrowserSettings());
+            // Process.Start(devToolsUrl);
+        }
+
+        private class DevToolsWebClient : CefClient
+        {
         }
 
         private void SendKeyEventCommand(object sender, EventArgs e)

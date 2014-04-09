@@ -23,7 +23,6 @@ namespace Xilium.CefGlue.Interop
         public int minimum_logical_font_size;
 
         public cef_string_t default_encoding;
-        public cef_string_t user_style_sheet_location;
 
         public CefState remote_fonts;
         public CefState javascript;
@@ -41,7 +40,6 @@ namespace Xilium.CefGlue.Interop
         public CefState image_shrink_standalone_to_fit;
         public CefState text_area_resize;
         public CefState tab_to_links;
-        public CefState author_and_user_styles;
         public CefState local_storage;
         public CefState databases;
         public CefState application_cache;

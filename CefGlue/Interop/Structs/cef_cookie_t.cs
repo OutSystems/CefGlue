@@ -13,11 +13,11 @@ namespace Xilium.CefGlue.Interop
         public cef_string_t value;
         public cef_string_t domain;
         public cef_string_t path;
-        public bool_t secure;
-        public bool_t httponly;
+        public int secure;
+        public int httponly;
         public cef_time_t creation;
         public cef_time_t last_access;
-        public bool_t has_expires;
+        public int has_expires;
         public cef_time_t expires;
 
         internal static void Clear(cef_cookie_t* ptr)

@@ -10,9 +10,9 @@
         public CefEventFlags modifiers;
         public int windows_key_code;
         public int native_key_code;
-        public bool_t is_system_key;
+        public int is_system_key;
         public ushort character;
         public ushort unmodified_character;
-        public bool_t focus_on_editable_field;
+        public int focus_on_editable_field;
     }
 }

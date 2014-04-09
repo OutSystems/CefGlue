@@ -1,4 +1,4 @@
-// Copyright (c) 2014 Marshall A. Greenblatt. All rights reserved.
+// Copyright (c) 2012 Marshall A. Greenblatt. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -26,59 +26,50 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// ---------------------------------------------------------------------------
+//
+// The contents of this file are only available to applications that link
+// against the libcef_dll_wrapper target.
+//
 
-
-#ifndef CEF_INCLUDE_INTERNAL_CEF_TYPES_LINUX_H_
-#define CEF_INCLUDE_INTERNAL_CEF_TYPES_LINUX_H_
+#ifndef CEF_INCLUDE_WRAPPER_CEF_BYTE_READ_HANDLER_H_
+#define CEF_INCLUDE_WRAPPER_CEF_BYTE_READ_HANDLER_H_
 #pragma once
 
-#include "include/internal/cef_build.h"
-
-#if defined(OS_LINUX)
-#include <gtk/gtk.h>
-#include "include/internal/cef_string.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-// Handle types.
-#define cef_cursor_handle_t GdkCursor*
-#define cef_event_handle_t GdkEvent*
-#define cef_window_handle_t GtkWidget*
-#define cef_text_input_context_t void*
+#include "include/cef_base.h"
+#include "include/cef_stream.h"
 
 ///
-// Structure representing CefExecuteProcess arguments.
+// Thread safe implementation of the CefReadHandler class for reading an
+// in-memory array of bytes.
 ///
-typedef struct _cef_main_args_t {
-  int argc;
-  char** argv;
-} cef_main_args_t;
+class CefByteReadHandler : public CefReadHandler {
+ public:
+  ///
+  // Create a new object for reading an array of bytes. An optional |source|
+  // reference can be kept to keep the underlying data source from being
+  // released while the reader exists.
+  ///
+  CefByteReadHandler(const unsigned char* bytes,
+                     size_t size,
+                     CefRefPtr<CefBase> source);
 
-///
-// Class representing window information.
-///
-typedef struct _cef_window_info_t {
-  // Pointer for the parent GtkBox widget.
-  cef_window_handle_t parent_widget;
+  // CefReadHandler methods.
+  virtual size_t Read(void* ptr, size_t size, size_t n) OVERRIDE;
+  virtual int Seek(int64 offset, int whence) OVERRIDE;
+  virtual int64 Tell() OVERRIDE;
+  virtual int Eof() OVERRIDE;
+  virtual bool MayBlock() OVERRIDE { return false; }
 
-  // If window rendering is disabled no browser window will be created. Set
-  // |parent_widget| to the window that will act as the parent for popup menus,
-  // dialog boxes, etc.
-  int window_rendering_disabled;
+ private:
+  const unsigned char* bytes_;
+  int64 size_;
+  int64 offset_;
+  CefRefPtr<CefBase> source_;
 
-  // Set to true to enable transparent painting.
-  int transparent_painting;
+  IMPLEMENT_REFCOUNTING(CefByteReadHandler);
+  IMPLEMENT_LOCKING(CefByteReadHandler);
+};
 
-  // Pointer for the new browser widget.
-  cef_window_handle_t widget;
-} cef_window_info_t;
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif  // OS_LINUX
-
-#endif  // CEF_INCLUDE_INTERNAL_CEF_TYPES_LINUX_H_
+#endif  // CEF_INCLUDE_WRAPPER_CEF_BYTE_READ_HANDLER_H_

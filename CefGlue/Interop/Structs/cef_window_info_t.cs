@@ -66,8 +66,8 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_window_info_t_linux
     {
         public IntPtr parent_widget;
-        public bool_t window_rendering_disabled;
-        public bool_t transparent_painting;
+        public int window_rendering_disabled;
+        public int transparent_painting;
         public IntPtr widget;
 
         #region Alloc & Free
@@ -107,8 +107,8 @@ namespace Xilium.CefGlue.Interop
         // NSView pointer for the parent view.
         public IntPtr parent_view;
 
-        public bool_t window_rendering_disabled;
-        public bool_t transparent_painting;
+        public int window_rendering_disabled;
+        public int transparent_painting;
 
         // NSView pointer for the new browser view.
         public IntPtr view;

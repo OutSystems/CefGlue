@@ -79,6 +79,7 @@
     <Compile Include="Classes.g\CefDownloadItemCallback.g.cs" />
     <Compile Include="Classes.g\CefDragData.g.cs" />
     <Compile Include="Classes.g\CefDragHandler.g.cs" />
+    <Compile Include="Classes.g\CefEndTracingCallback.g.cs" />
     <Compile Include="Classes.g\CefFileDialogCallback.g.cs" />
     <Compile Include="Classes.g\CefFocusHandler.g.cs" />
     <Compile Include="Classes.g\CefFrame.g.cs" />
@@ -114,7 +115,6 @@
     <Compile Include="Classes.g\CefStringVisitor.g.cs" />
     <Compile Include="Classes.g\CefTask.g.cs" />
     <Compile Include="Classes.g\CefTaskRunner.g.cs" />
-    <Compile Include="Classes.g\CefTraceClient.g.cs" />
     <Compile Include="Classes.g\CefUrlRequest.g.cs" />
     <Compile Include="Classes.g\CefUrlRequestClient.g.cs" />
     <Compile Include="Classes.g\CefUserData.g.cs" />
@@ -143,6 +143,7 @@
     <Compile Include="Classes.Handlers\CefDomVisitor.cs" />
     <Compile Include="Classes.Handlers\CefDownloadHandler.cs" />
     <Compile Include="Classes.Handlers\CefDragHandler.cs" />
+    <Compile Include="Classes.Handlers\CefEndTracingCallback.cs" />
     <Compile Include="Classes.Handlers\CefFocusHandler.cs" />
     <Compile Include="Classes.Handlers\CefGeolocationHandler.cs" />
     <Compile Include="Classes.Handlers\CefGetGeolocationCallback.cs" />
@@ -160,7 +161,6 @@
     <Compile Include="Classes.Handlers\CefRunFileDialogCallback.cs" />
     <Compile Include="Classes.Handlers\CefSchemeHandlerFactory.cs" />
     <Compile Include="Classes.Handlers\CefStringVisitor.cs" />
-    <Compile Include="Classes.Handlers\CefTraceClient.cs" />
     <Compile Include="Classes.Handlers\CefUrlRequestClient.cs" />
     <Compile Include="Classes.Handlers\CefUserData.cs" />
     <Compile Include="Classes.Handlers\CefV8Accessor.cs" />
@@ -277,6 +277,7 @@
     <Compile Include="Interop\Classes.g\cef_download_item_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_drag_data_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_drag_handler_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_end_tracing_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_file_dialog_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_focus_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_get_geolocation_callback_t.g.cs" />
@@ -291,7 +292,6 @@
     <Compile Include="Interop\Classes.g\cef_run_file_dialog_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_scheme_registrar_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_task_runner_t.g.cs" />
-    <Compile Include="Interop\Classes.g\cef_trace_client_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_urlrequest_client_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_urlrequest_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_user_data_t.g.cs" />

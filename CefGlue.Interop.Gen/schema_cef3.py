@@ -96,4 +96,6 @@ classdef = {
     # 1650.1503
     'CefRequestContext': { 'role': ROLE_PROXY },
     'CefRequestContextHandler': { 'role': ROLE_HANDLER, 'reversible': True },
+    # 1750
+    'CefEndTracingCallback': { 'role': ROLE_HANDLER },
     }

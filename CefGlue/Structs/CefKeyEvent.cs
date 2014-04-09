@@ -110,10 +110,10 @@
                 Modifiers = ptr->modifiers,
                 WindowsKeyCode = ptr->windows_key_code,
                 NativeKeyCode = ptr->native_key_code,
-                IsSystemKey = ptr->is_system_key,
+                IsSystemKey = ptr->is_system_key != 0,
                 Character = (char)ptr->character,
                 UnmodifiedCharacter = (char)ptr->unmodified_character,
-                FocusOnEditableField = ptr->focus_on_editable_field,
+                FocusOnEditableField = ptr->focus_on_editable_field != 0,
             };
         }
 
@@ -125,10 +125,10 @@
             ptr->modifiers = Modifiers;
             ptr->windows_key_code = WindowsKeyCode;
             ptr->native_key_code = NativeKeyCode;
-            ptr->is_system_key = IsSystemKey;
+            ptr->is_system_key = IsSystemKey ? 1 : 0;
             ptr->character = Character;
             ptr->unmodified_character = UnmodifiedCharacter;
-            ptr->focus_on_editable_field = FocusOnEditableField;
+            ptr->focus_on_editable_field = FocusOnEditableField ? 1 : 0;
         }
 
         #endregion

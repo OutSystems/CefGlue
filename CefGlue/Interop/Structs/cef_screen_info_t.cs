@@ -12,7 +12,7 @@ namespace Xilium.CefGlue.Interop
         public float device_scale_factor;
         public int depth;
         public int depth_per_component;
-        public bool_t is_monochrome;
+        public int is_monochrome;
         public cef_rect_t rect;
         public cef_rect_t available_rect;
     }

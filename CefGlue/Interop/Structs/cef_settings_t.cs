@@ -16,26 +16,27 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_settings_t
     {
         public UIntPtr size;
-        public bool_t single_process;
+        public int single_process;
+        public int no_sandbox;
         public cef_string_t browser_subprocess_path;
-        public bool_t multi_threaded_message_loop;
-        public bool_t command_line_args_disabled;
+        public int multi_threaded_message_loop;
+        public int command_line_args_disabled;
         public cef_string_t cache_path;
-        public bool_t persist_session_cookies;
+        public int persist_session_cookies;
         public cef_string_t user_agent;
         public cef_string_t product_version;
         public cef_string_t locale;
         public cef_string_t log_file;
         public CefLogSeverity log_severity;
-        public bool_t release_dcheck_enabled;
+        public int release_dcheck_enabled;
         public cef_string_t javascript_flags;
         public cef_string_t resources_dir_path;
         public cef_string_t locales_dir_path;
-        public bool_t pack_loading_disabled;
+        public int pack_loading_disabled;
         public int remote_debugging_port;
         public int uncaught_exception_stack_size;
         public int context_safety_implementation;
-        public bool_t ignore_certificate_errors;
+        public int ignore_certificate_errors;
         public uint background_color;
 
         #region Alloc & Free

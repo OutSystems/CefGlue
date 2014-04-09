@@ -24,7 +24,7 @@
             get
             {
                 ThrowIfObjectDisposed();
-                return _self->xSet ? (int?)_self->x : null;
+                return _self->xSet != 0 ? (int?)_self->x : null;
             }
         }
 
@@ -33,7 +33,7 @@
             get
             {
                 ThrowIfObjectDisposed();
-                return _self->ySet ? (int?)_self->y : null;
+                return _self->ySet != 0 ? (int?)_self->y : null;
             }
         }
 
@@ -42,7 +42,7 @@
             get
             {
                 ThrowIfObjectDisposed();
-                return _self->widthSet ? (int?)_self->width : null;
+                return _self->widthSet != 0 ? (int?)_self->width : null;
             }
         }
 
@@ -51,7 +51,7 @@
             get
             {
                 ThrowIfObjectDisposed();
-                return _self->heightSet ? (int?)_self->height : null;
+                return _self->heightSet != 0 ? (int?)_self->height : null;
             }
         }
 
@@ -60,7 +60,7 @@
             get
             {
                 ThrowIfObjectDisposed();
-                return _self->menuBarVisible;
+                return _self->menuBarVisible != 0;
             }
         }
 
@@ -69,7 +69,7 @@
             get
             {
                 ThrowIfObjectDisposed();
-                return _self->statusBarVisible;
+                return _self->statusBarVisible != 0;
             }
         }
 
@@ -78,7 +78,7 @@
             get
             {
                 ThrowIfObjectDisposed();
-                return _self->toolBarVisible;
+                return _self->toolBarVisible != 0;
             }
         }
 
@@ -87,7 +87,7 @@
             get
             {
                 ThrowIfObjectDisposed();
-                return _self->locationBarVisible;
+                return _self->locationBarVisible != 0;
             }
         }
 
@@ -96,7 +96,7 @@
             get
             {
                 ThrowIfObjectDisposed();
-                return _self->scrollbarsVisible;
+                return _self->scrollbarsVisible != 0;
             }
         }
 
@@ -105,7 +105,7 @@
             get
             {
                 ThrowIfObjectDisposed();
-                return _self->resizable;
+                return _self->resizable != 0;
             }
         }
 
@@ -114,7 +114,7 @@
             get
             {
                 ThrowIfObjectDisposed();
-                return _self->fullscreen;
+                return _self->fullscreen != 0;
             }
         }
 
@@ -123,7 +123,7 @@
             get
             {
                 ThrowIfObjectDisposed();
-                return _self->dialog;
+                return _self->dialog != 0;
             }
         }
 
@@ -131,6 +131,7 @@
         {
             get
             {
+                ThrowIfObjectDisposed();
                 return cef_string_list.ToArray(_self->additionalFeatures);
             }
         }

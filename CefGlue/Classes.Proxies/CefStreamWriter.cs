@@ -79,5 +79,15 @@ namespace Xilium.CefGlue
         {
             return cef_stream_writer_t.flush(_self) == 0;
         }
+
+        /// <summary>
+        /// Returns true if this writer performs work like accessing the file system
+        /// which may block. Used as a hint for determining the thread to access the
+        /// writer from.
+        /// </summary>
+        public bool MayBlock()
+        {
+            return cef_stream_writer_t.may_block(_self) != 0;
+        }
     }
 }

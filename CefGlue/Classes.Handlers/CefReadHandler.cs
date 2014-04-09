@@ -69,5 +69,20 @@ namespace Xilium.CefGlue
         /// Return non-zero if at end of file.
         /// </summary>
         protected abstract bool Eof();
+
+
+        private int may_block(cef_read_handler_t* self)
+        {
+            CheckSelf(self);
+
+            return MayBlock() ? 1 : 0;
+        }
+
+        /// <summary>
+        /// Return true if this handler performs work like accessing the file system
+        /// which may block. Used as a hint for determining the thread to access the
+        /// handler from.
+        /// </summary>
+        protected abstract bool MayBlock();
     }
 }

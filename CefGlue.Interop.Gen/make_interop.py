@@ -753,7 +753,7 @@ def write_interop(header, filepath, backup, schema_name, cppheaderdir):
         writect += update_file(filepath + '/' + schema.wrapper_g_path, schema.cpp2csname(cls.get_name()) + ".g.cs", content, backup)
 
     # userdata    
-    userdatacls = obj_class(header, 'CefUserData', '', 'CefUserData', '', '', '')
+    userdatacls = obj_class(header, 'CefUserData', '', 'CefUserData', '', '', '', '')
     content = make_struct_file(userdatacls)
     writect += update_file(filepath + '/' + schema.struct_path, userdatacls.get_capi_name() + ".g.cs", content, backup)
     content = make_wrapper_g_file(userdatacls)

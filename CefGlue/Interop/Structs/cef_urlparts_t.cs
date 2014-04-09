@@ -15,6 +15,7 @@ namespace Xilium.CefGlue.Interop
         public cef_string_t password;
         public cef_string_t host;
         public cef_string_t port;
+        public cef_string_t origin;
         public cef_string_t path;
         public cef_string_t query;
     }

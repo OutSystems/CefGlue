@@ -17,6 +17,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _seek;
         internal IntPtr _tell;
         internal IntPtr _flush;
+        internal IntPtr _may_block;
         
         // CreateForFile
         [DllImport(libcef.DllName, EntryPoint = "cef_stream_writer_create_for_file", CallingConvention = libcef.CEF_CALL)]
@@ -67,6 +68,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int flush_delegate(cef_stream_writer_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate int may_block_delegate(cef_stream_writer_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -183,6 +190,23 @@ namespace Xilium.CefGlue.Interop
             {
                 d = (flush_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(flush_delegate));
                 if (_p6 == IntPtr.Zero) { _d6 = d; _p6 = p; }
+            }
+            return d(self);
+        }
+        
+        // MayBlock
+        private static IntPtr _p7;
+        private static may_block_delegate _d7;
+        
+        public static int may_block(cef_stream_writer_t* self)
+        {
+            may_block_delegate d;
+            var p = self->_may_block;
+            if (p == _p7) { d = _d7; }
+            else
+            {
+                d = (may_block_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(may_block_delegate));
+                if (_p7 == IntPtr.Zero) { _d7 = d; _p7 = p; }
             }
             return d(self);
         }
