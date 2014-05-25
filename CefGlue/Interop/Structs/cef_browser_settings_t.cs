@@ -46,6 +46,8 @@ namespace Xilium.CefGlue.Interop
         public CefState webgl;
         public CefState accelerated_compositing;
 
+        public uint background_color;
+
         #region Alloc & Free
         private static int _sizeof;
 

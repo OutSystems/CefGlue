@@ -334,5 +334,18 @@
             get { return _self->accelerated_compositing; }
             set { _self->accelerated_compositing = value; }
         }
+
+        /// <summary>
+        /// Opaque background color used for the browser before a document is loaded
+        /// and when no document color is specified. By default the background color
+        /// will be the same as CefSettings.background_color. Only the RGB compontents
+        /// of the specified value will be used. The alpha component must greater than
+        /// 0 to enable use of the background color but will be otherwise ignored.
+        /// </summary>
+        public CefColor BackgroundColor
+        {
+            get { return new CefColor(_self->background_color); }
+            set { _self->background_color = value.ToArgb(); }
+        }
     }
 }
