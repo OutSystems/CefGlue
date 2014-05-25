@@ -93,8 +93,11 @@
             if (_browser != null && disposing) // TODO: ugly hack to avoid crashes when CefWebBrowser are Finalized and underlying objects already finalized
             {
                 var host = _browser.GetHost();
-                host.CloseBrowser();
-                host.Dispose();
+                if (host != null)
+                {
+                    host.CloseBrowser();
+                    host.Dispose();
+                }
                 _browser.Dispose();
                 _browser = null;
                 _browserWindowHandle = IntPtr.Zero;

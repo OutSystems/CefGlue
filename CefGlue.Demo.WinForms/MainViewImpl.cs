@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Drawing;
     using System.Text;
     using System.Threading;
@@ -38,6 +39,20 @@
             _tabs.Padding = new Point(6, 6);
 
             Visible = true;
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            foreach (TabPage page in _tabs.TabPages)
+            {
+                var browser = page.Tag as CefWebBrowser;
+                if (browser != null)
+                {
+                    browser.Dispose();
+                }
+            }
+
+            base.OnClosing(e);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -85,6 +100,7 @@
             navBox.HomeUrl = _application.HomeUrl;
 
             var browserCtl = new CefWebBrowser();
+            tabPage.Tag = browserCtl;
             browserCtl.Parent = tabPage;
             browserCtl.Dock = DockStyle.Fill;
             browserCtl.BringToFront();

@@ -58,10 +58,13 @@
             }
         }
 
-        internal void Close()
+        public void Close()
         {
             if (_browser != null)
             {
+                var host = _browser.GetHost();
+                host.CloseBrowser(true);
+                host.Dispose();
                 _browser.Dispose();
                 _browser = null;
             }

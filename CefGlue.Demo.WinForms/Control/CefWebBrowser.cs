@@ -79,16 +79,13 @@
 
         protected override void Dispose(bool disposing)
         {
-            if (_core != null)
+            if (_core != null && disposing)
             {
-                var browser = _core.CefBrowser;
-                var host = browser.GetHost();
-                host.CloseBrowser();
-                host.Dispose();
-                browser.Dispose();
-                browser = null;
-                _browserWindowHandle = IntPtr.Zero;
+                _core.Close();
             }
+
+            _core = null;
+            _browserWindowHandle = IntPtr.Zero;
 
             base.Dispose(disposing);
         }
