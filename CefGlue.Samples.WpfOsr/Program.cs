@@ -41,6 +41,7 @@
             {
                 // BrowserSubprocessPath = browserSubprocessPath,
                 SingleProcess = false,
+                WindowlessRenderingEnabled = true,
                 MultiThreadedMessageLoop = true,
                 LogSeverity = CefLogSeverity.Verbose,
                 LogFile = "cef.log",
