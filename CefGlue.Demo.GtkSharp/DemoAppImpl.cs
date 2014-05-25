@@ -32,5 +32,13 @@
         {
             return new MainViewImpl(this, menuItems);
         }
+
+        protected override void PlatformMessageBox(string message)
+        {
+            // TODO: this will fail without message loop?
+            //MessageDialog md = new MessageDialog(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, message);
+            //md.Run();
+            //md.Destroy();
+        }
     }
 }

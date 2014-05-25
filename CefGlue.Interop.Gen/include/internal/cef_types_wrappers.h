@@ -349,6 +349,7 @@ struct CefSettingsTraits {
         src->browser_subprocess_path.length,
         &target->browser_subprocess_path, copy);
     target->multi_threaded_message_loop = src->multi_threaded_message_loop;
+    target->windowless_rendering_enabled = src->windowless_rendering_enabled;
     target->command_line_args_disabled = src->command_line_args_disabled;
 
     cef_string_set(src->cache_path.str, src->cache_path.length,
@@ -364,7 +365,6 @@ struct CefSettingsTraits {
     cef_string_set(src->log_file.str, src->log_file.length, &target->log_file,
         copy);
     target->log_severity = src->log_severity;
-    target->release_dcheck_enabled = src->release_dcheck_enabled;
     cef_string_set(src->javascript_flags.str, src->javascript_flags.length,
         &target->javascript_flags, copy);
 

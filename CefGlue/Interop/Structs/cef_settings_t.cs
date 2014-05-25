@@ -20,6 +20,7 @@ namespace Xilium.CefGlue.Interop
         public int no_sandbox;
         public cef_string_t browser_subprocess_path;
         public int multi_threaded_message_loop;
+        public int windowless_rendering_enabled;
         public int command_line_args_disabled;
         public cef_string_t cache_path;
         public int persist_session_cookies;
@@ -28,7 +29,6 @@ namespace Xilium.CefGlue.Interop
         public cef_string_t locale;
         public cef_string_t log_file;
         public CefLogSeverity log_severity;
-        public int release_dcheck_enabled;
         public cef_string_t javascript_flags;
         public cef_string_t resources_dir_path;
         public cef_string_t locales_dir_path;

@@ -21,6 +21,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _on_popup_size;
         internal IntPtr _on_paint;
         internal IntPtr _on_cursor_change;
+        internal IntPtr _start_dragging;
+        internal IntPtr _update_drag_cursor;
         internal IntPtr _on_scroll_offset_changed;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
@@ -88,6 +90,18 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_cursor_change_delegate(cef_render_handler_t* self, cef_browser_t* browser, IntPtr cursor);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int start_dragging_delegate(cef_render_handler_t* self, cef_browser_t* browser, cef_drag_data_t* drag_data, CefDragOperationsMask allowed_ops, int x, int y);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void update_drag_cursor_delegate(cef_render_handler_t* self, cef_browser_t* browser, CefDragOperationsMask operation);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

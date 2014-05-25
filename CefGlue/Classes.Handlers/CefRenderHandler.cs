@@ -214,6 +214,55 @@ namespace Xilium.CefGlue
         protected abstract void OnCursorChange(CefBrowser browser, IntPtr cursorHandle);
 
 
+        private int start_dragging(cef_render_handler_t* self, cef_browser_t* browser, cef_drag_data_t* drag_data, CefDragOperationsMask allowed_ops, int x, int y)
+        {
+            CheckSelf(self);
+
+            var m_browser = CefBrowser.FromNative(browser);
+            var m_dragData = CefDragData.FromNative(drag_data);
+
+            var m_result = StartDragging(m_browser, m_dragData, allowed_ops, x, y);
+
+            return m_result ? 1 : 0;
+        }
+
+        /// <summary>
+        /// Called when the user starts dragging content in the web view. Contextual
+        /// information about the dragged content is supplied by |drag_data|.
+        /// OS APIs that run a system message loop may be used within the
+        /// StartDragging call.
+        /// Return false to abort the drag operation. Don't call any of
+        /// CefBrowserHost::DragSource*Ended* methods after returning false.
+        /// Return true to handle the drag operation. Call
+        /// CefBrowserHost::DragSourceEndedAt and DragSourceSystemDragEnded either
+        /// synchronously or asynchronously to inform the web view that the drag
+        /// operation has ended.
+        /// </summary>
+        protected virtual bool StartDragging(CefBrowser browser, CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y)
+        {
+            return false;
+        }
+
+
+        private void update_drag_cursor(cef_render_handler_t* self, cef_browser_t* browser, CefDragOperationsMask operation)
+        {
+            CheckSelf(self);
+
+            var m_browser = CefBrowser.FromNative(browser);
+
+            UpdateDragCursor(m_browser, operation);
+        }
+
+        /// <summary>
+        /// Called when the web view wants to update the mouse cursor during a
+        /// drag & drop operation. |operation| describes the allowed operation
+        /// (none, move, copy, link).
+        /// </summary>
+        protected virtual void UpdateDragCursor(CefBrowser browser, CefDragOperationsMask operation)
+        {
+        }
+
+
         private void on_scroll_offset_changed(cef_render_handler_t* self, cef_browser_t* browser)
         {
             CheckSelf(self);

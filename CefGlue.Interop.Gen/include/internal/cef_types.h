@@ -224,6 +224,13 @@ typedef struct _cef_settings_t {
   int multi_threaded_message_loop;
 
   ///
+  // Set to true (1) to enable windowless (off-screen) rendering support. Do not
+  // enable this value if the application does not use windowless rendering as
+  // it may reduce rendering performance on some systems.
+  ///
+  int windowless_rendering_enabled;
+
+  ///
   // Set to true (1) to disable configuration of browser process features using
   // standard CEF and Chromium command-line arguments. Configuration can still
   // be specified using CEF data structures or via the
@@ -288,12 +295,6 @@ typedef struct _cef_settings_t {
   // "disable".
   ///
   cef_log_severity_t log_severity;
-
-  ///
-  // Enable DCHECK in release mode to ease debugging. Also configurable using the
-  // "enable-release-dcheck" command-line switch.
-  ///
-  int release_dcheck_enabled;
 
   ///
   // Custom flags that will be used when initializing the V8 JavaScript engine.
@@ -1037,15 +1038,10 @@ typedef enum {
   UR_FLAG_SKIP_CACHE                = 1 << 0,
 
   ///
-  // If set user name, password, and cookies may be sent with the request.
+  // If set user name, password, and cookies may be sent with the request, and
+  // cookies may be saved from the response.
   ///
   UR_FLAG_ALLOW_CACHED_CREDENTIALS  = 1 << 1,
-
-  ///
-  // If set cookies may be sent with the request and saved from the response.
-  // UR_FLAG_ALLOW_CACHED_CREDENTIALS must also be set.
-  ///
-  UR_FLAG_ALLOW_COOKIES             = 1 << 2,
 
   ///
   // If set upload progress events will be generated when a request has a body.
@@ -1637,7 +1633,6 @@ typedef enum {
   DOM_EVENT_CATEGORY_POPSTATE = 0x2000,
   DOM_EVENT_CATEGORY_PROGRESS = 0x4000,
   DOM_EVENT_CATEGORY_XMLHTTPREQUEST_PROGRESS = 0x8000,
-  DOM_EVENT_CATEGORY_BEFORE_LOAD = 0x10000,
 } cef_dom_event_category_t;
 
 ///
@@ -1659,14 +1654,11 @@ typedef enum {
   DOM_NODE_TYPE_ATTRIBUTE,
   DOM_NODE_TYPE_TEXT,
   DOM_NODE_TYPE_CDATA_SECTION,
-  DOM_NODE_TYPE_ENTITY,
   DOM_NODE_TYPE_PROCESSING_INSTRUCTIONS,
   DOM_NODE_TYPE_COMMENT,
   DOM_NODE_TYPE_DOCUMENT,
   DOM_NODE_TYPE_DOCUMENT_TYPE,
   DOM_NODE_TYPE_DOCUMENT_FRAGMENT,
-  DOM_NODE_TYPE_NOTATION,
-  DOM_NODE_TYPE_XPATH_NAMESPACE,
 } cef_dom_node_type_t;
 
 ///

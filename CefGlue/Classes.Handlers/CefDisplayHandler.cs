@@ -84,9 +84,8 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Called when the browser receives a status message. |text| contains the text
-        /// that will be displayed in the status message and |type| indicates the
-        /// status message type.
+        /// Called when the browser receives a status message. |value| contains the
+        /// text that will be displayed in the status message.
         /// </summary>
         protected virtual void OnStatusMessage(CefBrowser browser, string value)
         {

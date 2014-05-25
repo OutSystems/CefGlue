@@ -94,7 +94,6 @@
             {
                 var host = _browser.GetHost();
                 host.CloseBrowser();
-                host.ParentWindowWillClose();
                 host.Dispose();
                 _browser.Dispose();
                 _browser = null;

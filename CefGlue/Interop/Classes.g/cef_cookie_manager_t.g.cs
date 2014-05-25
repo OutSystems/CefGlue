@@ -87,7 +87,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int flush_store_delegate(cef_cookie_manager_t* self, cef_completion_handler_t* handler);
+        private delegate int flush_store_delegate(cef_cookie_manager_t* self, cef_completion_callback_t* callback);
         
         // AddRef
         private static IntPtr _p0;
@@ -246,7 +246,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p9;
         private static flush_store_delegate _d9;
         
-        public static int flush_store(cef_cookie_manager_t* self, cef_completion_handler_t* handler)
+        public static int flush_store(cef_cookie_manager_t* self, cef_completion_callback_t* callback)
         {
             flush_store_delegate d;
             var p = self->_flush_store;
@@ -256,7 +256,7 @@ namespace Xilium.CefGlue.Interop
                 d = (flush_store_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(flush_store_delegate));
                 if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
             }
-            return d(self, handler);
+            return d(self, callback);
         }
         
     }

@@ -28,6 +28,5 @@ namespace Xilium.CefGlue
         PopState = 0x2000,
         Progress = 0x4000,
         XmlHttpRequestProgress = 0x8000,
-        BeforeLoad = 0x10000,
     }
 }

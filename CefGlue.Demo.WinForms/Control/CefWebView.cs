@@ -24,7 +24,7 @@
             windowInfo.Name = url;
             if (transparent)
             {
-                windowInfo.SetTransparentPainting(true);
+                windowInfo.TransparentPaintingEnabled = true;
                 windowInfo.Width = 500;
                 windowInfo.Height = 500;
                 //windowInfo.Style = WindowStyle.WS_POPUP | WindowStyle.WS_SIZEFRAME | WindowStyle.WS_VISIBLE;

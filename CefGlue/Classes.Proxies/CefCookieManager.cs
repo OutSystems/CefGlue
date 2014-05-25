@@ -154,12 +154,12 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Flush the backing store (if any) to disk and execute the specified
-        /// |handler| on the IO thread when done. Returns false if cookies cannot be
+        /// |callback| on the IO thread when done. Returns false if cookies cannot be
         /// accessed.
         /// </summary>
-        public bool FlushStore(CefCompletionHandler handler)
+        public bool FlushStore(CefCompletionCallback callback)
         {
-            var n_handler = handler != null ? handler.ToNative() : null;
+            var n_handler = callback != null ? callback.ToNative() : null;
 
             return cef_cookie_manager_t.flush_store(_self, n_handler) != 0;
         }

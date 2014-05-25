@@ -31,5 +31,10 @@
         {
             return new MainViewImpl(this, menuItems);
         }
+
+        protected override void PlatformMessageBox(string message)
+        {
+            MessageBox.Show(message, "CefGlue Demo Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 }

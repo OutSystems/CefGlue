@@ -16,13 +16,10 @@ namespace Xilium.CefGlue
        Attribute,
        Text,
        CDataSection,
-       Entity,
        ProcessingInstruction,
        Comment,
        Document,
        DocumentType,
        DocumentFragment,
-       Notation,
-       XPathNamespace,
     }
 }

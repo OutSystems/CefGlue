@@ -29,10 +29,10 @@ namespace Xilium.CefGlue.Interop
         // |parent_window| to be used for identifying monitor info
         // (MonitorFromWindow). If |parent_window| is not provided the main screen
         // monitor will be used.
-        public int window_rendering_disabled;
+        public int windowless_rendering_enabled;
 
         // Set to true to enable transparent painting.
-        public int transparent_painting;
+        public int transparent_painting_enabled;
 
         // Handle for the new browser window.
         public IntPtr window;
@@ -66,8 +66,8 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_window_info_t_linux
     {
         public IntPtr parent_widget;
-        public int window_rendering_disabled;
-        public int transparent_painting;
+        public int windowless_rendering_enabled;
+        public int transparent_painting_enabled;
         public IntPtr widget;
 
         #region Alloc & Free
@@ -107,8 +107,8 @@ namespace Xilium.CefGlue.Interop
         // NSView pointer for the parent view.
         public IntPtr parent_view;
 
-        public int window_rendering_disabled;
-        public int transparent_painting;
+        public int windowless_rendering_enabled;
+        public int transparent_painting_enabled;
 
         // NSView pointer for the new browser view.
         public IntPtr view;

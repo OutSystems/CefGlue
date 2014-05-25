@@ -132,17 +132,6 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Call this method before destroying a contained browser window. This method
-        /// performs any internal cleanup that may be needed before the browser window
-        /// is destroyed. See CefLifeSpanHandler::DoClose() documentation for
-        /// additional usage information.
-        /// </summary>
-        public void ParentWindowWillClose()
-        {
-            cef_browser_host_t.parent_window_will_close(_self);
-        }
-
-        /// <summary>
         /// Request that the browser close. The JavaScript 'onbeforeunload' event will
         /// be fired. If |force_close| is false the event handler, if any, will be
         /// allowed to prompt the user and the user can optionally cancel the close.
@@ -478,6 +467,87 @@ namespace Xilium.CefGlue
         public void HandleKeyEventAfterTextInputClient(IntPtr keyEvent)
         {
             cef_browser_host_t.handle_key_event_after_text_input_client(_self, keyEvent);
+        }
+
+        /// <summary>
+        /// Call this method when the user drags the mouse into the web view (before
+        /// calling DragTargetDragOver/DragTargetLeave/DragTargetDrop).
+        /// |drag_data| should not contain file contents as this type of data is not
+        /// allowed to be dragged into the web view. File contents can be removed using
+        /// CefDragData::ResetFileContents (for example, if |drag_data| comes from
+        /// CefRenderHandler::StartDragging).
+        /// This method is only used when window rendering is disabled.
+        /// </summary>
+        public void DragTargetDragEnter(CefDragData dragData, CefMouseEvent mouseEvent, CefDragOperationsMask allowedOps)
+        {
+            var n_mouseEvent = mouseEvent.ToNative();
+            cef_browser_host_t.drag_target_drag_enter(_self,
+                dragData.ToNative(),
+                &n_mouseEvent,
+                allowedOps);
+        }
+
+        /// <summary>
+        /// Call this method each time the mouse is moved across the web view during
+        /// a drag operation (after calling DragTargetDragEnter and before calling
+        /// DragTargetDragLeave/DragTargetDrop).
+        /// This method is only used when window rendering is disabled.
+        /// </summary>
+        public void DragTargetDragOver(CefMouseEvent mouseEvent, CefDragOperationsMask allowedOps)
+        {
+            var n_mouseEvent = mouseEvent.ToNative();
+            cef_browser_host_t.drag_target_drag_over(_self, &n_mouseEvent, allowedOps);
+        }
+
+        /// <summary>
+        /// Call this method when the user drags the mouse out of the web view (after
+        /// calling DragTargetDragEnter).
+        /// This method is only used when window rendering is disabled.
+        /// </summary>
+        public void DragTargetDragLeave()
+        {
+            cef_browser_host_t.drag_target_drag_leave(_self);
+        }
+
+        /// <summary>
+        /// Call this method when the user completes the drag operation by dropping
+        /// the object onto the web view (after calling DragTargetDragEnter).
+        /// The object being dropped is |drag_data|, given as an argument to
+        /// the previous DragTargetDragEnter call.
+        /// This method is only used when window rendering is disabled.
+        /// </summary>
+        public void DragTargetDrop(CefMouseEvent mouseEvent)
+        {
+            var n_mouseEvent = mouseEvent.ToNative();
+            cef_browser_host_t.drag_target_drop(_self, &n_mouseEvent);
+        }
+
+        /// <summary>
+        /// Call this method when the drag operation started by a
+        /// CefRenderHandler::StartDragging call has ended either in a drop or
+        /// by being cancelled. |x| and |y| are mouse coordinates relative to the
+        /// upper-left corner of the view. If the web view is both the drag source
+        /// and the drag target then all DragTarget* methods should be called before
+        /// DragSource* mthods.
+        /// This method is only used when window rendering is disabled.
+        /// </summary>
+        public void DragSourceEndedAt(int x, int y, CefDragOperationsMask op)
+        {
+            cef_browser_host_t.drag_source_ended_at(_self, x, y, op);
+        }
+
+        /// <summary>
+        /// Call this method when the drag operation started by a
+        /// CefRenderHandler::StartDragging call has completed. This method may be
+        /// called immediately without first calling DragSourceEndedAt to cancel a
+        /// drag operation. If the web view is both the drag source and the drag
+        /// target then all DragTarget* methods should be called before DragSource*
+        /// mthods.
+        /// This method is only used when window rendering is disabled.
+        /// </summary>
+        public void DragSourceSystemDragEnded()
+        {
+            cef_browser_host_t.drag_source_system_drag_ended(_self);
         }
     }
 }

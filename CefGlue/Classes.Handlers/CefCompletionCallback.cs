@@ -9,9 +9,9 @@ namespace Xilium.CefGlue
     /// <summary>
     /// Generic callback interface used for asynchronous completion.
     /// </summary>
-    public abstract unsafe partial class CefCompletionHandler
+    public abstract unsafe partial class CefCompletionCallback
     {
-        private void on_complete(cef_completion_handler_t* self)
+        private void on_complete(cef_completion_callback_t* self)
         {
             CheckSelf(self);
 

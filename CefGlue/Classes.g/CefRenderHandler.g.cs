@@ -30,7 +30,9 @@ namespace Xilium.CefGlue
         private cef_render_handler_t.on_popup_size_delegate _ds8;
         private cef_render_handler_t.on_paint_delegate _ds9;
         private cef_render_handler_t.on_cursor_change_delegate _dsa;
-        private cef_render_handler_t.on_scroll_offset_changed_delegate _dsb;
+        private cef_render_handler_t.start_dragging_delegate _dsb;
+        private cef_render_handler_t.update_drag_cursor_delegate _dsc;
+        private cef_render_handler_t.on_scroll_offset_changed_delegate _dsd;
         
         protected CefRenderHandler()
         {
@@ -58,8 +60,12 @@ namespace Xilium.CefGlue
             _self->_on_paint = Marshal.GetFunctionPointerForDelegate(_ds9);
             _dsa = new cef_render_handler_t.on_cursor_change_delegate(on_cursor_change);
             _self->_on_cursor_change = Marshal.GetFunctionPointerForDelegate(_dsa);
-            _dsb = new cef_render_handler_t.on_scroll_offset_changed_delegate(on_scroll_offset_changed);
-            _self->_on_scroll_offset_changed = Marshal.GetFunctionPointerForDelegate(_dsb);
+            _dsb = new cef_render_handler_t.start_dragging_delegate(start_dragging);
+            _self->_start_dragging = Marshal.GetFunctionPointerForDelegate(_dsb);
+            _dsc = new cef_render_handler_t.update_drag_cursor_delegate(update_drag_cursor);
+            _self->_update_drag_cursor = Marshal.GetFunctionPointerForDelegate(_dsc);
+            _dsd = new cef_render_handler_t.on_scroll_offset_changed_delegate(on_scroll_offset_changed);
+            _self->_on_scroll_offset_changed = Marshal.GetFunctionPointerForDelegate(_dsd);
         }
         
         ~CefRenderHandler()

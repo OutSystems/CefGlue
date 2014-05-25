@@ -44,7 +44,6 @@
                 var browser = _core.CefBrowser;
                 var host = browser.GetHost();
                 host.CloseBrowser();
-                host.ParentWindowWillClose();
                 host.Dispose();
                 browser.Dispose();
                 browser = null;

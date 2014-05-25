@@ -193,7 +193,7 @@ namespace Xilium.CefGlue.WPF
                             IntPtr hParentWnd = new WindowInteropHelper(parentWnd).Handle;
 
                             var windowInfo = CefWindowInfo.Create();
-                            windowInfo.SetAsOffScreen(hParentWnd);
+                            windowInfo.SetAsWindowless(hParentWnd, false);
 
                             var settings = new CefBrowserSettings();
                             _cefClient = new WpfCefClient(this);

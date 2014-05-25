@@ -43,11 +43,23 @@
 
         public int Run(string[] args)
         {
+            try
+            {
+                return RunInternal(args);
+            }
+            catch (Exception ex)
+            {
+                PlatformMessageBox(ex.ToString());
+                return 1;
+            }
+        }
+
+        private int RunInternal(string[] args)
+        {
             CefRuntime.Load();
 
             var settings = new CefSettings();
             settings.MultiThreadedMessageLoop = CefRuntime.Platform == CefRuntimePlatform.Windows;
-            settings.ReleaseDCheckEnabled = true;
             settings.LogSeverity = CefLogSeverity.Verbose;
             settings.LogFile = "cef.log";
             settings.ResourcesDirPath = System.IO.Path.GetDirectoryName(new Uri(System.Reflection.Assembly.GetEntryAssembly().CodeBase).LocalPath);
@@ -130,6 +142,8 @@
         protected abstract void PlatformQuitMessageLoop();
 
         protected abstract IMainView CreateMainView(MenuItem[] menu);
+
+        protected abstract void PlatformMessageBox(string message);
 
         #region Commands
 

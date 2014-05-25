@@ -48,6 +48,13 @@
         public bool MultiThreadedMessageLoop { get; set; }
 
         /// <summary>
+        /// Set to true (1) to enable windowless (off-screen) rendering support. Do not
+        /// enable this value if the application does not use windowless rendering as
+        /// it may reduce rendering performance on some systems.
+        /// </summary>
+        public bool WindowlessRenderingEnabled { get; set; }
+
+        /// <summary>
         /// Set to <c>true</c> to disable configuration of browser process features using
         /// standard CEF and Chromium command-line arguments. Configuration can still
         /// be specified using CEF data structures or via the
@@ -112,12 +119,6 @@
         /// "disable".
         /// </summary>
         public CefLogSeverity LogSeverity { get; set; }
-
-        /// <summary>
-        /// Enable DCHECK in release mode to ease debugging.  Also configurable using the
-        /// "enable-release-dcheck" command-line switch.
-        /// </summary>
-        public bool ReleaseDCheckEnabled { get; set; }
 
         /// <summary>
         /// Custom flags that will be used when initializing the V8 JavaScript engine.
@@ -217,6 +218,7 @@
             ptr->no_sandbox = NoSandbox ? 1 : 0;
             cef_string_t.Copy(BrowserSubprocessPath, &ptr->browser_subprocess_path);
             ptr->multi_threaded_message_loop = MultiThreadedMessageLoop ? 1 : 0;
+            ptr->windowless_rendering_enabled = WindowlessRenderingEnabled ? 1 : 0;
             ptr->command_line_args_disabled = CommandLineArgsDisabled ? 1 : 0;
             cef_string_t.Copy(CachePath, &ptr->cache_path);
             ptr->persist_session_cookies = PersistSessionCookies ? 1 : 0;
@@ -225,7 +227,6 @@
             cef_string_t.Copy(Locale, &ptr->locale);
             cef_string_t.Copy(LogFile, &ptr->log_file);
             ptr->log_severity = LogSeverity;
-            ptr->release_dcheck_enabled = ReleaseDCheckEnabled ? 1 : 0;
             cef_string_t.Copy(JavaScriptFlags, &ptr->javascript_flags);
             cef_string_t.Copy(ResourcesDirPath, &ptr->resources_dir_path);
             cef_string_t.Copy(LocalesDirPath, &ptr->locales_dir_path);

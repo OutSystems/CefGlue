@@ -122,29 +122,24 @@
         public abstract bool Hidden { get; set; }
 
         /// <summary>
-        /// -- Windows --
-        /// If window rendering is disabled no browser window will be created. Set
-        /// |parent_window| to be used for identifying monitor info
-        /// (MonitorFromWindow). If |parent_window| is not provided the main screen
-        /// monitor will be used.
-        /// 
-        /// -- MacOSX --
-        /// If window rendering is disabled no browser window will be created. Set
-        /// |parent_view| to the window that will act as the parent for popup menus,
-        /// dialog boxes, etc.
-        /// 
-        /// -- Linux --
-        /// Unsupported
+        /// Set to true (1) to create the browser using windowless (off-screen)
+        /// rendering. No window will be created for the browser and all rendering will
+        /// occur via the CefRenderHandler interface. The |parent_window| value will be
+        /// used to identify monitor info and to act as the parent window for dialogs,
+        /// context menus, etc. If |parent_window| is not provided then the main screen
+        /// monitor will be used and some functionality that requires a parent window
+        /// may not function correctly. In order to create windowless browsers the
+        /// CefSettings.windowless_rendering_enabled value must be set to true.
         /// </summary>
-        public abstract bool WindowRenderingDisabled { get; set; }
+        public abstract bool WindowlessRenderingEnabled { get; set; }
 
         /// <summary>
-        /// Set to true to enable transparent painting.
-        /// If window rendering is disabled and |transparent_painting| is set to true
-        /// WebKit rendering will draw on a transparent background (RGBA=0x00000000).
-        /// When this value is false the background will be white and opaque.
+        /// Set to true (1) to enable transparent painting in combination with
+        /// windowless rendering. When this value is true a transparent background
+        /// color will be used (RGBA=0x00000000). When this value is false the
+        /// background will be white and opaque.
         /// </summary>
-        public abstract bool TransparentPainting { get; set; }
+        public abstract bool TransparentPaintingEnabled { get; set; }
 
         public void SetAsChild(IntPtr parentHandle, CefRectangle rect)
         {
@@ -184,15 +179,11 @@
             Name = name;
         }
 
-        public void SetTransparentPainting(bool transparentPainting)
+        public void SetAsWindowless(IntPtr parentHandle, bool transparent)
         {
-            TransparentPainting = transparentPainting;
-        }
-
-        public void SetAsOffScreen(IntPtr parentHandle)
-        {
-            WindowRenderingDisabled = true;
+            WindowlessRenderingEnabled = true;
             ParentHandle = parentHandle;
+            TransparentPaintingEnabled = transparent;
         }
     }
 }

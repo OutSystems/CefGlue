@@ -83,11 +83,11 @@ namespace Xilium.CefGlue.Interop
         
         // CefBeginTracing
         [DllImport(libcef.DllName, EntryPoint = "cef_begin_tracing", CallingConvention = libcef.CEF_CALL)]
-        public static extern int begin_tracing(cef_string_t* categories);
+        public static extern int begin_tracing(cef_string_t* categories, cef_completion_callback_t* callback);
         
-        // CefEndTracingAsync
-        [DllImport(libcef.DllName, EntryPoint = "cef_end_tracing_async", CallingConvention = libcef.CEF_CALL)]
-        public static extern int end_tracing_async(cef_string_t* tracing_file, cef_end_tracing_callback_t* callback);
+        // CefEndTracing
+        [DllImport(libcef.DllName, EntryPoint = "cef_end_tracing", CallingConvention = libcef.CEF_CALL)]
+        public static extern int end_tracing(cef_string_t* tracing_file, cef_end_tracing_callback_t* callback);
         
         // CefNowFromSystemTraceTime
         [DllImport(libcef.DllName, EntryPoint = "cef_now_from_system_trace_time", CallingConvention = libcef.CEF_CALL)]
