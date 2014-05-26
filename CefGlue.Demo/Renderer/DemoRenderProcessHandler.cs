@@ -4,30 +4,56 @@
     using System.Collections.Generic;
     using System.Text;
     using Xilium.CefGlue;
+    using Xilium.CefGlue.Wrapper;
 
     class DemoRenderProcessHandler : CefRenderProcessHandler
     {
+        internal static bool DumpProcessMessages { get; private set; }
+
+        public DemoRenderProcessHandler()
+        {
+            MessageRouter = new CefMessageRouterRendererSide(new CefMessageRouterConfig());
+        }
+
+        internal CefMessageRouterRendererSide MessageRouter { get; private set; }
+
+        protected override void OnContextCreated(CefBrowser browser, CefFrame frame, CefV8Context context)
+        {
+            MessageRouter.OnContextCreated(browser, frame, context);
+        }
+
+        protected override void OnContextReleased(CefBrowser browser, CefFrame frame, CefV8Context context)
+        {
+            MessageRouter.OnContextReleased(browser, frame, context);
+        }
+
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
         {
-            Console.WriteLine("Render::OnProcessMessageReceived: SourceProcess={0}", sourceProcess);
-            Console.WriteLine("Message Name={0} IsValid={1} IsReadOnly={2}", message.Name, message.IsValid, message.IsReadOnly);
-            var arguments = message.Arguments;
-            for (var i = 0; i < arguments.Count; i++)
+            if (DumpProcessMessages)
             {
-                var type = arguments.GetValueType(i);
-                object value;
-                switch (type)
+                Console.WriteLine("Render::OnProcessMessageReceived: SourceProcess={0}", sourceProcess);
+                Console.WriteLine("Message Name={0} IsValid={1} IsReadOnly={2}", message.Name, message.IsValid, message.IsReadOnly);
+                var arguments = message.Arguments;
+                for (var i = 0; i < arguments.Count; i++)
                 {
-                    case CefValueType.Null: value = null; break;
-                    case CefValueType.String: value = arguments.GetString(i); break;
-                    case CefValueType.Int: value = arguments.GetInt(i); break;
-                    case CefValueType.Double: value = arguments.GetDouble(i); break;
-                    case CefValueType.Bool: value = arguments.GetBool(i); break;
-                    default: value = null; break;
-                }
+                    var type = arguments.GetValueType(i);
+                    object value;
+                    switch (type)
+                    {
+                        case CefValueType.Null: value = null; break;
+                        case CefValueType.String: value = arguments.GetString(i); break;
+                        case CefValueType.Int: value = arguments.GetInt(i); break;
+                        case CefValueType.Double: value = arguments.GetDouble(i); break;
+                        case CefValueType.Bool: value = arguments.GetBool(i); break;
+                        default: value = null; break;
+                    }
 
-                Console.WriteLine("  [{0}] ({1}) = {2}", i, type, value);
+                    Console.WriteLine("  [{0}] ({1}) = {2}", i, type, value);
+                }
             }
+
+            var handled = MessageRouter.OnProcessMessageReceived(browser, sourceProcess, message);
+            if (handled) return true;
 
             if (message.Name == "myMessage2") return true;
 

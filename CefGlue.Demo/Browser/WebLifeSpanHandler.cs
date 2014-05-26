@@ -26,5 +26,10 @@
             // TODO: dispose core
             return false;
         }
+
+        protected override void OnBeforeClose(CefBrowser browser)
+        {
+            DemoApp.BrowserMessageRouter.OnBeforeClose(browser);
+        }
     }
 }

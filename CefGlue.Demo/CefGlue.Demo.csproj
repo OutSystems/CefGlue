@@ -57,6 +57,7 @@
     <Compile Include="Browser\WebDisplayHandler.cs" />
     <Compile Include="Browser\WebLifeSpanHandler.cs" />
     <Compile Include="Browser\WebBrowser.cs" />
+    <Compile Include="Browser\WebRequestHandler.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Renderer\DemoRenderProcessHandler.cs" />
     <Compile Include="SchemeHandler\DumpRequestResourceHandler.cs" />
