@@ -324,6 +324,12 @@
     <Compile Include="Interop\_Platform\RECT.cs" />
     <Compile Include="Structs\CefMouseEvent.cs" />
     <Compile Include="Structs\CefScreenInfo.cs" />
+    <Compile Include="Wrapper\MessageRouter\CefBrowserInfoMap.cs" />
+    <Compile Include="Wrapper\MessageRouter\CefMessageRouterBrowserSide.cs" />
+    <Compile Include="Wrapper\MessageRouter\CefMessageRouterConfig.cs" />
+    <Compile Include="Wrapper\MessageRouter\CefMessageRouterRendererSide.cs" />
+    <Compile Include="Wrapper\MessageRouter\CefMessageRouter.cs" />
+    <Compile Include="Wrapper\MessageRouter\Helpers.cs" />
     <None Include="..\Xilium.CefGlue.snk">
       <Link>Properties\Xilium.CefGlue.snk</Link>
     </None>
@@ -391,7 +397,9 @@
     <Compile Include="StringHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Wrapper\MessageRouter\ReadMe.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
