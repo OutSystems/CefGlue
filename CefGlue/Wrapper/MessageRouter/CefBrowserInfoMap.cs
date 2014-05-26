@@ -5,7 +5,7 @@
     using System.Text;
 
     // Maps an arbitrary TId to an arbitrary TObject on a per-browser basis.
-    public sealed class CefBrowserInfoMap<TKey, TValue>
+    internal sealed class CefBrowserInfoMap<TKey, TValue>
     {
         public delegate bool Visitor(int browserId, TKey key, TValue value, ref bool remove);
 

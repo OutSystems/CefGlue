@@ -241,7 +241,7 @@ namespace Xilium.CefGlue
 
             var result = OnProcessMessageReceived(m_browser, source_process, m_message);
 
-            m_browser.Dispose();
+            // m_browser.Dispose();
             m_message.Dispose();
 
             return result ? 1 : 0;
