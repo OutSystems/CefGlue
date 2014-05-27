@@ -58,12 +58,14 @@
             }
         }
 
+        protected bool MultiThreadedMessageLoop { get; private set; }
+
         private int RunInternal(string[] args)
         {
             CefRuntime.Load();
 
             var settings = new CefSettings();
-            settings.MultiThreadedMessageLoop = CefRuntime.Platform == CefRuntimePlatform.Windows;
+            settings.MultiThreadedMessageLoop = MultiThreadedMessageLoop = CefRuntime.Platform == CefRuntimePlatform.Windows;
             settings.SingleProcess = false;
             settings.LogSeverity = CefLogSeverity.Verbose;
             settings.LogFile = "cef.log";

@@ -19,6 +19,11 @@
 
         protected override void PlatformRunMessageLoop()
         {
+            if (!MultiThreadedMessageLoop)
+            {
+                Application.Idle += (s, e) => CefRuntime.DoMessageLoopWork();
+            }
+
             Application.Run();
         }
 
