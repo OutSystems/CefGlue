@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -26,6 +27,10 @@ namespace Xilium.CefGlue.WPF
         private CefBrowserHost _browserHost;
         private WpfCefClient _cefClient;
 
+        private Popup _popup;
+        private Image _popupImage;
+        private WriteableBitmap _popupImageBitmap;
+
         Dispatcher _mainUiDispatcher;
 
         private readonly ILogger _logger;
@@ -44,6 +49,8 @@ namespace Xilium.CefGlue.WPF
             _logger = logger;
 
             StartUrl = "about:blank";
+
+            _popup = CreatePopup();
 
             KeyboardNavigation.SetAcceptsReturn(this, true);
             _mainUiDispatcher = Dispatcher.CurrentDispatcher;
@@ -547,6 +554,33 @@ namespace Xilium.CefGlue.WPF
 
                 arg.Handled = false;
             };
+
+            browser._popup.MouseMove += (sender, arg) =>
+            {
+                try
+                {
+                    if (_browserHost != null)
+                    {
+                        Point cursorPos = arg.GetPosition(this);
+
+                        CefMouseEvent mouseEvent = new CefMouseEvent()
+                        {
+                            X = (int)cursorPos.X,
+                            Y = (int)cursorPos.Y
+                        };
+
+                        mouseEvent.Modifiers = GetMouseModifiers();
+
+                        _browserHost.SendMouseMoveEvent(mouseEvent, false);
+
+                        //_logger.Debug(string.Format("Popup_MouseMove: ({0},{1})", cursorPos.X, cursorPos.Y));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in Popup.MouseMove()", ex);
+                }
+            };
         }
 
         #region Handlers
@@ -681,6 +715,50 @@ namespace Xilium.CefGlue.WPF
             }));
         }
 
+        internal void HandelPopupPaint(int width, int height, CefRectangle[] dirtyRects, IntPtr sourceBuffer)
+        {
+            if (width == 0 || height == 0)
+            {
+                return;
+            }
+
+            _mainUiDispatcher.Invoke(
+                DispatcherPriority.Render,
+                new Action(
+                    () =>
+                    {
+                        int stride = width * 4;
+                        int sourceBufferSize = stride * height;
+
+                        _logger.Debug("RenderPopup() Bitmap H{0}xW{1}, Browser H{2}xW{3}", _popupImageBitmap.Height, _popupImageBitmap.Width, width, height);
+
+
+                        foreach (CefRectangle dirtyRect in dirtyRects)
+                        {
+                            _logger.Debug(
+                                string.Format(
+                                    "Dirty rect [{0},{1},{2},{3}]",
+                                    dirtyRect.X,
+                                    dirtyRect.Y,
+                                    dirtyRect.Width,
+                                    dirtyRect.Height));
+
+                            if (dirtyRect.Width == 0 || dirtyRect.Height == 0)
+                            {
+                                continue;
+                            }
+
+                            int adjustedWidth = dirtyRect.Width;
+
+                            int adjustedHeight = dirtyRect.Height;
+
+                            Int32Rect sourceRect = new Int32Rect(dirtyRect.X, dirtyRect.Y, adjustedWidth, adjustedHeight);
+
+                            _popupImageBitmap.WritePixels(sourceRect, sourceBuffer, sourceBufferSize, stride, dirtyRect.X, dirtyRect.Y);
+                        }
+                    }));
+        }
+
         private void DoRenderBrowser(WriteableBitmap bitmap, int browserWidth, int browserHeight, CefRectangle[] dirtyRects, IntPtr sourceBuffer)
         {
             int stride = browserWidth * 4;
@@ -733,6 +811,40 @@ namespace Xilium.CefGlue.WPF
                 // 			Int32Rect sourceRect = new Int32Rect(0, 0, adjustedWidth, adjustedHeight);
                 // 			bitmap.WritePixels(sourceRect, sourceBuffer, sourceBufferSize, stride, 0, 0);
             }
+        }
+
+        internal void OnPopupShow(bool show)
+        {
+            if (_popup == null)
+            {
+                return;
+            }
+
+            _mainUiDispatcher.Invoke(new Action(() => _popup.IsOpen = show));
+        }
+
+        internal void OnPopupSize(CefRectangle rect)
+        {
+            _mainUiDispatcher.Invoke(
+                new Action(
+                    () =>
+                    {
+                        _popupImageBitmap = null;
+                        _popupImageBitmap = new WriteableBitmap(
+                            rect.Width,
+                            rect.Height,
+                            96,
+                            96,
+                            PixelFormats.Bgr32,
+                            null);
+
+                        _popupImage.Source = this._popupImageBitmap;
+
+                        _popup.Width = rect.Width;
+                        _popup.Height = rect.Height;
+                        _popup.HorizontalOffset = rect.X;
+                        _popup.VerticalOffset = rect.Y;
+                    }));
         }
 
         #endregion
@@ -788,6 +900,32 @@ namespace Xilium.CefGlue.WPF
                 modifiers |= CefEventFlags.ShiftDown;
 
             return modifiers;
+        }
+
+        private Popup CreatePopup()
+        {
+            var popup = new Popup
+            {
+                Child = this._popupImage = CreatePopupImage(),
+                PlacementTarget = this,
+                Placement = PlacementMode.Relative
+            };
+
+            return popup;
+        }
+
+        private Image CreatePopupImage()
+        {
+            var temp = new Image();
+
+            RenderOptions.SetBitmapScalingMode(temp, BitmapScalingMode.NearestNeighbor);
+
+            temp.Stretch = Stretch.None;
+            temp.HorizontalAlignment = HorizontalAlignment.Left;
+            temp.VerticalAlignment = VerticalAlignment.Top;
+            temp.Source = _popupImageBitmap;
+
+            return temp;
         }
 
         #endregion
