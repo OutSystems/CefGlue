@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -13,6 +14,11 @@ namespace Xilium.CefGlue.WPF
 {
     public class WpfCefBrowser : ContentControl, IDisposable
     {
+        private static readonly Key[] HandledKeys =
+        {
+            Key.Tab, Key.Home, Key.End, Key.Left, Key.Right, Key.Up, Key.Down
+        };
+
         private bool _disposed;
         private bool _created;
 
@@ -253,51 +259,33 @@ namespace Xilium.CefGlue.WPF
 
         private void AttachEventHandlers(WpfCefBrowser browser)
         {
-            browser.GotFocus += (sender, arg) =>
+            browser.GotKeyboardFocus += (sender, arg) =>
             {
                 try
                 {
                     if (_browserHost != null)
                     {
-                        // this.browserHost.SetFocus(true);
                         _browserHost.SendFocusEvent(true);
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.ErrorException("WpfCefBrowser: Caught exception in GotFocus()", ex);
                 }
             };
 
-            browser.LostFocus += (sender, arg) =>
+            browser.LostKeyboardFocus += (sender, arg) =>
             {
                 try
                 {
                     if (_browserHost != null)
                     {
-                        // this.browserHost.SetFocus(false);
                         _browserHost.SendFocusEvent(false);
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.ErrorException("WpfCefBrowser: Caught exception in LostFocus()", ex);
-                }
-            };
-
-            browser.LostMouseCapture += (sender, arg) =>
-            {
-                try
-                {
-                    if (_browserHost != null)
-                    {
-                        _browserHost.SendCaptureLostEvent();
-                        //_logger.Debug("Browser_LostMouseCapture");
-                    }
-                }
-                catch(Exception ex)
-                {
-                    _logger.ErrorException("WpfCefBrowser: Caught exception in LostMouseCapture()", ex);
                 }
             };
 
@@ -319,7 +307,7 @@ namespace Xilium.CefGlue.WPF
                         //_logger.Debug("Browser_MouseLeave");
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.ErrorException("WpfCefBrowser: Caught exception in MouseLeave()", ex);
                 }
@@ -346,12 +334,10 @@ namespace Xilium.CefGlue.WPF
                         //_logger.Debug(string.Format("Browser_MouseMove: ({0},{1})", cursorPos.X, cursorPos.Y));
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.ErrorException("WpfCefBrowser: Caught exception in MouseMove()", ex);
                 }
-
-                arg.Handled = true;
             };
 
             browser.MouseDown += (sender, arg) =>
@@ -360,8 +346,7 @@ namespace Xilium.CefGlue.WPF
                 {
                     if (_browserHost != null)
                     {
-                        CaptureMouse();
-                        Keyboard.Focus(this);
+                        Focus();
 
                         Point cursorPos = arg.GetPosition(this);
 
@@ -383,12 +368,10 @@ namespace Xilium.CefGlue.WPF
                         //_logger.Debug(string.Format("Browser_MouseDown: ({0},{1})", cursorPos.X, cursorPos.Y));
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.ErrorException("WpfCefBrowser: Caught exception in MouseDown()", ex);
                 }
-
-                arg.Handled = true;
             };
 
             browser.MouseUp += (sender, arg) =>
@@ -415,16 +398,12 @@ namespace Xilium.CefGlue.WPF
                             _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Right, true, 1);
 
                         //_logger.Debug(string.Format("Browser_MouseUp: ({0},{1})", cursorPos.X, cursorPos.Y));
-
-                        ReleaseMouseCapture();
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.ErrorException("WpfCefBrowser: Caught exception in MouseUp()", ex);
                 }
-
-                arg.Handled = true;
             };
 
             browser.MouseDoubleClick += (sender, arg) =>
@@ -433,9 +412,6 @@ namespace Xilium.CefGlue.WPF
                 {
                     if (_browserHost != null)
                     {
-                        CaptureMouse();
-                        Keyboard.Focus(this);
-
                         Point cursorPos = arg.GetPosition(this);
 
                         CefMouseEvent mouseEvent = new CefMouseEvent()
@@ -456,12 +432,10 @@ namespace Xilium.CefGlue.WPF
                         //_logger.Debug(string.Format("Browser_MouseDoubleClick: ({0},{1})", cursorPos.X, cursorPos.Y));
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.ErrorException("WpfCefBrowser: Caught exception in MouseDoubleClick()", ex);
                 }
-
-                arg.Handled = true;
             };
 
             browser.MouseWheel += (sender, arg) =>
@@ -481,12 +455,10 @@ namespace Xilium.CefGlue.WPF
                         _browserHost.SendMouseWheelEvent(mouseEvent, 0, arg.Delta);
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.ErrorException("WpfCefBrowser: Caught exception in MouseWheel()", ex);
                 }
-
-                arg.Handled = true;
             };
 
             // TODO: require more intelligent processing
@@ -535,12 +507,12 @@ namespace Xilium.CefGlue.WPF
                         _browserHost.SendKeyEvent(keyEvent);
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.ErrorException("WpfCefBrowser: Caught exception in PreviewKeyDown()", ex);
                 }
 
-                arg.Handled = false;
+                arg.Handled = HandledKeys.Contains(arg.Key);
             };
 
             // TODO: require more intelligent processing
@@ -560,18 +532,17 @@ namespace Xilium.CefGlue.WPF
                         };
 
                         keyEvent.Modifiers = GetKeyboardModifiers();
-                       
+
                         _browserHost.SendKeyEvent(keyEvent);
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.ErrorException("WpfCefBrowser: Caught exception in PreviewKeyUp()", ex);
                 }
 
-                arg.Handled = false;
+                arg.Handled = true;
             };
-
             browser._popup.MouseMove += (sender, arg) =>
             {
                 try
