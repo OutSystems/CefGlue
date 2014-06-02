@@ -79,7 +79,7 @@ namespace Xilium.CefGlue.WPF
             }
             else if (type == CefPaintElementType.Popup)
             {
-                _owner.HandelPopupPaint(width, height, dirtyRects, buffer);
+                _owner.HandlePopupPaint(width, height, dirtyRects, buffer);
             }
         }
 

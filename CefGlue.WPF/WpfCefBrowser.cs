@@ -31,6 +31,9 @@ namespace Xilium.CefGlue.WPF
         private Image _popupImage;
         private WriteableBitmap _popupImageBitmap;
 
+        private ToolTip _tooltip;
+        private DispatcherTimer _tooltipTimer;
+
         Dispatcher _mainUiDispatcher;
 
         private readonly ILogger _logger;
@@ -51,6 +54,14 @@ namespace Xilium.CefGlue.WPF
             StartUrl = "about:blank";
 
             _popup = CreatePopup();
+
+            _tooltip = new ToolTip();
+            _tooltip.StaysOpen = true;
+            _tooltip.Visibility = Visibility.Collapsed;
+            _tooltip.Closed += TooltipOnClosed;
+
+            _tooltipTimer = new DispatcherTimer();
+            _tooltipTimer.Interval = TimeSpan.FromSeconds(0.5);
 
             KeyboardNavigation.SetAcceptsReturn(this, true);
             _mainUiDispatcher = Dispatcher.CurrentDispatcher;
@@ -73,6 +84,11 @@ namespace Xilium.CefGlue.WPF
         {
             if (disposing)
             {
+                if (_tooltipTimer != null)
+                {
+                    _tooltipTimer.Stop();
+                }
+
                 if (_browserPageImage != null)
                 {
                     _browserPageImage.Source = null;
@@ -715,7 +731,7 @@ namespace Xilium.CefGlue.WPF
             }));
         }
 
-        internal void HandelPopupPaint(int width, int height, CefRectangle[] dirtyRects, IntPtr sourceBuffer)
+        internal void HandlePopupPaint(int width, int height, CefRectangle[] dirtyRects, IntPtr sourceBuffer)
         {
             if (width == 0 || height == 0)
             {
@@ -847,6 +863,22 @@ namespace Xilium.CefGlue.WPF
                     }));
         }
 
+        internal bool OnTooltip(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                _tooltipTimer.Stop();
+                UpdateTooltip(null);
+            }
+            else
+            {
+                _tooltipTimer.Tick += (sender, args) => UpdateTooltip(text);
+                _tooltipTimer.Start();
+            }
+
+            return true;
+        }
+
         #endregion
 
         #region Utils
@@ -926,6 +958,35 @@ namespace Xilium.CefGlue.WPF
             temp.Source = _popupImageBitmap;
 
             return temp;
+        }
+
+        private void UpdateTooltip(string text)
+        {
+            _mainUiDispatcher.Invoke(
+                DispatcherPriority.Render,
+                new Action(
+                    () =>
+                    {
+                        if (string.IsNullOrEmpty(text))
+                        {
+                            _tooltip.IsOpen = false;
+                        }
+                        else
+                        {
+                            _tooltip.Placement = PlacementMode.Mouse;
+                            _tooltip.Content = text;
+                            _tooltip.IsOpen = true;
+                            _tooltip.Visibility = Visibility.Visible;
+                        }
+                    }));
+
+            _tooltipTimer.Stop();
+        }
+
+        private void TooltipOnClosed(object sender, RoutedEventArgs routedEventArgs)
+        {
+            _tooltip.Visibility = Visibility.Collapsed;
+            _tooltip.Placement = PlacementMode.Absolute;
         }
 
         #endregion

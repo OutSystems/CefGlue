@@ -27,7 +27,7 @@ namespace Xilium.CefGlue.WPF
 
         protected override bool OnTooltip(CefBrowser browser, string text)
         {
-            return false;
+            return _owner.OnTooltip(text);
         }
 
         protected override void OnStatusMessage(CefBrowser browser, string value)
