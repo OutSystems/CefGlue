@@ -183,7 +183,8 @@ namespace Xilium.CefGlue.WPF
 
         public void ExecuteJavaScript(string code, string url, int line)
         {
-            this._browser.GetMainFrame().ExecuteJavaScript(code, url, line);
+            if (_browser != null)
+                this._browser.GetMainFrame().ExecuteJavaScript(code, url, line);
         }
 
 
