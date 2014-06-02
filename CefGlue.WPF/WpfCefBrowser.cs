@@ -1004,6 +1004,15 @@ namespace Xilium.CefGlue.WPF
                 StartUrl = url;
         }
 
+        public void LoadString(string content, string url)
+        {
+            // Remove leading whitespace from the URL
+            url = url.TrimStart();
+
+            if (_browser != null)
+                _browser.GetMainFrame().LoadString(content, url);
+        }
+
         public bool CanGoBack()
         {
             if (_browser != null)
