@@ -147,12 +147,20 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Set focus for the browser window. If |enable| is true focus will be set to
-        /// the window. Otherwise, focus will be removed.
+        /// Set whether the browser is focused.
         /// </summary>
-        public void SetFocus(bool enable)
+        public void SetFocus(bool focus)
         {
-            cef_browser_host_t.set_focus(_self, enable ? 1 : 0);
+            cef_browser_host_t.set_focus(_self, focus ? 1 : 0);
+        }
+
+        /// <summary>
+        /// Set whether the window containing the browser is visible
+        /// (minimized/unminimized, app hidden/unhidden, etc). Only used on Mac OS X.
+        /// </summary>
+        public void SetWindowVisibility(bool visible)
+        {
+            cef_browser_host_t.set_window_visibility(_self, visible ? 1 : 0);
         }
 
         /// <summary>
