@@ -378,7 +378,10 @@
 
                 // If the query isn't handled nothing should be keeping a reference to
                 // the callback.
-                Debug.Assert(handled && handler != null); // DCHECK(handled || callback->GetRefCt() == 1);
+                // DCHECK(handled || callback->GetRefCt() == 1);
+                // Debug.Assert(handled && handler != null);
+                // We don't need this assertion, in GC environment.
+                // There is client responsibility to do not reference callback, if request is not handled.
 
                 if (handled)
                 {

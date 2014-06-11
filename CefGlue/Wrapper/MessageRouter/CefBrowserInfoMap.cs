@@ -92,6 +92,7 @@
                     if (!hasRemoveKey)
                     {
                         removeKey = kv.Key;
+                        hasRemoveKey = true;
                     }
                     else
                     {
