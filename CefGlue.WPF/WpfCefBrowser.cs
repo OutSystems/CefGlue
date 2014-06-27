@@ -140,6 +140,7 @@ namespace Xilium.CefGlue.WPF
         }
 
         public string StartUrl { get; set; }
+        public bool AllowsTransparency { get; set; }
 
         public override void OnApplyTemplate()
         {
@@ -193,7 +194,7 @@ namespace Xilium.CefGlue.WPF
                             IntPtr hParentWnd = new WindowInteropHelper(parentWnd).Handle;
 
                             var windowInfo = CefWindowInfo.Create();
-                            windowInfo.SetAsWindowless(hParentWnd, false);
+                            windowInfo.SetAsWindowless(hParentWnd, AllowsTransparency);
 
                             var settings = new CefBrowserSettings();
                             _cefClient = new WpfCefClient(this);
@@ -662,7 +663,7 @@ namespace Xilium.CefGlue.WPF
                 {
                     if (_browserSizeChanged)
                     {
-                        _browserPageBitmap = new WriteableBitmap((int)_browserWidth, (int)_browserHeight, 96, 96, PixelFormats.Bgr32, null);
+                        _browserPageBitmap = new WriteableBitmap((int)_browserWidth, (int)_browserHeight, 96, 96, AllowsTransparency ? PixelFormats.Bgra32 : PixelFormats.Bgr32, null);
                         _browserPageImage.Source = _browserPageBitmap;
 
                         _browserSizeChanged = false;
