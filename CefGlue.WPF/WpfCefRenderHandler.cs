@@ -57,10 +57,12 @@ namespace Xilium.CefGlue.WPF
 
         protected override void OnPopupShow(CefBrowser browser, bool show)
         {
+            _owner.OnPopupShow(show);
         }
 
         protected override void OnPopupSize(CefBrowser browser, CefRectangle rect)
         {
+            _owner.OnPopupSize(rect);
         }
 
         protected override void OnPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr buffer, int width, int height)
@@ -75,8 +77,10 @@ namespace Xilium.CefGlue.WPF
             {
                 _owner.HandleViewPaint(browser, type, dirtyRects, buffer, width, height);
             }
-            // 			else if (type == CefPaintElementType.Popup)
-            // 				this.browser.HandleWidgetPaint(browser, type, dirtyRects, buffer, width, height);
+            else if (type == CefPaintElementType.Popup)
+            {
+                _owner.HandlePopupPaint(width, height, dirtyRects, buffer);
+            }
         }
 
         protected override void OnCursorChange(CefBrowser browser, IntPtr cursorHandle)
