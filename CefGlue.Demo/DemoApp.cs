@@ -201,8 +201,7 @@
             var host = MainView.CurrentBrowser.GetHost();
             var wi = CefWindowInfo.Create();
             wi.SetAsPopup(IntPtr.Zero, "DevTools");
-            host.ShowDevTools(wi, new DevToolsWebClient(), new CefBrowserSettings());
-            // Process.Start(devToolsUrl);
+            host.ShowDevTools(wi, new DevToolsWebClient(), new CefBrowserSettings(), new CefPoint(0, 0));
         }
 
         private class DevToolsWebClient : CefClient

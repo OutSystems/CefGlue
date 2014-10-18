@@ -915,6 +915,16 @@ typedef enum {
   // XMLHttpRequest.
   ///
   RT_XHR,
+
+  ///
+  // A request for a <ping>
+  ///
+  RT_PING,
+
+  ///
+  // Main resource of a service worker.
+  ///
+  RT_SERVICE_WORKER,
 } cef_resource_type_t;
 
 ///
@@ -1044,11 +1054,6 @@ typedef enum {
   UR_FLAG_REPORT_UPLOAD_PROGRESS    = 1 << 3,
 
   ///
-  // If set load timing info will be collected for the request.
-  ///
-  UR_FLAG_REPORT_LOAD_TIMING        = 1 << 4,
-
-  ///
   // If set the headers sent and received for the request will be recorded.
   ///
   UR_FLAG_REPORT_RAW_HEADERS        = 1 << 5,
@@ -1096,6 +1101,14 @@ typedef enum {
   ///
   UR_FAILED,
 } cef_urlrequest_status_t;
+
+///
+// Structure representing a point.
+///
+typedef struct _cef_point_t {
+  int x;
+  int y;
+} cef_point_t;
 
 ///
 // Structure representing a rectangle.
@@ -1286,6 +1299,15 @@ typedef enum {
   MENU_ID_FIND                = 130,
   MENU_ID_PRINT               = 131,
   MENU_ID_VIEW_SOURCE         = 132,
+
+  // Spell checking word correction suggestions.
+  MENU_ID_SPELLCHECK_SUGGESTION_0        = 200,
+  MENU_ID_SPELLCHECK_SUGGESTION_1        = 201,
+  MENU_ID_SPELLCHECK_SUGGESTION_2        = 202,
+  MENU_ID_SPELLCHECK_SUGGESTION_3        = 203,
+  MENU_ID_SPELLCHECK_SUGGESTION_4        = 204,
+  MENU_ID_SPELLCHECK_SUGGESTION_LAST     = 204,
+  MENU_ID_NO_SPELLING_SUGGESTIONS        = 205,
 
   // All user-defined menu IDs should come between MENU_ID_USER_FIRST and
   // MENU_ID_USER_LAST to avoid overlapping the Chromium and CEF ID ranges

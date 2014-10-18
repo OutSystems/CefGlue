@@ -71,7 +71,6 @@
     <Compile Include="Classes.g\CefDisplayHandler.g.cs" />
     <Compile Include="Classes.g\CefDomDocument.g.cs" />
     <Compile Include="Classes.g\CefDomEvent.g.cs" />
-    <Compile Include="Classes.g\CefDomEventListener.g.cs" />
     <Compile Include="Classes.g\CefDomNode.g.cs" />
     <Compile Include="Classes.g\CefDomVisitor.g.cs" />
     <Compile Include="Classes.g\CefDownloadHandler.g.cs" />
@@ -143,7 +142,6 @@
     <Compile Include="Classes.Handlers\CefCookieVisitor.cs" />
     <Compile Include="Classes.Handlers\CefDialogHandler.cs" />
     <Compile Include="Classes.Handlers\CefDisplayHandler.cs" />
-    <Compile Include="Classes.Handlers\CefDomEventListener.cs" />
     <Compile Include="Classes.Handlers\CefDomVisitor.cs" />
     <Compile Include="Classes.Handlers\CefDownloadHandler.cs" />
     <Compile Include="Classes.Handlers\CefDragHandler.cs" />
@@ -186,7 +184,6 @@
     <Compile Include="Classes.Proxies\CefCookieManager.cs" />
     <Compile Include="Classes.Proxies\CefDictionaryValue.cs" />
     <Compile Include="Classes.Proxies\CefDomDocument.cs" />
-    <Compile Include="Classes.Proxies\CefDomEvent.cs" />
     <Compile Include="Classes.Proxies\CefDomNode.cs" />
     <Compile Include="Classes.Proxies\CefDownloadItem.cs" />
     <Compile Include="Classes.Proxies\CefDownloadItemCallback.cs" />
@@ -318,6 +315,7 @@
     <Compile Include="Interop\Structs\cef_key_event_t.cs" />
     <Compile Include="Interop\Structs\cef_mouse_event_t.cs" />
     <Compile Include="Interop\Structs\cef_page_range_t.cs" />
+    <Compile Include="Interop\Structs\cef_point_t.cs" />
     <Compile Include="Interop\Structs\cef_size_t.cs" />
     <Compile Include="Interop\Structs\cef_screen_info_t.cs" />
     <Compile Include="Platform\Linux\CefWindowInfoLinuxImpl.cs" />
@@ -333,6 +331,7 @@
     <Compile Include="Structs\CefMainArgs.cs" />
     <Compile Include="Structs\CefPopupFeatures.cs" />
     <Compile Include="Structs\CefPageRange.cs" />
+    <Compile Include="Structs\CefPoint.cs" />
     <Compile Include="Structs\CefSize.cs" />
     <Compile Include="Structs\CefRectangle.cs" />
     <Compile Include="Structs\CefSettings.cs" />

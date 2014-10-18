@@ -31,6 +31,15 @@ namespace Xilium.CefGlue
         Print = 131,
         ViewSource = 132,
 
+        // Spell checking word correction suggestions.
+        SpellcheckSuggestion0 = 200,
+        SpellcheckSuggestion1 = 201,
+        SpellcheckSuggestion2 = 202,
+        SpellcheckSuggestion3 = 203,
+        SpellcheckSuggestion4 = 204,
+        SpellcheckSuggestionLast = 204,
+        NoSpellingSuggestions = 205,
+
         // All user-defined menu IDs should come between MENU_ID_USER_FIRST and
         // MENU_ID_USER_LAST to avoid overlapping the Chromium and CEF ID ranges
         // defined in the tools/gritsettings/resource_ids file.

@@ -79,5 +79,15 @@ namespace Xilium.CefGlue
         /// XMLHttpRequest.
         /// </summary>
         Xhr,
+
+        /// <summary>
+        /// A request for a &lt;ping&gt;.
+        /// </summary>
+        Ping,
+
+        /// <summary>
+        /// Main resource of a service worker.
+        /// </summary>
+        ServiceWorker,
     }
 }

@@ -299,11 +299,14 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Open developer tools in its own window.
+        /// Open developer tools in its own window. If |inspect_element_at| is non-
+        /// empty the element at the specified (x,y) location will be inspected.
         /// </summary>
-        public void ShowDevTools(CefWindowInfo windowInfo, CefClient client, CefBrowserSettings browserSettings)
+        public void ShowDevTools(CefWindowInfo windowInfo, CefClient client, CefBrowserSettings browserSettings, CefPoint inspectElementAt)
         {
-            cef_browser_host_t.show_dev_tools(_self, windowInfo.ToNative(), client.ToNative(), browserSettings.ToNative());
+            var n_inspectElementAt = new cef_point_t(inspectElementAt.X, inspectElementAt.Y);
+            cef_browser_host_t.show_dev_tools(_self, windowInfo.ToNative(), client.ToNative(), browserSettings.ToNative(),
+                &n_inspectElementAt);
         }
 
         /// <summary>
@@ -331,6 +334,19 @@ namespace Xilium.CefGlue
             get
             {
                 return cef_browser_host_t.is_mouse_cursor_change_disabled(_self) != 0;
+            }
+        }
+
+        /// <summary>
+        /// If a misspelled word is currently selected in an editable node calling
+        /// this method will replace it with the specified |word|.
+        /// </summary>
+        public void ReplaceMisspelling(string word)
+        {
+            fixed (char* word_str = word)
+            {
+                var n_word = new cef_string_t(word_str, word != null ? word.Length : 0);
+                cef_browser_host_t.replace_misspelling(_self, &n_word);
             }
         }
 

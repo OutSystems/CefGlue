@@ -31,7 +31,6 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _has_children;
         internal IntPtr _get_first_child;
         internal IntPtr _get_last_child;
-        internal IntPtr _add_event_listener;
         internal IntPtr _get_element_tag_name;
         internal IntPtr _has_element_attributes;
         internal IntPtr _has_element_attribute;
@@ -165,12 +164,6 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate cef_domnode_t* get_last_child_delegate(cef_domnode_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        private delegate void add_event_listener_delegate(cef_domnode_t* self, cef_string_t* eventType, cef_domevent_listener_t* listener, int useCapture);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -571,138 +564,121 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // AddEventListener
-        private static IntPtr _p15;
-        private static add_event_listener_delegate _d15;
-        
-        public static void add_event_listener(cef_domnode_t* self, cef_string_t* eventType, cef_domevent_listener_t* listener, int useCapture)
-        {
-            add_event_listener_delegate d;
-            var p = self->_add_event_listener;
-            if (p == _p15) { d = _d15; }
-            else
-            {
-                d = (add_event_listener_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(add_event_listener_delegate));
-                if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
-            }
-            d(self, eventType, listener, useCapture);
-        }
-        
         // GetElementTagName
-        private static IntPtr _p16;
-        private static get_element_tag_name_delegate _d16;
+        private static IntPtr _p15;
+        private static get_element_tag_name_delegate _d15;
         
         public static cef_string_userfree* get_element_tag_name(cef_domnode_t* self)
         {
             get_element_tag_name_delegate d;
             var p = self->_get_element_tag_name;
-            if (p == _p16) { d = _d16; }
+            if (p == _p15) { d = _d15; }
             else
             {
                 d = (get_element_tag_name_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_element_tag_name_delegate));
-                if (_p16 == IntPtr.Zero) { _d16 = d; _p16 = p; }
+                if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
             }
             return d(self);
         }
         
         // HasElementAttributes
-        private static IntPtr _p17;
-        private static has_element_attributes_delegate _d17;
+        private static IntPtr _p16;
+        private static has_element_attributes_delegate _d16;
         
         public static int has_element_attributes(cef_domnode_t* self)
         {
             has_element_attributes_delegate d;
             var p = self->_has_element_attributes;
-            if (p == _p17) { d = _d17; }
+            if (p == _p16) { d = _d16; }
             else
             {
                 d = (has_element_attributes_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_element_attributes_delegate));
-                if (_p17 == IntPtr.Zero) { _d17 = d; _p17 = p; }
+                if (_p16 == IntPtr.Zero) { _d16 = d; _p16 = p; }
             }
             return d(self);
         }
         
         // HasElementAttribute
-        private static IntPtr _p18;
-        private static has_element_attribute_delegate _d18;
+        private static IntPtr _p17;
+        private static has_element_attribute_delegate _d17;
         
         public static int has_element_attribute(cef_domnode_t* self, cef_string_t* attrName)
         {
             has_element_attribute_delegate d;
             var p = self->_has_element_attribute;
-            if (p == _p18) { d = _d18; }
+            if (p == _p17) { d = _d17; }
             else
             {
                 d = (has_element_attribute_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_element_attribute_delegate));
-                if (_p18 == IntPtr.Zero) { _d18 = d; _p18 = p; }
+                if (_p17 == IntPtr.Zero) { _d17 = d; _p17 = p; }
             }
             return d(self, attrName);
         }
         
         // GetElementAttribute
-        private static IntPtr _p19;
-        private static get_element_attribute_delegate _d19;
+        private static IntPtr _p18;
+        private static get_element_attribute_delegate _d18;
         
         public static cef_string_userfree* get_element_attribute(cef_domnode_t* self, cef_string_t* attrName)
         {
             get_element_attribute_delegate d;
             var p = self->_get_element_attribute;
-            if (p == _p19) { d = _d19; }
+            if (p == _p18) { d = _d18; }
             else
             {
                 d = (get_element_attribute_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_element_attribute_delegate));
-                if (_p19 == IntPtr.Zero) { _d19 = d; _p19 = p; }
+                if (_p18 == IntPtr.Zero) { _d18 = d; _p18 = p; }
             }
             return d(self, attrName);
         }
         
         // GetElementAttributes
-        private static IntPtr _p1a;
-        private static get_element_attributes_delegate _d1a;
+        private static IntPtr _p19;
+        private static get_element_attributes_delegate _d19;
         
         public static void get_element_attributes(cef_domnode_t* self, cef_string_map* attrMap)
         {
             get_element_attributes_delegate d;
             var p = self->_get_element_attributes;
-            if (p == _p1a) { d = _d1a; }
+            if (p == _p19) { d = _d19; }
             else
             {
                 d = (get_element_attributes_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_element_attributes_delegate));
-                if (_p1a == IntPtr.Zero) { _d1a = d; _p1a = p; }
+                if (_p19 == IntPtr.Zero) { _d19 = d; _p19 = p; }
             }
             d(self, attrMap);
         }
         
         // SetElementAttribute
-        private static IntPtr _p1b;
-        private static set_element_attribute_delegate _d1b;
+        private static IntPtr _p1a;
+        private static set_element_attribute_delegate _d1a;
         
         public static int set_element_attribute(cef_domnode_t* self, cef_string_t* attrName, cef_string_t* value)
         {
             set_element_attribute_delegate d;
             var p = self->_set_element_attribute;
-            if (p == _p1b) { d = _d1b; }
+            if (p == _p1a) { d = _d1a; }
             else
             {
                 d = (set_element_attribute_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_element_attribute_delegate));
-                if (_p1b == IntPtr.Zero) { _d1b = d; _p1b = p; }
+                if (_p1a == IntPtr.Zero) { _d1a = d; _p1a = p; }
             }
             return d(self, attrName, value);
         }
         
         // GetElementInnerText
-        private static IntPtr _p1c;
-        private static get_element_inner_text_delegate _d1c;
+        private static IntPtr _p1b;
+        private static get_element_inner_text_delegate _d1b;
         
         public static cef_string_userfree* get_element_inner_text(cef_domnode_t* self)
         {
             get_element_inner_text_delegate d;
             var p = self->_get_element_inner_text;
-            if (p == _p1c) { d = _d1c; }
+            if (p == _p1b) { d = _d1b; }
             else
             {
                 d = (get_element_inner_text_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_element_inner_text_delegate));
-                if (_p1c == IntPtr.Zero) { _d1c = d; _p1c = p; }
+                if (_p1b == IntPtr.Zero) { _d1b = d; _p1b = p; }
             }
             return d(self);
         }
