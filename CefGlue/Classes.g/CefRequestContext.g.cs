@@ -50,19 +50,19 @@ namespace Xilium.CefGlue
             GC.SuppressFinalize(this);
         }
         
-        internal int AddRef()
+        internal void AddRef()
         {
-            return cef_request_context_t.add_ref(_self);
+            cef_request_context_t.add_ref(_self);
         }
         
-        internal int Release()
+        internal bool Release()
         {
-            return cef_request_context_t.release(_self);
+            return cef_request_context_t.release(_self) != 0;
         }
         
-        internal int RefCt
+        internal bool HasOneRef
         {
-            get { return cef_request_context_t.get_refct(_self); }
+            get { return cef_request_context_t.has_one_ref(_self) != 0; }
         }
         
         internal cef_request_context_t* ToNative()

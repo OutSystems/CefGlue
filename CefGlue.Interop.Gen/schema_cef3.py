@@ -100,4 +100,9 @@ classdef = {
     'CefEndTracingCallback': { 'role': ROLE_HANDLER },
     # 1916
     'CefCompletionCallback': { 'role': ROLE_HANDLER },
+    # 2062
+    'CefPrintDialogCallback': { 'role': ROLE_PROXY },
+    'CefPrintJobCallback': { 'role': ROLE_PROXY },
+    'CefPrintHandler': { 'role': ROLE_HANDLER },
+    'CefPrintSettings': { 'role': ROLE_PROXY },
     }

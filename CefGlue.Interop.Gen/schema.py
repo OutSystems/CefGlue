@@ -72,7 +72,10 @@ c2cs_types = {
     'cef_main_args_t': 'cef_main_args_t',
     'cef_window_info_t': 'cef_window_info_t',
 
-    'cef_text_input_context_t': 'IntPtr'
+    'cef_text_input_context_t': 'IntPtr',
+
+    'cef_color_model_t': 'CefColorModel',
+    'cef_duplex_mode_t': 'CefDuplexMode'
     }
 
 c2cs_platform_retval = {

@@ -106,7 +106,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int add_ref_delegate(cef_v8value_t* self);
+        private delegate void add_ref_delegate(cef_v8value_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -118,7 +118,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int get_refct_delegate(cef_v8value_t* self);
+        private delegate int has_one_ref_delegate(cef_v8value_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -388,7 +388,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p0;
         private static add_ref_delegate _d0;
         
-        public static int add_ref(cef_v8value_t* self)
+        public static void add_ref(cef_v8value_t* self)
         {
             add_ref_delegate d;
             var p = self->_base._add_ref;
@@ -398,7 +398,7 @@ namespace Xilium.CefGlue.Interop
                 d = (add_ref_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(add_ref_delegate));
                 if (_p0 == IntPtr.Zero) { _d0 = d; _p0 = p; }
             }
-            return d(self);
+            d(self);
         }
         
         // Release
@@ -418,18 +418,18 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetRefCt
+        // HasOneRef
         private static IntPtr _p2;
-        private static get_refct_delegate _d2;
+        private static has_one_ref_delegate _d2;
         
-        public static int get_refct(cef_v8value_t* self)
+        public static int has_one_ref(cef_v8value_t* self)
         {
-            get_refct_delegate d;
-            var p = self->_base._get_refct;
+            has_one_ref_delegate d;
+            var p = self->_base._has_one_ref;
             if (p == _p2) { d = _d2; }
             else
             {
-                d = (get_refct_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_refct_delegate));
+                d = (has_one_ref_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_one_ref_delegate));
                 if (_p2 == IntPtr.Zero) { _d2 = d; _p2 = p; }
             }
             return d(self);

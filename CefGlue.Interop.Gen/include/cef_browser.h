@@ -159,7 +159,7 @@ class CefBrowser : public virtual CefBase {
   ///
   // Returns the frame with the specified name, or NULL if not found.
   ///
-  /*--cef()--*/
+  /*--cef(optional_param=name)--*/
   virtual CefRefPtr<CefFrame> GetFrame(const CefString& name) =0;
 
   ///
@@ -439,12 +439,12 @@ class CefBrowserHost : public virtual CefBase {
   virtual void NotifyScreenInfoChanged() =0;
 
   ///
-  // Invalidate the |dirtyRect| region of the view. The browser will call
-  // CefRenderHandler::OnPaint asynchronously with the updated regions. This
-  // method is only used when window rendering is disabled.
+  // Invalidate the view. The browser will call CefRenderHandler::OnPaint
+  // asynchronously. This method is only used when window rendering is
+  // disabled.
   ///
   /*--cef()--*/
-  virtual void Invalidate(const CefRect& dirtyRect, PaintElementType type) =0;
+  virtual void Invalidate(PaintElementType type) =0;
 
   ///
   // Send a key event to the browser.

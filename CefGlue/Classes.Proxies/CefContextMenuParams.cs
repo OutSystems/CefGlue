@@ -163,15 +163,6 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Returns true if the context menu was invoked on an editable node where
-        /// speech-input is enabled.
-        /// </summary>
-        public bool IsSpeechInputEnabled
-        {
-            get { return cef_context_menu_params_t.is_speech_input_enabled(_self) != 0; }
-        }
-
-        /// <summary>
         /// Returns flags representing the actions supported by the editable node, if
         /// any, that the context menu was invoked on.
         /// </summary>

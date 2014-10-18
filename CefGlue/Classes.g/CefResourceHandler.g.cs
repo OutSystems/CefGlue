@@ -21,7 +21,7 @@ namespace Xilium.CefGlue
         
         private cef_resource_handler_t.add_ref_delegate _ds0;
         private cef_resource_handler_t.release_delegate _ds1;
-        private cef_resource_handler_t.get_refct_delegate _ds2;
+        private cef_resource_handler_t.has_one_ref_delegate _ds2;
         private cef_resource_handler_t.process_request_delegate _ds3;
         private cef_resource_handler_t.get_response_headers_delegate _ds4;
         private cef_resource_handler_t.read_response_delegate _ds5;
@@ -37,8 +37,8 @@ namespace Xilium.CefGlue
             _self->_base._add_ref = Marshal.GetFunctionPointerForDelegate(_ds0);
             _ds1 = new cef_resource_handler_t.release_delegate(release);
             _self->_base._release = Marshal.GetFunctionPointerForDelegate(_ds1);
-            _ds2 = new cef_resource_handler_t.get_refct_delegate(get_refct);
-            _self->_base._get_refct = Marshal.GetFunctionPointerForDelegate(_ds2);
+            _ds2 = new cef_resource_handler_t.has_one_ref_delegate(has_one_ref);
+            _self->_base._has_one_ref = Marshal.GetFunctionPointerForDelegate(_ds2);
             _ds3 = new cef_resource_handler_t.process_request_delegate(process_request);
             _self->_process_request = Marshal.GetFunctionPointerForDelegate(_ds3);
             _ds4 = new cef_resource_handler_t.get_response_headers_delegate(get_response_headers);
@@ -67,7 +67,7 @@ namespace Xilium.CefGlue
             }
         }
         
-        private int add_ref(cef_resource_handler_t* self)
+        private void add_ref(cef_resource_handler_t* self)
         {
             lock (SyncRoot)
             {
@@ -76,7 +76,6 @@ namespace Xilium.CefGlue
                 {
                     lock (_roots) { _roots.Add((IntPtr)_self, this); }
                 }
-                return result;
             }
         }
         
@@ -88,14 +87,15 @@ namespace Xilium.CefGlue
                 if (result == 0)
                 {
                     lock (_roots) { _roots.Remove((IntPtr)_self); }
+                    return 1;
                 }
-                return result;
+                return 0;
             }
         }
         
-        private int get_refct(cef_resource_handler_t* self)
+        private int has_one_ref(cef_resource_handler_t* self)
         {
-            return _refct;
+            lock (SyncRoot) { return _refct == 1 ? 1 : 0; }
         }
         
         internal cef_resource_handler_t* ToNative()

@@ -27,14 +27,13 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_media_state_flags;
         internal IntPtr _get_selection_text;
         internal IntPtr _is_editable;
-        internal IntPtr _is_speech_input_enabled;
         internal IntPtr _get_edit_state_flags;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int add_ref_delegate(cef_context_menu_params_t* self);
+        private delegate void add_ref_delegate(cef_context_menu_params_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -46,7 +45,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int get_refct_delegate(cef_context_menu_params_t* self);
+        private delegate int has_one_ref_delegate(cef_context_menu_params_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -136,19 +135,13 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int is_speech_input_enabled_delegate(cef_context_menu_params_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
         private delegate CefContextMenuEditStateFlags get_edit_state_flags_delegate(cef_context_menu_params_t* self);
         
         // AddRef
         private static IntPtr _p0;
         private static add_ref_delegate _d0;
         
-        public static int add_ref(cef_context_menu_params_t* self)
+        public static void add_ref(cef_context_menu_params_t* self)
         {
             add_ref_delegate d;
             var p = self->_base._add_ref;
@@ -158,7 +151,7 @@ namespace Xilium.CefGlue.Interop
                 d = (add_ref_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(add_ref_delegate));
                 if (_p0 == IntPtr.Zero) { _d0 = d; _p0 = p; }
             }
-            return d(self);
+            d(self);
         }
         
         // Release
@@ -178,18 +171,18 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetRefCt
+        // HasOneRef
         private static IntPtr _p2;
-        private static get_refct_delegate _d2;
+        private static has_one_ref_delegate _d2;
         
-        public static int get_refct(cef_context_menu_params_t* self)
+        public static int has_one_ref(cef_context_menu_params_t* self)
         {
-            get_refct_delegate d;
-            var p = self->_base._get_refct;
+            has_one_ref_delegate d;
+            var p = self->_base._has_one_ref;
             if (p == _p2) { d = _d2; }
             else
             {
-                d = (get_refct_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_refct_delegate));
+                d = (has_one_ref_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_one_ref_delegate));
                 if (_p2 == IntPtr.Zero) { _d2 = d; _p2 = p; }
             }
             return d(self);
@@ -433,36 +426,19 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // IsSpeechInputEnabled
-        private static IntPtr _p11;
-        private static is_speech_input_enabled_delegate _d11;
-        
-        public static int is_speech_input_enabled(cef_context_menu_params_t* self)
-        {
-            is_speech_input_enabled_delegate d;
-            var p = self->_is_speech_input_enabled;
-            if (p == _p11) { d = _d11; }
-            else
-            {
-                d = (is_speech_input_enabled_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_speech_input_enabled_delegate));
-                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
-            }
-            return d(self);
-        }
-        
         // GetEditStateFlags
-        private static IntPtr _p12;
-        private static get_edit_state_flags_delegate _d12;
+        private static IntPtr _p11;
+        private static get_edit_state_flags_delegate _d11;
         
         public static CefContextMenuEditStateFlags get_edit_state_flags(cef_context_menu_params_t* self)
         {
             get_edit_state_flags_delegate d;
             var p = self->_get_edit_state_flags;
-            if (p == _p12) { d = _d12; }
+            if (p == _p11) { d = _d11; }
             else
             {
                 d = (get_edit_state_flags_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_edit_state_flags_delegate));
-                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
+                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
             }
             return d(self);
         }

@@ -65,10 +65,15 @@ namespace Xilium.CefGlue.Interop
 
     internal unsafe struct cef_window_info_t_linux
     {
-        public IntPtr parent_widget;
+        public uint x;
+        public uint y;
+        public uint width;
+        public uint height;
+
+        public IntPtr parent_window;
         public int windowless_rendering_enabled;
         public int transparent_painting_enabled;
-        public IntPtr widget;
+        public IntPtr window;
 
         #region Alloc & Free
         private static int _sizeof;

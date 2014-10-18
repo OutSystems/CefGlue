@@ -32,7 +32,7 @@
 #define CEF_INCLUDE_INTERNAL_CEF_TYPES_H_
 #pragma once
 
-#include "include/internal/cef_build.h"
+#include "include/base/cef_build.h"
 #include "include/internal/cef_string.h"
 #include "include/internal/cef_string_list.h"
 #include "include/internal/cef_time.h"
@@ -150,11 +150,6 @@ typedef enum {
   // ERROR logging.
   ///
   LOGSEVERITY_ERROR,
-
-  ///
-  // ERROR_REPORT logging.
-  ///
-  LOGSEVERITY_ERROR_REPORT,
 
   ///
   // Completely disable logging.
@@ -400,6 +395,14 @@ typedef struct _cef_browser_settings_t {
   ///
   size_t size;
 
+  ///
+  // The maximum rate in frames per second (fps) that CefRenderHandler::OnPaint
+  // will be called for a windowless browser. The actual fps may be lower if
+  // the browser cannot generate frames at the requested rate. The minimum
+  // value is 1 and the maximum value is 60 (default 30).
+  ///
+  int windowless_frame_rate;
+
   // The below values map to WebPreferences settings.
 
   ///
@@ -551,14 +554,6 @@ typedef struct _cef_browser_settings_t {
   // configurable using the "disable-webgl" command-line switch.
   ///
   cef_state_t webgl;
-
-  ///
-  // Controls whether content that depends on accelerated compositing can be
-  // used. Note that accelerated compositing requires hardware support and may
-  // not work on all systems even when enabled. Also configurable using the
-  // "disable-accelerated-compositing" command-line switch.
-  ///
-  cef_state_t accelerated_compositing;
 
   ///
   // Opaque background color used for the browser before a document is loaded
@@ -1113,6 +1108,14 @@ typedef struct _cef_rect_t {
 } cef_rect_t;
 
 ///
+// Structure representing a size.
+///
+typedef struct _cef_size_t {
+  int width;
+  int height;
+} cef_size_t;
+
+///
 // Existing process IDs.
 ///
 typedef enum {
@@ -1461,9 +1464,28 @@ typedef enum {
 // Key event types.
 ///
 typedef enum {
+  ///
+  // Notification that a key transitioned from "up" to "down".
+  ///
   KEYEVENT_RAWKEYDOWN = 0,
+
+  ///
+  // Notification that a key was pressed. This does not necessarily correspond
+  // to a character depending on the key and language. Use KEYEVENT_CHAR for
+  // character input.
+  ///
   KEYEVENT_KEYDOWN,
+
+  ///
+  // Notification that a key was released.
+  ///
   KEYEVENT_KEYUP,
+
+  ///
+  // Notification that a character was typed. Use this for text input. Key
+  // down events may generate 0, 1, or more than one character event depending
+  // on the key, locale, and operating system.
+  ///
   KEYEVENT_CHAR
 } cef_key_event_type_t;
 
@@ -1749,6 +1771,51 @@ typedef struct _cef_geoposition_t {
   ///
   cef_string_t error_message;
 } cef_geoposition_t;
+
+///
+// Print job color mode values.
+///
+typedef enum {
+  COLOR_MODEL_UNKNOWN,
+  COLOR_MODEL_GRAY,
+  COLOR_MODEL_COLOR,
+  COLOR_MODEL_CMYK,
+  COLOR_MODEL_CMY,
+  COLOR_MODEL_KCMY,
+  COLOR_MODEL_CMY_K,  // CMY_K represents CMY+K.
+  COLOR_MODEL_BLACK,
+  COLOR_MODEL_GRAYSCALE,
+  COLOR_MODEL_RGB,
+  COLOR_MODEL_RGB16,
+  COLOR_MODEL_RGBA,
+  COLOR_MODEL_COLORMODE_COLOR,  // Used in samsung printer ppds.
+  COLOR_MODEL_COLORMODE_MONOCHROME,  // Used in samsung printer ppds.
+  COLOR_MODEL_HP_COLOR_COLOR,  // Used in HP color printer ppds.
+  COLOR_MODEL_HP_COLOR_BLACK,  // Used in HP color printer ppds.
+  COLOR_MODEL_PRINTOUTMODE_NORMAL,  // Used in foomatic ppds.
+  COLOR_MODEL_PRINTOUTMODE_NORMAL_GRAY,  // Used in foomatic ppds.
+  COLOR_MODEL_PROCESSCOLORMODEL_CMYK,  // Used in canon printer ppds.
+  COLOR_MODEL_PROCESSCOLORMODEL_GREYSCALE,  // Used in canon printer ppds.
+  COLOR_MODEL_PROCESSCOLORMODEL_RGB,  // Used in canon printer ppds
+} cef_color_model_t;
+
+///
+// Print job duplex mode values.
+///
+typedef enum {
+  DUPLEX_MODE_UNKNOWN = -1,
+  DUPLEX_MODE_SIMPLEX,
+  DUPLEX_MODE_LONG_EDGE,
+  DUPLEX_MODE_SHORT_EDGE,
+} cef_duplex_mode_t;
+
+///
+// Structure representing a print job page range.
+///
+typedef struct _cef_page_range_t {
+  int from;
+  int to;
+} cef_page_range_t;
 
 #ifdef __cplusplus
 }

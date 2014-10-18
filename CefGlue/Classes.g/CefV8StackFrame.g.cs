@@ -50,19 +50,19 @@ namespace Xilium.CefGlue
             GC.SuppressFinalize(this);
         }
         
-        internal int AddRef()
+        internal void AddRef()
         {
-            return cef_v8stack_frame_t.add_ref(_self);
+            cef_v8stack_frame_t.add_ref(_self);
         }
         
-        internal int Release()
+        internal bool Release()
         {
-            return cef_v8stack_frame_t.release(_self);
+            return cef_v8stack_frame_t.release(_self) != 0;
         }
         
-        internal int RefCt
+        internal bool HasOneRef
         {
-            get { return cef_v8stack_frame_t.get_refct(_self); }
+            get { return cef_v8stack_frame_t.has_one_ref(_self) != 0; }
         }
         
         internal cef_v8stack_frame_t* ToNative()

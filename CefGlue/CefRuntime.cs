@@ -506,6 +506,21 @@
         public static extern int create_url(cef_urlparts_t* parts, cef_string_t* url);
         */
 
+        /////
+        //// Returns the mime type for the specified file extension or an empty string if
+        //// unknown.
+        /////
+        ///*--cef()--*/
+        //CefString CefGetMimeType(const CefString& extension);
+
+        //// Get the extensions associated with the given mime type. This should be passed
+        //// in lower case. There could be multiple extensions for a given mime type, like
+        //// "html,htm" for "text/html", or "txt,text,html,..." for "text/*". Any existing
+        //// elements in the provided vector will not be erased.
+        ///*--cef()--*/
+        //void CefGetExtensionsForMimeType(const CefString& mime_type,
+        //                                 std::vector<CefString>& extensions);
+
         #endregion
 
         #region cef_v8
@@ -775,5 +790,15 @@
         {
             if (!_loaded) Load();
         }
+
+        #region linux
+
+        /////
+        //// Return the singleton X11 display shared with Chromium. The display is not
+        //// thread-safe and must only be accessed on the browser process UI thread.
+        /////
+        //CEF_EXPORT XDisplay* cef_get_xdisplay();
+
+        #endregion
     }
 }

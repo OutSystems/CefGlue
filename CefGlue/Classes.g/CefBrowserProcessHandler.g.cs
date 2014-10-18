@@ -21,10 +21,11 @@ namespace Xilium.CefGlue
         
         private cef_browser_process_handler_t.add_ref_delegate _ds0;
         private cef_browser_process_handler_t.release_delegate _ds1;
-        private cef_browser_process_handler_t.get_refct_delegate _ds2;
+        private cef_browser_process_handler_t.has_one_ref_delegate _ds2;
         private cef_browser_process_handler_t.on_context_initialized_delegate _ds3;
         private cef_browser_process_handler_t.on_before_child_process_launch_delegate _ds4;
         private cef_browser_process_handler_t.on_render_process_thread_created_delegate _ds5;
+        private cef_browser_process_handler_t.get_print_handler_delegate _ds6;
         
         protected CefBrowserProcessHandler()
         {
@@ -34,14 +35,16 @@ namespace Xilium.CefGlue
             _self->_base._add_ref = Marshal.GetFunctionPointerForDelegate(_ds0);
             _ds1 = new cef_browser_process_handler_t.release_delegate(release);
             _self->_base._release = Marshal.GetFunctionPointerForDelegate(_ds1);
-            _ds2 = new cef_browser_process_handler_t.get_refct_delegate(get_refct);
-            _self->_base._get_refct = Marshal.GetFunctionPointerForDelegate(_ds2);
+            _ds2 = new cef_browser_process_handler_t.has_one_ref_delegate(has_one_ref);
+            _self->_base._has_one_ref = Marshal.GetFunctionPointerForDelegate(_ds2);
             _ds3 = new cef_browser_process_handler_t.on_context_initialized_delegate(on_context_initialized);
             _self->_on_context_initialized = Marshal.GetFunctionPointerForDelegate(_ds3);
             _ds4 = new cef_browser_process_handler_t.on_before_child_process_launch_delegate(on_before_child_process_launch);
             _self->_on_before_child_process_launch = Marshal.GetFunctionPointerForDelegate(_ds4);
             _ds5 = new cef_browser_process_handler_t.on_render_process_thread_created_delegate(on_render_process_thread_created);
             _self->_on_render_process_thread_created = Marshal.GetFunctionPointerForDelegate(_ds5);
+            _ds6 = new cef_browser_process_handler_t.get_print_handler_delegate(get_print_handler);
+            _self->_get_print_handler = Marshal.GetFunctionPointerForDelegate(_ds6);
         }
         
         ~CefBrowserProcessHandler()
@@ -58,7 +61,7 @@ namespace Xilium.CefGlue
             }
         }
         
-        private int add_ref(cef_browser_process_handler_t* self)
+        private void add_ref(cef_browser_process_handler_t* self)
         {
             lock (SyncRoot)
             {
@@ -67,7 +70,6 @@ namespace Xilium.CefGlue
                 {
                     lock (_roots) { _roots.Add((IntPtr)_self, this); }
                 }
-                return result;
             }
         }
         
@@ -79,14 +81,15 @@ namespace Xilium.CefGlue
                 if (result == 0)
                 {
                     lock (_roots) { _roots.Remove((IntPtr)_self); }
+                    return 1;
                 }
-                return result;
+                return 0;
             }
         }
         
-        private int get_refct(cef_browser_process_handler_t* self)
+        private int has_one_ref(cef_browser_process_handler_t* self)
         {
-            return _refct;
+            lock (SyncRoot) { return _refct == 1 ? 1 : 0; }
         }
         
         internal cef_browser_process_handler_t* ToNative()

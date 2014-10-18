@@ -71,6 +71,13 @@ def get_func_parts(func, slot, is_global = False):
     return result
 
 def get_base_func(cls, slot, name, cname):
+    cretval = ''
+    if name == 'AddRef':
+        cretval = 'void'
+    elif name == 'Release':
+        cretval = 'int'
+    elif name == 'HasOneRef':
+        cretval = 'int'
     return {
             'basefunc': True,
             'virtual': True,
@@ -81,11 +88,11 @@ def get_base_func(cls, slot, name, cname):
             'delegate_type': '%s_delegate' % cname,
             'delegate_slot': '_ds%x' % slot,
             'capi_name': cname,
-            'capi_retval': 'int',
+            'capi_retval': cretval,
             'capi_args': ['%s* self' % cls.get_capi_name()],
 
             'csn_name': cname,
-            'csn_retval': 'int',
+            'csn_retval': cretval,
             'csn_args': [ { 'type': '%s*' % cls.get_capi_name(), 'name': 'self' } ],
 
             'csn_args_proto': '%s* self' % cls.get_capi_name(),
@@ -97,7 +104,7 @@ def get_base_funcs(cls):
     return [
         get_base_func(cls, 0, 'AddRef', 'add_ref'),
         get_base_func(cls, 1, 'Release', 'release'),
-        get_base_func(cls, 2, 'GetRefCt', 'get_refct'),
+        get_base_func(cls, 2, 'HasOneRef', 'has_one_ref'),
         ]
 
 def make_file_header():
@@ -376,21 +383,21 @@ def make_proxy_g_body(cls):
     result.append('}')
     result.append('')
 
-    result.append('internal int AddRef()')
+    result.append('internal void AddRef()')
     result.append('{')
-    result.append(indent + 'return %(iname)s.add_ref(_self);' % { 'iname': iname })
+    result.append(indent + '%(iname)s.add_ref(_self);' % { 'iname': iname })
     result.append('}')
     result.append('')
 
-    result.append('internal int Release()')
+    result.append('internal bool Release()')
     result.append('{')
-    result.append(indent + 'return %(iname)s.release(_self);' % { 'iname': iname })
+    result.append(indent + 'return %(iname)s.release(_self) != 0;' % { 'iname': iname })
     result.append('}')
     result.append('')
 
-    result.append('internal int RefCt')
+    result.append('internal bool HasOneRef')
     result.append('{')
-    result.append(indent + 'get { return %(iname)s.get_refct(_self); }' % { 'iname': iname })
+    result.append(indent + 'get { return %(iname)s.has_one_ref(_self) != 0; }' % { 'iname': iname })
     result.append('}')
     result.append('')
 
@@ -488,7 +495,7 @@ def make_handler_g_body(cls):
 
     # todo: this methods must throw exception if object already disposed
     # todo: verify self pointer in debug
-    result.append('private int add_ref(%s* self)' % iname)
+    result.append('private void add_ref(%s* self)' % iname)
     result.append('{')
     result.append(indent + 'lock (SyncRoot)')
     result.append(indent + '{')
@@ -497,7 +504,6 @@ def make_handler_g_body(cls):
     result.append(indent + indent + '{')
     result.append(indent + indent + indent + 'lock (_roots) { _roots.Add((IntPtr)_self, this); }')
     result.append(indent + indent + '}')
-    result.append(indent + indent + 'return result;')
     result.append(indent + '}')
     result.append('}')
     result.append('')
@@ -510,15 +516,16 @@ def make_handler_g_body(cls):
     result.append(indent + indent + 'if (result == 0)')
     result.append(indent + indent + '{')
     result.append(indent + indent + indent + 'lock (_roots) { _roots.Remove((IntPtr)_self); }')
+    result.append(indent + indent + indent + 'return 1;')
     result.append(indent + indent + '}')
-    result.append(indent + indent + 'return result;')
+    result.append(indent + indent + 'return 0;')
     result.append(indent + '}')
     result.append('}')
     result.append('')
 
-    result.append('private int get_refct(%s* self)' % iname)
+    result.append('private int has_one_ref(%s* self)' % iname)
     result.append('{')
-    result.append(indent + 'return _refct;')
+    result.append(indent + 'lock (SyncRoot) { return _refct == 1 ? 1 : 0; }')
     result.append('}')
     result.append('')
 

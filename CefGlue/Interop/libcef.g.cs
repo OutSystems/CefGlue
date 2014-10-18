@@ -105,6 +105,10 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_get_mime_type", CallingConvention = libcef.CEF_CALL)]
         public static extern cef_string_userfree* get_mime_type(cef_string_t* extension);
         
+        // CefGetExtensionsForMimeType
+        [DllImport(libcef.DllName, EntryPoint = "cef_get_extensions_for_mime_type", CallingConvention = libcef.CEF_CALL)]
+        public static extern void get_extensions_for_mime_type(cef_string_t* mime_type, cef_string_list* extensions);
+        
         // CefRegisterExtension
         [DllImport(libcef.DllName, EntryPoint = "cef_register_extension", CallingConvention = libcef.CEF_CALL)]
         public static extern int register_extension(cef_string_t* extension_name, cef_string_t* javascript_code, cef_v8handler_t* handler);

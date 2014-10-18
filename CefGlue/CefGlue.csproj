@@ -95,6 +95,10 @@
     <Compile Include="Classes.g\CefMenuModel.g.cs" />
     <Compile Include="Classes.g\CefPostData.g.cs" />
     <Compile Include="Classes.g\CefPostDataElement.g.cs" />
+    <Compile Include="Classes.g\CefPrintDialogCallback.g.cs" />
+    <Compile Include="Classes.g\CefPrintHandler.g.cs" />
+    <Compile Include="Classes.g\CefPrintJobCallback.g.cs" />
+    <Compile Include="Classes.g\CefPrintSettings.g.cs" />
     <Compile Include="Classes.g\CefProcessMessage.g.cs" />
     <Compile Include="Classes.g\CefQuotaCallback.g.cs" />
     <Compile Include="Classes.g\CefReadHandler.g.cs" />
@@ -151,6 +155,7 @@
     <Compile Include="Classes.Handlers\CefKeyboardHandler.cs" />
     <Compile Include="Classes.Handlers\CefLifeSpanHandler.cs" />
     <Compile Include="Classes.Handlers\CefLoadHandler.cs" />
+    <Compile Include="Classes.Handlers\CefPrintHandler.cs" />
     <Compile Include="Classes.Handlers\CefReadHandler.cs" />
     <Compile Include="Classes.Handlers\CefRenderHandler.cs" />
     <Compile Include="Classes.Handlers\CefRenderProcessHandler.cs" />
@@ -194,6 +199,9 @@
     <Compile Include="Classes.Proxies\CefMenuModel.cs" />
     <Compile Include="Classes.Proxies\CefPostData.cs" />
     <Compile Include="Classes.Proxies\CefPostDataElement.cs" />
+    <Compile Include="Classes.Proxies\CefPrintDialogCallback.cs" />
+    <Compile Include="Classes.Proxies\CefPrintJobCallback.cs" />
+    <Compile Include="Classes.Proxies\CefPrintSettings.cs" />
     <Compile Include="Classes.Proxies\CefProcessMessage.cs" />
     <Compile Include="Classes.Proxies\CefQuotaCallback.cs" />
     <Compile Include="Classes.Proxies\CefRequest.cs" />
@@ -212,6 +220,7 @@
     <Compile Include="Classes.Proxies\CefWebPluginInfo.cs" />
     <Compile Include="Classes.Proxies\CefXmlReader.cs" />
     <Compile Include="Classes.Proxies\CefZipReader.cs" />
+    <Compile Include="Enums\CefDuplexMode.cs" />
     <Compile Include="Enums\CefDragOperationsMask.cs" />
     <Compile Include="Enums\CefFileDialogMode.cs" />
     <Compile Include="Enums\CefFocusSource.cs" />
@@ -219,6 +228,7 @@
     <Compile Include="Enums\CefKeyEventType.cs" />
     <Compile Include="Enums\CefLogSeverity.cs" />
     <Compile Include="Enums\CefMouseButtonType.cs" />
+    <Compile Include="Enums\CefColorModel.cs" />
     <Compile Include="Enums\CefNavigationType.cs" />
     <Compile Include="Enums\CefResourceType.cs" />
     <Compile Include="Enums\CefState.cs" />
@@ -285,6 +295,10 @@
     <Compile Include="Interop\Classes.g\cef_jsdialog_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_keyboard_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_menu_model_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_print_dialog_callback_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_print_handler_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_print_job_callback_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_print_settings_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_quota_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_render_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_request_context_handler_t.g.cs" />
@@ -303,6 +317,8 @@
     <Compile Include="Interop\Structs\cef_geoposition_t.cs" />
     <Compile Include="Interop\Structs\cef_key_event_t.cs" />
     <Compile Include="Interop\Structs\cef_mouse_event_t.cs" />
+    <Compile Include="Interop\Structs\cef_page_range_t.cs" />
+    <Compile Include="Interop\Structs\cef_size_t.cs" />
     <Compile Include="Interop\Structs\cef_screen_info_t.cs" />
     <Compile Include="Platform\Linux\CefWindowInfoLinuxImpl.cs" />
     <Compile Include="Platform\Mac\CefWindowInfoMacImpl.cs" />
@@ -316,6 +332,8 @@
     <Compile Include="Structs\CefKeyEvent.cs" />
     <Compile Include="Structs\CefMainArgs.cs" />
     <Compile Include="Structs\CefPopupFeatures.cs" />
+    <Compile Include="Structs\CefPageRange.cs" />
+    <Compile Include="Structs\CefSize.cs" />
     <Compile Include="Structs\CefRectangle.cs" />
     <Compile Include="Structs\CefSettings.cs" />
     <Compile Include="Structs\CefWindowInfo.cs" />

@@ -39,14 +39,14 @@
 
         public override IntPtr ParentHandle
         {
-            get { ThrowIfDisposed(); return _self->parent_widget; }
-            set { ThrowIfDisposed(); _self->parent_widget = value; }
+            get { ThrowIfDisposed(); return _self->parent_window; }
+            set { ThrowIfDisposed(); _self->parent_window = value; }
         }
 
         public override IntPtr Handle
         {
-            get { ThrowIfDisposed(); return _self->widget; }
-            set { ThrowIfDisposed(); _self->widget = value; }
+            get { ThrowIfDisposed(); return _self->window; }
+            set { ThrowIfDisposed(); _self->window = value; }
         }
 
         public override string Name
@@ -57,26 +57,26 @@
 
         public override int X
         {
-            get { return default(int); }
-            set { }
+            get { ThrowIfDisposed(); return (int)_self->x; }
+            set { ThrowIfDisposed(); _self->x = (uint)value; }
         }
 
         public override int Y
         {
-            get { return default(int); }
-            set { }
+            get { ThrowIfDisposed(); return (int)_self->y; }
+            set { ThrowIfDisposed(); _self->y = (uint)value; }
         }
 
         public override int Width
         {
-            get { return default(int); }
-            set { }
+            get { ThrowIfDisposed(); return (int)_self->width; }
+            set { ThrowIfDisposed(); _self->width = (uint)value; }
         }
 
         public override int Height
         {
-            get { return default(int); }
-            set { }
+            get { ThrowIfDisposed(); return (int)_self->height; }
+            set { ThrowIfDisposed(); _self->height = (uint)value; }
         }
 
         public override WindowStyle Style

@@ -380,14 +380,13 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Invalidate the |dirtyRect| region of the view. The browser will call
-        /// CefRenderHandler::OnPaint asynchronously with the updated regions. This
-        /// method is only used when window rendering is disabled.
+        /// Invalidate the view. The browser will call CefRenderHandler::OnPaint
+        /// asynchronously. This method is only used when window rendering is
+        /// disabled.
         /// </summary>
-        public void Invalidate(CefRectangle dirtyRect, CefPaintElementType type)
+        public void Invalidate(CefPaintElementType type)
         {
-            var n_dirtyRect = new cef_rect_t(dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height);
-            cef_browser_host_t.invalidate(_self, &n_dirtyRect, type);
+            cef_browser_host_t.invalidate(_self, type);
         }
 
         /// <summary>
