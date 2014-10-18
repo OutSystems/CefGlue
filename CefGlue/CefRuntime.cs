@@ -76,11 +76,39 @@
         /// <exception cref="InvalidOperationException"></exception>
         public static void Load()
         {
+            Load(null);
+        }
+
+        /// <summary>
+        /// Loads CEF runtime from specified path.
+        /// </summary>
+        /// <exception cref="DllNotFoundException"></exception>
+        /// <exception cref="CefVersionMismatchException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static void Load(string path)
+        {
             if (_loaded) return;
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                if (Platform == CefRuntimePlatform.Windows)
+                    LoadLibraryWindows(path);
+                else
+                    throw new PlatformNotSupportedException("CEF Runtime can't be initialized on altered path on this platform. Use CefRuntime.Load() instead.");
+            }
 
             CheckVersion();
 
             _loaded = true;
+        }
+
+        private static void LoadLibraryWindows(string path)
+        {
+            Xilium.CefGlue.Platform.Windows.NativeMethods.LoadLibraryEx(
+                System.IO.Path.Combine(path, "libcef.dll"),
+                IntPtr.Zero,
+                Xilium.CefGlue.Platform.Windows.LoadLibraryFlags.LOAD_WITH_ALTERED_SEARCH_PATH
+                );
         }
 
         #region cef_version
