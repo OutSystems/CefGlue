@@ -75,7 +75,9 @@ c2cs_types = {
     'cef_text_input_context_t': 'IntPtr',
 
     'cef_color_model_t': 'CefColorModel',
-    'cef_duplex_mode_t': 'CefDuplexMode'
+    'cef_duplex_mode_t': 'CefDuplexMode',
+
+    'cef_cursor_type_t': 'CefCursorType',
     }
 
 c2cs_platform_retval = {

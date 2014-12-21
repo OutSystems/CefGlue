@@ -105,4 +105,7 @@ classdef = {
     'CefPrintJobCallback': { 'role': ROLE_PROXY },
     'CefPrintHandler': { 'role': ROLE_HANDLER },
     'CefPrintSettings': { 'role': ROLE_PROXY },
+    # r1949
+    'CefNavigationEntryVisitor': { 'role': ROLE_HANDLER },
+    'CefNavigationEntry': { 'role': ROLE_PROXY },
     }

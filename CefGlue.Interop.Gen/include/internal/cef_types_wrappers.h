@@ -160,7 +160,7 @@ class CefPoint : public CefStructBase<CefPointTraits> {
     Set(x, y);
   }
 
-  bool IsEmpty() const { return x <= 0 || x <= 0; }
+  bool IsEmpty() const { return x <= 0 && y <= 0; }
   void Set(int x, int y) {
     this->x = x, this->y = y;
   }
@@ -755,5 +755,26 @@ inline bool operator!=(const CefPageRange& a, const CefPageRange& b) {
   return !(a == b);
 }
 
+
+struct CefCursorInfoTraits {
+  typedef cef_cursor_info_t struct_type;
+
+  static inline void init(struct_type* s) {}
+
+  static inline void clear(struct_type* s) {}
+
+  static inline void set(const struct_type* src, struct_type* target,
+      bool copy) {
+    target->hotspot = src->hotspot;
+    target->image_scale_factor = src->image_scale_factor;
+    target->buffer = src->buffer;
+    target->size = src->size;
+  }
+};
+
+///
+// Class representing cursor information.
+///
+typedef CefStructBase<CefCursorInfoTraits> CefCursorInfo;
 
 #endif  // CEF_INCLUDE_INTERNAL_CEF_TYPES_WRAPPERS_H_

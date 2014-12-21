@@ -193,25 +193,29 @@ namespace Xilium.CefGlue
         /// Called when an element should be painted. |type| indicates whether the
         /// element is the view or the popup widget. |buffer| contains the pixel data
         /// for the whole image. |dirtyRects| contains the set of rectangles that need
-        /// to be repainted. On Windows |buffer| will be |width|*|height|*4 bytes
-        /// in size and represents a BGRA image with an upper-left origin.
+        /// to be repainted. |buffer| will be |width|*|height|*4 bytes in size and
+        /// represents a BGRA image with an upper-left origin.
         /// </summary>
         protected abstract void OnPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr buffer, int width, int height);
 
 
-        private void on_cursor_change(cef_render_handler_t* self, cef_browser_t* browser, IntPtr cursor)
+        private void on_cursor_change(cef_render_handler_t* self, cef_browser_t* browser, IntPtr cursor, CefCursorType type, cef_cursor_info_t* custom_cursor_info)
         {
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
+            var m_cefCursorInfo = type == CefCursorType.Custom ? new CefCursorInfo(custom_cursor_info) : null;
 
-            OnCursorChange(m_browser, cursor);
+            OnCursorChange(m_browser, cursor, type, m_cefCursorInfo);
+
+            if (m_cefCursorInfo != null) m_cefCursorInfo.Dispose();
         }
 
         /// <summary>
-        /// Called when the browser window's cursor has changed.
+        /// Called when the browser's cursor has changed. If |type| is CT_CUSTOM then
+        /// |custom_cursor_info| will be populated with the custom cursor information.
         /// </summary>
-        protected abstract void OnCursorChange(CefBrowser browser, IntPtr cursorHandle);
+        protected abstract void OnCursorChange(CefBrowser browser, IntPtr cursorHandle, CefCursorType type, CefCursorInfo customCursorInfo);
 
 
         private int start_dragging(cef_render_handler_t* self, cef_browser_t* browser, cef_drag_data_t* drag_data, CefDragOperationsMask allowed_ops, int x, int y)

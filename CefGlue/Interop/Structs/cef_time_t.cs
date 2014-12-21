@@ -32,6 +32,20 @@ namespace Xilium.CefGlue.Interop
             millisecond = value.Millisecond;
         }
 
+        public DateTime ToDateTime()
+        {
+            return new DateTime(
+                year,
+                month,
+                day_of_month,
+                hour,
+                minute,
+                second,
+                millisecond,
+                DateTimeKind.Utc
+                );
+        }
+
         public static DateTime ToDateTime(cef_time_t* ptr)
         {
             return new DateTime(

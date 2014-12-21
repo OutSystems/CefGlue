@@ -319,6 +319,16 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
+        /// Retrieve a snapshot of current navigation entries as values sent to the
+        /// specified visitor. If |current_only| is true only the current navigation
+        /// entry will be sent, otherwise all navigation entries will be sent.
+        /// </summary>
+        public void GetNavigationEntries(CefNavigationEntryVisitor visitor, bool currentOnly)
+        {
+            cef_browser_host_t.get_navigation_entries(_self, visitor.ToNative(), currentOnly ? 1 : 0);
+        }
+
+        /// <summary>
         /// Set whether mouse cursor change is disabled.
         /// </summary>
         public void SetMouseCursorChangeDisabled(bool disabled)
@@ -347,6 +357,18 @@ namespace Xilium.CefGlue
             {
                 var n_word = new cef_string_t(word_str, word != null ? word.Length : 0);
                 cef_browser_host_t.replace_misspelling(_self, &n_word);
+            }
+        }
+
+        /// <summary>
+        /// Add the specified |word| to the spelling dictionary.
+        /// </summary>
+        public void AddWordToDictionary(string word)
+        {
+            fixed (char* word_str = word)
+            {
+                var n_word = new cef_string_t(word_str, word != null ? word.Length : 0);
+                cef_browser_host_t.add_word_to_dictionary(_self, &n_word);
             }
         }
 
@@ -464,6 +486,15 @@ namespace Xilium.CefGlue
         public void SendCaptureLostEvent()
         {
             cef_browser_host_t.send_capture_lost_event(_self);
+        }
+
+        /// <summary>
+        /// Notify the browser that the window hosting it is about to be moved or
+        /// resized. This method is only used on Windows and Linux.
+        /// </summary>
+        public void NotifyMoveOrResizeStarted()
+        {
+            cef_browser_host_t.notify_move_or_resize_started(_self);
         }
 
         /// <summary>

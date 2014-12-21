@@ -39,6 +39,7 @@ namespace Xilium.CefGlue
         SpellcheckSuggestion4 = 204,
         SpellcheckSuggestionLast = 204,
         NoSpellingSuggestions = 205,
+        AddToDictionary = 206,
 
         // All user-defined menu IDs should come between MENU_ID_USER_FIRST and
         // MENU_ID_USER_LAST to avoid overlapping the Chromium and CEF ID ranges

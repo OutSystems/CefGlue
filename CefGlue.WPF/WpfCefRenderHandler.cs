@@ -83,7 +83,7 @@ namespace Xilium.CefGlue.WPF
             }
         }
 
-        protected override void OnCursorChange(CefBrowser browser, IntPtr cursorHandle)
+        protected override void OnCursorChange(CefBrowser browser, IntPtr cursorHandle, CefCursorType type, CefCursorInfo customCursorInfo)
         {
             _uiHelper.PerformInUiThread(() =>
                 {
