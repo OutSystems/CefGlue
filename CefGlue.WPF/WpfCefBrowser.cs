@@ -585,7 +585,7 @@ namespace Xilium.CefGlue.WPF
 
                         mouseEvent.Modifiers = GetMouseModifiers();
 
-                        _browserHost.SendMouseClickEvent(mouseEvent,CefMouseButtonType.Left,true,1);
+                        _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Left, true, 1);
 
                         //_logger.Debug(string.Format("Popup_MouseDown: ({0},{1})", cursorPos.X, cursorPos.Y));
                     }
