@@ -206,14 +206,16 @@ namespace Xilium.CefGlue
         }
 
 
-        private int on_certificate_error(cef_request_handler_t* self, CefErrorCode cert_error, cef_string_t* request_url, cef_allow_certificate_error_callback_t* callback)
+        private int on_certificate_error(cef_request_handler_t* self, cef_browser_t* browser, CefErrorCode cert_error, cef_string_t* request_url, cef_sslinfo_t* ssl_info, cef_allow_certificate_error_callback_t* callback)
         {
             CheckSelf(self);
 
+            var m_browser = CefBrowser.FromNative(browser);
             var m_request_url = cef_string_t.ToString(request_url);
+            var m_ssl_info = CefSslInfo.FromNative(ssl_info);
             var m_callback = CefAllowCertificateErrorCallback.FromNativeOrNull(callback);
 
-            var result = OnCertificateError(cert_error, m_request_url, m_callback);
+            var result = OnCertificateError(m_browser, cert_error, m_request_url, m_ssl_info, m_callback);
 
             return result ? 1 : 0;
         }
@@ -227,7 +229,7 @@ namespace Xilium.CefGlue
         /// canceled automatically. If CefSettings.ignore_certificate_errors is set
         /// all invalid certificates will be accepted without calling this method.
         /// </summary>
-        protected virtual bool OnCertificateError(CefErrorCode certError, string requestUrl, CefAllowCertificateErrorCallback callback)
+        protected virtual bool OnCertificateError(CefBrowser browser, CefErrorCode certError, string requestUrl, CefSslInfo sslInfo, CefAllowCertificateErrorCallback callback)
         {
             return false;
         }

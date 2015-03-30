@@ -15,6 +15,7 @@ namespace Xilium.CefGlue.Interop
         internal cef_base_t _base;
         internal IntPtr _on_address_change;
         internal IntPtr _on_title_change;
+        internal IntPtr _on_favicon_urlchange;
         internal IntPtr _on_tooltip;
         internal IntPtr _on_status_message;
         internal IntPtr _on_console_message;
@@ -48,6 +49,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_title_change_delegate(cef_display_handler_t* self, cef_browser_t* browser, cef_string_t* title);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void on_favicon_urlchange_delegate(cef_display_handler_t* self, cef_browser_t* browser, cef_string_list* icon_urls);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

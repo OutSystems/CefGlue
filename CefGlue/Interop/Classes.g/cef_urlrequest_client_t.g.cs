@@ -47,13 +47,13 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_upload_progress_delegate(cef_urlrequest_client_t* self, cef_urlrequest_t* request, ulong current, ulong total);
+        internal delegate void on_upload_progress_delegate(cef_urlrequest_client_t* self, cef_urlrequest_t* request, long current, long total);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_download_progress_delegate(cef_urlrequest_client_t* self, cef_urlrequest_t* request, ulong current, ulong total);
+        internal delegate void on_download_progress_delegate(cef_urlrequest_client_t* self, cef_urlrequest_t* request, long current, long total);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

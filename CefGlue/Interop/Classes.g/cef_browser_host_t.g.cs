@@ -147,7 +147,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void run_file_dialog_delegate(cef_browser_host_t* self, CefFileDialogMode mode, cef_string_t* title, cef_string_t* default_file_name, cef_string_list* accept_types, cef_run_file_dialog_callback_t* callback);
+        private delegate void run_file_dialog_delegate(cef_browser_host_t* self, CefFileDialogMode mode, cef_string_t* title, cef_string_t* default_file_path, cef_string_list* accept_filters, int selected_accept_filter, cef_run_file_dialog_callback_t* callback);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -566,7 +566,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pd;
         private static run_file_dialog_delegate _dd;
         
-        public static void run_file_dialog(cef_browser_host_t* self, CefFileDialogMode mode, cef_string_t* title, cef_string_t* default_file_name, cef_string_list* accept_types, cef_run_file_dialog_callback_t* callback)
+        public static void run_file_dialog(cef_browser_host_t* self, CefFileDialogMode mode, cef_string_t* title, cef_string_t* default_file_path, cef_string_list* accept_filters, int selected_accept_filter, cef_run_file_dialog_callback_t* callback)
         {
             run_file_dialog_delegate d;
             var p = self->_run_file_dialog;
@@ -576,7 +576,7 @@ namespace Xilium.CefGlue.Interop
                 d = (run_file_dialog_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(run_file_dialog_delegate));
                 if (_pd == IntPtr.Zero) { _dd = d; _pd = p; }
             }
-            d(self, mode, title, default_file_name, accept_types, callback);
+            d(self, mode, title, default_file_path, accept_filters, selected_accept_filter, callback);
         }
         
         // StartDownload

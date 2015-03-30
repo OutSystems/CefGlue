@@ -80,6 +80,7 @@
     <Compile Include="Classes.g\CefDragHandler.g.cs" />
     <Compile Include="Classes.g\CefEndTracingCallback.g.cs" />
     <Compile Include="Classes.g\CefFileDialogCallback.g.cs" />
+    <Compile Include="Classes.g\CefFindHandler.g.cs" />
     <Compile Include="Classes.g\CefFocusHandler.g.cs" />
     <Compile Include="Classes.g\CefFrame.g.cs" />
     <Compile Include="Classes.g\CefGeolocationCallback.g.cs" />
@@ -115,6 +116,8 @@
     <Compile Include="Classes.g\CefRunFileDialogCallback.g.cs" />
     <Compile Include="Classes.g\CefSchemeHandlerFactory.g.cs" />
     <Compile Include="Classes.g\CefSchemeRegistrar.g.cs" />
+    <Compile Include="Classes.g\CefSslCertPrincipal.g.cs" />
+    <Compile Include="Classes.g\CefSslInfo.g.cs" />
     <Compile Include="Classes.g\CefStreamReader.g.cs" />
     <Compile Include="Classes.g\CefStreamWriter.g.cs" />
     <Compile Include="Classes.g\CefStringVisitor.g.cs" />
@@ -148,6 +151,7 @@
     <Compile Include="Classes.Handlers\CefDownloadHandler.cs" />
     <Compile Include="Classes.Handlers\CefDragHandler.cs" />
     <Compile Include="Classes.Handlers\CefEndTracingCallback.cs" />
+    <Compile Include="Classes.Handlers\CefFindHandler.cs" />
     <Compile Include="Classes.Handlers\CefFocusHandler.cs" />
     <Compile Include="Classes.Handlers\CefGeolocationHandler.cs" />
     <Compile Include="Classes.Handlers\CefGetGeolocationCallback.cs" />
@@ -209,6 +213,8 @@
     <Compile Include="Classes.Proxies\CefRequestContext.cs" />
     <Compile Include="Classes.Proxies\CefResponse.cs" />
     <Compile Include="Classes.Proxies\CefSchemeRegistrar.cs" />
+    <Compile Include="Classes.Proxies\CefSslCertPrincipal.cs" />
+    <Compile Include="Classes.Proxies\CefSslInfo.cs" />
     <Compile Include="Classes.Proxies\CefStreamReader.cs" />
     <Compile Include="Classes.Proxies\CefStreamWriter.cs" />
     <Compile Include="Classes.Proxies\CefTaskRunner.cs" />
@@ -221,6 +227,7 @@
     <Compile Include="Classes.Proxies\CefWebPluginInfo.cs" />
     <Compile Include="Classes.Proxies\CefXmlReader.cs" />
     <Compile Include="Classes.Proxies\CefZipReader.cs" />
+    <Compile Include="Enums\CefUriUnescapeRules.cs" />
     <Compile Include="Enums\CefCursorType.cs" />
     <Compile Include="Enums\CefDuplexMode.cs" />
     <Compile Include="Enums\CefDragOperationsMask.cs" />
@@ -291,6 +298,7 @@
     <Compile Include="Interop\Classes.g\cef_drag_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_end_tracing_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_file_dialog_callback_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_find_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_focus_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_get_geolocation_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_jsdialog_callback_t.g.cs" />
@@ -309,6 +317,8 @@
     <Compile Include="Interop\Classes.g\cef_request_context_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_run_file_dialog_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_scheme_registrar_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_sslcert_principal_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_sslinfo_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_task_runner_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_urlrequest_client_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_urlrequest_t.g.cs" />

@@ -31,7 +31,7 @@ namespace Xilium.CefGlue
         protected abstract void OnRequestComplete(CefUrlRequest request);
 
 
-        private void on_upload_progress(cef_urlrequest_client_t* self, cef_urlrequest_t* request, ulong current, ulong total)
+        private void on_upload_progress(cef_urlrequest_client_t* self, cef_urlrequest_t* request, long current, long total)
         {
             CheckSelf(self);
 
@@ -46,10 +46,10 @@ namespace Xilium.CefGlue
         /// chunked upload is enabled). This method will only be called if the
         /// UR_FLAG_REPORT_UPLOAD_PROGRESS flag is set on the request.
         /// </summary>
-        protected abstract void OnUploadProgress(CefUrlRequest request, ulong current, ulong total);
+        protected abstract void OnUploadProgress(CefUrlRequest request, long current, long total);
 
 
-        private void on_download_progress(cef_urlrequest_client_t* self, cef_urlrequest_t* request, ulong current, ulong total)
+        private void on_download_progress(cef_urlrequest_client_t* self, cef_urlrequest_t* request, long current, long total)
         {
             CheckSelf(self);
 
@@ -63,7 +63,7 @@ namespace Xilium.CefGlue
         /// bytes received up to the call and |total| is the expected total size of the
         /// response (or -1 if not determined).
         /// </summary>
-        protected abstract void OnDownloadProgress(CefUrlRequest request, ulong current, ulong total);
+        protected abstract void OnDownloadProgress(CefUrlRequest request, long current, long total);
 
 
         private void on_download_data(cef_urlrequest_client_t* self, cef_urlrequest_t* request, void* data, UIntPtr data_length)

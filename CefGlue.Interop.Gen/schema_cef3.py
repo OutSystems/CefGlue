@@ -108,4 +108,9 @@ classdef = {
     # r1949
     'CefNavigationEntryVisitor': { 'role': ROLE_HANDLER },
     'CefNavigationEntry': { 'role': ROLE_PROXY },
+    # 2272 branch
+    # r2035
+    'CefFindHandler': { 'role': ROLE_HANDLER },
+    'CefSSLCertPrincipal': { 'role': ROLE_PROXY, 'name': 'CefSslCertPrincipal' },
+    'CefSSLInfo': { 'role': ROLE_PROXY, 'name': 'CefSslInfo' },
     }

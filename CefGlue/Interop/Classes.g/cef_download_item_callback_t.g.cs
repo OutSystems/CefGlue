@@ -14,6 +14,8 @@ namespace Xilium.CefGlue.Interop
     {
         internal cef_base_t _base;
         internal IntPtr _cancel;
+        internal IntPtr _pause;
+        internal IntPtr _resume;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -38,6 +40,18 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate void cancel_delegate(cef_download_item_callback_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void pause_delegate(cef_download_item_callback_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void resume_delegate(cef_download_item_callback_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -103,6 +117,40 @@ namespace Xilium.CefGlue.Interop
             {
                 d = (cancel_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(cancel_delegate));
                 if (_p3 == IntPtr.Zero) { _d3 = d; _p3 = p; }
+            }
+            d(self);
+        }
+        
+        // Pause
+        private static IntPtr _p4;
+        private static pause_delegate _d4;
+        
+        public static void pause(cef_download_item_callback_t* self)
+        {
+            pause_delegate d;
+            var p = self->_pause;
+            if (p == _p4) { d = _d4; }
+            else
+            {
+                d = (pause_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(pause_delegate));
+                if (_p4 == IntPtr.Zero) { _d4 = d; _p4 = p; }
+            }
+            d(self);
+        }
+        
+        // Resume
+        private static IntPtr _p5;
+        private static resume_delegate _d5;
+        
+        public static void resume(cef_download_item_callback_t* self)
+        {
+            resume_delegate d;
+            var p = self->_resume;
+            if (p == _p5) { d = _d5; }
+            else
+            {
+                d = (resume_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(resume_delegate));
+                if (_p5 == IntPtr.Zero) { _d5 = d; _p5 = p; }
             }
             d(self);
         }

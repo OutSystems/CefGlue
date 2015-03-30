@@ -10,35 +10,35 @@ namespace Xilium.CefGlue
     using Xilium.CefGlue.Interop;
     
     // Role: HANDLER
-    public abstract unsafe partial class CefRunFileDialogCallback
+    public abstract unsafe partial class CefFindHandler
     {
-        private static Dictionary<IntPtr, CefRunFileDialogCallback> _roots = new Dictionary<IntPtr, CefRunFileDialogCallback>();
+        private static Dictionary<IntPtr, CefFindHandler> _roots = new Dictionary<IntPtr, CefFindHandler>();
         
         private int _refct;
-        private cef_run_file_dialog_callback_t* _self;
+        private cef_find_handler_t* _self;
         
         protected object SyncRoot { get { return this; } }
         
-        private cef_run_file_dialog_callback_t.add_ref_delegate _ds0;
-        private cef_run_file_dialog_callback_t.release_delegate _ds1;
-        private cef_run_file_dialog_callback_t.has_one_ref_delegate _ds2;
-        private cef_run_file_dialog_callback_t.on_file_dialog_dismissed_delegate _ds3;
+        private cef_find_handler_t.add_ref_delegate _ds0;
+        private cef_find_handler_t.release_delegate _ds1;
+        private cef_find_handler_t.has_one_ref_delegate _ds2;
+        private cef_find_handler_t.on_find_result_delegate _ds3;
         
-        protected CefRunFileDialogCallback()
+        protected CefFindHandler()
         {
-            _self = cef_run_file_dialog_callback_t.Alloc();
+            _self = cef_find_handler_t.Alloc();
         
-            _ds0 = new cef_run_file_dialog_callback_t.add_ref_delegate(add_ref);
+            _ds0 = new cef_find_handler_t.add_ref_delegate(add_ref);
             _self->_base._add_ref = Marshal.GetFunctionPointerForDelegate(_ds0);
-            _ds1 = new cef_run_file_dialog_callback_t.release_delegate(release);
+            _ds1 = new cef_find_handler_t.release_delegate(release);
             _self->_base._release = Marshal.GetFunctionPointerForDelegate(_ds1);
-            _ds2 = new cef_run_file_dialog_callback_t.has_one_ref_delegate(has_one_ref);
+            _ds2 = new cef_find_handler_t.has_one_ref_delegate(has_one_ref);
             _self->_base._has_one_ref = Marshal.GetFunctionPointerForDelegate(_ds2);
-            _ds3 = new cef_run_file_dialog_callback_t.on_file_dialog_dismissed_delegate(on_file_dialog_dismissed);
-            _self->_on_file_dialog_dismissed = Marshal.GetFunctionPointerForDelegate(_ds3);
+            _ds3 = new cef_find_handler_t.on_find_result_delegate(on_find_result);
+            _self->_on_find_result = Marshal.GetFunctionPointerForDelegate(_ds3);
         }
         
-        ~CefRunFileDialogCallback()
+        ~CefFindHandler()
         {
             Dispose(false);
         }
@@ -47,12 +47,12 @@ namespace Xilium.CefGlue
         {
             if (_self != null)
             {
-                cef_run_file_dialog_callback_t.Free(_self);
+                cef_find_handler_t.Free(_self);
                 _self = null;
             }
         }
         
-        private void add_ref(cef_run_file_dialog_callback_t* self)
+        private void add_ref(cef_find_handler_t* self)
         {
             lock (SyncRoot)
             {
@@ -64,7 +64,7 @@ namespace Xilium.CefGlue
             }
         }
         
-        private int release(cef_run_file_dialog_callback_t* self)
+        private int release(cef_find_handler_t* self)
         {
             lock (SyncRoot)
             {
@@ -78,19 +78,19 @@ namespace Xilium.CefGlue
             }
         }
         
-        private int has_one_ref(cef_run_file_dialog_callback_t* self)
+        private int has_one_ref(cef_find_handler_t* self)
         {
             lock (SyncRoot) { return _refct == 1 ? 1 : 0; }
         }
         
-        internal cef_run_file_dialog_callback_t* ToNative()
+        internal cef_find_handler_t* ToNative()
         {
             add_ref(_self);
             return _self;
         }
         
         [Conditional("DEBUG")]
-        private void CheckSelf(cef_run_file_dialog_callback_t* self)
+        private void CheckSelf(cef_find_handler_t* self)
         {
             if (_self != self) throw ExceptionBuilder.InvalidSelfReference();
         }

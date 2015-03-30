@@ -522,32 +522,69 @@
         #endregion
 
         #region cef_url
-        // TODO: CefRuntime.ParseUrl
-        // TODO: CefRuntime.CreateUrl
+
         /*
-        // CefParseURL
-        [DllImport(libcef.DllName, EntryPoint = "cef_parse_url", CallingConvention = libcef.CEF_CALL)]
-        public static extern int parse_url(cef_string_t* url, cef_urlparts_t* parts);
+        ///
+        // Parse the specified |url| into its component parts.
+        // Returns false if the URL is empty or invalid.
+        ///
+        bool CefParseURL(const CefString& url,
+                            CefURLParts& parts);
 
-        // CefCreateURL
-        [DllImport(libcef.DllName, EntryPoint = "cef_create_url", CallingConvention = libcef.CEF_CALL)]
-        public static extern int create_url(cef_urlparts_t* parts, cef_string_t* url);
+        ///
+        // Creates a URL from the specified |parts|, which must contain a non-empty
+        // spec or a non-empty host and path (at a minimum), but not both.
+        // Returns false if |parts| isn't initialized as described.
+        ///
+        bool CefCreateURL(const CefURLParts& parts,
+                            CefString& url);
+
+        ///
+        // Returns the mime type for the specified file extension or an empty string if
+        // unknown.
+        ///
+        CefString CefGetMimeType(const CefString& extension);
+
+        // Get the extensions associated with the given mime type. This should be passed
+        // in lower case. There could be multiple extensions for a given mime type, like
+        // "html,htm" for "text/html", or "txt,text,html,..." for "text/*". Any existing
+        // elements in the provided vector will not be erased.
+        void CefGetExtensionsForMimeType(const CefString& mime_type,
+                                            std::vector<CefString>& extensions);
+
+        ///
+        // Encodes |data| as a base64 string.
+        ///
+        CefString CefBase64Encode(const void* data, size_t data_size);
+
+        ///
+        // Decodes the base64 encoded string |data|. The returned value will be NULL if
+        // the decoding fails.
+        ///
+        CefRefPtr<CefBinaryValue> CefBase64Decode(const CefString& data);
+
+        ///
+        // Escapes characters in |text| which are unsuitable for use as a query
+        // parameter value. Everything except alphanumerics and -_.!~*'() will be
+        // converted to "%XX". If |use_plus| is true spaces will change to "+". The
+        // result is basically the same as encodeURIComponent in Javacript.
+        ///
+        CefString CefURIEncode(const CefString& text, bool use_plus);
+
+        ///
+        // Unescapes |text| and returns the result. Unescaping consists of looking for
+        // the exact pattern "%XX" where each X is a hex digit and converting to the
+        // character with the numerical value of those digits (e.g. "i%20=%203%3b"
+        // unescapes to "i = 3;"). If |convert_to_utf8| is true this function will
+        // attempt to interpret the initial decoded result as UTF-8. If the result is
+        // convertable into UTF-8 it will be returned as converted. Otherwise the
+        // initial decoded result will be returned.  The |unescape_rule| parameter
+        // supports further customization the decoding process.
+        ///
+        CefString CefURIDecode(const CefString& text,
+                                bool convert_to_utf8,
+                                cef_uri_unescape_rule_t unescape_rule);
         */
-
-        /////
-        //// Returns the mime type for the specified file extension or an empty string if
-        //// unknown.
-        /////
-        ///*--cef()--*/
-        //CefString CefGetMimeType(const CefString& extension);
-
-        //// Get the extensions associated with the given mime type. This should be passed
-        //// in lower case. There could be multiple extensions for a given mime type, like
-        //// "html,htm" for "text/html", or "txt,text,html,..." for "text/*". Any existing
-        //// elements in the provided vector will not be erased.
-        ///*--cef()--*/
-        //void CefGetExtensionsForMimeType(const CefString& mime_type,
-        //                                 std::vector<CefString>& extensions);
 
         #endregion
 

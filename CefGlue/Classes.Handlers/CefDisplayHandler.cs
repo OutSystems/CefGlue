@@ -49,6 +49,24 @@ namespace Xilium.CefGlue
         }
 
 
+        private void on_favicon_urlchange(cef_display_handler_t* self, cef_browser_t* browser, cef_string_list* icon_urls)
+        {
+            CheckSelf(self);
+
+            var mBrowser = CefBrowser.FromNative(browser);
+            var mIconUrls = cef_string_list.ToArray(icon_urls);
+
+            OnFaviconUrlChange(mBrowser, mIconUrls);
+        }
+
+        /// <summary>
+        /// Called when the page icon changes.
+        /// </summary>
+        protected virtual void OnFaviconUrlChange(CefBrowser browser, string[] iconUrls)
+        {
+        }
+
+
         private int on_tooltip(cef_display_handler_t* self, cef_browser_t* browser, cef_string_t* text)
         {
             CheckSelf(self);

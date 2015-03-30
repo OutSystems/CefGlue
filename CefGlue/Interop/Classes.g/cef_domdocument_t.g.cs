@@ -21,9 +21,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_element_by_id;
         internal IntPtr _get_focused_node;
         internal IntPtr _has_selection;
-        internal IntPtr _get_selection_start_node;
         internal IntPtr _get_selection_start_offset;
-        internal IntPtr _get_selection_end_node;
         internal IntPtr _get_selection_end_offset;
         internal IntPtr _get_selection_as_markup;
         internal IntPtr _get_selection_as_text;
@@ -100,19 +98,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_domnode_t* get_selection_start_node_delegate(cef_domdocument_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
         private delegate int get_selection_start_offset_delegate(cef_domdocument_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        private delegate cef_domnode_t* get_selection_end_node_delegate(cef_domdocument_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -331,138 +317,104 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetSelectionStartNode
-        private static IntPtr _pb;
-        private static get_selection_start_node_delegate _db;
-        
-        public static cef_domnode_t* get_selection_start_node(cef_domdocument_t* self)
-        {
-            get_selection_start_node_delegate d;
-            var p = self->_get_selection_start_node;
-            if (p == _pb) { d = _db; }
-            else
-            {
-                d = (get_selection_start_node_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_selection_start_node_delegate));
-                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
-            }
-            return d(self);
-        }
-        
         // GetSelectionStartOffset
-        private static IntPtr _pc;
-        private static get_selection_start_offset_delegate _dc;
+        private static IntPtr _pb;
+        private static get_selection_start_offset_delegate _db;
         
         public static int get_selection_start_offset(cef_domdocument_t* self)
         {
             get_selection_start_offset_delegate d;
             var p = self->_get_selection_start_offset;
-            if (p == _pc) { d = _dc; }
+            if (p == _pb) { d = _db; }
             else
             {
                 d = (get_selection_start_offset_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_selection_start_offset_delegate));
-                if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
-            }
-            return d(self);
-        }
-        
-        // GetSelectionEndNode
-        private static IntPtr _pd;
-        private static get_selection_end_node_delegate _dd;
-        
-        public static cef_domnode_t* get_selection_end_node(cef_domdocument_t* self)
-        {
-            get_selection_end_node_delegate d;
-            var p = self->_get_selection_end_node;
-            if (p == _pd) { d = _dd; }
-            else
-            {
-                d = (get_selection_end_node_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_selection_end_node_delegate));
-                if (_pd == IntPtr.Zero) { _dd = d; _pd = p; }
+                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
             }
             return d(self);
         }
         
         // GetSelectionEndOffset
-        private static IntPtr _pe;
-        private static get_selection_end_offset_delegate _de;
+        private static IntPtr _pc;
+        private static get_selection_end_offset_delegate _dc;
         
         public static int get_selection_end_offset(cef_domdocument_t* self)
         {
             get_selection_end_offset_delegate d;
             var p = self->_get_selection_end_offset;
-            if (p == _pe) { d = _de; }
+            if (p == _pc) { d = _dc; }
             else
             {
                 d = (get_selection_end_offset_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_selection_end_offset_delegate));
-                if (_pe == IntPtr.Zero) { _de = d; _pe = p; }
+                if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
             }
             return d(self);
         }
         
         // GetSelectionAsMarkup
-        private static IntPtr _pf;
-        private static get_selection_as_markup_delegate _df;
+        private static IntPtr _pd;
+        private static get_selection_as_markup_delegate _dd;
         
         public static cef_string_userfree* get_selection_as_markup(cef_domdocument_t* self)
         {
             get_selection_as_markup_delegate d;
             var p = self->_get_selection_as_markup;
-            if (p == _pf) { d = _df; }
+            if (p == _pd) { d = _dd; }
             else
             {
                 d = (get_selection_as_markup_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_selection_as_markup_delegate));
-                if (_pf == IntPtr.Zero) { _df = d; _pf = p; }
+                if (_pd == IntPtr.Zero) { _dd = d; _pd = p; }
             }
             return d(self);
         }
         
         // GetSelectionAsText
-        private static IntPtr _p10;
-        private static get_selection_as_text_delegate _d10;
+        private static IntPtr _pe;
+        private static get_selection_as_text_delegate _de;
         
         public static cef_string_userfree* get_selection_as_text(cef_domdocument_t* self)
         {
             get_selection_as_text_delegate d;
             var p = self->_get_selection_as_text;
-            if (p == _p10) { d = _d10; }
+            if (p == _pe) { d = _de; }
             else
             {
                 d = (get_selection_as_text_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_selection_as_text_delegate));
-                if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
+                if (_pe == IntPtr.Zero) { _de = d; _pe = p; }
             }
             return d(self);
         }
         
         // GetBaseURL
-        private static IntPtr _p11;
-        private static get_base_url_delegate _d11;
+        private static IntPtr _pf;
+        private static get_base_url_delegate _df;
         
         public static cef_string_userfree* get_base_url(cef_domdocument_t* self)
         {
             get_base_url_delegate d;
             var p = self->_get_base_url;
-            if (p == _p11) { d = _d11; }
+            if (p == _pf) { d = _df; }
             else
             {
                 d = (get_base_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_base_url_delegate));
-                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
+                if (_pf == IntPtr.Zero) { _df = d; _pf = p; }
             }
             return d(self);
         }
         
         // GetCompleteURL
-        private static IntPtr _p12;
-        private static get_complete_url_delegate _d12;
+        private static IntPtr _p10;
+        private static get_complete_url_delegate _d10;
         
         public static cef_string_userfree* get_complete_url(cef_domdocument_t* self, cef_string_t* partialURL)
         {
             get_complete_url_delegate d;
             var p = self->_get_complete_url;
-            if (p == _p12) { d = _d12; }
+            if (p == _p10) { d = _d10; }
             else
             {
                 d = (get_complete_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_complete_url_delegate));
-                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
+                if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
             }
             return d(self, partialURL);
         }

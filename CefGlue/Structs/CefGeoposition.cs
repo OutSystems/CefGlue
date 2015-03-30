@@ -78,7 +78,7 @@
         public double Speed { get { return _speed; } }
 
         /// <summary>
-        /// Time of position measurement in miliseconds since Epoch in UTC time. This
+        /// Time of position measurement in milliseconds since Epoch in UTC time. This
         /// is taken from the host computer's system clock.
         /// </summary>
         public DateTime Timestamp { get { return _timestamp; } }
