@@ -23,11 +23,11 @@ namespace Xilium.CefGlue.Interop
         
         // GetGlobalManager
         [DllImport(libcef.DllName, EntryPoint = "cef_cookie_manager_get_global_manager", CallingConvention = libcef.CEF_CALL)]
-        public static extern cef_cookie_manager_t* get_global_manager();
+        public static extern cef_cookie_manager_t* get_global_manager(cef_completion_callback_t* callback);
         
         // CreateManager
         [DllImport(libcef.DllName, EntryPoint = "cef_cookie_manager_create_manager", CallingConvention = libcef.CEF_CALL)]
-        public static extern cef_cookie_manager_t* create_manager(cef_string_t* path, int persist_session_cookies);
+        public static extern cef_cookie_manager_t* create_manager(cef_string_t* path, int persist_session_cookies, cef_completion_callback_t* callback);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -51,7 +51,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void set_supported_schemes_delegate(cef_cookie_manager_t* self, cef_string_list* schemes);
+        private delegate void set_supported_schemes_delegate(cef_cookie_manager_t* self, cef_string_list* schemes, cef_completion_callback_t* callback);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -69,19 +69,19 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_cookie_delegate(cef_cookie_manager_t* self, cef_string_t* url, cef_cookie_t* cookie);
+        private delegate int set_cookie_delegate(cef_cookie_manager_t* self, cef_string_t* url, cef_cookie_t* cookie, cef_set_cookie_callback_t* callback);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int delete_cookies_delegate(cef_cookie_manager_t* self, cef_string_t* url, cef_string_t* cookie_name);
+        private delegate int delete_cookies_delegate(cef_cookie_manager_t* self, cef_string_t* url, cef_string_t* cookie_name, cef_delete_cookies_callback_t* callback);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_storage_path_delegate(cef_cookie_manager_t* self, cef_string_t* path, int persist_session_cookies);
+        private delegate int set_storage_path_delegate(cef_cookie_manager_t* self, cef_string_t* path, int persist_session_cookies, cef_completion_callback_t* callback);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -144,7 +144,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p3;
         private static set_supported_schemes_delegate _d3;
         
-        public static void set_supported_schemes(cef_cookie_manager_t* self, cef_string_list* schemes)
+        public static void set_supported_schemes(cef_cookie_manager_t* self, cef_string_list* schemes, cef_completion_callback_t* callback)
         {
             set_supported_schemes_delegate d;
             var p = self->_set_supported_schemes;
@@ -154,7 +154,7 @@ namespace Xilium.CefGlue.Interop
                 d = (set_supported_schemes_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_supported_schemes_delegate));
                 if (_p3 == IntPtr.Zero) { _d3 = d; _p3 = p; }
             }
-            d(self, schemes);
+            d(self, schemes, callback);
         }
         
         // VisitAllCookies
@@ -195,7 +195,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p6;
         private static set_cookie_delegate _d6;
         
-        public static int set_cookie(cef_cookie_manager_t* self, cef_string_t* url, cef_cookie_t* cookie)
+        public static int set_cookie(cef_cookie_manager_t* self, cef_string_t* url, cef_cookie_t* cookie, cef_set_cookie_callback_t* callback)
         {
             set_cookie_delegate d;
             var p = self->_set_cookie;
@@ -205,14 +205,14 @@ namespace Xilium.CefGlue.Interop
                 d = (set_cookie_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_cookie_delegate));
                 if (_p6 == IntPtr.Zero) { _d6 = d; _p6 = p; }
             }
-            return d(self, url, cookie);
+            return d(self, url, cookie, callback);
         }
         
         // DeleteCookies
         private static IntPtr _p7;
         private static delete_cookies_delegate _d7;
         
-        public static int delete_cookies(cef_cookie_manager_t* self, cef_string_t* url, cef_string_t* cookie_name)
+        public static int delete_cookies(cef_cookie_manager_t* self, cef_string_t* url, cef_string_t* cookie_name, cef_delete_cookies_callback_t* callback)
         {
             delete_cookies_delegate d;
             var p = self->_delete_cookies;
@@ -222,14 +222,14 @@ namespace Xilium.CefGlue.Interop
                 d = (delete_cookies_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(delete_cookies_delegate));
                 if (_p7 == IntPtr.Zero) { _d7 = d; _p7 = p; }
             }
-            return d(self, url, cookie_name);
+            return d(self, url, cookie_name, callback);
         }
         
         // SetStoragePath
         private static IntPtr _p8;
         private static set_storage_path_delegate _d8;
         
-        public static int set_storage_path(cef_cookie_manager_t* self, cef_string_t* path, int persist_session_cookies)
+        public static int set_storage_path(cef_cookie_manager_t* self, cef_string_t* path, int persist_session_cookies, cef_completion_callback_t* callback)
         {
             set_storage_path_delegate d;
             var p = self->_set_storage_path;
@@ -239,7 +239,7 @@ namespace Xilium.CefGlue.Interop
                 d = (set_storage_path_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_storage_path_delegate));
                 if (_p8 == IntPtr.Zero) { _d8 = d; _p8 = p; }
             }
-            return d(self, path, persist_session_cookies);
+            return d(self, path, persist_session_cookies, callback);
         }
         
         // FlushStore

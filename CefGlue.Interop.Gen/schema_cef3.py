@@ -113,4 +113,9 @@ classdef = {
     'CefFindHandler': { 'role': ROLE_HANDLER },
     'CefSSLCertPrincipal': { 'role': ROLE_PROXY, 'name': 'CefSslCertPrincipal' },
     'CefSSLInfo': { 'role': ROLE_PROXY, 'name': 'CefSslInfo' },
+    # 2357
+    'CefSetCookieCallback': { 'role': ROLE_HANDLER },
+    'CefDeleteCookiesCallback': { 'role': ROLE_HANDLER },
+    'CefRequestCallback': { 'role': ROLE_PROXY },
+    'CefValue': { 'role': ROLE_PROXY },
     }

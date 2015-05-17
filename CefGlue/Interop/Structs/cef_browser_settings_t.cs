@@ -49,6 +49,8 @@ namespace Xilium.CefGlue.Interop
 
         public uint background_color;
 
+        public cef_string_t accept_language_list;
+
         #region Alloc & Free
         private static int _sizeof;
 

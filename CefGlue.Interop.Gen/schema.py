@@ -54,6 +54,8 @@ c2cs_types = {
 
     'cef_base_t': 'cef_base_t',
 
+    'cef_color_t': 'uint',
+
     # structs
     'cef_urlparts_t': 'cef_urlparts_t',
     'cef_proxy_info_t': 'cef_proxy_info_t',
@@ -64,9 +66,14 @@ c2cs_types = {
     'cef_settings_t': 'cef_settings_t',
     'cef_key_event_t': 'cef_key_event_t',
     'cef_geoposition_t': 'cef_geoposition_t',
+    'cef_point_t': 'cef_point_t',
+    'cef_size_t': 'cef_size_t',
     'cef_rect_t': 'cef_rect_t',
     'cef_mouse_event_t': 'cef_mouse_event_t',
     'cef_screen_info_t': 'cef_screen_info_t',
+    'cef_page_range_t': 'cef_page_range_t',
+    'cef_cursor_info_t': 'cef_cursor_info_t',
+    'cef_request_context_settings_t': 'cef_request_context_settings_t',
 
     # platform dependend structs
     'cef_main_args_t': 'cef_main_args_t',
@@ -125,6 +132,8 @@ c2cs_enumtypes = {
     'cef_resource_type_t': 'CefResourceType',
     'cef_transition_type_t': 'CefTransitionType',
     'cef_uri_unescape_rule_t': 'CefUriUnescapeRules',
+    'cef_window_open_disposition_t': 'CefWindowOpenDisposition',
+    'cef_return_value_t': 'CefReturnValue',
     }
 
 c2cs_structtypes = { }

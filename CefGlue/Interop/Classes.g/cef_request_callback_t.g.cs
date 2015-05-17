@@ -10,7 +10,7 @@ namespace Xilium.CefGlue.Interop
     
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     [SuppressMessage("Microsoft.Design", "CA1049:TypesThatOwnNativeResourcesShouldBeDisposable")]
-    internal unsafe struct cef_quota_callback_t
+    internal unsafe struct cef_request_callback_t
     {
         internal cef_base_t _base;
         internal IntPtr _cont;
@@ -20,37 +20,37 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void add_ref_delegate(cef_quota_callback_t* self);
+        private delegate void add_ref_delegate(cef_request_callback_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int release_delegate(cef_quota_callback_t* self);
+        private delegate int release_delegate(cef_request_callback_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int has_one_ref_delegate(cef_quota_callback_t* self);
+        private delegate int has_one_ref_delegate(cef_request_callback_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void cont_delegate(cef_quota_callback_t* self, int allow);
+        private delegate void cont_delegate(cef_request_callback_t* self, int allow);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void cancel_delegate(cef_quota_callback_t* self);
+        private delegate void cancel_delegate(cef_request_callback_t* self);
         
         // AddRef
         private static IntPtr _p0;
         private static add_ref_delegate _d0;
         
-        public static void add_ref(cef_quota_callback_t* self)
+        public static void add_ref(cef_request_callback_t* self)
         {
             add_ref_delegate d;
             var p = self->_base._add_ref;
@@ -67,7 +67,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1;
         private static release_delegate _d1;
         
-        public static int release(cef_quota_callback_t* self)
+        public static int release(cef_request_callback_t* self)
         {
             release_delegate d;
             var p = self->_base._release;
@@ -84,7 +84,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p2;
         private static has_one_ref_delegate _d2;
         
-        public static int has_one_ref(cef_quota_callback_t* self)
+        public static int has_one_ref(cef_request_callback_t* self)
         {
             has_one_ref_delegate d;
             var p = self->_base._has_one_ref;
@@ -101,7 +101,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p3;
         private static cont_delegate _d3;
         
-        public static void cont(cef_quota_callback_t* self, int allow)
+        public static void cont(cef_request_callback_t* self, int allow)
         {
             cont_delegate d;
             var p = self->_cont;
@@ -118,7 +118,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p4;
         private static cancel_delegate _d4;
         
-        public static void cancel(cef_quota_callback_t* self)
+        public static void cancel(cef_request_callback_t* self)
         {
             cancel_delegate d;
             var p = self->_cancel;

@@ -27,7 +27,6 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_media_state_flags;
         internal IntPtr _get_selection_text;
         internal IntPtr _get_misspelled_word;
-        internal IntPtr _get_misspelling_hash;
         internal IntPtr _get_dictionary_suggestions;
         internal IntPtr _is_editable;
         internal IntPtr _is_spell_check_enabled;
@@ -134,12 +133,6 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate cef_string_userfree* get_misspelled_word_delegate(cef_context_menu_params_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        private delegate int get_misspelling_hash_delegate(cef_context_menu_params_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -454,87 +447,70 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetMisspellingHash
-        private static IntPtr _p11;
-        private static get_misspelling_hash_delegate _d11;
-        
-        public static int get_misspelling_hash(cef_context_menu_params_t* self)
-        {
-            get_misspelling_hash_delegate d;
-            var p = self->_get_misspelling_hash;
-            if (p == _p11) { d = _d11; }
-            else
-            {
-                d = (get_misspelling_hash_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_misspelling_hash_delegate));
-                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
-            }
-            return d(self);
-        }
-        
         // GetDictionarySuggestions
-        private static IntPtr _p12;
-        private static get_dictionary_suggestions_delegate _d12;
+        private static IntPtr _p11;
+        private static get_dictionary_suggestions_delegate _d11;
         
         public static int get_dictionary_suggestions(cef_context_menu_params_t* self, cef_string_list* suggestions)
         {
             get_dictionary_suggestions_delegate d;
             var p = self->_get_dictionary_suggestions;
-            if (p == _p12) { d = _d12; }
+            if (p == _p11) { d = _d11; }
             else
             {
                 d = (get_dictionary_suggestions_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_dictionary_suggestions_delegate));
-                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
+                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
             }
             return d(self, suggestions);
         }
         
         // IsEditable
-        private static IntPtr _p13;
-        private static is_editable_delegate _d13;
+        private static IntPtr _p12;
+        private static is_editable_delegate _d12;
         
         public static int is_editable(cef_context_menu_params_t* self)
         {
             is_editable_delegate d;
             var p = self->_is_editable;
-            if (p == _p13) { d = _d13; }
+            if (p == _p12) { d = _d12; }
             else
             {
                 d = (is_editable_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_editable_delegate));
-                if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
+                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
             }
             return d(self);
         }
         
         // IsSpellCheckEnabled
-        private static IntPtr _p14;
-        private static is_spell_check_enabled_delegate _d14;
+        private static IntPtr _p13;
+        private static is_spell_check_enabled_delegate _d13;
         
         public static int is_spell_check_enabled(cef_context_menu_params_t* self)
         {
             is_spell_check_enabled_delegate d;
             var p = self->_is_spell_check_enabled;
-            if (p == _p14) { d = _d14; }
+            if (p == _p13) { d = _d13; }
             else
             {
                 d = (is_spell_check_enabled_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_spell_check_enabled_delegate));
-                if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
+                if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
             }
             return d(self);
         }
         
         // GetEditStateFlags
-        private static IntPtr _p15;
-        private static get_edit_state_flags_delegate _d15;
+        private static IntPtr _p14;
+        private static get_edit_state_flags_delegate _d14;
         
         public static CefContextMenuEditStateFlags get_edit_state_flags(cef_context_menu_params_t* self)
         {
             get_edit_state_flags_delegate d;
             var p = self->_get_edit_state_flags;
-            if (p == _p15) { d = _d15; }
+            if (p == _p14) { d = _d14; }
             else
             {
                 d = (get_edit_state_flags_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_edit_state_flags_delegate));
-                if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
+                if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
             }
             return d(self);
         }

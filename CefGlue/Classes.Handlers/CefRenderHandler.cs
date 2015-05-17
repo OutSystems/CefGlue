@@ -271,18 +271,18 @@ namespace Xilium.CefGlue
         }
 
 
-        private void on_scroll_offset_changed(cef_render_handler_t* self, cef_browser_t* browser)
+        private void on_scroll_offset_changed(cef_render_handler_t* self, cef_browser_t* browser, double x, double y)
         {
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
 
-            OnScrollOffsetChanged(m_browser);
+            OnScrollOffsetChanged(m_browser, x, y);
         }
 
         /// <summary>
         /// Called when the scroll offset has changed.
         /// </summary>
-        protected abstract void OnScrollOffsetChanged(CefBrowser browser);
+        protected abstract void OnScrollOffsetChanged(CefBrowser browser, double x, double y);
     }
 }

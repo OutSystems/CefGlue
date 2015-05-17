@@ -29,6 +29,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _set_first_party_for_cookies;
         internal IntPtr _get_resource_type;
         internal IntPtr _get_transition_type;
+        internal IntPtr _get_identifier;
         
         // Create
         [DllImport(libcef.DllName, EntryPoint = "cef_request_create", CallingConvention = libcef.CEF_CALL)]
@@ -147,6 +148,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate CefTransitionType get_transition_type_delegate(cef_request_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate ulong get_identifier_delegate(cef_request_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -467,6 +474,23 @@ namespace Xilium.CefGlue.Interop
             {
                 d = (get_transition_type_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_transition_type_delegate));
                 if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetIdentifier
+        private static IntPtr _p13;
+        private static get_identifier_delegate _d13;
+        
+        public static ulong get_identifier(cef_request_t* self)
+        {
+            get_identifier_delegate d;
+            var p = self->_get_identifier;
+            if (p == _p13) { d = _d13; }
+            else
+            {
+                d = (get_identifier_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_identifier_delegate));
+                if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
             }
             return d(self);
         }

@@ -107,7 +107,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_scroll_offset_changed_delegate(cef_render_handler_t* self, cef_browser_t* browser);
+        internal delegate void on_scroll_offset_changed_delegate(cef_render_handler_t* self, cef_browser_t* browser, double x, double y);
         
         private static int _sizeof;
         

@@ -5,27 +5,27 @@ namespace Xilium.CefGlue
     using System.Diagnostics;
     using System.Runtime.InteropServices;
     using Xilium.CefGlue.Interop;
-    
+
     /// <summary>
-    /// Callback interface used for asynchronous continuation of quota requests.
+    /// Callback interface used for asynchronous continuation of url requests.
     /// </summary>
-    public sealed unsafe partial class CefQuotaCallback
+    public sealed unsafe partial class CefRequestCallback
     {
         /// <summary>
-        /// Continue the quota request. If |allow| is true the request will be
-        /// allowed. Otherwise, the request will be denied.
+        /// Continue the url request. If |allow| is true the request will be continued.
+        /// Otherwise, the request will be canceled.
         /// </summary>
         public void Continue(bool allow)
         {
-            cef_quota_callback_t.cont(_self, allow ? 1 : 0);
+            cef_request_callback_t.cont(_self, allow ? 1 : 0);
         }
 
         /// <summary>
-        /// Cancel the quota request.
+        /// Cancel the url request.
         /// </summary>
         public void Cancel()
         {
-            cef_quota_callback_t.cancel(_self);
+            cef_request_callback_t.cancel(_self);
         }
     }
 }

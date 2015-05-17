@@ -185,5 +185,18 @@ namespace Xilium.CefGlue
                 return cef_request_t.get_transition_type(_self);
             }
         }
+
+        /// <summary>
+        /// Returns the globally unique identifier for this request or 0 if not
+        /// specified. Can be used by CefRequestHandler implementations in the browser
+        /// process to track a single request across multiple callbacks.
+        /// </summary>
+        public ulong Identifier
+        {
+            get
+            {
+                return cef_request_t.get_identifier(_self);
+            }
+        }
     }
 }

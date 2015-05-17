@@ -39,5 +39,17 @@ namespace Xilium.CefGlue
         /// module).
         /// </summary>
         FileModule,
+
+        /// <summary>
+        /// "Local Settings\Application Data" directory under the user profile
+        /// directory on Windows.
+        /// </summary>
+        LocalAppData,
+
+        /// <summary>
+        /// "Application Data" directory under the user profile directory on Windows
+        /// and "~/Library/Application Support" directory on Mac OS X.
+        /// </summary>
+        UserData,
     }
 }

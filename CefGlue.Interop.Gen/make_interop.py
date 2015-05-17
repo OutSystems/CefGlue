@@ -680,9 +680,10 @@ def append_xmldoc(result, lines):
 def make_version_cs(content):
     result = []
 
+    result.append('public const string CEF_VERSION = %s;' % __get_version_constant(content, "CEF_VERSION"))
     result.append('public const int CEF_VERSION_MAJOR = %s;' % __get_version_constant(content, "CEF_VERSION_MAJOR"))
-    result.append('public const int CEF_REVISION = %s;' % __get_version_constant(content, "CEF_REVISION"))
-    result.append('public const int COPYRIGHT_YEAR = %s;' % __get_version_constant(content, "COPYRIGHT_YEAR"))
+    result.append('public const int CEF_COMMIT_NUMBER = %s;' % __get_version_constant(content, "CEF_COMMIT_NUMBER"))
+    result.append('public const string CEF_COMMIT_HASH = %s;' % __get_version_constant(content, "CEF_COMMIT_HASH"))
     result.append("");
 
     result.append('public const int CHROME_VERSION_MAJOR = %s;' % __get_version_constant(content, "CHROME_VERSION_MAJOR"))

@@ -16,12 +16,13 @@
                 ));
         }
 
-        public static CefVersionMismatchException RuntimeVersionApiHashMismatch(string actual, string expected)
+        public static CefVersionMismatchException RuntimeVersionApiHashMismatch(string actual, string expected, string expectedVersion)
         {
             return new CefVersionMismatchException(string.Format(CultureInfo.InvariantCulture,
-                "CEF runtime version mismatch: loaded version API hash \"{0}\", but supported \"{1}\".",
+                "CEF runtime version mismatch: loaded version API hash \"{0}\", but supported \"{1}\" ({2}).",
                 actual,
-                expected
+                expected,
+                expectedVersion
                 ));
         }
 

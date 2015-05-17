@@ -23,6 +23,7 @@ namespace Xilium.CefGlue.Interop
         public int windowless_rendering_enabled;
         public int command_line_args_disabled;
         public cef_string_t cache_path;
+        public cef_string_t user_data_path;
         public int persist_session_cookies;
         public cef_string_t user_agent;
         public cef_string_t product_version;
@@ -38,6 +39,7 @@ namespace Xilium.CefGlue.Interop
         public int context_safety_implementation;
         public int ignore_certificate_errors;
         public uint background_color;
+        public cef_string_t accept_language_list;
 
         #region Alloc & Free
         private static int _sizeof;

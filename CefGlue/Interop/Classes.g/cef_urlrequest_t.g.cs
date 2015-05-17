@@ -22,7 +22,7 @@ namespace Xilium.CefGlue.Interop
         
         // Create
         [DllImport(libcef.DllName, EntryPoint = "cef_urlrequest_create", CallingConvention = libcef.CEF_CALL)]
-        public static extern cef_urlrequest_t* create(cef_request_t* request, cef_urlrequest_client_t* client);
+        public static extern cef_urlrequest_t* create(cef_request_t* request, cef_urlrequest_client_t* client, cef_request_context_t* request_context);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

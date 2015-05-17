@@ -159,8 +159,9 @@
         /// <summary>
         /// Controls whether JavaScript can be used to close windows that were not
         /// opened via JavaScript. JavaScript can still be used to close windows that
-        /// were opened via JavaScript. Also configurable using the
-        /// "disable-javascript-close-windows" command-line switch.
+        /// were opened via JavaScript or that have no back/forward history. Also
+        /// configurable using the "disable-javascript-close-windows" command-line
+        /// switch.
         /// </summary>
         public CefState JavaScriptCloseWindows
         {
@@ -346,6 +347,18 @@
         {
             get { return new CefColor(_self->background_color); }
             set { _self->background_color = value.ToArgb(); }
+        }
+
+        /// <summary>
+        /// Comma delimited ordered list of language codes without any whitespace that
+        /// will be used in the "Accept-Language" HTTP header. May be set globally
+        /// using the CefBrowserSettings.accept_language_list value. If both values are
+        /// empty then "en-US,en" will be used.
+        /// </summary>
+        public string AcceptLanguageList
+        {
+            get { return cef_string_t.ToString(&_self->accept_language_list); }
+            set { cef_string_t.Copy(value, &_self->accept_language_list); }
         }
     }
 }

@@ -53,6 +53,42 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_clear_cross_origin_whitelist", CallingConvention = libcef.CEF_CALL)]
         public static extern int clear_cross_origin_whitelist();
         
+        // CefParseURL
+        [DllImport(libcef.DllName, EntryPoint = "cef_parse_url", CallingConvention = libcef.CEF_CALL)]
+        public static extern int parse_url(cef_string_t* url, cef_urlparts_t* parts);
+        
+        // CefCreateURL
+        [DllImport(libcef.DllName, EntryPoint = "cef_create_url", CallingConvention = libcef.CEF_CALL)]
+        public static extern int create_url(cef_urlparts_t* parts, cef_string_t* url);
+        
+        // CefGetMimeType
+        [DllImport(libcef.DllName, EntryPoint = "cef_get_mime_type", CallingConvention = libcef.CEF_CALL)]
+        public static extern cef_string_userfree* get_mime_type(cef_string_t* extension);
+        
+        // CefGetExtensionsForMimeType
+        [DllImport(libcef.DllName, EntryPoint = "cef_get_extensions_for_mime_type", CallingConvention = libcef.CEF_CALL)]
+        public static extern void get_extensions_for_mime_type(cef_string_t* mime_type, cef_string_list* extensions);
+        
+        // CefBase64Encode
+        [DllImport(libcef.DllName, EntryPoint = "cef_base64encode", CallingConvention = libcef.CEF_CALL)]
+        public static extern cef_string_userfree* base64encode(void* data, UIntPtr data_size);
+        
+        // CefBase64Decode
+        [DllImport(libcef.DllName, EntryPoint = "cef_base64decode", CallingConvention = libcef.CEF_CALL)]
+        public static extern cef_binary_value_t* base64decode(cef_string_t* data);
+        
+        // CefURIEncode
+        [DllImport(libcef.DllName, EntryPoint = "cef_uriencode", CallingConvention = libcef.CEF_CALL)]
+        public static extern cef_string_userfree* uriencode(cef_string_t* text, int use_plus);
+        
+        // CefURIDecode
+        [DllImport(libcef.DllName, EntryPoint = "cef_uridecode", CallingConvention = libcef.CEF_CALL)]
+        public static extern cef_string_userfree* uridecode(cef_string_t* text, int convert_to_utf8, CefUriUnescapeRules unescape_rule);
+        
+        // CefParseCSSColor
+        [DllImport(libcef.DllName, EntryPoint = "cef_parse_csscolor", CallingConvention = libcef.CEF_CALL)]
+        public static extern int parse_csscolor(cef_string_t* @string, int strict, uint* color);
+        
         // CefGetPath
         [DllImport(libcef.DllName, EntryPoint = "cef_get_path", CallingConvention = libcef.CEF_CALL)]
         public static extern int get_path(CefPathKey key, cef_string_t* path);
@@ -92,38 +128,6 @@ namespace Xilium.CefGlue.Interop
         // CefNowFromSystemTraceTime
         [DllImport(libcef.DllName, EntryPoint = "cef_now_from_system_trace_time", CallingConvention = libcef.CEF_CALL)]
         public static extern long now_from_system_trace_time();
-        
-        // CefParseURL
-        [DllImport(libcef.DllName, EntryPoint = "cef_parse_url", CallingConvention = libcef.CEF_CALL)]
-        public static extern int parse_url(cef_string_t* url, cef_urlparts_t* parts);
-        
-        // CefCreateURL
-        [DllImport(libcef.DllName, EntryPoint = "cef_create_url", CallingConvention = libcef.CEF_CALL)]
-        public static extern int create_url(cef_urlparts_t* parts, cef_string_t* url);
-        
-        // CefGetMimeType
-        [DllImport(libcef.DllName, EntryPoint = "cef_get_mime_type", CallingConvention = libcef.CEF_CALL)]
-        public static extern cef_string_userfree* get_mime_type(cef_string_t* extension);
-        
-        // CefGetExtensionsForMimeType
-        [DllImport(libcef.DllName, EntryPoint = "cef_get_extensions_for_mime_type", CallingConvention = libcef.CEF_CALL)]
-        public static extern void get_extensions_for_mime_type(cef_string_t* mime_type, cef_string_list* extensions);
-        
-        // CefBase64Encode
-        [DllImport(libcef.DllName, EntryPoint = "cef_base64encode", CallingConvention = libcef.CEF_CALL)]
-        public static extern cef_string_userfree* base64encode(void* data, UIntPtr data_size);
-        
-        // CefBase64Decode
-        [DllImport(libcef.DllName, EntryPoint = "cef_base64decode", CallingConvention = libcef.CEF_CALL)]
-        public static extern cef_binary_value_t* base64decode(cef_string_t* data);
-        
-        // CefURIEncode
-        [DllImport(libcef.DllName, EntryPoint = "cef_uriencode", CallingConvention = libcef.CEF_CALL)]
-        public static extern cef_string_userfree* uriencode(cef_string_t* text, int use_plus);
-        
-        // CefURIDecode
-        [DllImport(libcef.DllName, EntryPoint = "cef_uridecode", CallingConvention = libcef.CEF_CALL)]
-        public static extern cef_string_userfree* uridecode(cef_string_t* text, int convert_to_utf8, CefUriUnescapeRules unescape_rule);
         
         // CefRegisterExtension
         [DllImport(libcef.DllName, EntryPoint = "cef_register_extension", CallingConvention = libcef.CEF_CALL)]

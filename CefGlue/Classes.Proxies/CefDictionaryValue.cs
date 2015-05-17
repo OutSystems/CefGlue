@@ -22,8 +22,10 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Returns true if this object is valid. Do not call any other methods if this
-        /// method returns false.
+        /// Returns true if this object is valid. This object may become invalid if
+        /// the underlying data is owned by another object (e.g. list or dictionary)
+        /// and that other object is then modified or destroyed. Do not call any other
+        /// methods if this method returns false.
         /// </summary>
         public bool IsValid
         {
@@ -45,6 +47,25 @@ namespace Xilium.CefGlue
         public bool IsReadOnly
         {
             get { return cef_dictionary_value_t.is_read_only(_self) != 0; }
+        }
+
+        /// <summary>
+        /// Returns true if this object and |that| object have the same underlying
+        /// data. If true modifications to this object will also affect |that| object
+        /// and vice-versa.
+        /// </summary>
+        public bool IsSame(CefDictionaryValue that)
+        {
+            return cef_dictionary_value_t.is_same(_self, that.ToNative()) != 0;
+        }
+
+        /// <summary>
+        /// Returns true if this object and |that| object have an equivalent underlying
+        /// value but are not necessarily the same object.
+        /// </summary>
+        public bool IsEqual(CefDictionaryValue that)
+        {
+            return cef_dictionary_value_t.is_equal(_self, that.ToNative()) != 0;
         }
 
         /// <summary>
@@ -116,12 +137,31 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Returns the value type for the specified key.
         /// </summary>
-        public CefValueType GetKeyType(string key)
+        public CefValueType GetValueType(string key)
         {
             fixed (char* key_str = key)
             {
                 var n_key = new cef_string_t(key_str, key != null ? key.Length : 0);
                 return cef_dictionary_value_t.get_type(_self, &n_key);
+            }
+        }
+
+        /// <summary>
+        /// Returns the value at the specified key. For simple types the returned
+        /// value will copy existing data and modifications to the value will not
+        /// modify this object. For complex types (binary, dictionary and list) the
+        /// returned value will reference existing data and modifications to the value
+        /// will modify this object.
+        /// </summary>
+        public CefValue GetValue(string key)
+        {
+            fixed (char* key_str = key)
+            {
+                var n_key = new cef_string_t(key_str, key != null ? key.Length : 0);
+
+                var n_result = cef_dictionary_value_t.get_value(_self, &n_key);
+
+                return CefValue.FromNativeOrNull(n_result);
             }
         }
 
@@ -175,7 +215,8 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Returns the value at the specified key as type binary.
+        /// Returns the value at the specified key as type binary. The returned
+        /// value will reference existing data.
         /// </summary>
         public CefBinaryValue GetBinary(string key)
         {
@@ -188,7 +229,9 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Returns the value at the specified key as type dictionary.
+        /// Returns the value at the specified key as type dictionary. The returned
+        /// value will reference existing data and modifications to the value will
+        /// modify this object.
         /// </summary>
         public CefDictionaryValue GetDictionary(string key)
         {
@@ -201,7 +244,9 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Returns the value at the specified key as type list.
+        /// Returns the value at the specified key as type list. The returned value
+        /// will reference existing data and modifications to the value will modify
+        /// this object.
         /// </summary>
         public CefListValue GetList(string key)
         {
@@ -210,6 +255,25 @@ namespace Xilium.CefGlue
                 var n_key = new cef_string_t(key_str, key != null ? key.Length : 0);
                 var n_result = cef_dictionary_value_t.get_list(_self, &n_key);
                 return CefListValue.FromNative(n_result);
+            }
+        }
+
+        /// <summary>
+        /// Sets the value at the specified key. Returns true if the value was set
+        /// successfully. If |value| represents simple data then the underlying data
+        /// will be copied and modifications to |value| will not modify this object. If
+        /// |value| represents complex data (binary, dictionary or list) then the
+        /// underlying data will be referenced and modifications to |value| will modify
+        /// this object.
+        /// </summary>
+        public bool SetValue(string key, CefValue value)
+        {
+            fixed (char* key_str = key)
+            {
+                var n_key = new cef_string_t(key_str, key != null ? key.Length : 0);
+                var n_value = value.ToNative();
+
+                return cef_dictionary_value_t.set_value(_self, &n_key, n_value) != 0;
             }
         }
 
@@ -301,8 +365,7 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Sets the value at the specified key as type dict. Returns true if the
-        /// value was set successfully. After calling this method the |value| object
-        /// will no longer be valid. If |value| is currently owned by another object
+        /// value was set successfully. If |value| is currently owned by another object
         /// then the value will be copied and the |value| reference will not change.
         /// Otherwise, ownership will be transferred to this object and the |value|
         /// reference will be invalidated.
@@ -320,8 +383,7 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Sets the value at the specified key as type list. Returns true if the
-        /// value was set successfully. After calling this method the |value| object
-        /// will no longer be valid. If |value| is currently owned by another object
+        /// value was set successfully. If |value| is currently owned by another object
         /// then the value will be copied and the |value| reference will not change.
         /// Otherwise, ownership will be transferred to this object and the |value|
         /// reference will be invalidated.
