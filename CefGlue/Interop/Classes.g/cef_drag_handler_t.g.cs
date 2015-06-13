@@ -14,6 +14,7 @@ namespace Xilium.CefGlue.Interop
     {
         internal cef_base_t _base;
         internal IntPtr _on_drag_enter;
+        internal IntPtr _on_draggable_regions_changed;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -38,6 +39,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate int on_drag_enter_delegate(cef_drag_handler_t* self, cef_browser_t* browser, cef_drag_data_t* dragData, CefDragOperationsMask mask);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void on_draggable_regions_changed_delegate(cef_drag_handler_t* self, cef_browser_t* browser, UIntPtr regionsCount, cef_draggable_region_t* regions);
         
         private static int _sizeof;
         

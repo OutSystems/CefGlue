@@ -676,6 +676,55 @@
             }
         }
 
+        /// <summary>
+        /// Parses the specified |json_string| and returns a dictionary or list
+        /// representation. If JSON parsing fails this method returns NULL.
+        /// </summary>
+        public static CefValue ParseJson(string value, CefJsonParserOptions options)
+        {
+            fixed (char* value_str = value)
+            {
+                var n_value = new cef_string_t(value_str, value != null ? value.Length : 0);
+                var n_result = libcef.parse_json(&n_value, options);
+                return CefValue.FromNativeOrNull(n_result);
+            }
+        }
+
+        /// <summary>
+        /// Parses the specified |json_string| and returns a dictionary or list
+        /// representation. If JSON parsing fails this method returns NULL and populates
+        /// |error_code_out| and |error_msg_out| with an error code and a formatted error
+        /// message respectively.
+        /// </summary>
+        public static CefValue ParseJsonAndReturnError(string value, CefJsonParserOptions options, out CefJsonParserError errorCode, out string errorMessage)
+        {
+            fixed (char* value_str = value)
+            {
+                var n_value = new cef_string_t(value_str, value != null ? value.Length : 0);
+
+                CefJsonParserError n_error_code;
+                cef_string_t n_error_msg;
+                var n_result = libcef.parse_jsonand_return_error(&n_value, options, & n_error_code, &n_error_msg);
+
+                var result = CefValue.FromNativeOrNull(n_result);
+                errorCode = n_error_code;
+                errorMessage = cef_string_userfree.ToString((cef_string_userfree*)&n_error_msg);
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Generates a JSON string from the specified root |node| which should be a
+        /// dictionary or list value. Returns an empty string on failure. This method
+        /// requires exclusive access to |node| including any underlying data.
+        /// </summary>
+        public static string WriteJson(CefValue value, CefJsonWriterOptions options)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            var n_result = libcef.write_json(value.ToNative(), options);
+            return cef_string_userfree.ToString(n_result);
+        }
+
         #endregion
 
         #region cef_v8
