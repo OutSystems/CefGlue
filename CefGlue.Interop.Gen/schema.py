@@ -74,6 +74,7 @@ c2cs_types = {
     'cef_page_range_t': 'cef_page_range_t',
     'cef_cursor_info_t': 'cef_cursor_info_t',
     'cef_request_context_settings_t': 'cef_request_context_settings_t',
+    'cef_draggable_region_t': 'cef_draggable_region_t',
 
     # platform dependend structs
     'cef_main_args_t': 'cef_main_args_t',
@@ -134,6 +135,9 @@ c2cs_enumtypes = {
     'cef_uri_unescape_rule_t': 'CefUriUnescapeRules',
     'cef_window_open_disposition_t': 'CefWindowOpenDisposition',
     'cef_return_value_t': 'CefReturnValue',
+    'cef_json_parser_options_t': 'CefJsonParserOptions',
+    'cef_json_writer_options_t': 'CefJsonWriterOptions',
+    'cef_json_parser_error_t': 'CefJsonParserError',
     }
 
 c2cs_structtypes = { }
