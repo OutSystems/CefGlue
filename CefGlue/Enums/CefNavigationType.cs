@@ -8,7 +8,7 @@ namespace Xilium.CefGlue
 	{
 		LinkClicked = 0,
 		FormSubmitted,
-		BackForwarD,
+		BackForward,
 		Reload,
 		FormResubmitted,
 		Other,
