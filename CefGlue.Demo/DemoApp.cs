@@ -71,6 +71,7 @@
             settings.LogFile = "cef.log";
             settings.ResourcesDirPath = System.IO.Path.GetDirectoryName(new Uri(System.Reflection.Assembly.GetEntryAssembly().CodeBase).LocalPath);
             settings.RemoteDebuggingPort = 20480;
+            settings.NoSandbox = true;
 
             var argv = args;
             if (CefRuntime.Platform != CefRuntimePlatform.Windows)
@@ -83,7 +84,7 @@
             var mainArgs = new CefMainArgs(argv);
             var app = new DemoCefApp();
 
-            var exitCode = CefRuntime.ExecuteProcess(mainArgs, app);
+            var exitCode = CefRuntime.ExecuteProcess(mainArgs, app, IntPtr.Zero);
             Console.WriteLine("CefRuntime.ExecuteProcess() returns {0}", exitCode);
             if (exitCode != -1)
                 return exitCode;
@@ -91,7 +92,7 @@
             // guard if something wrong
             foreach (var arg in args) { if (arg.StartsWith("--type=")) { return -2; } }
 
-            CefRuntime.Initialize(mainArgs, settings, app);
+            CefRuntime.Initialize(mainArgs, settings, app, IntPtr.Zero);
 
             RegisterSchemes();
             RegisterMessageRouter();

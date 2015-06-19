@@ -118,4 +118,6 @@ classdef = {
     'CefDeleteCookiesCallback': { 'role': ROLE_HANDLER },
     'CefRequestCallback': { 'role': ROLE_PROXY },
     'CefValue': { 'role': ROLE_PROXY },
+    # 2424
+    'CefPdfPrintCallback': { 'role': ROLE_HANDLER },
     }

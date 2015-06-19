@@ -17,6 +17,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _on_print_dialog;
         internal IntPtr _on_print_job;
         internal IntPtr _on_print_reset;
+        internal IntPtr _get_pdf_paper_size;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -59,6 +60,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_print_reset_delegate(cef_print_handler_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate cef_size_t get_pdf_paper_size_delegate(cef_print_handler_t* self, int device_units_per_inch);
         
         private static int _sizeof;
         

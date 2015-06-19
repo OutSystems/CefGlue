@@ -43,7 +43,8 @@
         /// <summary>
         /// Set to <c>true</c> to have the browser process message loop run in a separate
         /// thread. If <c>false</c> than the CefDoMessageLoopWork() function must be
-        /// called from your application message loop.
+        /// called from your application message loop. This option is only supported on
+        /// Windows.
         /// </summary>
         public bool MultiThreadedMessageLoop { get; set; }
 

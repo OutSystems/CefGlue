@@ -20,7 +20,6 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_title;
         internal IntPtr _get_transition_type;
         internal IntPtr _has_post_data;
-        internal IntPtr _get_frame_name;
         internal IntPtr _get_completion_time;
         internal IntPtr _get_http_status_code;
         
@@ -83,12 +82,6 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int has_post_data_delegate(cef_navigation_entry_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        private delegate cef_string_userfree* get_frame_name_delegate(cef_navigation_entry_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -272,53 +265,36 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetFrameName
-        private static IntPtr _pa;
-        private static get_frame_name_delegate _da;
-        
-        public static cef_string_userfree* get_frame_name(cef_navigation_entry_t* self)
-        {
-            get_frame_name_delegate d;
-            var p = self->_get_frame_name;
-            if (p == _pa) { d = _da; }
-            else
-            {
-                d = (get_frame_name_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_name_delegate));
-                if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
-            }
-            return d(self);
-        }
-        
         // GetCompletionTime
-        private static IntPtr _pb;
-        private static get_completion_time_delegate _db;
+        private static IntPtr _pa;
+        private static get_completion_time_delegate _da;
         
         public static cef_time_t get_completion_time(cef_navigation_entry_t* self)
         {
             get_completion_time_delegate d;
             var p = self->_get_completion_time;
-            if (p == _pb) { d = _db; }
+            if (p == _pa) { d = _da; }
             else
             {
                 d = (get_completion_time_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_completion_time_delegate));
-                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
+                if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
             }
             return d(self);
         }
         
         // GetHttpStatusCode
-        private static IntPtr _pc;
-        private static get_http_status_code_delegate _dc;
+        private static IntPtr _pb;
+        private static get_http_status_code_delegate _db;
         
         public static int get_http_status_code(cef_navigation_entry_t* self)
         {
             get_http_status_code_delegate d;
             var p = self->_get_http_status_code;
-            if (p == _pc) { d = _dc; }
+            if (p == _pb) { d = _db; }
             else
             {
                 d = (get_http_status_code_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_http_status_code_delegate));
-                if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
+                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
             }
             return d(self);
         }

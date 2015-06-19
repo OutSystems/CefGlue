@@ -76,5 +76,27 @@ namespace Xilium.CefGlue
         /// Reset client state related to printing.
         /// </summary>
         protected abstract void OnPrintReset();
+
+
+        private cef_size_t get_pdf_paper_size(cef_print_handler_t* self, int device_units_per_inch)
+        {
+            CheckSelf(self);
+
+            var m_result = GetPdfPaperSize(device_units_per_inch);
+
+            var n_result = new cef_size_t
+            {
+                width = m_result.Width,
+                height = m_result.Height,
+            };
+
+            return n_result;
+        }
+
+        /// <summary>
+        /// Return the PDF paper size in device units. Used in combination with
+        /// CefBrowserHost::PrintToPDF().
+        /// </summary>
+        protected abstract CefSize GetPdfPaperSize(int deviceUnitsPerInch);
     }
 }

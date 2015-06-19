@@ -75,6 +75,7 @@ c2cs_types = {
     'cef_cursor_info_t': 'cef_cursor_info_t',
     'cef_request_context_settings_t': 'cef_request_context_settings_t',
     'cef_draggable_region_t': 'cef_draggable_region_t',
+    'cef_pdf_print_settings_t': 'cef_pdf_print_settings_t',
 
     # platform dependend structs
     'cef_main_args_t': 'cef_main_args_t',
@@ -89,7 +90,7 @@ c2cs_types = {
     }
 
 c2cs_platform_retval = {
-	# generates multiple delegates/methods if return value is platform specific
+    # generates multiple delegates/methods if return value is platform specific
     # 'cef_time_t': ['_other', '_mac']
     }
 
@@ -138,6 +139,7 @@ c2cs_enumtypes = {
     'cef_json_parser_options_t': 'CefJsonParserOptions',
     'cef_json_writer_options_t': 'CefJsonWriterOptions',
     'cef_json_parser_error_t': 'CefJsonParserError',
+    'cef_pdf_print_margin_type_t': 'CefPdfPrintMarginType',
     }
 
 c2cs_structtypes = { }

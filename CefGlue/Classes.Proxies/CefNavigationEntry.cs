@@ -87,19 +87,6 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Returns the name of the sub-frame that navigated or an empty value if the
-        /// main frame navigated.
-        /// </summary>
-        public string FrameName
-        {
-            get
-            {
-                var n_value = cef_navigation_entry_t.get_frame_name(_self);
-                return cef_string_userfree.ToString(n_value);
-            }
-        }
-
-        /// <summary>
         /// Returns the time for the last known successful navigation completion. A
         /// navigation may be completed more than once if the page is reloaded. May be
         /// 0 if the navigation has not yet completed.

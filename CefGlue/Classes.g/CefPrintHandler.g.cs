@@ -26,6 +26,7 @@ namespace Xilium.CefGlue
         private cef_print_handler_t.on_print_dialog_delegate _ds4;
         private cef_print_handler_t.on_print_job_delegate _ds5;
         private cef_print_handler_t.on_print_reset_delegate _ds6;
+        private cef_print_handler_t.get_pdf_paper_size_delegate _ds7;
         
         protected CefPrintHandler()
         {
@@ -45,6 +46,8 @@ namespace Xilium.CefGlue
             _self->_on_print_job = Marshal.GetFunctionPointerForDelegate(_ds5);
             _ds6 = new cef_print_handler_t.on_print_reset_delegate(on_print_reset);
             _self->_on_print_reset = Marshal.GetFunctionPointerForDelegate(_ds6);
+            _ds7 = new cef_print_handler_t.get_pdf_paper_size_delegate(get_pdf_paper_size);
+            _self->_get_pdf_paper_size = Marshal.GetFunctionPointerForDelegate(_ds7);
         }
         
         ~CefPrintHandler()
