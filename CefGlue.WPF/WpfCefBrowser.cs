@@ -359,11 +359,11 @@ namespace Xilium.CefGlue.WPF
                         mouseEvent.Modifiers = GetMouseModifiers();
 
                         if (arg.ChangedButton == MouseButton.Left)
-                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Left, false, 1);
+                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Left, false, arg.ClickCount);
                         else if (arg.ChangedButton == MouseButton.Middle)
-                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Middle, false, 1);
+                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Middle, false, arg.ClickCount);
                         else if (arg.ChangedButton == MouseButton.Right)
-                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Right, false, 1);
+                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Right, false, arg.ClickCount);
 
                         //_logger.Debug(string.Format("Browser_MouseDown: ({0},{1})", cursorPos.X, cursorPos.Y));
                     }
@@ -391,11 +391,11 @@ namespace Xilium.CefGlue.WPF
                         mouseEvent.Modifiers = GetMouseModifiers();
 
                         if (arg.ChangedButton == MouseButton.Left)
-                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Left, true, 1);
+                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Left, true, arg.ClickCount);
                         else if (arg.ChangedButton == MouseButton.Middle)
-                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Middle, true, 1);
+                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Middle, true, arg.ClickCount);
                         else if (arg.ChangedButton == MouseButton.Right)
-                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Right, true, 1);
+                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Right, true, arg.ClickCount);
 
                         //_logger.Debug(string.Format("Browser_MouseUp: ({0},{1})", cursorPos.X, cursorPos.Y));
                     }
@@ -403,38 +403,6 @@ namespace Xilium.CefGlue.WPF
                 catch (Exception ex)
                 {
                     _logger.ErrorException("WpfCefBrowser: Caught exception in MouseUp()", ex);
-                }
-            };
-
-            browser.MouseDoubleClick += (sender, arg) =>
-            {
-                try
-                {
-                    if (_browserHost != null)
-                    {
-                        Point cursorPos = arg.GetPosition(this);
-
-                        CefMouseEvent mouseEvent = new CefMouseEvent()
-                        {
-                            X = (int)cursorPos.X,
-                            Y = (int)cursorPos.Y,
-                        };
-
-                        mouseEvent.Modifiers = GetMouseModifiers();
-
-                        if (arg.ChangedButton == MouseButton.Left)
-                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Left, false, 2);
-                        else if (arg.ChangedButton == MouseButton.Middle)
-                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Middle, false, 2);
-                        else if (arg.ChangedButton == MouseButton.Right)
-                            _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Right, false, 2);
-
-                        //_logger.Debug(string.Format("Browser_MouseDoubleClick: ({0},{1})", cursorPos.X, cursorPos.Y));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("WpfCefBrowser: Caught exception in MouseDoubleClick()", ex);
                 }
             };
 
