@@ -1,8 +1,9 @@
 ﻿namespace Xilium.CefGlue.Client
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
     using System.Windows.Forms;
     using Xilium.CefGlue;
 
@@ -38,9 +39,14 @@
             if (exitCode != -1)
                 return exitCode;
 
+            var codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            var localFolder = Path.GetDirectoryName(new Uri(codeBase).LocalPath);
+            var browserProcessPath = CombinePaths(localFolder, "..", "..", "..",
+                "CefGlue.Demo.WinForms", "bin", "Release", "Xilium.CefGlue.Demo.WinForms.exe");
+
             var settings = new CefSettings
                 {
-                    // BrowserSubprocessPath = @"D:\fddima\Projects\Xilium\Xilium.CefGlue\CefGlue.Demo\bin\Release\Xilium.CefGlue.Demo.exe",
+                    BrowserSubprocessPath = browserProcessPath,
                     SingleProcess = false,
                     MultiThreadedMessageLoop = true,
                     LogSeverity = CefLogSeverity.Disable,
@@ -61,6 +67,15 @@
 
             CefRuntime.Shutdown();
             return 0;
+        }
+
+        public static string CombinePaths(params string[] paths)
+        {
+            if (paths == null)
+            {
+                throw new ArgumentNullException("paths");
+            }
+            return paths.Aggregate(Path.Combine);
         }
     }
 }
