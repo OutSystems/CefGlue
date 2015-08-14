@@ -537,6 +537,57 @@ namespace Xilium.CefGlue.WPF
                     _logger.ErrorException("WpfCefBrowser: Caught exception in Popup.MouseMove()", ex);
                 }
             };
+            browser._popup.MouseDown += (sender, arg) =>
+            {
+                try
+                {
+                    if (_browserHost != null)
+                    {
+                        Point cursorPos = arg.GetPosition(this);
+
+                        CefMouseEvent mouseEvent = new CefMouseEvent()
+                        {
+                            X = (int)cursorPos.X,
+                            Y = (int)cursorPos.Y
+                        };
+
+                        mouseEvent.Modifiers = GetMouseModifiers();
+
+                        _browserHost.SendMouseClickEvent(mouseEvent, CefMouseButtonType.Left, true, 1);
+
+                        //_logger.Debug(string.Format("Popup_MouseDown: ({0},{1})", cursorPos.X, cursorPos.Y));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in Popup.MouseDown()", ex);
+                }
+            };
+            browser._popup.MouseWheel += (sender, arg) =>
+            {
+                try
+                {
+                    if (_browserHost != null)
+                    {
+                        Point cursorPos = arg.GetPosition(this);
+                        int delta = arg.Delta;
+                        CefMouseEvent mouseEvent = new CefMouseEvent()
+                        {
+                            X = (int)cursorPos.X,
+                            Y = (int)cursorPos.Y
+                        };
+
+                        mouseEvent.Modifiers = GetMouseModifiers();
+                        _browserHost.SendMouseWheelEvent(mouseEvent, 0, delta);
+
+                        //_logger.Debug(string.Format("MouseWheel: ({0},{1})", cursorPos.X, cursorPos.Y));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("WpfCefBrowser: Caught exception in Popup.MouseWheel()", ex);
+                }
+            };
         }
 
         #region Handlers
