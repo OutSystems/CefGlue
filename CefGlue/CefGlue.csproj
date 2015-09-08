@@ -11,7 +11,7 @@
     <RootNamespace>Xilium.CefGlue</RootNamespace>
     <AssemblyName>Xilium.CefGlue</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <SignAssembly>true</SignAssembly>
