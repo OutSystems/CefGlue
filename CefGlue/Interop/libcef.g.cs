@@ -37,6 +37,10 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_set_osmodal_loop", CallingConvention = libcef.CEF_CALL)]
         public static extern void set_osmodal_loop(int osModalLoop);
         
+        // CefEnableHighDPISupport
+        [DllImport(libcef.DllName, EntryPoint = "cef_enable_highdpi_support", CallingConvention = libcef.CEF_CALL)]
+        public static extern void enable_highdpi_support();
+        
         // CefGetGeolocation
         [DllImport(libcef.DllName, EntryPoint = "cef_get_geolocation", CallingConvention = libcef.CEF_CALL)]
         public static extern int get_geolocation(cef_get_geolocation_callback_t* callback);

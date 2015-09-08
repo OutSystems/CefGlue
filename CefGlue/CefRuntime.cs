@@ -293,6 +293,16 @@
             libcef.set_osmodal_loop(osModalLoop ? 1 : 0);
         }
 
+        /// <summary>
+        /// Call during process startup to enable High-DPI support on Windows 7 or newer.
+        /// Older versions of Windows should be left DPI-unaware because they do not
+        /// support DirectWrite and GDI fonts are kerned very badly.
+        /// </summary>
+        public static void EnableHighDpiSupport()
+        {
+            libcef.enable_highdpi_support();
+        }
+
         #endregion
 
         #region cef_task
