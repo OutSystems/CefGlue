@@ -120,4 +120,7 @@ classdef = {
     'CefValue': { 'role': ROLE_PROXY },
     # 2424
     'CefPdfPrintCallback': { 'role': ROLE_HANDLER },
+	# 2454
+	'CefRunContextMenuCallback': { 'role': ROLE_PROXY },
+	'CefResourceBundle': { 'role': ROLE_PROXY },
     }

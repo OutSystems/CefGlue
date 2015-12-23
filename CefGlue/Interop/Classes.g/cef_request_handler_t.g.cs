@@ -23,7 +23,6 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _on_quota_request;
         internal IntPtr _on_protocol_execution;
         internal IntPtr _on_certificate_error;
-        internal IntPtr _on_before_plugin_load;
         internal IntPtr _on_plugin_crashed;
         internal IntPtr _on_render_view_ready;
         internal IntPtr _on_render_process_terminated;
@@ -105,12 +104,6 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate int on_certificate_error_delegate(cef_request_handler_t* self, cef_browser_t* browser, CefErrorCode cert_error, cef_string_t* request_url, cef_sslinfo_t* ssl_info, cef_request_callback_t* callback);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate int on_before_plugin_load_delegate(cef_request_handler_t* self, cef_browser_t* browser, cef_string_t* url, cef_string_t* policy_url, cef_web_plugin_info_t* info);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

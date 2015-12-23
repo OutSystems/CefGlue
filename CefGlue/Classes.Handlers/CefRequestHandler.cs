@@ -302,30 +302,6 @@ namespace Xilium.CefGlue
         }
 
 
-        private int on_before_plugin_load(cef_request_handler_t* self, cef_browser_t* browser, cef_string_t* url, cef_string_t* policy_url, cef_web_plugin_info_t* info)
-        {
-            CheckSelf(self);
-
-            var m_browser = CefBrowser.FromNative(browser);
-            var m_url = cef_string_t.ToString(url);
-            var m_policy_url = cef_string_t.ToString(policy_url);
-            var m_info = CefWebPluginInfo.FromNative(info);
-
-            var result = OnBeforePluginLoad(m_browser, m_url, m_policy_url, m_info);
-
-            return result ? 1 : 0;
-        }
-
-        /// <summary>
-        /// Called on the browser process IO thread before a plugin is loaded. Return
-        /// true to block loading of the plugin.
-        /// </summary>
-        protected virtual bool OnBeforePluginLoad(CefBrowser browser, string url, string policyUrl, CefWebPluginInfo info)
-        {
-            return false;
-        }
-
-
         private void on_plugin_crashed(cef_request_handler_t* self, cef_browser_t* browser, cef_string_t* plugin_path)
         {
             CheckSelf(self);

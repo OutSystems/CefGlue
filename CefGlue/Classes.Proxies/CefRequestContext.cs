@@ -177,5 +177,16 @@ namespace Xilium.CefGlue
         {
             return cef_request_context_t.clear_scheme_handler_factories(_self) != 0;
         }
+
+        /// <summary>
+        /// Tells all renderer processes associated with this context to throw away
+        /// their plugin list cache. If |reload_pages| is true they will also reload
+        /// all pages with plugins. CefRequestContextHandler::OnBeforePluginLoad may
+        /// be called to rebuild the plugin list cache.
+        /// </summary>
+        public void PurgePluginListCache(bool reloadPages)
+        {
+            cef_request_context_t.purge_plugin_list_cache(_self, reloadPages ? 1 : 0);
+        }
     }
 }

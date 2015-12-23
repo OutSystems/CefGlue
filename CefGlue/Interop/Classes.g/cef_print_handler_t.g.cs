@@ -13,6 +13,7 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_print_handler_t
     {
         internal cef_base_t _base;
+        internal IntPtr _on_print_start;
         internal IntPtr _on_print_settings;
         internal IntPtr _on_print_dialog;
         internal IntPtr _on_print_job;
@@ -36,6 +37,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate int has_one_ref_delegate(cef_print_handler_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void on_print_start_delegate(cef_print_handler_t* self, cef_browser_t* browser);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

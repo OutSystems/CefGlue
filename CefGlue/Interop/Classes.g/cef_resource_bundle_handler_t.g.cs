@@ -15,6 +15,7 @@ namespace Xilium.CefGlue.Interop
         internal cef_base_t _base;
         internal IntPtr _get_localized_string;
         internal IntPtr _get_data_resource;
+        internal IntPtr _get_data_resource_for_scale;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -38,13 +39,19 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int get_localized_string_delegate(cef_resource_bundle_handler_t* self, int message_id, cef_string_t* @string);
+        internal delegate int get_localized_string_delegate(cef_resource_bundle_handler_t* self, int string_id, cef_string_t* @string);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate int get_data_resource_delegate(cef_resource_bundle_handler_t* self, int resource_id, void** data, UIntPtr* data_size);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int get_data_resource_for_scale_delegate(cef_resource_bundle_handler_t* self, int resource_id, CefScaleFactor scale_factor, void** data, UIntPtr* data_size);
         
         private static int _sizeof;
         
