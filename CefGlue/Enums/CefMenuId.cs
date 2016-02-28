@@ -41,6 +41,11 @@ namespace Xilium.CefGlue
         NoSpellingSuggestions = 205,
         AddToDictionary = 206,
 
+        // Custom menu items originating from the renderer process. For example,
+        // plugin placeholder menu items or Flash menu items.
+        CustomFirst = 220,
+        CustomLast = 250,
+
         // All user-defined menu IDs should come between MENU_ID_USER_FIRST and
         // MENU_ID_USER_LAST to avoid overlapping the Chromium and CEF ID ranges
         // defined in the tools/gritsettings/resource_ids file.

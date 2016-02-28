@@ -31,6 +31,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _is_editable;
         internal IntPtr _is_spell_check_enabled;
         internal IntPtr _get_edit_state_flags;
+        internal IntPtr _is_custom_menu;
+        internal IntPtr _is_pepper_menu;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -157,6 +159,18 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate CefContextMenuEditStateFlags get_edit_state_flags_delegate(cef_context_menu_params_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate int is_custom_menu_delegate(cef_context_menu_params_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate int is_pepper_menu_delegate(cef_context_menu_params_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -511,6 +525,40 @@ namespace Xilium.CefGlue.Interop
             {
                 d = (get_edit_state_flags_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_edit_state_flags_delegate));
                 if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
+            }
+            return d(self);
+        }
+        
+        // IsCustomMenu
+        private static IntPtr _p15;
+        private static is_custom_menu_delegate _d15;
+        
+        public static int is_custom_menu(cef_context_menu_params_t* self)
+        {
+            is_custom_menu_delegate d;
+            var p = self->_is_custom_menu;
+            if (p == _p15) { d = _d15; }
+            else
+            {
+                d = (is_custom_menu_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_custom_menu_delegate));
+                if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
+            }
+            return d(self);
+        }
+        
+        // IsPepperMenu
+        private static IntPtr _p16;
+        private static is_pepper_menu_delegate _d16;
+        
+        public static int is_pepper_menu(cef_context_menu_params_t* self)
+        {
+            is_pepper_menu_delegate d;
+            var p = self->_is_pepper_menu;
+            if (p == _p16) { d = _d16; }
+            else
+            {
+                d = (is_pepper_menu_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_pepper_menu_delegate));
+                if (_p16 == IntPtr.Zero) { _d16 = d; _p16 = p; }
             }
             return d(self);
         }

@@ -12,6 +12,25 @@ namespace Xilium.CefGlue
     /// </summary>
     public abstract unsafe partial class CefPrintHandler
     {
+        private void on_print_start(cef_print_handler_t* self, cef_browser_t* browser)
+        {
+            CheckSelf(self);
+
+            var mBrowser = CefBrowser.FromNative(browser);
+            OnPrintStart(mBrowser);
+        }
+
+        /// <summary>
+        /// Called when printing has started for the specified |browser|. This method
+        /// will be called before the other OnPrint*() methods and irrespective of how
+        /// printing was initiated (e.g. CefBrowserHost::Print(), JavaScript
+        /// window.print() or PDF extension print button).
+        /// </summary>
+        protected virtual void OnPrintStart(CefBrowser browser)
+        {
+        }
+
+
         private void on_print_settings(cef_print_handler_t* self, cef_print_settings_t* settings, int get_defaults)
         {
             CheckSelf(self);

@@ -21,6 +21,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_default_cookie_manager;
         internal IntPtr _register_scheme_handler_factory;
         internal IntPtr _clear_scheme_handler_factories;
+        internal IntPtr _purge_plugin_list_cache;
         
         // GetGlobalContext
         [DllImport(libcef.DllName, EntryPoint = "cef_request_context_get_global_context", CallingConvention = libcef.CEF_CALL)]
@@ -99,6 +100,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int clear_scheme_handler_factories_delegate(cef_request_context_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void purge_plugin_list_cache_delegate(cef_request_context_t* self, int reload_pages);
         
         // AddRef
         private static IntPtr _p0;
@@ -285,6 +292,23 @@ namespace Xilium.CefGlue.Interop
                 if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
             }
             return d(self);
+        }
+        
+        // PurgePluginListCache
+        private static IntPtr _pb;
+        private static purge_plugin_list_cache_delegate _db;
+        
+        public static void purge_plugin_list_cache(cef_request_context_t* self, int reload_pages)
+        {
+            purge_plugin_list_cache_delegate d;
+            var p = self->_purge_plugin_list_cache;
+            if (p == _pb) { d = _db; }
+            else
+            {
+                d = (purge_plugin_list_cache_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(purge_plugin_list_cache_delegate));
+                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
+            }
+            d(self, reload_pages);
         }
         
     }

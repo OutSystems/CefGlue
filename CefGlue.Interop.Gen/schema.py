@@ -140,6 +140,8 @@ c2cs_enumtypes = {
     'cef_json_writer_options_t': 'CefJsonWriterOptions',
     'cef_json_parser_error_t': 'CefJsonParserError',
     'cef_pdf_print_margin_type_t': 'CefPdfPrintMarginType',
+	'cef_scale_factor_t': 'CefScaleFactor',
+	'cef_plugin_policy_t': 'CefPluginPolicy',
     }
 
 c2cs_structtypes = { }

@@ -23,8 +23,9 @@ namespace Xilium.CefGlue
         private cef_context_menu_handler_t.release_delegate _ds1;
         private cef_context_menu_handler_t.has_one_ref_delegate _ds2;
         private cef_context_menu_handler_t.on_before_context_menu_delegate _ds3;
-        private cef_context_menu_handler_t.on_context_menu_command_delegate _ds4;
-        private cef_context_menu_handler_t.on_context_menu_dismissed_delegate _ds5;
+        private cef_context_menu_handler_t.run_context_menu_delegate _ds4;
+        private cef_context_menu_handler_t.on_context_menu_command_delegate _ds5;
+        private cef_context_menu_handler_t.on_context_menu_dismissed_delegate _ds6;
         
         protected CefContextMenuHandler()
         {
@@ -38,10 +39,12 @@ namespace Xilium.CefGlue
             _self->_base._has_one_ref = Marshal.GetFunctionPointerForDelegate(_ds2);
             _ds3 = new cef_context_menu_handler_t.on_before_context_menu_delegate(on_before_context_menu);
             _self->_on_before_context_menu = Marshal.GetFunctionPointerForDelegate(_ds3);
-            _ds4 = new cef_context_menu_handler_t.on_context_menu_command_delegate(on_context_menu_command);
-            _self->_on_context_menu_command = Marshal.GetFunctionPointerForDelegate(_ds4);
-            _ds5 = new cef_context_menu_handler_t.on_context_menu_dismissed_delegate(on_context_menu_dismissed);
-            _self->_on_context_menu_dismissed = Marshal.GetFunctionPointerForDelegate(_ds5);
+            _ds4 = new cef_context_menu_handler_t.run_context_menu_delegate(run_context_menu);
+            _self->_run_context_menu = Marshal.GetFunctionPointerForDelegate(_ds4);
+            _ds5 = new cef_context_menu_handler_t.on_context_menu_command_delegate(on_context_menu_command);
+            _self->_on_context_menu_command = Marshal.GetFunctionPointerForDelegate(_ds5);
+            _ds6 = new cef_context_menu_handler_t.on_context_menu_dismissed_delegate(on_context_menu_dismissed);
+            _self->_on_context_menu_dismissed = Marshal.GetFunctionPointerForDelegate(_ds6);
         }
         
         ~CefContextMenuHandler()
