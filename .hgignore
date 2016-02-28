@@ -16,5 +16,9 @@ obj
 # SHFB user preferences file
 *.shfbproj_*
 
+# Visual Studio
+*.VC.opendb
+*.sdf
+
 relre:^CefGlue.Interop.Gen/Classes.Handlers.tmpl/
 relre:^CefGlue.Interop.Gen/Classes.Proxies.tmpl/
