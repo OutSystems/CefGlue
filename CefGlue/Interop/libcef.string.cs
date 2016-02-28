@@ -1,4 +1,4 @@
-//
+﻿//
 // CEF provides functions for converting between UTF-8, -16 and -32 strings.
 // CEF string types are safe for reading from multiple threads but not for
 // modification. It is the user's responsibility to provide synchronization if

@@ -1,4 +1,4 @@
-//
+﻿//
 // This file manually written from cef/include/internal/cef_time.h.
 //
 // See also:
