@@ -23,8 +23,8 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Called on the IO thread to retrieve the cookie manager. If this method
-        /// returns NULL the default cookie manager retrievable via
+        /// Called on the browser process IO thread to retrieve the cookie manager. If
+        /// this method returns NULL the default cookie manager retrievable via
         /// CefRequestContext::GetDefaultCookieManager() will be used.
         /// </summary>
         protected abstract CefCookieManager GetCookieManager();
