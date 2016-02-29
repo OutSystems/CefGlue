@@ -34,9 +34,9 @@
         {
             CheckSelf(self);
 
-            var mMimeType = mime_type->ToString();
-            var mPluginUrl = plugin_url->ToString();
-            var mTopOriginUrl = top_origin_url->ToString();
+            var mMimeType = cef_string_t.ToString(mime_type);
+            var mPluginUrl = cef_string_t.ToString(plugin_url);
+            var mTopOriginUrl = cef_string_t.ToString(top_origin_url);
             var mPluginInfo = CefWebPluginInfo.FromNative(plugin_info);
             var mPluginPolicy = *plugin_policy;
 

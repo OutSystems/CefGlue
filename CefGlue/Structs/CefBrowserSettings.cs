@@ -203,16 +203,6 @@
         }
 
         /// <summary>
-        /// Controls whether the Java plugin will be loaded. Also configurable using
-        /// the "disable-java" command-line switch.
-        /// </summary>
-        public CefState Java
-        {
-            get { return _self->java; }
-            set { _self->java = value; }
-        }
-
-        /// <summary>
         /// Controls whether any plugins will be loaded. Also configurable using the
         /// "disable-plugins" command-line switch.
         /// </summary>

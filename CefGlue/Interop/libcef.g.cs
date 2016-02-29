@@ -65,6 +65,10 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_create_url", CallingConvention = libcef.CEF_CALL)]
         public static extern int create_url(cef_urlparts_t* parts, cef_string_t* url);
         
+        // CefFormatUrlForSecurityDisplay
+        [DllImport(libcef.DllName, EntryPoint = "cef_format_url_for_security_display", CallingConvention = libcef.CEF_CALL)]
+        public static extern cef_string_userfree* format_url_for_security_display(cef_string_t* origin_url, cef_string_t* languages);
+        
         // CefGetMimeType
         [DllImport(libcef.DllName, EntryPoint = "cef_get_mime_type", CallingConvention = libcef.CEF_CALL)]
         public static extern cef_string_userfree* get_mime_type(cef_string_t* extension);

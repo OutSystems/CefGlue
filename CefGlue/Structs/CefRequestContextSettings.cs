@@ -24,12 +24,20 @@
         /// <summary>
         /// To persist session cookies (cookies without an expiry date or validity
         /// interval) by default when using the global cookie manager set this value to
-        /// true. Session cookies are generally intended to be transient and most Web
-        /// browsers do not persist them. Can be set globally using the
+        /// true. Session cookies are generally intended to be transient and most
+        /// Web browsers do not persist them. Can be set globally using the
         /// CefSettings.persist_session_cookies value. This value will be ignored if
         /// |cache_path| is empty or if it matches the CefSettings.cache_path value.
         /// </summary>
         public bool PersistSessionCookies { get; set; }
+
+        /// <summary>
+        /// To persist user preferences as a JSON file in the cache path directory set
+        /// this value to true (1). Can be set globally using the
+        /// CefSettings.persist_user_preferences value. This value will be ignored if
+        /// |cache_path| is empty or if it matches the CefSettings.cache_path value.
+        /// </summary>
+        public bool PersistUserPreferences { get; set; }
 
         /// <summary>
         /// Set to true (1) to ignore errors related to invalid SSL certificates.
@@ -56,6 +64,7 @@
             var ptr = cef_request_context_settings_t.Alloc();
             cef_string_t.Copy(CachePath, &ptr->cache_path);
             ptr->persist_session_cookies = PersistSessionCookies ? 1 : 0;
+            ptr->persist_user_preferences = PersistUserPreferences ? 1 : 0;
             ptr->ignore_certificate_errors = IgnoreCertificateErrors ? 1 : 0;
             cef_string_t.Copy(CachePath, &ptr->accept_language_list);
             return ptr;

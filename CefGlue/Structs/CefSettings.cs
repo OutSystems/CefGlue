@@ -86,14 +86,24 @@
         /// <summary>
         /// To persist session cookies (cookies without an expiry date or validity
         /// interval) by default when using the global cookie manager set this value to
-        /// true. Session cookies are generally intended to be transient and most Web
-        /// browsers do not persist them. A |cache_path| value must also be specified
-        /// to enable this feature. Also configurable using the
+        /// true. Session cookies are generally intended to be transient and most
+        /// Web browsers do not persist them. A |cache_path| value must also be
+        /// specified to enable this feature. Also configurable using the
         /// "persist-session-cookies" command-line switch. Can be overridden for
         /// individual CefRequestContext instances via the
         /// CefRequestContextSettings.persist_session_cookies value.
         /// </summary>
         public bool PersistSessionCookies { get; set; }
+
+        /// <summary>
+        /// To persist user preferences as a JSON file in the cache path directory set
+        /// this value to true. A |cache_path| value must also be specified
+        /// to enable this feature. Also configurable using the
+        /// "persist-user-preferences" command-line switch. Can be overridden for
+        /// individual CefRequestContext instances via the
+        /// CefRequestContextSettings.persist_user_preferences value.
+        /// </summary>
+        public bool PersistUserPreferences { get; set; }
 
         /// <summary>
         /// Value that will be returned as the User-Agent HTTP header. If empty the
@@ -120,10 +130,12 @@
         public string Locale { get; set; }
 
         /// <summary>
-        /// The directory and file name to use for the debug log. If empty, the
-        /// default name of "debug.log" will be used and the file will be written
-        /// to the application directory. Also configurable using the "log-file"
-        /// command-line switch.
+        /// The directory and file name to use for the debug log. If empty a default
+        /// log file name and location will be used. On Windows and Linux a "debug.log"
+        /// file will be written in the main executable directory. On Mac OS X a
+        /// "~/Library/Logs/[app name]_debug.log" file will be written where [app name]
+        /// is the name of the main app executable. Also configurable using the
+        /// "log-file" command-line switch.
         /// </summary>
         public string LogFile { get; set; }
 
@@ -250,6 +262,7 @@
             cef_string_t.Copy(CachePath, &ptr->cache_path);
             cef_string_t.Copy(UserDataPath, &ptr->user_data_path);
             ptr->persist_session_cookies = PersistSessionCookies ? 1 : 0;
+            ptr->persist_user_preferences = PersistUserPreferences ? 1 : 0;
             cef_string_t.Copy(UserAgent, &ptr->user_agent);
             cef_string_t.Copy(ProductVersion, &ptr->product_version);
             cef_string_t.Copy(Locale, &ptr->locale);

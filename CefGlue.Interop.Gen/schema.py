@@ -142,6 +142,9 @@ c2cs_enumtypes = {
     'cef_pdf_print_margin_type_t': 'CefPdfPrintMarginType',
 	'cef_scale_factor_t': 'CefScaleFactor',
 	'cef_plugin_policy_t': 'CefPluginPolicy',
+    'cef_cert_status_t': 'CefCertStatus',
+    'cef_response_filter_status_t': 'CefResponseFilterStatus',
+    'cef_referrer_policy_t': 'CefReferrerPolicy',
     }
 
 c2cs_structtypes = { }

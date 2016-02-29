@@ -38,6 +38,7 @@ namespace Xilium.CefGlue
         SslVersionOrCipherMismatch = -113,
         SslRenegotiationRequested = -114,
 
+        CertBegin = CertCommonNameInvalid,
         CertCommonNameInvalid = -200,
         CertDateInvalid = -201,
         CertAuthorityInvalid = -202,
@@ -46,7 +47,13 @@ namespace Xilium.CefGlue
         CertUnableToCheckRevocation = -205,
         CertRevoked = -206,
         CertInvalid = -207,
-        CertEnd = -208,
+        CertWeakSignatureAlgorithm = -208,
+        // -209 is available: was ERR_CERT_NOT_IN_DNS
+        CertNonUniqueName = -210,
+        CertWeakKey = -211,
+        CertNameConstraintViolation = -212,
+        CertValidityTooLong = -213,
+        CertEnd = CertValidityTooLong,
 
         InvalidUrl = -300,
         DisallowedUrlScheme = -301,

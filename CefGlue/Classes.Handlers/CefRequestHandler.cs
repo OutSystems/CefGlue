@@ -189,6 +189,59 @@
         }
 
 
+        private cef_response_filter_t* get_resource_response_filter(cef_request_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_request_t* request, cef_response_t* response)
+        {
+            CheckSelf(self);
+
+            var mBrowser = CefBrowser.FromNative(browser);
+            var mFrame = CefFrame.FromNative(frame);
+            var mRequest = CefRequest.FromNative(request);
+            var mResponse = CefResponse.FromNative(response);
+
+            var result = GetResourceResponseFilter(mBrowser, mFrame, mRequest, mResponse);
+
+            if (result != null)
+            {
+                return result.ToNative();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Called on the IO thread to optionally filter resource response content.
+        /// |request| and |response| represent the request and response respectively
+        /// and cannot be modified in this callback.
+        /// </summary>
+        protected virtual CefResponseFilter GetResourceResponseFilter(CefBrowser browser, CefFrame frame, CefRequest request, CefResponse response)
+        {
+            return null;
+        }
+
+
+        private void on_resource_load_complete(cef_request_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_request_t* request, cef_response_t* response, CefUrlRequestStatus status, long received_content_length)
+        {
+            CheckSelf(self);
+
+            var mBrowser = CefBrowser.FromNative(browser);
+            var mFrame = CefFrame.FromNative(frame);
+            var mRequest = CefRequest.FromNative(request);
+            var mResponse = CefResponse.FromNative(response);
+
+            OnResourceLoadComplete(mBrowser, mFrame, mRequest, mResponse, status, received_content_length);
+        }
+
+        /// <summary>
+        /// Called on the IO thread when a resource load has completed. |request| and
+        /// |response| represent the request and response respectively and cannot be
+        /// modified in this callback. |status| indicates the load completion status.
+        /// |received_content_length| is the number of response bytes actually read.
+        /// </summary>
+        protected virtual void OnResourceLoadComplete(CefBrowser browser, CefFrame frame, CefRequest request, CefResponse response, CefUrlRequestStatus status, long receivedContentLength)
+        {
+        }
+
+
         private int get_auth_credentials(cef_request_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, int isProxy, cef_string_t* host, int port, cef_string_t* realm, cef_string_t* scheme, cef_auth_callback_t* callback)
         {
             CheckSelf(self);
@@ -208,10 +261,13 @@
         /// <summary>
         /// Called on the IO thread when the browser needs credentials from the user.
         /// |isProxy| indicates whether the host is a proxy server. |host| contains the
-        /// hostname and |port| contains the port number. Return true to continue the
-        /// request and call CefAuthCallback::Continue() either in this method or
-        /// at a later time when the authentication information is available. Return
-        /// false to cancel the request immediately.
+        /// hostname and |port| contains the port number. |realm| is the realm of the
+        /// challenge and may be empty. |scheme| is the authentication scheme used,
+        /// such as "basic" or "digest", and will be empty if the source of the request
+        /// is an FTP server. Return true to continue the request and call
+        /// CefAuthCallback::Continue() either in this method or at a later time when
+        /// the authentication information is available. Return false to cancel the
+        /// request immediately.
         /// </summary>
         protected virtual bool GetAuthCredentials(CefBrowser browser, CefFrame frame, bool isProxy, string host, int port, string realm, string scheme, CefAuthCallback callback)
         {

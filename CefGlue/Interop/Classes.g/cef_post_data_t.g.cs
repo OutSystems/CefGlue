@@ -14,6 +14,7 @@ namespace Xilium.CefGlue.Interop
     {
         internal cef_base_t _base;
         internal IntPtr _is_read_only;
+        internal IntPtr _has_excluded_elements;
         internal IntPtr _get_element_count;
         internal IntPtr _get_elements;
         internal IntPtr _remove_element;
@@ -47,6 +48,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int is_read_only_delegate(cef_post_data_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate int has_excluded_elements_delegate(cef_post_data_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -146,87 +153,104 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetElementCount
+        // HasExcludedElements
         private static IntPtr _p4;
-        private static get_element_count_delegate _d4;
+        private static has_excluded_elements_delegate _d4;
         
-        public static UIntPtr get_element_count(cef_post_data_t* self)
+        public static int has_excluded_elements(cef_post_data_t* self)
         {
-            get_element_count_delegate d;
-            var p = self->_get_element_count;
+            has_excluded_elements_delegate d;
+            var p = self->_has_excluded_elements;
             if (p == _p4) { d = _d4; }
             else
             {
-                d = (get_element_count_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_element_count_delegate));
+                d = (has_excluded_elements_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_excluded_elements_delegate));
                 if (_p4 == IntPtr.Zero) { _d4 = d; _p4 = p; }
             }
             return d(self);
         }
         
-        // GetElements
+        // GetElementCount
         private static IntPtr _p5;
-        private static get_elements_delegate _d5;
+        private static get_element_count_delegate _d5;
+        
+        public static UIntPtr get_element_count(cef_post_data_t* self)
+        {
+            get_element_count_delegate d;
+            var p = self->_get_element_count;
+            if (p == _p5) { d = _d5; }
+            else
+            {
+                d = (get_element_count_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_element_count_delegate));
+                if (_p5 == IntPtr.Zero) { _d5 = d; _p5 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetElements
+        private static IntPtr _p6;
+        private static get_elements_delegate _d6;
         
         public static void get_elements(cef_post_data_t* self, UIntPtr* elementsCount, cef_post_data_element_t** elements)
         {
             get_elements_delegate d;
             var p = self->_get_elements;
-            if (p == _p5) { d = _d5; }
+            if (p == _p6) { d = _d6; }
             else
             {
                 d = (get_elements_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_elements_delegate));
-                if (_p5 == IntPtr.Zero) { _d5 = d; _p5 = p; }
+                if (_p6 == IntPtr.Zero) { _d6 = d; _p6 = p; }
             }
             d(self, elementsCount, elements);
         }
         
         // RemoveElement
-        private static IntPtr _p6;
-        private static remove_element_delegate _d6;
+        private static IntPtr _p7;
+        private static remove_element_delegate _d7;
         
         public static int remove_element(cef_post_data_t* self, cef_post_data_element_t* element)
         {
             remove_element_delegate d;
             var p = self->_remove_element;
-            if (p == _p6) { d = _d6; }
-            else
-            {
-                d = (remove_element_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(remove_element_delegate));
-                if (_p6 == IntPtr.Zero) { _d6 = d; _p6 = p; }
-            }
-            return d(self, element);
-        }
-        
-        // AddElement
-        private static IntPtr _p7;
-        private static add_element_delegate _d7;
-        
-        public static int add_element(cef_post_data_t* self, cef_post_data_element_t* element)
-        {
-            add_element_delegate d;
-            var p = self->_add_element;
             if (p == _p7) { d = _d7; }
             else
             {
-                d = (add_element_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(add_element_delegate));
+                d = (remove_element_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(remove_element_delegate));
                 if (_p7 == IntPtr.Zero) { _d7 = d; _p7 = p; }
             }
             return d(self, element);
         }
         
-        // RemoveElements
+        // AddElement
         private static IntPtr _p8;
-        private static remove_elements_delegate _d8;
+        private static add_element_delegate _d8;
+        
+        public static int add_element(cef_post_data_t* self, cef_post_data_element_t* element)
+        {
+            add_element_delegate d;
+            var p = self->_add_element;
+            if (p == _p8) { d = _d8; }
+            else
+            {
+                d = (add_element_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(add_element_delegate));
+                if (_p8 == IntPtr.Zero) { _d8 = d; _p8 = p; }
+            }
+            return d(self, element);
+        }
+        
+        // RemoveElements
+        private static IntPtr _p9;
+        private static remove_elements_delegate _d9;
         
         public static void remove_elements(cef_post_data_t* self)
         {
             remove_elements_delegate d;
             var p = self->_remove_elements;
-            if (p == _p8) { d = _d8; }
+            if (p == _p9) { d = _d9; }
             else
             {
                 d = (remove_elements_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(remove_elements_delegate));
-                if (_p8 == IntPtr.Zero) { _d8 = d; _p8 = p; }
+                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
             }
             d(self);
         }

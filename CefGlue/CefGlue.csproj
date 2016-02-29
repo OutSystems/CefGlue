@@ -115,6 +115,7 @@
     <Compile Include="Classes.g\CefResourceBundleHandler.g.cs" />
     <Compile Include="Classes.g\CefResourceHandler.g.cs" />
     <Compile Include="Classes.g\CefResponse.g.cs" />
+    <Compile Include="Classes.g\CefResponseFilter.g.cs" />
     <Compile Include="Classes.g\CefRunContextMenuCallback.g.cs" />
     <Compile Include="Classes.g\CefRunFileDialogCallback.g.cs" />
     <Compile Include="Classes.g\CefSchemeHandlerFactory.g.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Classes.Handlers\CefRequestHandler.cs" />
     <Compile Include="Classes.Handlers\CefResourceBundleHandler.cs" />
     <Compile Include="Classes.Handlers\CefResourceHandler.cs" />
+    <Compile Include="Classes.Handlers\CefResponseFilter.cs" />
     <Compile Include="Classes.Handlers\CefRunFileDialogCallback.cs" />
     <Compile Include="Classes.Handlers\CefSchemeHandlerFactory.cs" />
     <Compile Include="Classes.Handlers\CefSetCookieCallback.cs" />
@@ -237,11 +239,14 @@
     <Compile Include="Classes.Proxies\CefWebPluginInfo.cs" />
     <Compile Include="Classes.Proxies\CefXmlReader.cs" />
     <Compile Include="Classes.Proxies\CefZipReader.cs" />
+    <Compile Include="Enums\CefCertStatus.cs" />
     <Compile Include="Enums\CefPdfPrintMarginType.cs" />
     <Compile Include="Enums\CefJsonWriterOptions.cs" />
     <Compile Include="Enums\CefJsonParserError.cs" />
     <Compile Include="Enums\CefJsonParserOptions.cs" />
     <Compile Include="Enums\CefPluginPolicy.cs" />
+    <Compile Include="Enums\CefReferrerPolicy.cs" />
+    <Compile Include="Enums\CefResponseFilterStatus.cs" />
     <Compile Include="Enums\CefReturnValue.cs" />
     <Compile Include="Enums\CefScaleFactor.cs" />
     <Compile Include="Enums\CefWindowOpenDisposition.cs" />
@@ -335,6 +340,7 @@
     <Compile Include="Interop\Classes.g\cef_request_context_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_request_context_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_resource_bundle_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_response_filter_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_run_context_menu_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_run_file_dialog_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_scheme_registrar_t.g.cs" />
