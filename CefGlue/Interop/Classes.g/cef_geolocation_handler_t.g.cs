@@ -44,7 +44,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_cancel_geolocation_permission_delegate(cef_geolocation_handler_t* self, cef_browser_t* browser, cef_string_t* requesting_url, int request_id);
+        internal delegate void on_cancel_geolocation_permission_delegate(cef_geolocation_handler_t* self, cef_browser_t* browser, int request_id);
         
         private static int _sizeof;
         

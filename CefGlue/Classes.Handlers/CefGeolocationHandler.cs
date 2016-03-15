@@ -37,21 +37,17 @@
         protected abstract bool OnRequestGeolocationPermission(CefBrowser browser, string requestingUrl, int requestId, CefGeolocationCallback callback);
 
 
-        private void on_cancel_geolocation_permission(cef_geolocation_handler_t* self, cef_browser_t* browser, cef_string_t* requesting_url, int request_id)
+        private void on_cancel_geolocation_permission(cef_geolocation_handler_t* self, cef_browser_t* browser, int request_id)
         {
             CheckSelf(self);
-
             var m_browser = CefBrowser.FromNative(browser);
-            var m_requesting_url = cef_string_t.ToString(requesting_url);
-
-            OnCancelGeolocationPermission(m_browser, m_requesting_url, request_id);
+            OnCancelGeolocationPermission(m_browser, request_id);
         }
 
         /// <summary>
-        /// Called when a geolocation access request is canceled. |requesting_url| is
-        /// the URL that originally requested permission and |request_id| is the unique
-        /// ID for the permission request.
+        /// Called when a geolocation access request is canceled. |request_id| is the
+        /// unique ID for the permission request.
         /// </summary>
-        protected abstract void OnCancelGeolocationPermission(CefBrowser browser, string requesting_url, int request_id);
+        protected abstract void OnCancelGeolocationPermission(CefBrowser browser, int requestId);
     }
 }

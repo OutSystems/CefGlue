@@ -89,5 +89,15 @@ namespace Xilium.CefGlue
         /// Main resource of a service worker.
         /// </summary>
         ServiceWorker,
+
+        /// <summary>
+        /// A report of Content Security Policy violations.
+        /// </summary>
+        CspRerort,
+
+        /// <summary>
+        /// A resource that a plugin requested.
+        /// </summary>
+        PluginResource,
     }
 }

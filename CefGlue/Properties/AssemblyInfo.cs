@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Xilium CefGlue")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Xilium.CefGlue is a .NET/Mono binding for The Chromium Embedded Framework (CEF) by Marshall A. Greenblatt.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Xilium Project")]
 [assembly: AssemblyProduct("Xilium CefGlue")]
-[assembly: AssemblyCopyright("Copyright © Xilium Project 2012")]
+[assembly: AssemblyCopyright("Copyright © Xilium Project 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.2272.2035.0")]
-[assembly: AssemblyFileVersion("3.2272.2035.0")]
+[assembly: AssemblyVersion("49.0.0.0")]
+[assembly: AssemblyFileVersion("49.0.0.0")]
+[assembly: AssemblyInformationalVersion("49.0.0")]

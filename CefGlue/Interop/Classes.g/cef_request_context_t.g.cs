@@ -27,6 +27,10 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_all_preferences;
         internal IntPtr _can_set_preference;
         internal IntPtr _set_preference;
+        internal IntPtr _clear_certificate_exceptions;
+        internal IntPtr _close_all_connections;
+        internal IntPtr _resolve_host;
+        internal IntPtr _resolve_host_cached;
         
         // GetGlobalContext
         [DllImport(libcef.DllName, EntryPoint = "cef_request_context_get_global_context", CallingConvention = libcef.CEF_CALL)]
@@ -141,6 +145,30 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int set_preference_delegate(cef_request_context_t* self, cef_string_t* name, cef_value_t* value, cef_string_t* error);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void clear_certificate_exceptions_delegate(cef_request_context_t* self, cef_completion_callback_t* callback);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void close_all_connections_delegate(cef_request_context_t* self, cef_completion_callback_t* callback);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void resolve_host_delegate(cef_request_context_t* self, cef_string_t* origin, cef_resolve_callback_t* callback);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate CefErrorCode resolve_host_cached_delegate(cef_request_context_t* self, cef_string_t* origin, cef_string_list* resolved_ips);
         
         // AddRef
         private static IntPtr _p0;
@@ -429,6 +457,74 @@ namespace Xilium.CefGlue.Interop
                 if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
             }
             return d(self, name, value, error);
+        }
+        
+        // ClearCertificateExceptions
+        private static IntPtr _p11;
+        private static clear_certificate_exceptions_delegate _d11;
+        
+        public static void clear_certificate_exceptions(cef_request_context_t* self, cef_completion_callback_t* callback)
+        {
+            clear_certificate_exceptions_delegate d;
+            var p = self->_clear_certificate_exceptions;
+            if (p == _p11) { d = _d11; }
+            else
+            {
+                d = (clear_certificate_exceptions_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(clear_certificate_exceptions_delegate));
+                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
+            }
+            d(self, callback);
+        }
+        
+        // CloseAllConnections
+        private static IntPtr _p12;
+        private static close_all_connections_delegate _d12;
+        
+        public static void close_all_connections(cef_request_context_t* self, cef_completion_callback_t* callback)
+        {
+            close_all_connections_delegate d;
+            var p = self->_close_all_connections;
+            if (p == _p12) { d = _d12; }
+            else
+            {
+                d = (close_all_connections_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(close_all_connections_delegate));
+                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
+            }
+            d(self, callback);
+        }
+        
+        // ResolveHost
+        private static IntPtr _p13;
+        private static resolve_host_delegate _d13;
+        
+        public static void resolve_host(cef_request_context_t* self, cef_string_t* origin, cef_resolve_callback_t* callback)
+        {
+            resolve_host_delegate d;
+            var p = self->_resolve_host;
+            if (p == _p13) { d = _d13; }
+            else
+            {
+                d = (resolve_host_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(resolve_host_delegate));
+                if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
+            }
+            d(self, origin, callback);
+        }
+        
+        // ResolveHostCached
+        private static IntPtr _p14;
+        private static resolve_host_cached_delegate _d14;
+        
+        public static CefErrorCode resolve_host_cached(cef_request_context_t* self, cef_string_t* origin, cef_string_list* resolved_ips)
+        {
+            resolve_host_cached_delegate d;
+            var p = self->_resolve_host_cached;
+            if (p == _p14) { d = _d14; }
+            else
+            {
+                d = (resolve_host_cached_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(resolve_host_cached_delegate));
+                if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
+            }
+            return d(self, origin, resolved_ips);
         }
         
     }

@@ -269,5 +269,69 @@
                 return n_result != 0;
             }
         }
+
+        /// <summary>
+        /// Clears all certificate exceptions that were added as part of handling
+        /// CefRequestHandler::OnCertificateError(). If you call this it is
+        /// recommended that you also call CloseAllConnections() or you risk not
+        /// being prompted again for server certificates if you reconnect quickly.
+        /// If |callback| is non-NULL it will be executed on the UI thread after
+        /// completion.
+        /// </summary>
+        public void ClearCertificateExceptions(CefCompletionCallback callback)
+        {
+            var n_callback = callback != null ? callback.ToNative() : null;
+            cef_request_context_t.clear_certificate_exceptions(_self, n_callback);
+        }
+
+        /// <summary>
+        /// Clears all active and idle connections that Chromium currently has.
+        /// This is only recommended if you have released all other CEF objects but
+        /// don't yet want to call CefShutdown(). If |callback| is non-NULL it will be
+        /// executed on the UI thread after completion.
+        /// </summary>
+        public void CloseAllConnections(CefCompletionCallback callback)
+        {
+            var n_callback = callback != null ? callback.ToNative() : null;
+            cef_request_context_t.close_all_connections(_self, n_callback);
+        }
+
+        /// <summary>
+        /// Attempts to resolve |origin| to a list of associated IP addresses.
+        /// |callback| will be executed on the UI thread after completion.
+        /// </summary>
+        public void ResolveHost(string origin, CefResolveCallback callback)
+        {
+            if (string.IsNullOrEmpty(origin)) throw new ArgumentNullException("origin");
+            if (callback == null) throw new ArgumentNullException("callback");
+
+            fixed (char* origin_str = origin)
+            {
+                var n_origin = new cef_string_t(origin_str, origin != null ? origin.Length : 0);
+                var n_callback = callback.ToNative();
+                cef_request_context_t.resolve_host(_self, &n_origin, n_callback);
+            }
+        }
+
+        /// <summary>
+        /// Attempts to resolve |origin| to a list of associated IP addresses using
+        /// cached data. |resolved_ips| will be populated with the list of resolved IP
+        /// addresses or empty if no cached data is available. Returns ERR_NONE on
+        /// success. This method must be called on the browser process IO thread.
+        /// </summary>
+        public CefErrorCode ResolveHostCached(string origin, out string[] resolvedIps)
+        {
+            if (string.IsNullOrEmpty(origin)) throw new ArgumentNullException("origin");
+
+            fixed (char* origin_str = origin)
+            {
+                var n_origin = new cef_string_t(origin_str, origin != null ? origin.Length : 0);
+                var n_resolved_ips = libcef.string_list_alloc();
+                var result = cef_request_context_t.resolve_host_cached(_self, &n_origin, n_resolved_ips);
+                resolvedIps = cef_string_list.ToArray(n_resolved_ips);
+                libcef.string_list_free(n_resolved_ips);
+                return result;
+            }
+        }
     }
 }

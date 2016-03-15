@@ -125,4 +125,6 @@ classdef = {
     'CefResourceBundle': {'role': ROLE_PROXY },
     # 2526
     'CefResponseFilter': { 'role': ROLE_HANDLER },
+    # 2623
+    'CefResolveCallback': { 'role': ROLE_HANDLER },
     }

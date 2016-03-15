@@ -111,6 +111,7 @@
     <Compile Include="Classes.g\CefRequestContext.g.cs" />
     <Compile Include="Classes.g\CefRequestContextHandler.g.cs" />
     <Compile Include="Classes.g\CefRequestHandler.g.cs" />
+    <Compile Include="Classes.g\CefResolveCallback.g.cs" />
     <Compile Include="Classes.g\CefResourceBundle.g.cs" />
     <Compile Include="Classes.g\CefResourceBundleHandler.g.cs" />
     <Compile Include="Classes.g\CefResourceHandler.g.cs" />
@@ -174,6 +175,7 @@
     <Compile Include="Classes.Handlers\CefRenderProcessHandler.cs" />
     <Compile Include="Classes.Handlers\CefRequestContextHandler.cs" />
     <Compile Include="Classes.Handlers\CefRequestHandler.cs" />
+    <Compile Include="Classes.Handlers\CefResolveCallback.cs" />
     <Compile Include="Classes.Handlers\CefResourceBundleHandler.cs" />
     <Compile Include="Classes.Handlers\CefResourceHandler.cs" />
     <Compile Include="Classes.Handlers\CefResponseFilter.cs" />
@@ -339,6 +341,7 @@
     <Compile Include="Interop\Classes.g\cef_request_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_request_context_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_request_context_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_resolve_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_resource_bundle_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_response_filter_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_run_context_menu_callback_t.g.cs" />
