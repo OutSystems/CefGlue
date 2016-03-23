@@ -43,6 +43,12 @@ namespace Xilium.CefGlue
             Dispose(false);
         }
         
+        private void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        
         protected virtual void Dispose(bool disposing)
         {
             if (_self != null)
@@ -72,6 +78,7 @@ namespace Xilium.CefGlue
                 if (result == 0)
                 {
                     lock (_roots) { _roots.Remove((IntPtr)_self); }
+                    Dispose();
                     return 1;
                 }
                 return 0;

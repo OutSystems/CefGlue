@@ -28,7 +28,7 @@ classdef = {
     'CefAuthCallback': { 'role': ROLE_PROXY },
     'CefRequestHandler': { 'role': ROLE_HANDLER },
     'CefResourceBundleHandler': { 'role': ROLE_HANDLER },
-    'CefResourceHandler': { 'role': ROLE_HANDLER },
+    'CefResourceHandler': { 'role': ROLE_HANDLER, 'autodispose': True },
     'CefResponse': { 'role': ROLE_PROXY },
     'CefSchemeHandlerFactory': { 'role': ROLE_HANDLER },
     'CefReadHandler': { 'role': ROLE_HANDLER },
@@ -53,7 +53,7 @@ classdef = {
     'CefContextMenuParams': { 'role': ROLE_PROXY },
     'CefCommandLine': { 'role': ROLE_PROXY },
     'CefCookieManager': { 'role': ROLE_PROXY },
-    'CefCookieVisitor': { 'role': ROLE_HANDLER },
+    'CefCookieVisitor': { 'role': ROLE_HANDLER, 'autodispose': True },
     'CefDOMVisitor': { 'role': ROLE_HANDLER, 'name': 'CefDomVisitor' },
     'CefDOMDocument': { 'role': ROLE_PROXY, 'name': 'CefDomDocument' },
     'CefDOMNode': { 'role': ROLE_PROXY, 'name': 'CefDomNode' },
@@ -114,8 +114,8 @@ classdef = {
     'CefSSLCertPrincipal': { 'role': ROLE_PROXY, 'name': 'CefSslCertPrincipal' },
     'CefSSLInfo': { 'role': ROLE_PROXY, 'name': 'CefSslInfo' },
     # 2357
-    'CefSetCookieCallback': { 'role': ROLE_HANDLER },
-    'CefDeleteCookiesCallback': { 'role': ROLE_HANDLER },
+    'CefSetCookieCallback': { 'role': ROLE_HANDLER, 'autodispose': True },
+    'CefDeleteCookiesCallback': { 'role': ROLE_HANDLER, 'autodispose': True },
     'CefRequestCallback': { 'role': ROLE_PROXY },
     'CefValue': { 'role': ROLE_PROXY },
     # 2424

@@ -282,3 +282,9 @@ def get_overview(cls):
     result.append(role)
 
     return result
+
+def is_autodispose(cls):
+    if classdef.has_key(cls.get_name()):
+        clsinfo = classdef[cls.get_name()]
+        return clsinfo.has_key('autodispose') and clsinfo['autodispose'] == True
+    return False

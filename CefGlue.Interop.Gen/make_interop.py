@@ -482,6 +482,14 @@ def make_handler_g_body(cls):
     result.append('}')
     result.append('')
 
+    if schema.is_autodispose(cls):
+        result.append('private void Dispose()')
+        result.append('{')
+        result.append(indent + 'Dispose(true);')
+        result.append(indent + 'GC.SuppressFinalize(this);')
+        result.append('}')
+        result.append('')
+
     result.append('protected virtual void Dispose(bool disposing)')
     result.append('{')
     # result.append(indent + '_disposed = true;')
@@ -516,6 +524,8 @@ def make_handler_g_body(cls):
     result.append(indent + indent + 'if (result == 0)')
     result.append(indent + indent + '{')
     result.append(indent + indent + indent + 'lock (_roots) { _roots.Remove((IntPtr)_self); }')
+    if schema.is_autodispose(cls):
+        result.append(indent + indent + indent + 'Dispose();')
     result.append(indent + indent + indent + 'return 1;')
     result.append(indent + indent + '}')
     result.append(indent + indent + 'return 0;')
