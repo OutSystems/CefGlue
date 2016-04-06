@@ -89,7 +89,13 @@
 
             var result = OnBeforeResourceLoad(m_browser, m_frame, m_request, m_callback);
 
-            m_request.Dispose();
+            if (result != CefReturnValue.ContinueAsync)
+            {
+                m_browser.Dispose();
+                m_frame.Dispose();
+                m_request.Dispose();
+                m_callback.Dispose();
+            }
 
             return result;
         }
