@@ -123,7 +123,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void set_page_ranges_delegate(cef_print_settings_t* self, UIntPtr rangesCount, cef_page_range_t* ranges);
+        private delegate void set_page_ranges_delegate(cef_print_settings_t* self, UIntPtr rangesCount, cef_range_t* ranges);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -135,7 +135,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void get_page_ranges_delegate(cef_print_settings_t* self, UIntPtr* rangesCount, cef_page_range_t* ranges);
+        private delegate void get_page_ranges_delegate(cef_print_settings_t* self, UIntPtr* rangesCount, cef_range_t* ranges);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -422,7 +422,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pd;
         private static set_page_ranges_delegate _dd;
         
-        public static void set_page_ranges(cef_print_settings_t* self, UIntPtr rangesCount, cef_page_range_t* ranges)
+        public static void set_page_ranges(cef_print_settings_t* self, UIntPtr rangesCount, cef_range_t* ranges)
         {
             set_page_ranges_delegate d;
             var p = self->_set_page_ranges;
@@ -456,7 +456,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pf;
         private static get_page_ranges_delegate _df;
         
-        public static void get_page_ranges(cef_print_settings_t* self, UIntPtr* rangesCount, cef_page_range_t* ranges)
+        public static void get_page_ranges(cef_print_settings_t* self, UIntPtr* rangesCount, cef_range_t* ranges)
         {
             get_page_ranges_delegate d;
             var p = self->_get_page_ranges;

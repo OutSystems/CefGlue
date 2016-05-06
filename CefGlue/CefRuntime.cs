@@ -668,25 +668,6 @@
         }
 
         /// <summary>
-        /// Parses |string| which represents a CSS color value. If |strict| is true
-        /// strict parsing rules will be applied. Returns true on success or false on
-        /// error. If parsing succeeds |color| will be set to the color value otherwise
-        /// |color| will remain unchanged.
-        /// </summary>
-        public static bool ParseCssColor(string value, bool strict, out CefColor color)
-        {
-            fixed (char* value_str = value)
-            {
-                var n_value = new cef_string_t(value_str, value != null ? value.Length : 0);
-
-                uint n_color = 0;
-                var result = libcef.parse_csscolor(&n_value, strict ? 1 : 0, &n_color) != 0;
-                color = new CefColor(n_color);
-                return result;
-            }
-        }
-
-        /// <summary>
         /// Parses the specified |json_string| and returns a dictionary or list
         /// representation. If JSON parsing fails this method returns NULL.
         /// </summary>
@@ -841,54 +822,6 @@
         }
 
         /// <summary>
-        /// Add a plugin path (directory + file). This change may not take affect until
-        /// after CefRefreshWebPlugins() is called. Can be called on any thread in the
-        /// browser process.
-        /// </summary>
-        public static void AddWebPluginPath(string path)
-        {
-            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException("path");
-
-            fixed (char* path_str = path)
-            {
-                var n_path = new cef_string_t(path_str, path.Length);
-                libcef.add_web_plugin_path(&n_path);
-            }
-        }
-
-        /// <summary>
-        /// Add a plugin directory. This change may not take affect until after
-        /// CefRefreshWebPlugins() is called. Can be called on any thread in the browser
-        /// process.
-        /// </summary>
-        public static void AddWebPluginDirectory(string directory)
-        {
-            if (string.IsNullOrEmpty(directory)) throw new ArgumentNullException("path");
-
-            fixed (char* directory_str = directory)
-            {
-                var n_directory = new cef_string_t(directory_str, directory.Length);
-                libcef.add_web_plugin_directory(&n_directory);
-            }
-        }
-
-        /// <summary>
-        /// Remove a plugin path (directory + file). This change may not take affect
-        /// until after CefRefreshWebPlugins() is called. Can be called on any thread in
-        /// the browser process.
-        /// </summary>
-        public static void RemoveWebPluginPath(string path)
-        {
-            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException("path");
-
-            fixed (char* path_str = path)
-            {
-                var n_path = new cef_string_t(path_str, path.Length);
-                libcef.remove_web_plugin_path(&n_path);
-            }
-        }
-
-        /// <summary>
         /// Unregister an internal plugin. This may be undone the next time
         /// CefRefreshWebPlugins() is called. Can be called on any thread in the browser
         /// process.
@@ -901,21 +834,6 @@
             {
                 var n_path = new cef_string_t(path_str, path.Length);
                 libcef.unregister_internal_web_plugin(&n_path);
-            }
-        }
-
-        /// <summary>
-        /// Force a plugin to shutdown. Can be called on any thread in the browser
-        /// process but will be executed on the IO thread.
-        /// </summary>
-        public static void ForceWebPluginShutdown(string path)
-        {
-            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException("path");
-
-            fixed (char* path_str = path)
-            {
-                var n_path = new cef_string_t(path_str, path.Length);
-                libcef.force_web_plugin_shutdown(&n_path);
             }
         }
 

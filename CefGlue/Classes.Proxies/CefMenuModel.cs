@@ -15,6 +15,16 @@
     public sealed unsafe partial class CefMenuModel
     {
         /// <summary>
+        /// Create a new MenuModel with the specified |delegate|.
+        /// </summary>
+        public static CefMenuModel Create(CefMenuModelDelegate handler)
+        {
+            return CefMenuModel.FromNative(
+                cef_menu_model_t.create(handler.ToNative())
+                );
+        }
+
+        /// <summary>
         /// Clears the menu. Returns true on success.
         /// </summary>
         public bool Clear()

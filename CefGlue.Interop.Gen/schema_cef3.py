@@ -127,4 +127,8 @@ classdef = {
     'CefResponseFilter': { 'role': ROLE_HANDLER },
     # 2623
     'CefResolveCallback': { 'role': ROLE_HANDLER },
+    # 51 (without views)
+	'CefDownloadImageCallback': { 'role': ROLE_HANDLER },
+	'CefImage': { 'role': ROLE_PROXY },
+	'CefMenuModelDelegate': { 'role': ROLE_HANDLER },
     }

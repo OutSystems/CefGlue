@@ -63,6 +63,10 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_accelerator;
         internal IntPtr _get_accelerator_at;
         
+        // CreateMenuModel
+        [DllImport(libcef.DllName, EntryPoint = "cef_menu_model_create", CallingConvention = libcef.CEF_CALL)]
+        public static extern cef_menu_model_t* create(cef_menu_model_delegate_t* @delegate);
+        
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]

@@ -9,7 +9,7 @@ namespace Xilium.CefGlue.WPF
 {
     public class WpfCefJSDialogHandler : CefJSDialogHandler
     {
-        protected override bool OnJSDialog(CefBrowser browser, string originUrl, string acceptLang, CefJSDialogType dialogType, string message_text, string default_prompt_text, CefJSDialogCallback callback, out bool suppress_message)
+        protected override bool OnJSDialog(CefBrowser browser, string originUrl, CefJSDialogType dialogType, string message_text, string default_prompt_text, CefJSDialogCallback callback, out bool suppress_message)
         {
             bool success = false;
             string input = null;

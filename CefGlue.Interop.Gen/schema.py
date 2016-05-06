@@ -87,6 +87,8 @@ c2cs_types = {
     'cef_duplex_mode_t': 'CefDuplexMode',
 
     'cef_cursor_type_t': 'CefCursorType',
+
+	'cef_range_t': 'cef_range_t',
     }
 
 c2cs_platform_retval = {
@@ -145,11 +147,13 @@ c2cs_enumtypes = {
     'cef_cert_status_t': 'CefCertStatus',
     'cef_response_filter_status_t': 'CefResponseFilterStatus',
     'cef_referrer_policy_t': 'CefReferrerPolicy',
+	'cef_color_type_t': 'CefColorType',
+	'cef_alpha_type_t': 'CefAlphaType',
     }
 
 c2cs_structtypes = { }
 
-cs_keywords = [ 'object', 'string', 'checked', 'event', 'params' ]
+cs_keywords = [ 'object', 'string', 'checked', 'event', 'params', 'delegate' ]
 
 classdef = { }
 

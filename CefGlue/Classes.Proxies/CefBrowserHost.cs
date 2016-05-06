@@ -147,6 +147,19 @@
         }
 
         /// <summary>
+        /// Helper for closing a browser. Call this method from the top-level window
+        /// close handler. Internally this calls CloseBrowser(false) if the close has
+        /// not yet been initiated. This method returns false while the close is
+        /// pending and true after the close has completed. See CloseBrowser() and
+        /// CefLifeSpanHandler::DoClose() documentation for additional usage
+        /// information. This method must be called on the browser process UI thread.
+        /// </summary>
+        public bool TryCloseBrowser()
+        {
+            return cef_browser_host_t.try_close_browser(_self) != 0;
+        }
+
+        /// <summary>
         /// Set whether the browser is focused.
         /// </summary>
         public void SetFocus(bool focus)
@@ -155,16 +168,9 @@
         }
 
         /// <summary>
-        /// Set whether the window containing the browser is visible
-        /// (minimized/unminimized, app hidden/unhidden, etc). Only used on Mac OS X.
-        /// </summary>
-        public void SetWindowVisibility(bool visible)
-        {
-            cef_browser_host_t.set_window_visibility(_self, visible ? 1 : 0);
-        }
-
-        /// <summary>
-        /// Retrieve the window handle for this browser.
+        /// Retrieve the window handle for this browser. If this browser is wrapped in
+        /// a CefBrowserView this method should be called on the browser process UI
+        /// thread and it will return the handle for the top-level native window.
         /// </summary>
         public IntPtr GetWindowHandle()
         {
@@ -173,12 +179,21 @@
 
         /// <summary>
         /// Retrieve the window handle of the browser that opened this browser. Will
-        /// return NULL for non-popup windows. This method can be used in combination
-        /// with custom handling of modal windows.
+        /// return NULL for non-popup windows or if this browser is wrapped in a
+        /// CefBrowserView. This method can be used in combination with custom handling
+        /// of modal windows.
         /// </summary>
         public IntPtr GetOpenerWindowHandle()
         {
             return cef_browser_host_t.get_opener_window_handle(_self);
+        }
+
+        /// <summary>
+        /// Returns true if this browser is wrapped in a CefBrowserView.
+        /// </summary>
+        public bool HasView
+        {
+            get { return cef_browser_host_t.has_view(_self) != 0; }
         }
 
         /// <summary>
@@ -272,6 +287,30 @@
         }
 
         /// <summary>
+        /// Download |image_url| and execute |callback| on completion with the images
+        /// received from the renderer. If |is_favicon| is true then cookies are not
+        /// sent and not accepted during download. Images with density independent
+        /// pixel (DIP) sizes larger than |max_image_size| are filtered out from the
+        /// image results. Versions of the image at different scale factors may be
+        /// downloaded up to the maximum scale factor supported by the system. If there
+        /// are no image results &lt;= |max_image_size| then the smallest image is resized
+        /// to |max_image_size| and is the only result. A |max_image_size| of 0 means
+        /// unlimited. If |bypass_cache| is true then |image_url| is requested from the
+        /// server even if it is present in the browser cache.
+        /// </summary>
+        public void DownloadImage(string imageUrl, bool isFavIcon, uint maxImageSize, bool bypassCache, CefDownloadImageCallback callback)
+        {
+            if (string.IsNullOrEmpty(imageUrl)) throw new ArgumentNullException("imageUrl");
+
+            fixed (char* imageUrl_ptr = imageUrl)
+            {
+                var n_imageUrl = new cef_string_t(imageUrl_ptr, imageUrl.Length);
+                var n_callback = callback.ToNative();
+                cef_browser_host_t.download_image(_self, &n_imageUrl, isFavIcon ? 1 : 0, maxImageSize, bypassCache ? 1 : 0, n_callback);
+            }
+        }
+
+        /// <summary>
         /// Print the current browser contents.
         /// </summary>
         public void Print()
@@ -332,7 +371,9 @@
 
         /// <summary>
         /// Open developer tools in its own window. If |inspect_element_at| is non-
-        /// empty the element at the specified (x,y) location will be inspected.
+        /// empty the element at the specified (x,y) location will be inspected. The
+        /// |windowInfo| parameter will be ignored if this browser is wrapped in a
+        /// CefBrowserView.
         /// </summary>
         public void ShowDevTools(CefWindowInfo windowInfo, CefClient client, CefBrowserSettings browserSettings, CefPoint inspectElementAt)
         {

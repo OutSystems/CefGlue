@@ -74,6 +74,7 @@
     <Compile Include="Classes.g\CefDomNode.g.cs" />
     <Compile Include="Classes.g\CefDomVisitor.g.cs" />
     <Compile Include="Classes.g\CefDownloadHandler.g.cs" />
+    <Compile Include="Classes.g\CefDownloadImageCallback.g.cs" />
     <Compile Include="Classes.g\CefDownloadItem.g.cs" />
     <Compile Include="Classes.g\CefDownloadItemCallback.g.cs" />
     <Compile Include="Classes.g\CefDragData.g.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Classes.g\CefGeolocationCallback.g.cs" />
     <Compile Include="Classes.g\CefGeolocationHandler.g.cs" />
     <Compile Include="Classes.g\CefGetGeolocationCallback.g.cs" />
+    <Compile Include="Classes.g\CefImage.g.cs" />
     <Compile Include="Classes.g\CefJSDialogCallback.g.cs" />
     <Compile Include="Classes.g\CefJSDialogHandler.g.cs" />
     <Compile Include="Classes.g\CefKeyboardHandler.g.cs" />
@@ -93,6 +95,7 @@
     <Compile Include="Classes.g\CefListValue.g.cs" />
     <Compile Include="Classes.g\CefLoadHandler.g.cs" />
     <Compile Include="Classes.g\CefMenuModel.g.cs" />
+    <Compile Include="Classes.g\CefMenuModelDelegate.g.cs" />
     <Compile Include="Classes.g\CefNavigationEntry.g.cs" />
     <Compile Include="Classes.g\CefNavigationEntryVisitor.g.cs" />
     <Compile Include="Classes.g\CefPdfPrintCallback.g.cs" />
@@ -157,6 +160,7 @@
     <Compile Include="Classes.Handlers\CefDisplayHandler.cs" />
     <Compile Include="Classes.Handlers\CefDomVisitor.cs" />
     <Compile Include="Classes.Handlers\CefDownloadHandler.cs" />
+    <Compile Include="Classes.Handlers\CefDownloadImageCallback.cs" />
     <Compile Include="Classes.Handlers\CefDragHandler.cs" />
     <Compile Include="Classes.Handlers\CefEndTracingCallback.cs" />
     <Compile Include="Classes.Handlers\CefFindHandler.cs" />
@@ -167,6 +171,7 @@
     <Compile Include="Classes.Handlers\CefKeyboardHandler.cs" />
     <Compile Include="Classes.Handlers\CefLifeSpanHandler.cs" />
     <Compile Include="Classes.Handlers\CefLoadHandler.cs" />
+    <Compile Include="Classes.Handlers\CefMenuModelDelegate.cs" />
     <Compile Include="Classes.Handlers\CefNavigationEntryVisitor.cs" />
     <Compile Include="Classes.Handlers\CefPdfPrintCallback.cs" />
     <Compile Include="Classes.Handlers\CefPrintHandler.cs" />
@@ -209,6 +214,7 @@
     <Compile Include="Classes.Proxies\CefFileDialogCallback.cs" />
     <Compile Include="Classes.Proxies\CefFrame.cs" />
     <Compile Include="Classes.Proxies\CefGeolocationCallback.cs" />
+    <Compile Include="Classes.Proxies\CefImage.cs" />
     <Compile Include="Classes.Proxies\CefJSDialogCallback.cs" />
     <Compile Include="Classes.Proxies\CefListValue.cs" />
     <Compile Include="Classes.Proxies\CefMenuModel.cs" />
@@ -241,7 +247,11 @@
     <Compile Include="Classes.Proxies\CefWebPluginInfo.cs" />
     <Compile Include="Classes.Proxies\CefXmlReader.cs" />
     <Compile Include="Classes.Proxies\CefZipReader.cs" />
+    <Compile Include="Enums\CefCrossAxisAlignment.cs" />
+    <Compile Include="Enums\CefMainAxisAlignment.cs" />
+    <Compile Include="Enums\CefTextStyle.cs" />
     <Compile Include="Enums\CefCertStatus.cs" />
+    <Compile Include="Enums\CefAlphaType.cs" />
     <Compile Include="Enums\CefPdfPrintMarginType.cs" />
     <Compile Include="Enums\CefJsonWriterOptions.cs" />
     <Compile Include="Enums\CefJsonParserError.cs" />
@@ -251,6 +261,7 @@
     <Compile Include="Enums\CefResponseFilterStatus.cs" />
     <Compile Include="Enums\CefReturnValue.cs" />
     <Compile Include="Enums\CefScaleFactor.cs" />
+    <Compile Include="Enums\CefColorType.cs" />
     <Compile Include="Enums\CefWindowOpenDisposition.cs" />
     <Compile Include="Enums\CefUriUnescapeRules.cs" />
     <Compile Include="Enums\CefCursorType.cs" />
@@ -317,6 +328,7 @@
     <Compile Include="Interop\Classes.g\cef_domnode_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_domvisitor_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_download_handler_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_download_image_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_download_item_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_download_item_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_drag_data_t.g.cs" />
@@ -326,9 +338,11 @@
     <Compile Include="Interop\Classes.g\cef_find_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_focus_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_get_geolocation_callback_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_image_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_jsdialog_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_jsdialog_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_keyboard_handler_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_menu_model_delegate_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_menu_model_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_navigation_entry_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_navigation_entry_visitor_t.g.cs" />
@@ -362,12 +376,12 @@
     <Compile Include="Interop\Classes.g\cef_web_plugin_unstable_callback_t.g.cs" />
     <Compile Include="Interop\Structs\cef_pdf_print_settings_t.cs" />
     <Compile Include="Interop\Structs\cef_draggable_region_t.cs" />
+    <Compile Include="Interop\Structs\cef_range_t.cs" />
     <Compile Include="Interop\Structs\cef_request_context_settings_t.cs" />
     <Compile Include="Interop\Structs\cef_geoposition_t.cs" />
     <Compile Include="Interop\Structs\cef_cursor_info_t.cs" />
     <Compile Include="Interop\Structs\cef_key_event_t.cs" />
     <Compile Include="Interop\Structs\cef_mouse_event_t.cs" />
-    <Compile Include="Interop\Structs\cef_page_range_t.cs" />
     <Compile Include="Interop\Structs\cef_point_t.cs" />
     <Compile Include="Interop\Structs\cef_size_t.cs" />
     <Compile Include="Interop\Structs\cef_screen_info_t.cs" />
@@ -386,8 +400,9 @@
     <Compile Include="Structs\CefMainArgs.cs" />
     <Compile Include="Structs\CefCursorInfo.cs" />
     <Compile Include="Structs\CefPdfPrintSettings.cs" />
+    <Compile Include="Structs\CefInsets.cs" />
+    <Compile Include="Structs\CefRange.cs" />
     <Compile Include="Structs\CefPopupFeatures.cs" />
-    <Compile Include="Structs\CefPageRange.cs" />
     <Compile Include="Structs\CefPoint.cs" />
     <Compile Include="Structs\CefRequestContextSettings.cs" />
     <Compile Include="Structs\CefSize.cs" />

@@ -5,20 +5,12 @@
     using System.Text;
     using Xilium.CefGlue.Interop;
 
-    public struct CefPageRange
+    public struct CefRange
     {
-        internal static unsafe CefPageRange Create(cef_page_range_t* pageRange)
-        {
-            return new CefPageRange(
-                pageRange->from,
-                pageRange->to
-                );
-        }
-
         private int _from;
         private int _to;
 
-        public CefPageRange(int from, int to)
+        public CefRange(int from, int to)
         {
             _from = from;
             _to = to;

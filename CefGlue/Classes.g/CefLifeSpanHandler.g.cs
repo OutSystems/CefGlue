@@ -24,9 +24,8 @@ namespace Xilium.CefGlue
         private cef_life_span_handler_t.has_one_ref_delegate _ds2;
         private cef_life_span_handler_t.on_before_popup_delegate _ds3;
         private cef_life_span_handler_t.on_after_created_delegate _ds4;
-        private cef_life_span_handler_t.run_modal_delegate _ds5;
-        private cef_life_span_handler_t.do_close_delegate _ds6;
-        private cef_life_span_handler_t.on_before_close_delegate _ds7;
+        private cef_life_span_handler_t.do_close_delegate _ds5;
+        private cef_life_span_handler_t.on_before_close_delegate _ds6;
         
         protected CefLifeSpanHandler()
         {
@@ -42,12 +41,10 @@ namespace Xilium.CefGlue
             _self->_on_before_popup = Marshal.GetFunctionPointerForDelegate(_ds3);
             _ds4 = new cef_life_span_handler_t.on_after_created_delegate(on_after_created);
             _self->_on_after_created = Marshal.GetFunctionPointerForDelegate(_ds4);
-            _ds5 = new cef_life_span_handler_t.run_modal_delegate(run_modal);
-            _self->_run_modal = Marshal.GetFunctionPointerForDelegate(_ds5);
-            _ds6 = new cef_life_span_handler_t.do_close_delegate(do_close);
-            _self->_do_close = Marshal.GetFunctionPointerForDelegate(_ds6);
-            _ds7 = new cef_life_span_handler_t.on_before_close_delegate(on_before_close);
-            _self->_on_before_close = Marshal.GetFunctionPointerForDelegate(_ds7);
+            _ds5 = new cef_life_span_handler_t.do_close_delegate(do_close);
+            _self->_do_close = Marshal.GetFunctionPointerForDelegate(_ds5);
+            _ds6 = new cef_life_span_handler_t.on_before_close_delegate(on_before_close);
+            _self->_on_before_close = Marshal.GetFunctionPointerForDelegate(_ds6);
         }
         
         ~CefLifeSpanHandler()

@@ -3,6 +3,9 @@ syntax: glob
 bin
 obj
 
+#
+packages
+
 # visual studio
 *.user
 *.suo
