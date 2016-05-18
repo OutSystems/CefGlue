@@ -13,6 +13,39 @@
     /// </summary>
     public abstract unsafe partial class CefResourceHandler
     {
+        private volatile bool _keepObject;
+
+        public void KeepObject()
+        {
+            if (!_keepObject)
+            {
+                lock (SyncRoot)
+                {
+                    if (!_keepObject)
+                    {
+                        add_ref(_self);
+                        _keepObject = true;
+                    }
+                }
+            }
+        }
+
+        public void ReleaseObject()
+        {
+            if (_keepObject)
+            {
+                lock (SyncRoot)
+                {
+                    if (_keepObject)
+                    {
+                        release(_self);
+                        _keepObject = false;
+                    }
+                }
+            }
+        }
+
+
         private int process_request(cef_resource_handler_t* self, cef_request_t* request, cef_callback_t* callback)
         {
             CheckSelf(self);
