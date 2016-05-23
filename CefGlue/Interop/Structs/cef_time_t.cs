@@ -40,7 +40,7 @@ namespace Xilium.CefGlue.Interop
                 day_of_month,
                 hour,
                 minute,
-                second,
+                second != 60 ? second : 59,
                 millisecond,
                 DateTimeKind.Utc
                 );
@@ -54,7 +54,7 @@ namespace Xilium.CefGlue.Interop
                 ptr->day_of_month,
                 ptr->hour,
                 ptr->minute,
-                ptr->second,
+                ptr->second != 60 ? ptr->second : 59,
                 ptr->millisecond,
                 DateTimeKind.Utc
                 );
