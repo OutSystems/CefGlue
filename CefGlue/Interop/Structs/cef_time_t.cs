@@ -9,6 +9,8 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_time_t
     {
+        private static readonly DateTime s_maxDateTime = new DateTime(DateTime.MaxValue.Ticks, DateTimeKind.Utc);
+
         public int year;
         public int month;
         public int day_of_week;
@@ -34,6 +36,7 @@ namespace Xilium.CefGlue.Interop
 
         public DateTime ToDateTime()
         {
+            if (year > 9999) return s_maxDateTime;
             return new DateTime(
                 year,
                 month,
@@ -48,8 +51,10 @@ namespace Xilium.CefGlue.Interop
 
         public static DateTime ToDateTime(cef_time_t* ptr)
         {
+            var year = ptr->year;
+            if (year > 9999) return s_maxDateTime;
             return new DateTime(
-                ptr->year,
+                year,
                 ptr->month,
                 ptr->day_of_month,
                 ptr->hour,
