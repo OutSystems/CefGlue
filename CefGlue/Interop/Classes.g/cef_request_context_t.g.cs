@@ -41,7 +41,7 @@ namespace Xilium.CefGlue.Interop
         public static extern cef_request_context_t* create_context(cef_request_context_settings_t* settings, cef_request_context_handler_t* handler);
         
         // CreateContext
-        [DllImport(libcef.DllName, EntryPoint = "create_context_shared", CallingConvention = libcef.CEF_CALL)]
+        [DllImport(libcef.DllName, EntryPoint = "cef_create_context_shared", CallingConvention = libcef.CEF_CALL)]
         public static extern cef_request_context_t* create_context(cef_request_context_t* other, cef_request_context_handler_t* handler);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
