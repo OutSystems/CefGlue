@@ -370,10 +370,13 @@
         }
 
         /// <summary>
-        /// Open developer tools in its own window. If |inspect_element_at| is non-
-        /// empty the element at the specified (x,y) location will be inspected. The
-        /// |windowInfo| parameter will be ignored if this browser is wrapped in a
-        /// CefBrowserView.
+        /// Open developer tools (DevTools) in its own browser. The DevTools browser
+        /// will remain associated with this browser. If the DevTools browser is
+        /// already open then it will be focused, in which case the |windowInfo|,
+        /// |client| and |settings| parameters will be ignored. If |inspect_element_at|
+        /// is non-empty then the element at the specified (x,y) location will be
+        /// inspected. The |windowInfo| parameter will be ignored if this browser is
+        /// wrapped in a CefBrowserView.
         /// </summary>
         public void ShowDevTools(CefWindowInfo windowInfo, CefClient client, CefBrowserSettings browserSettings, CefPoint inspectElementAt)
         {
@@ -383,12 +386,23 @@
         }
 
         /// <summary>
-        /// Explicitly close the developer tools window if one exists for this browser
-        /// instance.
+        /// Explicitly close the associated DevTools browser, if any.
         /// </summary>
         public void CloseDevTools()
         {
             cef_browser_host_t.close_dev_tools(_self);
+        }
+
+        /// <summary>
+        /// Returns true if this browser currently has an associated DevTools browser.
+        /// Must be called on the browser process UI thread.
+        /// </summary>
+        public bool HasDevTools
+        {
+            get
+            {
+                return cef_browser_host_t.has_dev_tools(_self) != 0;
+            }
         }
 
         /// <summary>
