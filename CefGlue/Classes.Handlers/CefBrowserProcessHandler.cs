@@ -85,5 +85,27 @@
         {
             return null;
         }
+
+
+        private void on_schedule_message_pump_work(cef_browser_process_handler_t* self, long delay_ms)
+        {
+            CheckSelf(self);
+            OnScheduleMessagePumpWork(delay_ms);
+        }
+
+        /// <summary>
+        /// Called from any thread when work has been scheduled for the browser process
+        /// main (UI) thread. This callback is used in combination with CefSettings.
+        /// external_message_pump and CefDoMessageLoopWork() in cases where the CEF
+        /// message loop must be integrated into an existing application message loop
+        /// (see additional comments and warnings on CefDoMessageLoopWork). This
+        /// callback should schedule a CefDoMessageLoopWork() call to happen on the
+        /// main (UI) thread. |delay_ms| is the requested delay in milliseconds. If
+        /// |delay_ms| is &lt;= 0 then the call should happen reasonably soon. If
+        /// |delay_ms| is &gt; 0 then the call should be scheduled to happen after the
+        /// specified delay and any currently pending scheduled call should be
+        /// cancelled.
+        /// </summary>
+        protected virtual void OnScheduleMessagePumpWork(long delayMs) { }
     }
 }

@@ -24,7 +24,7 @@ namespace Xilium.CefGlue.WPF
             this._owner.OnLoadError(frame, errorCode, errorText, failedUrl);
         }
 
-        protected override void OnLoadStart(CefBrowser browser, CefFrame frame)
+        protected override void OnLoadStart(CefBrowser browser, CefFrame frame, CefTransitionType transitionType)
         {
             this._owner.OnLoadStart(frame);
         }

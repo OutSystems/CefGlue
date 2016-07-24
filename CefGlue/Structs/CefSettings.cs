@@ -49,6 +49,18 @@
         public bool MultiThreadedMessageLoop { get; set; }
 
         /// <summary>
+        /// Set to <c>true</c> to control browser process main (UI) thread message pump
+        /// scheduling via the CefBrowserProcessHandler::OnScheduleMessagePumpWork()
+        /// callback. This option is recommended for use in combination with the
+        /// CefDoMessageLoopWork() function in cases where the CEF message loop must be
+        /// integrated into an existing application message loop (see additional
+        /// comments and warnings on CefDoMessageLoopWork). Enabling this option is not
+        /// recommended for most users; leave this option disabled and use either the
+        /// CefRunMessageLoop() function or multi_threaded_message_loop if possible.
+        /// </summary>
+        public bool ExternalMessagePump { get; set; }
+
+        /// <summary>
         /// Set to true (1) to enable windowless (off-screen) rendering support. Do not
         /// enable this value if the application does not use windowless rendering as
         /// it may reduce rendering performance on some systems.
@@ -258,6 +270,7 @@
             cef_string_t.Copy(BrowserSubprocessPath, &ptr->browser_subprocess_path);
             ptr->multi_threaded_message_loop = MultiThreadedMessageLoop ? 1 : 0;
             ptr->windowless_rendering_enabled = WindowlessRenderingEnabled ? 1 : 0;
+            ptr->external_message_pump = ExternalMessagePump ? 1 : 0;
             ptr->command_line_args_disabled = CommandLineArgsDisabled ? 1 : 0;
             cef_string_t.Copy(CachePath, &ptr->cache_path);
             cef_string_t.Copy(UserDataPath, &ptr->user_data_path);

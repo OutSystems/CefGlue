@@ -19,7 +19,7 @@
 			_core.InvokeIfRequired(() => _core.OnLoadError(new LoadErrorEventArgs(frame, errorCode, errorText, failedUrl)));
 		}
 
-		protected override void OnLoadStart(CefBrowser browser, CefFrame frame)
+		protected override void OnLoadStart(CefBrowser browser, CefFrame frame, CefTransitionType transitionType)
 		{
 			_core.InvokeIfRequired(() => _core.OnLoadStart(new LoadStartEventArgs(frame)));
 		}

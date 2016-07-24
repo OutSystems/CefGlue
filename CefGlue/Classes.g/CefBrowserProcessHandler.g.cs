@@ -26,6 +26,7 @@ namespace Xilium.CefGlue
         private cef_browser_process_handler_t.on_before_child_process_launch_delegate _ds4;
         private cef_browser_process_handler_t.on_render_process_thread_created_delegate _ds5;
         private cef_browser_process_handler_t.get_print_handler_delegate _ds6;
+        private cef_browser_process_handler_t.on_schedule_message_pump_work_delegate _ds7;
         
         protected CefBrowserProcessHandler()
         {
@@ -45,6 +46,8 @@ namespace Xilium.CefGlue
             _self->_on_render_process_thread_created = Marshal.GetFunctionPointerForDelegate(_ds5);
             _ds6 = new cef_browser_process_handler_t.get_print_handler_delegate(get_print_handler);
             _self->_get_print_handler = Marshal.GetFunctionPointerForDelegate(_ds6);
+            _ds7 = new cef_browser_process_handler_t.on_schedule_message_pump_work_delegate(on_schedule_message_pump_work);
+            _self->_on_schedule_message_pump_work = Marshal.GetFunctionPointerForDelegate(_ds7);
         }
         
         ~CefBrowserProcessHandler()
