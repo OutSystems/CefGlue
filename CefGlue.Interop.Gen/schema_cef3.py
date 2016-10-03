@@ -124,7 +124,7 @@ classdef = {
     'CefRunContextMenuCallback': {'role': ROLE_PROXY },
     'CefResourceBundle': {'role': ROLE_PROXY },
     # 2526
-    'CefResponseFilter': { 'role': ROLE_HANDLER },
+    'CefResponseFilter': { 'role': ROLE_HANDLER, 'autodispose': True },
     # 2623
     'CefResolveCallback': { 'role': ROLE_HANDLER },
     # 51 (without views)

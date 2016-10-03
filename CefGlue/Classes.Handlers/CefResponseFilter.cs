@@ -31,15 +31,32 @@
         {
             CheckSelf(self);
 
-            using (var m_in_stream = new UnmanagedMemoryStream((byte*)data_in, (long)data_in_size, (long)data_in_size, FileAccess.Read))
-            using (var m_out_stream = new UnmanagedMemoryStream((byte*)data_out, 0, (long)data_out_size, FileAccess.Write))
+            // TODO: Use some buffers instead of UnmanagedMemoryStream.
+
+            UnmanagedMemoryStream m_in_stream = null;
+            UnmanagedMemoryStream m_out_stream = null;
+            try
             {
-                long m_inRead;
-                long m_outWritten;
-                var result = Filter(m_in_stream, (long)data_in_size, out m_inRead, m_out_stream, (long)data_out_size, out m_outWritten);
-                *data_in_read = (UIntPtr)m_inRead;
-                *data_out_written = (UIntPtr)m_outWritten;
-                return result;
+                if (data_in != null)
+                {
+                    m_in_stream = new UnmanagedMemoryStream((byte*)data_in, (long)data_in_size, (long)data_in_size, FileAccess.Read);
+                }
+
+                m_out_stream = new UnmanagedMemoryStream((byte*)data_out, 0, (long)data_out_size, FileAccess.Write);
+
+                {
+                    long m_inRead;
+                    long m_outWritten;
+                    var result = Filter(m_in_stream, (long)data_in_size, out m_inRead, m_out_stream, (long)data_out_size, out m_outWritten);
+                    *data_in_read = (UIntPtr)m_inRead;
+                    *data_out_written = (UIntPtr)m_outWritten;
+                    return result;
+                }
+            }
+            finally
+            {
+                m_out_stream?.Dispose();
+                m_in_stream?.Dispose();
             }
         }
 

@@ -13,17 +13,17 @@ namespace Xilium.CefGlue
         /// Some or all of the pre-filter data was read successfully but more data is
         /// needed in order to continue filtering (filtered output is pending).
         /// </summary>
-        RESPONSE_FILTER_NEED_MORE_DATA,
+        NeedMoreData,
 
         /// <summary>
         /// Some or all of the pre-filter data was read successfully and all available
         /// filtered output has been written.
         /// </summary>
-        RESPONSE_FILTER_DONE,
+        Done,
 
         /// <summary>
         /// An error occurred during filtering.
         /// </summary>
-        RESPONSE_FILTER_ERROR
+        Error,
     }
 }
