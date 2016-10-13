@@ -33,6 +33,7 @@
 
             // TODO: Use some buffers instead of UnmanagedMemoryStream.
 
+            // TODO: Remove UnmanagedMemoryStream - normal usage is buffer operations.
             UnmanagedMemoryStream m_in_stream = null;
             UnmanagedMemoryStream m_out_stream = null;
             try

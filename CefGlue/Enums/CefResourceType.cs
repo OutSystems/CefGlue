@@ -93,7 +93,7 @@ namespace Xilium.CefGlue
         /// <summary>
         /// A report of Content Security Policy violations.
         /// </summary>
-        CspRerort,
+        CspReport,
 
         /// <summary>
         /// A resource that a plugin requested.
