@@ -452,7 +452,7 @@
         /// is thrown. For read-only values this method will return true even though
         /// assignment failed.
         /// </summary>
-        public bool SetValue(string key, CefV8Value value, CefV8PropertyAttribute attribute)
+        public bool SetValue(string key, CefV8Value value, CefV8PropertyAttribute attribute = CefV8PropertyAttribute.None)
         {
             fixed (char* key_str = key)
             {
@@ -479,7 +479,7 @@
         /// incorrectly or an exception is thrown. For read-only values this method
         /// will return true even though assignment failed.
         /// </summary>
-        public bool SetValue(string key, CefV8AccessControl settings, CefV8PropertyAttribute attribute)
+        public bool SetValue(string key, CefV8AccessControl settings, CefV8PropertyAttribute attribute = CefV8PropertyAttribute.None)
         {
             fixed (char* key_str = key)
             {
