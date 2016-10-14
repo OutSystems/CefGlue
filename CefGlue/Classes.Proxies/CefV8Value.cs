@@ -110,7 +110,7 @@
         /// combination with calling Enter() and Exit() on a stored CefV8Context
         /// reference.
         /// </summary>
-        public static CefV8Value CreateObject(CefV8Accessor accessor)
+        public static CefV8Value CreateObject(CefV8Accessor accessor = null)
         {
             return CefV8Value.FromNative(
                 cef_v8value_t.create_object(accessor != null ? accessor.ToNative() : null)
