@@ -978,6 +978,27 @@
         // TODO: investigate using of sandbox on windows and .net
         #endregion
 
+        #region cef_ssl_info
+
+        /// <summary>
+        /// Returns true if the certificate status has any error, major or minor.
+        /// </summary>
+        public static bool IsCertStatusError(CefCertStatus status)
+        {
+            return libcef.is_cert_status_error(status) != 0;
+        }
+
+        /// <summary>
+        /// Returns true if the certificate status represents only minor errors
+        /// (e.g. failure to verify certificate revocation).
+        /// </summary>
+        public static bool IsCertStatusMinorError(CefCertStatus status)
+        {
+            return libcef.is_cert_status_minor_error(status) != 0;
+        }
+
+        #endregion
+
         private static void LoadIfNeed()
         {
             if (!_loaded) Load();
