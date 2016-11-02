@@ -5,11 +5,13 @@
 namespace Xilium.CefGlue
 {
     /// <summary>
-    /// The manner in which a link click should be opened.
+    /// The manner in which a link click should be opened. These constants match
+    /// their equivalents in Chromium's window_open_disposition.h and should not be
+    /// renumbered.
     /// </summary>
     public enum CefWindowOpenDisposition
     {
-        Unknown,
+        Unknown = 0,
         SuppressOpen,
         CurrentTab,
         SingletonTab,

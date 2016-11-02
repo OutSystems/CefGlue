@@ -24,6 +24,8 @@ namespace Xilium.CefGlue
         private cef_menu_model_delegate_t.has_one_ref_delegate _ds2;
         private cef_menu_model_delegate_t.execute_command_delegate _ds3;
         private cef_menu_model_delegate_t.menu_will_show_delegate _ds4;
+        private cef_menu_model_delegate_t.menu_closed_delegate _ds5;
+        private cef_menu_model_delegate_t.format_label_delegate _ds6;
         
         protected CefMenuModelDelegate()
         {
@@ -39,6 +41,10 @@ namespace Xilium.CefGlue
             _self->_execute_command = Marshal.GetFunctionPointerForDelegate(_ds3);
             _ds4 = new cef_menu_model_delegate_t.menu_will_show_delegate(menu_will_show);
             _self->_menu_will_show = Marshal.GetFunctionPointerForDelegate(_ds4);
+            _ds5 = new cef_menu_model_delegate_t.menu_closed_delegate(menu_closed);
+            _self->_menu_closed = Marshal.GetFunctionPointerForDelegate(_ds5);
+            _ds6 = new cef_menu_model_delegate_t.format_label_delegate(format_label);
+            _self->_format_label = Marshal.GetFunctionPointerForDelegate(_ds6);
         }
         
         ~CefMenuModelDelegate()

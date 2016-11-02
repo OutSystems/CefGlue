@@ -62,6 +62,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _drag_target_drop;
         internal IntPtr _drag_source_ended_at;
         internal IntPtr _drag_source_system_drag_ended;
+        internal IntPtr _get_visible_navigation_entry;
         
         // CreateBrowser
         [DllImport(libcef.DllName, EntryPoint = "cef_browser_host_create_browser", CallingConvention = libcef.CEF_CALL)]
@@ -382,6 +383,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate void drag_source_system_drag_ended_delegate(cef_browser_host_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate cef_navigation_entry_t* get_visible_navigation_entry_delegate(cef_browser_host_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -1265,6 +1272,23 @@ namespace Xilium.CefGlue.Interop
                 if (_p33 == IntPtr.Zero) { _d33 = d; _p33 = p; }
             }
             d(self);
+        }
+        
+        // GetVisibleNavigationEntry
+        private static IntPtr _p34;
+        private static get_visible_navigation_entry_delegate _d34;
+        
+        public static cef_navigation_entry_t* get_visible_navigation_entry(cef_browser_host_t* self)
+        {
+            get_visible_navigation_entry_delegate d;
+            var p = self->_get_visible_navigation_entry;
+            if (p == _p34) { d = _d34; }
+            else
+            {
+                d = (get_visible_navigation_entry_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_visible_navigation_entry_delegate));
+                if (_p34 == IntPtr.Zero) { _d34 = d; _p34 = p; }
+            }
+            return d(self);
         }
         
     }

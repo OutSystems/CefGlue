@@ -10,72 +10,72 @@ namespace Xilium.CefGlue.Interop
     
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     [SuppressMessage("Microsoft.Design", "CA1049:TypesThatOwnNativeResourcesShouldBeDisposable")]
-    internal unsafe struct cef_menu_model_delegate_t
+    internal unsafe struct cef_v8interceptor_t
     {
         internal cef_base_t _base;
-        internal IntPtr _execute_command;
-        internal IntPtr _menu_will_show;
-        internal IntPtr _menu_closed;
-        internal IntPtr _format_label;
+        internal IntPtr _get_byname;
+        internal IntPtr _get_byindex;
+        internal IntPtr _set_byname;
+        internal IntPtr _set_byindex;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void add_ref_delegate(cef_menu_model_delegate_t* self);
+        internal delegate void add_ref_delegate(cef_v8interceptor_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int release_delegate(cef_menu_model_delegate_t* self);
+        internal delegate int release_delegate(cef_v8interceptor_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int has_one_ref_delegate(cef_menu_model_delegate_t* self);
+        internal delegate int has_one_ref_delegate(cef_v8interceptor_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void execute_command_delegate(cef_menu_model_delegate_t* self, cef_menu_model_t* menu_model, int command_id, CefEventFlags event_flags);
+        internal delegate int get_byname_delegate(cef_v8interceptor_t* self, cef_string_t* name, cef_v8value_t* @object, cef_v8value_t** retval, cef_string_t* exception);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void menu_will_show_delegate(cef_menu_model_delegate_t* self, cef_menu_model_t* menu_model);
+        internal delegate int get_byindex_delegate(cef_v8interceptor_t* self, int index, cef_v8value_t* @object, cef_v8value_t** retval, cef_string_t* exception);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void menu_closed_delegate(cef_menu_model_delegate_t* self, cef_menu_model_t* menu_model);
+        internal delegate int set_byname_delegate(cef_v8interceptor_t* self, cef_string_t* name, cef_v8value_t* @object, cef_v8value_t* value, cef_string_t* exception);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int format_label_delegate(cef_menu_model_delegate_t* self, cef_menu_model_t* menu_model, cef_string_t* label);
+        internal delegate int set_byindex_delegate(cef_v8interceptor_t* self, int index, cef_v8value_t* @object, cef_v8value_t* value, cef_string_t* exception);
         
         private static int _sizeof;
         
-        static cef_menu_model_delegate_t()
+        static cef_v8interceptor_t()
         {
-            _sizeof = Marshal.SizeOf(typeof(cef_menu_model_delegate_t));
+            _sizeof = Marshal.SizeOf(typeof(cef_v8interceptor_t));
         }
         
-        internal static cef_menu_model_delegate_t* Alloc()
+        internal static cef_v8interceptor_t* Alloc()
         {
-            var ptr = (cef_menu_model_delegate_t*)Marshal.AllocHGlobal(_sizeof);
-            *ptr = new cef_menu_model_delegate_t();
+            var ptr = (cef_v8interceptor_t*)Marshal.AllocHGlobal(_sizeof);
+            *ptr = new cef_v8interceptor_t();
             ptr->_base._size = (UIntPtr)_sizeof;
             return ptr;
         }
         
-        internal static void Free(cef_menu_model_delegate_t* ptr)
+        internal static void Free(cef_v8interceptor_t* ptr)
         {
             Marshal.FreeHGlobal((IntPtr)ptr);
         }

@@ -133,4 +133,10 @@ classdef = {
 	'CefMenuModelDelegate': { 'role': ROLE_HANDLER },
 	# 53
 	'CefRegisterCdmCallback': { 'role': ROLE_HANDLER },
+	# 54
+	'CefSelectClientCertificateCallback': { 'role': ROLE_PROXY },
+	'CefSSLStatus': { 'role': ROLE_PROXY, 'name': 'CefSslStatus' },
+	'CefV8Interceptor': { 'role': ROLE_HANDLER },
+	'CefX509CertPrincipal': { 'role': ROLE_PROXY },
+	'CefX509Certificate': { 'role': ROLE_PROXY },
     }

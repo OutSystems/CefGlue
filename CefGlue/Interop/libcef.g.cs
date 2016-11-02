@@ -121,6 +121,14 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_clear_scheme_handler_factories", CallingConvention = libcef.CEF_CALL)]
         public static extern int clear_scheme_handler_factories();
         
+        // CefIsCertStatusError
+        [DllImport(libcef.DllName, EntryPoint = "cef_is_cert_status_error", CallingConvention = libcef.CEF_CALL)]
+        public static extern int is_cert_status_error(CefCertStatus status);
+        
+        // CefIsCertStatusMinorError
+        [DllImport(libcef.DllName, EntryPoint = "cef_is_cert_status_minor_error", CallingConvention = libcef.CEF_CALL)]
+        public static extern int is_cert_status_minor_error(CefCertStatus status);
+        
         // CefCurrentlyOn
         [DllImport(libcef.DllName, EntryPoint = "cef_currently_on", CallingConvention = libcef.CEF_CALL)]
         public static extern int currently_on(CefThreadId threadId);

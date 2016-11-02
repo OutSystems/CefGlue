@@ -10,47 +10,40 @@ namespace Xilium.CefGlue.Interop
     
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     [SuppressMessage("Microsoft.Design", "CA1049:TypesThatOwnNativeResourcesShouldBeDisposable")]
-    internal unsafe struct cef_sslinfo_t
+    internal unsafe struct cef_select_client_certificate_callback_t
     {
         internal cef_base_t _base;
-        internal IntPtr _get_cert_status;
-        internal IntPtr _get_x509certificate;
+        internal IntPtr _select;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void add_ref_delegate(cef_sslinfo_t* self);
+        private delegate void add_ref_delegate(cef_select_client_certificate_callback_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int release_delegate(cef_sslinfo_t* self);
+        private delegate int release_delegate(cef_select_client_certificate_callback_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int has_one_ref_delegate(cef_sslinfo_t* self);
+        private delegate int has_one_ref_delegate(cef_select_client_certificate_callback_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate CefCertStatus get_cert_status_delegate(cef_sslinfo_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        private delegate cef_x509certificate_t* get_x509certificate_delegate(cef_sslinfo_t* self);
+        private delegate void select_delegate(cef_select_client_certificate_callback_t* self, cef_x509certificate_t* cert);
         
         // AddRef
         private static IntPtr _p0;
         private static add_ref_delegate _d0;
         
-        public static void add_ref(cef_sslinfo_t* self)
+        public static void add_ref(cef_select_client_certificate_callback_t* self)
         {
             add_ref_delegate d;
             var p = self->_base._add_ref;
@@ -67,7 +60,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1;
         private static release_delegate _d1;
         
-        public static int release(cef_sslinfo_t* self)
+        public static int release(cef_select_client_certificate_callback_t* self)
         {
             release_delegate d;
             var p = self->_base._release;
@@ -84,7 +77,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p2;
         private static has_one_ref_delegate _d2;
         
-        public static int has_one_ref(cef_sslinfo_t* self)
+        public static int has_one_ref(cef_select_client_certificate_callback_t* self)
         {
             has_one_ref_delegate d;
             var p = self->_base._has_one_ref;
@@ -97,38 +90,21 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetCertStatus
+        // Select
         private static IntPtr _p3;
-        private static get_cert_status_delegate _d3;
+        private static select_delegate _d3;
         
-        public static CefCertStatus get_cert_status(cef_sslinfo_t* self)
+        public static void select(cef_select_client_certificate_callback_t* self, cef_x509certificate_t* cert)
         {
-            get_cert_status_delegate d;
-            var p = self->_get_cert_status;
+            select_delegate d;
+            var p = self->_select;
             if (p == _p3) { d = _d3; }
             else
             {
-                d = (get_cert_status_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_cert_status_delegate));
+                d = (select_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(select_delegate));
                 if (_p3 == IntPtr.Zero) { _d3 = d; _p3 = p; }
             }
-            return d(self);
-        }
-        
-        // GetX509Certificate
-        private static IntPtr _p4;
-        private static get_x509certificate_delegate _d4;
-        
-        public static cef_x509certificate_t* get_x509certificate(cef_sslinfo_t* self)
-        {
-            get_x509certificate_delegate d;
-            var p = self->_get_x509certificate;
-            if (p == _p4) { d = _d4; }
-            else
-            {
-                d = (get_x509certificate_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_x509certificate_delegate));
-                if (_p4 == IntPtr.Zero) { _d4 = d; _p4 = p; }
-            }
-            return d(self);
+            d(self, cert);
         }
         
     }

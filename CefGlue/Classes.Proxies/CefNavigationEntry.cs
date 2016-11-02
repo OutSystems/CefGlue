@@ -109,5 +109,15 @@
         {
             get { return cef_navigation_entry_t.get_http_status_code(_self); }
         }
+
+        /// <summary>
+        /// Returns the SSL information for this navigation entry.
+        /// </summary>
+        public CefSslStatus GetSslStatus()
+        {
+            return CefSslStatus.FromNative(
+                cef_navigation_entry_t.get_sslstatus(_self)
+                );
+        }
     }
 }

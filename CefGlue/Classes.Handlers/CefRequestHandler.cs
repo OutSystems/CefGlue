@@ -140,17 +140,18 @@
         }
 
 
-        private void on_resource_redirect(cef_request_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_request_t* request, cef_string_t* new_url)
+        private void on_resource_redirect(cef_request_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_request_t* request, cef_response_t* response, cef_string_t* new_url)
         {
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
             var m_frame = CefFrame.FromNative(frame);
             var m_request = CefRequest.FromNative(request);
+            var m_response = CefResponse.FromNative(response);
             var m_newUrl = cef_string_t.ToString(new_url);
 
             var o_newUrl = m_newUrl;
-            OnResourceRedirect(m_browser, m_frame, m_request, ref m_newUrl);
+            OnResourceRedirect(m_browser, m_frame, m_request, m_response, ref m_newUrl);
 
             if ((object)m_newUrl != (object)o_newUrl)
             {
@@ -161,10 +162,12 @@
         /// <summary>
         /// Called on the IO thread when a resource load is redirected. The |request|
         /// parameter will contain the old URL and other request-related information.
-        /// The |new_url| parameter will contain the new URL and can be changed if
-        /// desired. The |request| object cannot be modified in this callback.
+        /// The |response| parameter will contain the response that resulted in the
+        /// redirect. The |new_url| parameter will contain the new URL and can be
+        /// changed if desired. The |request| object cannot be modified in this
+        /// callback.
         /// </summary>
-        protected virtual void OnResourceRedirect(CefBrowser browser, CefFrame frame, CefRequest request, ref string newUrl)
+        protected virtual void OnResourceRedirect(CefBrowser browser, CefFrame frame, CefRequest request, CefResponse response, ref string newUrl)
         {
         }
 
@@ -358,6 +361,51 @@
         /// be accepted without calling this method.
         /// </summary>
         protected virtual bool OnCertificateError(CefBrowser browser, CefErrorCode certError, string requestUrl, CefSslInfo sslInfo, CefRequestCallback callback)
+        {
+            return false;
+        }
+
+
+        private int on_select_client_certificate(cef_request_handler_t* self, cef_browser_t* browser, int isProxy, cef_string_t* host, int port, UIntPtr certificatesCount, cef_x509certificate_t** certificates, cef_select_client_certificate_callback_t* callback)
+        {
+            CheckSelf(self);
+
+            var m_browser = CefBrowser.FromNative(browser);
+            var m_isProxy = isProxy != 0;
+            var m_host = cef_string_t.ToString(host);
+            var m_certCount = checked((int)certificatesCount);
+            var m_certificates = new CefX509Certificate[m_certCount];
+            for (var i = 0; i < m_certCount; i++)
+            {
+                m_certificates[i] = CefX509Certificate.FromNative(certificates[i]);
+            }
+            var m_callback = CefSelectClientCertificateCallback.FromNative(callback);
+
+            var result = OnSelectClientCertificate(m_browser, m_isProxy, m_host, port, m_certificates, m_callback);
+            if (result)
+            {
+                return 1;
+            }
+            else
+            {
+                m_callback.Dispose();
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Called on the UI thread when a client certificate is being requested for
+        /// authentication. Return false to use the default behavior and automatically
+        /// select the first certificate available. Return true and call
+        /// CefSelectClientCertificateCallback::Select either in this method or at a
+        /// later time to select a certificate. Do not call Select or call it with NULL
+        /// to continue without using any certificate. |isProxy| indicates whether the
+        /// host is an HTTPS proxy or the origin server. |host| and |port| contains the
+        /// hostname and port of the SSL server. |certificates| is the list of
+        /// certificates to choose from; this list has already been pruned by Chromium
+        /// so that it only contains certificates from issuers that the server trusts.
+        /// </summary>
+        protected virtual bool OnSelectClientCertificate(CefBrowser browser, bool isProxy, string host, int port, CefX509Certificate[] certificates, CefSelectClientCertificateCallback callback)
         {
             return false;
         }

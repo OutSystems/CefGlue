@@ -10,103 +10,103 @@ namespace Xilium.CefGlue.Interop
     
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     [SuppressMessage("Microsoft.Design", "CA1049:TypesThatOwnNativeResourcesShouldBeDisposable")]
-    internal unsafe struct cef_navigation_entry_t
+    internal unsafe struct cef_x509certificate_t
     {
         internal cef_base_t _base;
-        internal IntPtr _is_valid;
-        internal IntPtr _get_url;
-        internal IntPtr _get_display_url;
-        internal IntPtr _get_original_url;
-        internal IntPtr _get_title;
-        internal IntPtr _get_transition_type;
-        internal IntPtr _has_post_data;
-        internal IntPtr _get_completion_time;
-        internal IntPtr _get_http_status_code;
-        internal IntPtr _get_sslstatus;
+        internal IntPtr _get_subject;
+        internal IntPtr _get_issuer;
+        internal IntPtr _get_serial_number;
+        internal IntPtr _get_valid_start;
+        internal IntPtr _get_valid_expiry;
+        internal IntPtr _get_derencoded;
+        internal IntPtr _get_pemencoded;
+        internal IntPtr _get_issuer_chain_size;
+        internal IntPtr _get_derencoded_issuer_chain;
+        internal IntPtr _get_pemencoded_issuer_chain;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void add_ref_delegate(cef_navigation_entry_t* self);
+        private delegate void add_ref_delegate(cef_x509certificate_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int release_delegate(cef_navigation_entry_t* self);
+        private delegate int release_delegate(cef_x509certificate_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int has_one_ref_delegate(cef_navigation_entry_t* self);
+        private delegate int has_one_ref_delegate(cef_x509certificate_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int is_valid_delegate(cef_navigation_entry_t* self);
+        private delegate cef_x509cert_principal_t* get_subject_delegate(cef_x509certificate_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_string_userfree* get_url_delegate(cef_navigation_entry_t* self);
+        private delegate cef_x509cert_principal_t* get_issuer_delegate(cef_x509certificate_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_string_userfree* get_display_url_delegate(cef_navigation_entry_t* self);
+        private delegate cef_binary_value_t* get_serial_number_delegate(cef_x509certificate_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_string_userfree* get_original_url_delegate(cef_navigation_entry_t* self);
+        private delegate cef_time_t get_valid_start_delegate(cef_x509certificate_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_string_userfree* get_title_delegate(cef_navigation_entry_t* self);
+        private delegate cef_time_t get_valid_expiry_delegate(cef_x509certificate_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate CefTransitionType get_transition_type_delegate(cef_navigation_entry_t* self);
+        private delegate cef_binary_value_t* get_derencoded_delegate(cef_x509certificate_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int has_post_data_delegate(cef_navigation_entry_t* self);
+        private delegate cef_binary_value_t* get_pemencoded_delegate(cef_x509certificate_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_time_t get_completion_time_delegate(cef_navigation_entry_t* self);
+        private delegate UIntPtr get_issuer_chain_size_delegate(cef_x509certificate_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int get_http_status_code_delegate(cef_navigation_entry_t* self);
+        private delegate void get_derencoded_issuer_chain_delegate(cef_x509certificate_t* self, UIntPtr* chainCount, cef_binary_value_t** chain);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_sslstatus_t* get_sslstatus_delegate(cef_navigation_entry_t* self);
+        private delegate void get_pemencoded_issuer_chain_delegate(cef_x509certificate_t* self, UIntPtr* chainCount, cef_binary_value_t** chain);
         
         // AddRef
         private static IntPtr _p0;
         private static add_ref_delegate _d0;
         
-        public static void add_ref(cef_navigation_entry_t* self)
+        public static void add_ref(cef_x509certificate_t* self)
         {
             add_ref_delegate d;
             var p = self->_base._add_ref;
@@ -123,7 +123,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1;
         private static release_delegate _d1;
         
-        public static int release(cef_navigation_entry_t* self)
+        public static int release(cef_x509certificate_t* self)
         {
             release_delegate d;
             var p = self->_base._release;
@@ -140,7 +140,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p2;
         private static has_one_ref_delegate _d2;
         
-        public static int has_one_ref(cef_navigation_entry_t* self)
+        public static int has_one_ref(cef_x509certificate_t* self)
         {
             has_one_ref_delegate d;
             var p = self->_base._has_one_ref;
@@ -153,174 +153,174 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // IsValid
+        // GetSubject
         private static IntPtr _p3;
-        private static is_valid_delegate _d3;
+        private static get_subject_delegate _d3;
         
-        public static int is_valid(cef_navigation_entry_t* self)
+        public static cef_x509cert_principal_t* get_subject(cef_x509certificate_t* self)
         {
-            is_valid_delegate d;
-            var p = self->_is_valid;
+            get_subject_delegate d;
+            var p = self->_get_subject;
             if (p == _p3) { d = _d3; }
             else
             {
-                d = (is_valid_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_valid_delegate));
+                d = (get_subject_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_subject_delegate));
                 if (_p3 == IntPtr.Zero) { _d3 = d; _p3 = p; }
             }
             return d(self);
         }
         
-        // GetURL
+        // GetIssuer
         private static IntPtr _p4;
-        private static get_url_delegate _d4;
+        private static get_issuer_delegate _d4;
         
-        public static cef_string_userfree* get_url(cef_navigation_entry_t* self)
+        public static cef_x509cert_principal_t* get_issuer(cef_x509certificate_t* self)
         {
-            get_url_delegate d;
-            var p = self->_get_url;
+            get_issuer_delegate d;
+            var p = self->_get_issuer;
             if (p == _p4) { d = _d4; }
             else
             {
-                d = (get_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_url_delegate));
+                d = (get_issuer_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_issuer_delegate));
                 if (_p4 == IntPtr.Zero) { _d4 = d; _p4 = p; }
             }
             return d(self);
         }
         
-        // GetDisplayURL
+        // GetSerialNumber
         private static IntPtr _p5;
-        private static get_display_url_delegate _d5;
+        private static get_serial_number_delegate _d5;
         
-        public static cef_string_userfree* get_display_url(cef_navigation_entry_t* self)
+        public static cef_binary_value_t* get_serial_number(cef_x509certificate_t* self)
         {
-            get_display_url_delegate d;
-            var p = self->_get_display_url;
+            get_serial_number_delegate d;
+            var p = self->_get_serial_number;
             if (p == _p5) { d = _d5; }
             else
             {
-                d = (get_display_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_display_url_delegate));
+                d = (get_serial_number_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_serial_number_delegate));
                 if (_p5 == IntPtr.Zero) { _d5 = d; _p5 = p; }
             }
             return d(self);
         }
         
-        // GetOriginalURL
+        // GetValidStart
         private static IntPtr _p6;
-        private static get_original_url_delegate _d6;
+        private static get_valid_start_delegate _d6;
         
-        public static cef_string_userfree* get_original_url(cef_navigation_entry_t* self)
+        public static cef_time_t get_valid_start(cef_x509certificate_t* self)
         {
-            get_original_url_delegate d;
-            var p = self->_get_original_url;
+            get_valid_start_delegate d;
+            var p = self->_get_valid_start;
             if (p == _p6) { d = _d6; }
             else
             {
-                d = (get_original_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_original_url_delegate));
+                d = (get_valid_start_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_valid_start_delegate));
                 if (_p6 == IntPtr.Zero) { _d6 = d; _p6 = p; }
             }
             return d(self);
         }
         
-        // GetTitle
+        // GetValidExpiry
         private static IntPtr _p7;
-        private static get_title_delegate _d7;
+        private static get_valid_expiry_delegate _d7;
         
-        public static cef_string_userfree* get_title(cef_navigation_entry_t* self)
+        public static cef_time_t get_valid_expiry(cef_x509certificate_t* self)
         {
-            get_title_delegate d;
-            var p = self->_get_title;
+            get_valid_expiry_delegate d;
+            var p = self->_get_valid_expiry;
             if (p == _p7) { d = _d7; }
             else
             {
-                d = (get_title_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_title_delegate));
+                d = (get_valid_expiry_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_valid_expiry_delegate));
                 if (_p7 == IntPtr.Zero) { _d7 = d; _p7 = p; }
             }
             return d(self);
         }
         
-        // GetTransitionType
+        // GetDEREncoded
         private static IntPtr _p8;
-        private static get_transition_type_delegate _d8;
+        private static get_derencoded_delegate _d8;
         
-        public static CefTransitionType get_transition_type(cef_navigation_entry_t* self)
+        public static cef_binary_value_t* get_derencoded(cef_x509certificate_t* self)
         {
-            get_transition_type_delegate d;
-            var p = self->_get_transition_type;
+            get_derencoded_delegate d;
+            var p = self->_get_derencoded;
             if (p == _p8) { d = _d8; }
             else
             {
-                d = (get_transition_type_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_transition_type_delegate));
+                d = (get_derencoded_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_derencoded_delegate));
                 if (_p8 == IntPtr.Zero) { _d8 = d; _p8 = p; }
             }
             return d(self);
         }
         
-        // HasPostData
+        // GetPEMEncoded
         private static IntPtr _p9;
-        private static has_post_data_delegate _d9;
+        private static get_pemencoded_delegate _d9;
         
-        public static int has_post_data(cef_navigation_entry_t* self)
+        public static cef_binary_value_t* get_pemencoded(cef_x509certificate_t* self)
         {
-            has_post_data_delegate d;
-            var p = self->_has_post_data;
+            get_pemencoded_delegate d;
+            var p = self->_get_pemencoded;
             if (p == _p9) { d = _d9; }
             else
             {
-                d = (has_post_data_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_post_data_delegate));
+                d = (get_pemencoded_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_pemencoded_delegate));
                 if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
             }
             return d(self);
         }
         
-        // GetCompletionTime
+        // GetIssuerChainSize
         private static IntPtr _pa;
-        private static get_completion_time_delegate _da;
+        private static get_issuer_chain_size_delegate _da;
         
-        public static cef_time_t get_completion_time(cef_navigation_entry_t* self)
+        public static UIntPtr get_issuer_chain_size(cef_x509certificate_t* self)
         {
-            get_completion_time_delegate d;
-            var p = self->_get_completion_time;
+            get_issuer_chain_size_delegate d;
+            var p = self->_get_issuer_chain_size;
             if (p == _pa) { d = _da; }
             else
             {
-                d = (get_completion_time_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_completion_time_delegate));
+                d = (get_issuer_chain_size_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_issuer_chain_size_delegate));
                 if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
             }
             return d(self);
         }
         
-        // GetHttpStatusCode
+        // GetDEREncodedIssuerChain
         private static IntPtr _pb;
-        private static get_http_status_code_delegate _db;
+        private static get_derencoded_issuer_chain_delegate _db;
         
-        public static int get_http_status_code(cef_navigation_entry_t* self)
+        public static void get_derencoded_issuer_chain(cef_x509certificate_t* self, UIntPtr* chainCount, cef_binary_value_t** chain)
         {
-            get_http_status_code_delegate d;
-            var p = self->_get_http_status_code;
+            get_derencoded_issuer_chain_delegate d;
+            var p = self->_get_derencoded_issuer_chain;
             if (p == _pb) { d = _db; }
             else
             {
-                d = (get_http_status_code_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_http_status_code_delegate));
+                d = (get_derencoded_issuer_chain_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_derencoded_issuer_chain_delegate));
                 if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
             }
-            return d(self);
+            d(self, chainCount, chain);
         }
         
-        // GetSSLStatus
+        // GetPEMEncodedIssuerChain
         private static IntPtr _pc;
-        private static get_sslstatus_delegate _dc;
+        private static get_pemencoded_issuer_chain_delegate _dc;
         
-        public static cef_sslstatus_t* get_sslstatus(cef_navigation_entry_t* self)
+        public static void get_pemencoded_issuer_chain(cef_x509certificate_t* self, UIntPtr* chainCount, cef_binary_value_t** chain)
         {
-            get_sslstatus_delegate d;
-            var p = self->_get_sslstatus;
+            get_pemencoded_issuer_chain_delegate d;
+            var p = self->_get_pemencoded_issuer_chain;
             if (p == _pc) { d = _dc; }
             else
             {
-                d = (get_sslstatus_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_sslstatus_delegate));
+                d = (get_pemencoded_issuer_chain_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_pemencoded_issuer_chain_delegate));
                 if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
             }
-            return d(self);
+            d(self, chainCount, chain);
         }
         
     }

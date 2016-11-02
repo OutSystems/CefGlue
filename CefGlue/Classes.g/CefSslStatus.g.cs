@@ -10,28 +10,28 @@ namespace Xilium.CefGlue
     using Xilium.CefGlue.Interop;
     
     // Role: PROXY
-    public sealed unsafe partial class CefSslCertPrincipal : IDisposable
+    public sealed unsafe partial class CefSslStatus : IDisposable
     {
-        internal static CefSslCertPrincipal FromNative(cef_sslcert_principal_t* ptr)
+        internal static CefSslStatus FromNative(cef_sslstatus_t* ptr)
         {
-            return new CefSslCertPrincipal(ptr);
+            return new CefSslStatus(ptr);
         }
         
-        internal static CefSslCertPrincipal FromNativeOrNull(cef_sslcert_principal_t* ptr)
+        internal static CefSslStatus FromNativeOrNull(cef_sslstatus_t* ptr)
         {
             if (ptr == null) return null;
-            return new CefSslCertPrincipal(ptr);
+            return new CefSslStatus(ptr);
         }
         
-        private cef_sslcert_principal_t* _self;
+        private cef_sslstatus_t* _self;
         
-        private CefSslCertPrincipal(cef_sslcert_principal_t* ptr)
+        private CefSslStatus(cef_sslstatus_t* ptr)
         {
             if (ptr == null) throw new ArgumentNullException("ptr");
             _self = ptr;
         }
         
-        ~CefSslCertPrincipal()
+        ~CefSslStatus()
         {
             if (_self != null)
             {
@@ -52,20 +52,20 @@ namespace Xilium.CefGlue
         
         internal void AddRef()
         {
-            cef_sslcert_principal_t.add_ref(_self);
+            cef_sslstatus_t.add_ref(_self);
         }
         
         internal bool Release()
         {
-            return cef_sslcert_principal_t.release(_self) != 0;
+            return cef_sslstatus_t.release(_self) != 0;
         }
         
         internal bool HasOneRef
         {
-            get { return cef_sslcert_principal_t.has_one_ref(_self) != 0; }
+            get { return cef_sslstatus_t.has_one_ref(_self) != 0; }
         }
         
-        internal cef_sslcert_principal_t* ToNative()
+        internal cef_sslstatus_t* ToNative()
         {
             AddRef();
             return _self;

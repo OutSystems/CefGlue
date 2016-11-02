@@ -130,21 +130,25 @@
         }
 
         /// <summary>
-        /// Evaluates the specified JavaScript code using this context's global object.
-        /// On success |retval| will be set to the return value, if any, and the
-        /// function will return true. On failure |exception| will be set to the
+        /// Execute a string of JavaScript code in this V8 context. The |script_url|
+        /// parameter is the URL where the script in question can be found, if any.
+        /// The |start_line| parameter is the base line number to use for error
+        /// reporting. On success |retval| will be set to the return value, if any, and
+        /// the function will return true. On failure |exception| will be set to the
         /// exception, if any, and the function will return false.
         /// </summary>
-        public bool TryEval(string code, out CefV8Value returnValue, out CefV8Exception exception)
+        public bool TryEval(string code, string scriptUrl, int startLine, out CefV8Value returnValue, out CefV8Exception exception)
         {
             bool result;
             cef_v8value_t* n_retval = null;
             cef_v8exception_t* n_exception = null;
 
             fixed (char* code_str = code)
+            fixed (char* scriptUrl_str = scriptUrl)
             {
                 var n_code = new cef_string_t(code_str, code != null ? code.Length : 0);
-                result = cef_v8context_t.eval(_self, &n_code, &n_retval, &n_exception) != 0;
+                var n_scriptUrl = new cef_string_t(scriptUrl_str, scriptUrl != null ? scriptUrl.Length : 0);
+                result = cef_v8context_t.eval(_self, &n_code, &n_scriptUrl, startLine, &n_retval, &n_exception) != 0;
             }
 
             returnValue = n_retval != null ? CefV8Value.FromNative(n_retval) : null;

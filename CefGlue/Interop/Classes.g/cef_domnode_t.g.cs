@@ -38,6 +38,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_element_attributes;
         internal IntPtr _set_element_attribute;
         internal IntPtr _get_element_inner_text;
+        internal IntPtr _get_element_bounds;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -206,6 +207,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate cef_string_userfree* get_element_inner_text_delegate(cef_domnode_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate cef_rect_t get_element_bounds_delegate(cef_domnode_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -679,6 +686,23 @@ namespace Xilium.CefGlue.Interop
             {
                 d = (get_element_inner_text_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_element_inner_text_delegate));
                 if (_p1b == IntPtr.Zero) { _d1b = d; _p1b = p; }
+            }
+            return d(self);
+        }
+        
+        // GetElementBounds
+        private static IntPtr _p1c;
+        private static get_element_bounds_delegate _d1c;
+        
+        public static cef_rect_t get_element_bounds(cef_domnode_t* self)
+        {
+            get_element_bounds_delegate d;
+            var p = self->_get_element_bounds;
+            if (p == _p1c) { d = _d1c; }
+            else
+            {
+                d = (get_element_bounds_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_element_bounds_delegate));
+                if (_p1c == IntPtr.Zero) { _d1c = d; _p1c = p; }
             }
             return d(self);
         }

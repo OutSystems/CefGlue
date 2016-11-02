@@ -34,9 +34,10 @@ namespace Xilium.CefGlue
         private cef_request_handler_t.on_quota_request_delegate _dsc;
         private cef_request_handler_t.on_protocol_execution_delegate _dsd;
         private cef_request_handler_t.on_certificate_error_delegate _dse;
-        private cef_request_handler_t.on_plugin_crashed_delegate _dsf;
-        private cef_request_handler_t.on_render_view_ready_delegate _ds10;
-        private cef_request_handler_t.on_render_process_terminated_delegate _ds11;
+        private cef_request_handler_t.on_select_client_certificate_delegate _dsf;
+        private cef_request_handler_t.on_plugin_crashed_delegate _ds10;
+        private cef_request_handler_t.on_render_view_ready_delegate _ds11;
+        private cef_request_handler_t.on_render_process_terminated_delegate _ds12;
         
         protected CefRequestHandler()
         {
@@ -72,12 +73,14 @@ namespace Xilium.CefGlue
             _self->_on_protocol_execution = Marshal.GetFunctionPointerForDelegate(_dsd);
             _dse = new cef_request_handler_t.on_certificate_error_delegate(on_certificate_error);
             _self->_on_certificate_error = Marshal.GetFunctionPointerForDelegate(_dse);
-            _dsf = new cef_request_handler_t.on_plugin_crashed_delegate(on_plugin_crashed);
-            _self->_on_plugin_crashed = Marshal.GetFunctionPointerForDelegate(_dsf);
-            _ds10 = new cef_request_handler_t.on_render_view_ready_delegate(on_render_view_ready);
-            _self->_on_render_view_ready = Marshal.GetFunctionPointerForDelegate(_ds10);
-            _ds11 = new cef_request_handler_t.on_render_process_terminated_delegate(on_render_process_terminated);
-            _self->_on_render_process_terminated = Marshal.GetFunctionPointerForDelegate(_ds11);
+            _dsf = new cef_request_handler_t.on_select_client_certificate_delegate(on_select_client_certificate);
+            _self->_on_select_client_certificate = Marshal.GetFunctionPointerForDelegate(_dsf);
+            _ds10 = new cef_request_handler_t.on_plugin_crashed_delegate(on_plugin_crashed);
+            _self->_on_plugin_crashed = Marshal.GetFunctionPointerForDelegate(_ds10);
+            _ds11 = new cef_request_handler_t.on_render_view_ready_delegate(on_render_view_ready);
+            _self->_on_render_view_ready = Marshal.GetFunctionPointerForDelegate(_ds11);
+            _ds12 = new cef_request_handler_t.on_render_process_terminated_delegate(on_render_process_terminated);
+            _self->_on_render_process_terminated = Marshal.GetFunctionPointerForDelegate(_ds12);
         }
         
         ~CefRequestHandler()

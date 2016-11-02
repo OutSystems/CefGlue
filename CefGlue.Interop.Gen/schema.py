@@ -150,6 +150,8 @@ c2cs_enumtypes = {
 	'cef_color_type_t': 'CefColorType',
 	'cef_alpha_type_t': 'CefAlphaType',
     'cef_cdm_registration_error_t': 'CefCdmRegistrationError',
+	'cef_ssl_version_t': 'CefSslVersion',
+	'cef_ssl_content_status_t': 'CefSslContentStatus',
     }
 
 c2cs_structtypes = { }

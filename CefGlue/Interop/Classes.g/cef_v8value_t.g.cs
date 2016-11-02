@@ -92,7 +92,7 @@ namespace Xilium.CefGlue.Interop
         
         // CreateObject
         [DllImport(libcef.DllName, EntryPoint = "cef_v8value_create_object", CallingConvention = libcef.CEF_CALL)]
-        public static extern cef_v8value_t* create_object(cef_v8accessor_t* accessor);
+        public static extern cef_v8value_t* create_object(cef_v8accessor_t* accessor, cef_v8interceptor_t* interceptor);
         
         // CreateArray
         [DllImport(libcef.DllName, EntryPoint = "cef_v8value_create_array", CallingConvention = libcef.CEF_CALL)]

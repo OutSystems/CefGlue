@@ -714,5 +714,16 @@
         {
             cef_browser_host_t.drag_source_system_drag_ended(_self);
         }
+
+        /// <summary>
+        /// Returns the current visible navigation entry for this browser. This method
+        /// can only be called on the UI thread.
+        /// </summary>
+        public CefNavigationEntry GetVisibleNavigationEntry()
+        {
+            return CefNavigationEntry.FromNativeOrNull(
+                cef_browser_host_t.get_visible_navigation_entry(_self)
+                );
+        }
     }
 }

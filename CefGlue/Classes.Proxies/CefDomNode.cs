@@ -289,5 +289,19 @@
                 return cef_string_userfree.ToString(n_result);
             }
         }
+
+        /// <summary>
+        /// Returns the bounds of the element.
+        /// </summary>
+        public CefRectangle GetElementBounds()
+        {
+            var n_result = cef_domnode_t.get_element_bounds(_self);
+            return new CefRectangle(
+                n_result.x,
+                n_result.y,
+                n_result.width,
+                n_result.height
+                );
+        }
     }
 }

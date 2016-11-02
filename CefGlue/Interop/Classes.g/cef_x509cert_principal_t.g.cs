@@ -10,7 +10,7 @@ namespace Xilium.CefGlue.Interop
     
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     [SuppressMessage("Microsoft.Design", "CA1049:TypesThatOwnNativeResourcesShouldBeDisposable")]
-    internal unsafe struct cef_sslcert_principal_t
+    internal unsafe struct cef_x509cert_principal_t
     {
         internal cef_base_t _base;
         internal IntPtr _get_display_name;
@@ -27,79 +27,79 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void add_ref_delegate(cef_sslcert_principal_t* self);
+        private delegate void add_ref_delegate(cef_x509cert_principal_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int release_delegate(cef_sslcert_principal_t* self);
+        private delegate int release_delegate(cef_x509cert_principal_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int has_one_ref_delegate(cef_sslcert_principal_t* self);
+        private delegate int has_one_ref_delegate(cef_x509cert_principal_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_string_userfree* get_display_name_delegate(cef_sslcert_principal_t* self);
+        private delegate cef_string_userfree* get_display_name_delegate(cef_x509cert_principal_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_string_userfree* get_common_name_delegate(cef_sslcert_principal_t* self);
+        private delegate cef_string_userfree* get_common_name_delegate(cef_x509cert_principal_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_string_userfree* get_locality_name_delegate(cef_sslcert_principal_t* self);
+        private delegate cef_string_userfree* get_locality_name_delegate(cef_x509cert_principal_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_string_userfree* get_state_or_province_name_delegate(cef_sslcert_principal_t* self);
+        private delegate cef_string_userfree* get_state_or_province_name_delegate(cef_x509cert_principal_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_string_userfree* get_country_name_delegate(cef_sslcert_principal_t* self);
+        private delegate cef_string_userfree* get_country_name_delegate(cef_x509cert_principal_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void get_street_addresses_delegate(cef_sslcert_principal_t* self, cef_string_list* addresses);
+        private delegate void get_street_addresses_delegate(cef_x509cert_principal_t* self, cef_string_list* addresses);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void get_organization_names_delegate(cef_sslcert_principal_t* self, cef_string_list* names);
+        private delegate void get_organization_names_delegate(cef_x509cert_principal_t* self, cef_string_list* names);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void get_organization_unit_names_delegate(cef_sslcert_principal_t* self, cef_string_list* names);
+        private delegate void get_organization_unit_names_delegate(cef_x509cert_principal_t* self, cef_string_list* names);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void get_domain_components_delegate(cef_sslcert_principal_t* self, cef_string_list* components);
+        private delegate void get_domain_components_delegate(cef_x509cert_principal_t* self, cef_string_list* components);
         
         // AddRef
         private static IntPtr _p0;
         private static add_ref_delegate _d0;
         
-        public static void add_ref(cef_sslcert_principal_t* self)
+        public static void add_ref(cef_x509cert_principal_t* self)
         {
             add_ref_delegate d;
             var p = self->_base._add_ref;
@@ -116,7 +116,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1;
         private static release_delegate _d1;
         
-        public static int release(cef_sslcert_principal_t* self)
+        public static int release(cef_x509cert_principal_t* self)
         {
             release_delegate d;
             var p = self->_base._release;
@@ -133,7 +133,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p2;
         private static has_one_ref_delegate _d2;
         
-        public static int has_one_ref(cef_sslcert_principal_t* self)
+        public static int has_one_ref(cef_x509cert_principal_t* self)
         {
             has_one_ref_delegate d;
             var p = self->_base._has_one_ref;
@@ -150,7 +150,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p3;
         private static get_display_name_delegate _d3;
         
-        public static cef_string_userfree* get_display_name(cef_sslcert_principal_t* self)
+        public static cef_string_userfree* get_display_name(cef_x509cert_principal_t* self)
         {
             get_display_name_delegate d;
             var p = self->_get_display_name;
@@ -167,7 +167,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p4;
         private static get_common_name_delegate _d4;
         
-        public static cef_string_userfree* get_common_name(cef_sslcert_principal_t* self)
+        public static cef_string_userfree* get_common_name(cef_x509cert_principal_t* self)
         {
             get_common_name_delegate d;
             var p = self->_get_common_name;
@@ -184,7 +184,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p5;
         private static get_locality_name_delegate _d5;
         
-        public static cef_string_userfree* get_locality_name(cef_sslcert_principal_t* self)
+        public static cef_string_userfree* get_locality_name(cef_x509cert_principal_t* self)
         {
             get_locality_name_delegate d;
             var p = self->_get_locality_name;
@@ -201,7 +201,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p6;
         private static get_state_or_province_name_delegate _d6;
         
-        public static cef_string_userfree* get_state_or_province_name(cef_sslcert_principal_t* self)
+        public static cef_string_userfree* get_state_or_province_name(cef_x509cert_principal_t* self)
         {
             get_state_or_province_name_delegate d;
             var p = self->_get_state_or_province_name;
@@ -218,7 +218,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p7;
         private static get_country_name_delegate _d7;
         
-        public static cef_string_userfree* get_country_name(cef_sslcert_principal_t* self)
+        public static cef_string_userfree* get_country_name(cef_x509cert_principal_t* self)
         {
             get_country_name_delegate d;
             var p = self->_get_country_name;
@@ -235,7 +235,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p8;
         private static get_street_addresses_delegate _d8;
         
-        public static void get_street_addresses(cef_sslcert_principal_t* self, cef_string_list* addresses)
+        public static void get_street_addresses(cef_x509cert_principal_t* self, cef_string_list* addresses)
         {
             get_street_addresses_delegate d;
             var p = self->_get_street_addresses;
@@ -252,7 +252,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p9;
         private static get_organization_names_delegate _d9;
         
-        public static void get_organization_names(cef_sslcert_principal_t* self, cef_string_list* names)
+        public static void get_organization_names(cef_x509cert_principal_t* self, cef_string_list* names)
         {
             get_organization_names_delegate d;
             var p = self->_get_organization_names;
@@ -269,7 +269,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pa;
         private static get_organization_unit_names_delegate _da;
         
-        public static void get_organization_unit_names(cef_sslcert_principal_t* self, cef_string_list* names)
+        public static void get_organization_unit_names(cef_x509cert_principal_t* self, cef_string_list* names)
         {
             get_organization_unit_names_delegate d;
             var p = self->_get_organization_unit_names;
@@ -286,7 +286,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pb;
         private static get_domain_components_delegate _db;
         
-        public static void get_domain_components(cef_sslcert_principal_t* self, cef_string_list* components)
+        public static void get_domain_components(cef_x509cert_principal_t* self, cef_string_list* components)
         {
             get_domain_components_delegate d;
             var p = self->_get_domain_components;

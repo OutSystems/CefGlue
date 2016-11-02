@@ -105,7 +105,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int eval_delegate(cef_v8context_t* self, cef_string_t* code, cef_v8value_t** retval, cef_v8exception_t** exception);
+        private delegate int eval_delegate(cef_v8context_t* self, cef_string_t* code, cef_string_t* script_url, int start_line, cef_v8value_t** retval, cef_v8exception_t** exception);
         
         // AddRef
         private static IntPtr _p0;
@@ -298,7 +298,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pb;
         private static eval_delegate _db;
         
-        public static int eval(cef_v8context_t* self, cef_string_t* code, cef_v8value_t** retval, cef_v8exception_t** exception)
+        public static int eval(cef_v8context_t* self, cef_string_t* code, cef_string_t* script_url, int start_line, cef_v8value_t** retval, cef_v8exception_t** exception)
         {
             eval_delegate d;
             var p = self->_eval;
@@ -308,7 +308,7 @@ namespace Xilium.CefGlue.Interop
                 d = (eval_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(eval_delegate));
                 if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
             }
-            return d(self, code, retval, exception);
+            return d(self, code, script_url, start_line, retval, exception);
         }
         
     }
