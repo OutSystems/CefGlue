@@ -107,6 +107,7 @@
     <Compile Include="Classes.g\CefPrintSettings.g.cs" />
     <Compile Include="Classes.g\CefProcessMessage.g.cs" />
     <Compile Include="Classes.g\CefReadHandler.g.cs" />
+    <Compile Include="Classes.g\CefRegisterCdmCallback.g.cs" />
     <Compile Include="Classes.g\CefRenderHandler.g.cs" />
     <Compile Include="Classes.g\CefRenderProcessHandler.g.cs" />
     <Compile Include="Classes.g\CefRequest.g.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Classes.Handlers\CefPdfPrintCallback.cs" />
     <Compile Include="Classes.Handlers\CefPrintHandler.cs" />
     <Compile Include="Classes.Handlers\CefReadHandler.cs" />
+    <Compile Include="Classes.Handlers\CefRegisterCdmCallback.cs" />
     <Compile Include="Classes.Handlers\CefRenderHandler.cs" />
     <Compile Include="Classes.Handlers\CefRenderProcessHandler.cs" />
     <Compile Include="Classes.Handlers\CefRequestContextHandler.cs" />
@@ -247,6 +249,7 @@
     <Compile Include="Classes.Proxies\CefWebPluginInfo.cs" />
     <Compile Include="Classes.Proxies\CefXmlReader.cs" />
     <Compile Include="Classes.Proxies\CefZipReader.cs" />
+    <Compile Include="Enums\CefCdmRegistrationError.cs" />
     <Compile Include="Enums\CefCrossAxisAlignment.cs" />
     <Compile Include="Enums\CefMainAxisAlignment.cs" />
     <Compile Include="Enums\CefTextStyle.cs" />
@@ -351,6 +354,7 @@
     <Compile Include="Interop\Classes.g\cef_print_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_print_job_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_print_settings_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_register_cdm_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_render_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_request_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_request_context_handler_t.g.cs" />

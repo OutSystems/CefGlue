@@ -149,6 +149,7 @@ c2cs_enumtypes = {
     'cef_referrer_policy_t': 'CefReferrerPolicy',
 	'cef_color_type_t': 'CefColorType',
 	'cef_alpha_type_t': 'CefAlphaType',
+    'cef_cdm_registration_error_t': 'CefCdmRegistrationError',
     }
 
 c2cs_structtypes = { }

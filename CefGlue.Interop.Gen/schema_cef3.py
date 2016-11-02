@@ -131,4 +131,6 @@ classdef = {
 	'CefDownloadImageCallback': { 'role': ROLE_HANDLER },
 	'CefImage': { 'role': ROLE_PROXY },
 	'CefMenuModelDelegate': { 'role': ROLE_HANDLER },
+	# 53
+	'CefRegisterCdmCallback': { 'role': ROLE_HANDLER },
     }
