@@ -109,7 +109,7 @@
                         var title = browser.Title;
                         if (tabControl.SelectedTab == page)
                         {
-                            Text = browser.Title + " - " + _mainTitle;
+                            title = Text = browser.Title + " - " + _mainTitle;
                         }
                         page.ToolTipText = title;
                         if (title.Length > 18)
