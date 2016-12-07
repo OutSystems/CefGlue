@@ -33,6 +33,7 @@ namespace Xilium.CefGlue
         private cef_render_handler_t.start_dragging_delegate _dsb;
         private cef_render_handler_t.update_drag_cursor_delegate _dsc;
         private cef_render_handler_t.on_scroll_offset_changed_delegate _dsd;
+        private cef_render_handler_t.on_ime_composition_range_changed_delegate _dse;
         
         protected CefRenderHandler()
         {
@@ -66,6 +67,8 @@ namespace Xilium.CefGlue
             _self->_update_drag_cursor = Marshal.GetFunctionPointerForDelegate(_dsc);
             _dsd = new cef_render_handler_t.on_scroll_offset_changed_delegate(on_scroll_offset_changed);
             _self->_on_scroll_offset_changed = Marshal.GetFunctionPointerForDelegate(_dsd);
+            _dse = new cef_render_handler_t.on_ime_composition_range_changed_delegate(on_ime_composition_range_changed);
+            _self->_on_ime_composition_range_changed = Marshal.GetFunctionPointerForDelegate(_dse);
         }
         
         ~CefRenderHandler()

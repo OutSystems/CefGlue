@@ -12,6 +12,8 @@
     /// </summary>
     public abstract unsafe partial class CefRenderHandler
     {
+        private static readonly CefRectangle[] s_emptyRectangleArray = new CefRectangle[0];
+
         private int get_root_screen_rect(cef_render_handler_t* self, cef_browser_t* browser, cef_rect_t* rect)
         {
             CheckSelf(self);
@@ -284,5 +286,45 @@
         /// Called when the scroll offset has changed.
         /// </summary>
         protected abstract void OnScrollOffsetChanged(CefBrowser browser, double x, double y);
+
+
+        private void on_ime_composition_range_changed(cef_render_handler_t* self, cef_browser_t* browser, cef_range_t* selected_range, UIntPtr character_boundsCount, cef_rect_t* character_bounds)
+        {
+            CheckSelf(self);
+
+            // TODO: reuse array/special list for rectange - this method called only from one thread and can be reused
+
+            var m_browser = CefBrowser.FromNative(browser);
+            var m_selectedRange = new CefRange(selected_range->from, selected_range->to);
+
+            CefRectangle[] m_characterBounds;
+            if (character_boundsCount == UIntPtr.Zero)
+            {
+                m_characterBounds = s_emptyRectangleArray;
+            }
+            else
+            {
+                var m_characterBoundsCount = checked((int)character_boundsCount);
+                m_characterBounds = new CefRectangle[m_characterBoundsCount];
+                for (var i = 0; i < m_characterBoundsCount; i++)
+                {
+                    m_characterBounds[i] = new CefRectangle(
+                        character_bounds[i].x,
+                        character_bounds[i].y,
+                        character_bounds[i].width,
+                        character_bounds[i].height
+                        );
+                }
+            }
+
+            OnImeCompositionRangeChanged(m_browser, m_selectedRange, m_characterBounds);
+        }
+
+        /// <summary>
+        /// Called when the IME composition range has changed. |selected_range| is the
+        /// range of characters that have been selected. |character_bounds| is the
+        /// bounds of each character in view coordinates.
+        /// </summary>
+        protected abstract void OnImeCompositionRangeChanged(CefBrowser browser, CefRange selectedRange, CefRectangle[] characterBounds);
     }
 }

@@ -609,29 +609,83 @@
         }
 
         /// <summary>
-        /// Get the NSTextInputContext implementation for enabling IME on Mac when
-        /// window rendering is disabled.
+        /// Begins a new composition or updates the existing composition. Blink has a
+        /// special node (a composition node) that allows the input method to change
+        /// text without affecting other DOM nodes. |text| is the optional text that
+        /// will be inserted into the composition node. |underlines| is an optional set
+        /// of ranges that will be underlined in the resulting text.
+        /// |replacement_range| is an optional range of the existing text that will be
+        /// replaced. |selection_range| is an optional range of the resulting text that
+        /// will be selected after insertion or replacement. The |replacement_range|
+        /// value is only used on OS X.
+        /// This method may be called multiple times as the composition changes. When
+        /// the client is done making changes the composition should either be canceled
+        /// or completed. To cancel the composition call ImeCancelComposition. To
+        /// complete the composition call either ImeCommitText or
+        /// ImeFinishComposingText. Completion is usually signaled when:
+        /// A. The client receives a WM_IME_COMPOSITION message with a GCS_RESULTSTR
+        /// flag (on Windows), or;
+        /// B. The client receives a "commit" signal of GtkIMContext (on Linux), or;
+        /// C. insertText of NSTextInput is called (on Mac).
+        /// This method is only used when window rendering is disabled.
         /// </summary>
-        public IntPtr GetNSTextInputContext()
+        public void ImeSetComposition(string text,
+            int underlinesCount,
+            CefCompositionUnderline underlines,
+            CefRange replacementRange,
+            CefRange selectionRange)
         {
-            return cef_browser_host_t.get_nstext_input_context(_self);
+            fixed (char* text_ptr = text)
+            {
+                cef_string_t n_text = new cef_string_t(text_ptr, text != null ? text.Length : 0);
+                UIntPtr n_underlinesCount = checked((UIntPtr)underlinesCount);
+                var n_underlines = underlines.ToNative();
+                cef_range_t n_replacementRange = new cef_range_t(replacementRange.From, replacementRange.To);
+                cef_range_t n_selectionRange = new cef_range_t(selectionRange.From, selectionRange.To);
+
+                cef_browser_host_t.ime_set_composition(_self, &n_text, n_underlinesCount, &n_underlines, &n_replacementRange, &n_selectionRange);
+            }
         }
 
         /// <summary>
-        /// Handles a keyDown event prior to passing it through the NSTextInputClient
-        /// machinery.
+        /// Completes the existing composition by optionally inserting the specified
+        /// |text| into the composition node. |replacement_range| is an optional range
+        /// of the existing text that will be replaced. |relative_cursor_pos| is where
+        /// the cursor will be positioned relative to the current cursor position. See
+        /// comments on ImeSetComposition for usage. The |replacement_range| and
+        /// |relative_cursor_pos| values are only used on OS X.
+        /// This method is only used when window rendering is disabled.
         /// </summary>
-        public void HandleKeyEventBeforeTextInputClient(IntPtr keyEvent)
+        public void ImeCommitText(string text, CefRange replacementRange, int relativeCursorPos)
         {
-            cef_browser_host_t.handle_key_event_before_text_input_client(_self, keyEvent);
+            fixed (char* text_ptr = text)
+            {
+                cef_string_t n_text = new cef_string_t(text_ptr, text != null ? text.Length : 0);
+                var n_replacementRange = new cef_range_t(replacementRange.From, replacementRange.To);
+                cef_browser_host_t.ime_commit_text(_self, &n_text, &n_replacementRange, relativeCursorPos);
+            }
         }
 
         /// <summary>
-        /// Performs any additional actions after NSTextInputClient handles the event.
+        /// Completes the existing composition by applying the current composition node
+        /// contents. If |keep_selection| is false the current selection, if any, will
+        /// be discarded. See comments on ImeSetComposition for usage.
+        /// This method is only used when window rendering is disabled.
         /// </summary>
-        public void HandleKeyEventAfterTextInputClient(IntPtr keyEvent)
+        public void ImeFinishComposingText(bool keepSelection)
         {
-            cef_browser_host_t.handle_key_event_after_text_input_client(_self, keyEvent);
+            cef_browser_host_t.ime_finish_composing_text(_self, keepSelection ? 1 : 0);
+        }
+
+        /// <summary>
+        /// Cancels the existing composition and discards the composition node
+        /// contents without applying them. See comments on ImeSetComposition for
+        /// usage.
+        /// This method is only used when window rendering is disabled.
+        /// </summary>
+        public void ImeCancelComposition()
+        {
+            cef_browser_host_t.ime_cancel_composition(_self);
         }
 
         /// <summary>

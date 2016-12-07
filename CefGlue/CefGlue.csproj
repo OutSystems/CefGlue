@@ -392,6 +392,7 @@
     <Compile Include="Interop\Classes.g\cef_web_plugin_unstable_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_x509certificate_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_x509cert_principal_t.g.cs" />
+    <Compile Include="Interop\Structs\cef_composition_underline.cs" />
     <Compile Include="Interop\Structs\cef_pdf_print_settings_t.cs" />
     <Compile Include="Interop\Structs\cef_draggable_region_t.cs" />
     <Compile Include="Interop\Structs\cef_range_t.cs" />
@@ -411,6 +412,7 @@
     <Compile Include="Platform\Windows\WindowStyles.cs" />
     <Compile Include="Platform\Windows\WindowStylesEx.cs" />
     <Compile Include="Structs\CefColor.cs" />
+    <Compile Include="Structs\CefCompositionUnderline.cs" />
     <Compile Include="Structs\CefCookie.cs" />
     <Compile Include="Structs\CefDraggableRegion.cs" />
     <Compile Include="Structs\CefGeoposition.cs" />

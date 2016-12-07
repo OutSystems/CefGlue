@@ -76,6 +76,7 @@ c2cs_types = {
     'cef_request_context_settings_t': 'cef_request_context_settings_t',
     'cef_draggable_region_t': 'cef_draggable_region_t',
     'cef_pdf_print_settings_t': 'cef_pdf_print_settings_t',
+    'cef_composition_underline_t': 'cef_composition_underline_t',
 
     # platform dependend structs
     'cef_main_args_t': 'cef_main_args_t',

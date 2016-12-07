@@ -139,4 +139,7 @@ classdef = {
 	'CefV8Interceptor': { 'role': ROLE_HANDLER },
 	'CefX509CertPrincipal': { 'role': ROLE_PROXY },
 	'CefX509Certificate': { 'role': ROLE_PROXY },
+	# 55
+	'CefThread': { 'role': ROLE_PROXY },
+	'CefWaitableEvent': { 'role': ROLE_PROXY },
     }

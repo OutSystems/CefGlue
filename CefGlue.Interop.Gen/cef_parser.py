@@ -416,9 +416,10 @@ _simpletypes = {
     'cef_json_parser_error_t': ['cef_json_parser_error_t', 'JSON_NO_ERROR'],
     'cef_plugin_policy_t': ['cef_plugin_policy_t', 'PLUGIN_POLICY_ALLOW'],
     'CefCursorHandle' : ['cef_cursor_handle_t', 'kNullCursorHandle'],
+    'CefCompositionUnderline' : ['cef_composition_underline_t',
+                                 'CefCompositionUnderline()'],
     'CefEventHandle' : ['cef_event_handle_t', 'kNullEventHandle'],
     'CefWindowHandle' : ['cef_window_handle_t', 'kNullWindowHandle'],
-    'CefTextInputContext' : ['cef_text_input_context_t' ,'NULL'],
     'CefPoint' : ['cef_point_t', 'CefPoint()'],
     'CefRect' : ['cef_rect_t', 'CefRect()'],
     'CefSize' : ['cef_size_t', 'CefSize()'],
@@ -693,7 +694,7 @@ class obj_header:
         return obj_analysis([self], value, named)
 
     def get_defined_structs(self):
-        """ Return a list of names already defined structure names. """
+        """ Return a list of already defined structure names. """
         return ['cef_print_info_t', 'cef_window_info_t', 'cef_base_t']
 
     def get_capi_translations(self):

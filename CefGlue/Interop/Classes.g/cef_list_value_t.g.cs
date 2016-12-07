@@ -122,115 +122,115 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int remove_delegate(cef_list_value_t* self, int index);
+        private delegate int remove_delegate(cef_list_value_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate CefValueType get_type_delegate(cef_list_value_t* self, int index);
+        private delegate CefValueType get_type_delegate(cef_list_value_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_value_t* get_value_delegate(cef_list_value_t* self, int index);
+        private delegate cef_value_t* get_value_delegate(cef_list_value_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int get_bool_delegate(cef_list_value_t* self, int index);
+        private delegate int get_bool_delegate(cef_list_value_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int get_int_delegate(cef_list_value_t* self, int index);
+        private delegate int get_int_delegate(cef_list_value_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate double get_double_delegate(cef_list_value_t* self, int index);
+        private delegate double get_double_delegate(cef_list_value_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_string_userfree* get_string_delegate(cef_list_value_t* self, int index);
+        private delegate cef_string_userfree* get_string_delegate(cef_list_value_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_binary_value_t* get_binary_delegate(cef_list_value_t* self, int index);
+        private delegate cef_binary_value_t* get_binary_delegate(cef_list_value_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_dictionary_value_t* get_dictionary_delegate(cef_list_value_t* self, int index);
+        private delegate cef_dictionary_value_t* get_dictionary_delegate(cef_list_value_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_list_value_t* get_list_delegate(cef_list_value_t* self, int index);
+        private delegate cef_list_value_t* get_list_delegate(cef_list_value_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_value_delegate(cef_list_value_t* self, int index, cef_value_t* value);
+        private delegate int set_value_delegate(cef_list_value_t* self, UIntPtr index, cef_value_t* value);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_null_delegate(cef_list_value_t* self, int index);
+        private delegate int set_null_delegate(cef_list_value_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_bool_delegate(cef_list_value_t* self, int index, int value);
+        private delegate int set_bool_delegate(cef_list_value_t* self, UIntPtr index, int value);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_int_delegate(cef_list_value_t* self, int index, int value);
+        private delegate int set_int_delegate(cef_list_value_t* self, UIntPtr index, int value);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_double_delegate(cef_list_value_t* self, int index, double value);
+        private delegate int set_double_delegate(cef_list_value_t* self, UIntPtr index, double value);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_string_delegate(cef_list_value_t* self, int index, cef_string_t* value);
+        private delegate int set_string_delegate(cef_list_value_t* self, UIntPtr index, cef_string_t* value);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_binary_delegate(cef_list_value_t* self, int index, cef_binary_value_t* value);
+        private delegate int set_binary_delegate(cef_list_value_t* self, UIntPtr index, cef_binary_value_t* value);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_dictionary_delegate(cef_list_value_t* self, int index, cef_dictionary_value_t* value);
+        private delegate int set_dictionary_delegate(cef_list_value_t* self, UIntPtr index, cef_dictionary_value_t* value);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_list_delegate(cef_list_value_t* self, int index, cef_list_value_t* value);
+        private delegate int set_list_delegate(cef_list_value_t* self, UIntPtr index, cef_list_value_t* value);
         
         // AddRef
         private static IntPtr _p0;
@@ -440,7 +440,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pc;
         private static remove_delegate _dc;
         
-        public static int remove(cef_list_value_t* self, int index)
+        public static int remove(cef_list_value_t* self, UIntPtr index)
         {
             remove_delegate d;
             var p = self->_remove;
@@ -457,7 +457,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pd;
         private static get_type_delegate _dd;
         
-        public static CefValueType get_type(cef_list_value_t* self, int index)
+        public static CefValueType get_type(cef_list_value_t* self, UIntPtr index)
         {
             get_type_delegate d;
             var p = self->_get_type;
@@ -474,7 +474,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pe;
         private static get_value_delegate _de;
         
-        public static cef_value_t* get_value(cef_list_value_t* self, int index)
+        public static cef_value_t* get_value(cef_list_value_t* self, UIntPtr index)
         {
             get_value_delegate d;
             var p = self->_get_value;
@@ -491,7 +491,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pf;
         private static get_bool_delegate _df;
         
-        public static int get_bool(cef_list_value_t* self, int index)
+        public static int get_bool(cef_list_value_t* self, UIntPtr index)
         {
             get_bool_delegate d;
             var p = self->_get_bool;
@@ -508,7 +508,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p10;
         private static get_int_delegate _d10;
         
-        public static int get_int(cef_list_value_t* self, int index)
+        public static int get_int(cef_list_value_t* self, UIntPtr index)
         {
             get_int_delegate d;
             var p = self->_get_int;
@@ -525,7 +525,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p11;
         private static get_double_delegate _d11;
         
-        public static double get_double(cef_list_value_t* self, int index)
+        public static double get_double(cef_list_value_t* self, UIntPtr index)
         {
             get_double_delegate d;
             var p = self->_get_double;
@@ -542,7 +542,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p12;
         private static get_string_delegate _d12;
         
-        public static cef_string_userfree* get_string(cef_list_value_t* self, int index)
+        public static cef_string_userfree* get_string(cef_list_value_t* self, UIntPtr index)
         {
             get_string_delegate d;
             var p = self->_get_string;
@@ -559,7 +559,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p13;
         private static get_binary_delegate _d13;
         
-        public static cef_binary_value_t* get_binary(cef_list_value_t* self, int index)
+        public static cef_binary_value_t* get_binary(cef_list_value_t* self, UIntPtr index)
         {
             get_binary_delegate d;
             var p = self->_get_binary;
@@ -576,7 +576,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p14;
         private static get_dictionary_delegate _d14;
         
-        public static cef_dictionary_value_t* get_dictionary(cef_list_value_t* self, int index)
+        public static cef_dictionary_value_t* get_dictionary(cef_list_value_t* self, UIntPtr index)
         {
             get_dictionary_delegate d;
             var p = self->_get_dictionary;
@@ -593,7 +593,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p15;
         private static get_list_delegate _d15;
         
-        public static cef_list_value_t* get_list(cef_list_value_t* self, int index)
+        public static cef_list_value_t* get_list(cef_list_value_t* self, UIntPtr index)
         {
             get_list_delegate d;
             var p = self->_get_list;
@@ -610,7 +610,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p16;
         private static set_value_delegate _d16;
         
-        public static int set_value(cef_list_value_t* self, int index, cef_value_t* value)
+        public static int set_value(cef_list_value_t* self, UIntPtr index, cef_value_t* value)
         {
             set_value_delegate d;
             var p = self->_set_value;
@@ -627,7 +627,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p17;
         private static set_null_delegate _d17;
         
-        public static int set_null(cef_list_value_t* self, int index)
+        public static int set_null(cef_list_value_t* self, UIntPtr index)
         {
             set_null_delegate d;
             var p = self->_set_null;
@@ -644,7 +644,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p18;
         private static set_bool_delegate _d18;
         
-        public static int set_bool(cef_list_value_t* self, int index, int value)
+        public static int set_bool(cef_list_value_t* self, UIntPtr index, int value)
         {
             set_bool_delegate d;
             var p = self->_set_bool;
@@ -661,7 +661,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p19;
         private static set_int_delegate _d19;
         
-        public static int set_int(cef_list_value_t* self, int index, int value)
+        public static int set_int(cef_list_value_t* self, UIntPtr index, int value)
         {
             set_int_delegate d;
             var p = self->_set_int;
@@ -678,7 +678,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1a;
         private static set_double_delegate _d1a;
         
-        public static int set_double(cef_list_value_t* self, int index, double value)
+        public static int set_double(cef_list_value_t* self, UIntPtr index, double value)
         {
             set_double_delegate d;
             var p = self->_set_double;
@@ -695,7 +695,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1b;
         private static set_string_delegate _d1b;
         
-        public static int set_string(cef_list_value_t* self, int index, cef_string_t* value)
+        public static int set_string(cef_list_value_t* self, UIntPtr index, cef_string_t* value)
         {
             set_string_delegate d;
             var p = self->_set_string;
@@ -712,7 +712,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1c;
         private static set_binary_delegate _d1c;
         
-        public static int set_binary(cef_list_value_t* self, int index, cef_binary_value_t* value)
+        public static int set_binary(cef_list_value_t* self, UIntPtr index, cef_binary_value_t* value)
         {
             set_binary_delegate d;
             var p = self->_set_binary;
@@ -729,7 +729,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1d;
         private static set_dictionary_delegate _d1d;
         
-        public static int set_dictionary(cef_list_value_t* self, int index, cef_dictionary_value_t* value)
+        public static int set_dictionary(cef_list_value_t* self, UIntPtr index, cef_dictionary_value_t* value)
         {
             set_dictionary_delegate d;
             var p = self->_set_dictionary;
@@ -746,7 +746,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1e;
         private static set_list_delegate _d1e;
         
-        public static int set_list(cef_list_value_t* self, int index, cef_list_value_t* value)
+        public static int set_list(cef_list_value_t* self, UIntPtr index, cef_list_value_t* value)
         {
             set_list_delegate d;
             var p = self->_set_list;

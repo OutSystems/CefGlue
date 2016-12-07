@@ -41,6 +41,34 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_enable_highdpi_support", CallingConvention = libcef.CEF_CALL)]
         public static extern void enable_highdpi_support();
         
+        // CefCreateDirectory
+        [DllImport(libcef.DllName, EntryPoint = "cef_create_directory", CallingConvention = libcef.CEF_CALL)]
+        public static extern int create_directory(cef_string_t* full_path);
+        
+        // CefGetTempDirectory
+        [DllImport(libcef.DllName, EntryPoint = "cef_get_temp_directory", CallingConvention = libcef.CEF_CALL)]
+        public static extern int get_temp_directory(cef_string_t* temp_dir);
+        
+        // CefCreateNewTempDirectory
+        [DllImport(libcef.DllName, EntryPoint = "cef_create_new_temp_directory", CallingConvention = libcef.CEF_CALL)]
+        public static extern int create_new_temp_directory(cef_string_t* prefix, cef_string_t* new_temp_path);
+        
+        // CefCreateTempDirectoryInDirectory
+        [DllImport(libcef.DllName, EntryPoint = "cef_create_temp_directory_in_directory", CallingConvention = libcef.CEF_CALL)]
+        public static extern int create_temp_directory_in_directory(cef_string_t* base_dir, cef_string_t* prefix, cef_string_t* new_dir);
+        
+        // CefDirectoryExists
+        [DllImport(libcef.DllName, EntryPoint = "cef_directory_exists", CallingConvention = libcef.CEF_CALL)]
+        public static extern int directory_exists(cef_string_t* path);
+        
+        // CefDeleteFile
+        [DllImport(libcef.DllName, EntryPoint = "cef_delete_file", CallingConvention = libcef.CEF_CALL)]
+        public static extern int delete_file(cef_string_t* path, int recursive);
+        
+        // CefZipDirectory
+        [DllImport(libcef.DllName, EntryPoint = "cef_zip_directory", CallingConvention = libcef.CEF_CALL)]
+        public static extern int zip_directory(cef_string_t* src_dir, cef_string_t* dest_file, int include_hidden_files);
+        
         // CefGetGeolocation
         [DllImport(libcef.DllName, EntryPoint = "cef_get_geolocation", CallingConvention = libcef.CEF_CALL)]
         public static extern int get_geolocation(cef_get_geolocation_callback_t* callback);

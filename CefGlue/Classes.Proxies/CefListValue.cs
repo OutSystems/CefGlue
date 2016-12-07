@@ -108,7 +108,7 @@
         /// </summary>
         public bool Remove(int index)
         {
-            return cef_list_value_t.remove(_self, index) != 0;
+            return cef_list_value_t.remove(_self, checked((UIntPtr)index)) != 0;
         }
 
         /// <summary>
@@ -116,7 +116,7 @@
         /// </summary>
         public CefValueType GetValueType(int index)
         {
-            return cef_list_value_t.get_type(_self, index);
+            return cef_list_value_t.get_type(_self, checked((UIntPtr)index));
         }
 
         /// <summary>
@@ -129,7 +129,7 @@
         public CefValue GetValue(int index)
         {
             return CefValue.FromNativeOrNull(
-                cef_list_value_t.get_value(_self, index)
+                cef_list_value_t.get_value(_self, checked((UIntPtr)index))
                 );
         }
 
@@ -138,7 +138,7 @@
         /// </summary>
         public bool GetBool(int index)
         {
-            return cef_list_value_t.get_bool(_self, index) != 0;
+            return cef_list_value_t.get_bool(_self, checked((UIntPtr)index)) != 0;
         }
 
         /// <summary>
@@ -146,7 +146,7 @@
         /// </summary>
         public int GetInt(int index)
         {
-            return cef_list_value_t.get_int(_self, index);
+            return cef_list_value_t.get_int(_self, checked((UIntPtr)index));
         }
 
         /// <summary>
@@ -154,7 +154,7 @@
         /// </summary>
         public double GetDouble(int index)
         {
-            return cef_list_value_t.get_double(_self, index);
+            return cef_list_value_t.get_double(_self, checked((UIntPtr)index));
         }
 
         /// <summary>
@@ -162,7 +162,7 @@
         /// </summary>
         public string GetString(int index)
         {
-            var n_result = cef_list_value_t.get_string(_self, index);
+            var n_result = cef_list_value_t.get_string(_self, checked((UIntPtr)index));
             return cef_string_userfree.ToString(n_result);
         }
 
@@ -173,7 +173,7 @@
         public CefBinaryValue GetBinary(int index)
         {
             return CefBinaryValue.FromNativeOrNull(
-                cef_list_value_t.get_binary(_self, index)
+                cef_list_value_t.get_binary(_self, checked((UIntPtr)index))
                 );
         }
 
@@ -185,7 +185,7 @@
         public CefDictionaryValue GetDictionary(int index)
         {
             return CefDictionaryValue.FromNativeOrNull(
-                cef_list_value_t.get_dictionary(_self, index)
+                cef_list_value_t.get_dictionary(_self, checked((UIntPtr)index))
                 );
         }
 
@@ -197,7 +197,7 @@
         public CefListValue GetList(int index)
         {
             return CefListValue.FromNativeOrNull(
-                cef_list_value_t.get_list(_self, index)
+                cef_list_value_t.get_list(_self, checked((UIntPtr)index))
                 );
         }
 
@@ -212,7 +212,7 @@
         /// </summary>
         public bool SetValue(int index, CefValue value)
         {
-            return cef_list_value_t.set_value(_self, index, value.ToNative()) != 0;
+            return cef_list_value_t.set_value(_self, checked((UIntPtr)index), value.ToNative()) != 0;
         }
 
         /// <summary>
@@ -221,7 +221,7 @@
         /// </summary>
         public bool SetNull(int index)
         {
-            return cef_list_value_t.set_null(_self, index) != 0;
+            return cef_list_value_t.set_null(_self, checked((UIntPtr)index)) != 0;
         }
 
         /// <summary>
@@ -230,7 +230,7 @@
         /// </summary>
         public bool SetBool(int index, bool value)
         {
-            return cef_list_value_t.set_bool(_self, index, value ? 1 : 0) != 0;
+            return cef_list_value_t.set_bool(_self, checked((UIntPtr)index), value ? 1 : 0) != 0;
         }
 
         /// <summary>
@@ -239,7 +239,7 @@
         /// </summary>
         public bool SetInt(int index, int value)
         {
-            return cef_list_value_t.set_int(_self, index, value) != 0;
+            return cef_list_value_t.set_int(_self, checked((UIntPtr)index), value) != 0;
         }
 
         /// <summary>
@@ -248,7 +248,7 @@
         /// </summary>
         public bool SetDouble(int index, double value)
         {
-            return cef_list_value_t.set_double(_self, index, value) != 0;
+            return cef_list_value_t.set_double(_self, checked((UIntPtr)index), value) != 0;
         }
 
         /// <summary>
@@ -260,7 +260,7 @@
             fixed (char* value_str = value)
             {
                 var n_value = new cef_string_t(value_str, value != null ? value.Length : 0);
-                return cef_list_value_t.set_string(_self, index, &n_value) != 0;
+                return cef_list_value_t.set_string(_self, checked((UIntPtr)index), &n_value) != 0;
             }
         }
 
@@ -273,7 +273,7 @@
         /// </summary>
         public bool SetBinary(int index, CefBinaryValue value)
         {
-            return cef_list_value_t.set_binary(_self, index, value.ToNative()) != 0;
+            return cef_list_value_t.set_binary(_self, checked((UIntPtr)index), value.ToNative()) != 0;
         }
 
         /// <summary>
@@ -285,7 +285,7 @@
         /// </summary>
         public bool SetDictionary(int index, CefDictionaryValue value)
         {
-            return cef_list_value_t.set_dictionary(_self, index, value.ToNative()) != 0;
+            return cef_list_value_t.set_dictionary(_self, checked((UIntPtr)index), value.ToNative()) != 0;
         }
 
         /// <summary>
@@ -297,7 +297,7 @@
         /// </summary>
         public bool SetList(int index, CefListValue value)
         {
-            return cef_list_value_t.set_list(_self, index, value.ToNative()) != 0;
+            return cef_list_value_t.set_list(_self, checked((UIntPtr)index), value.ToNative()) != 0;
         }
     }
 }
