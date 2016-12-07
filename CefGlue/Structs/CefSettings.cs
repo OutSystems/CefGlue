@@ -245,6 +245,19 @@
         public bool IgnoreCertificateErrors { get; set; }
 
         /// <summary>
+        /// Set to true (1) to enable date-based expiration of built in network
+        /// security information (i.e. certificate transparency logs, HSTS preloading
+        /// and pinning information). Enabling this option improves network security
+        /// but may cause HTTPS load failures when using CEF binaries built more than
+        /// 10 weeks in the past. See https://www.certificate-transparency.org/ and
+        /// https://www.chromium.org/hsts for details. Also configurable using the
+        /// "enable-net-security-expiration" command-line switch. Can be overridden for
+        /// individual CefRequestContext instances via the
+        /// CefRequestContextSettings.enable_net_security_expiration value.
+        /// </summary>
+        public bool EnableNetSecurityExpiration { get; set; }
+
+        /// <summary>
         /// Opaque background color used for accelerated content. By default the
         /// background color will be white. Only the RGB compontents of the specified
         /// value will be used. The alpha component must greater than 0 to enable use
@@ -289,6 +302,7 @@
             ptr->uncaught_exception_stack_size = UncaughtExceptionStackSize;
             ptr->context_safety_implementation = (int)ContextSafetyImplementation;
             ptr->ignore_certificate_errors = IgnoreCertificateErrors ? 1 : 0;
+            ptr->enable_net_security_expiration = EnableNetSecurityExpiration ? 1 : 0;
             ptr->background_color = BackgroundColor.ToArgb();
             cef_string_t.Copy(AcceptLanguageList, &ptr->accept_language_list);
             return ptr;

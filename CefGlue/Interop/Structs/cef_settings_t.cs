@@ -40,6 +40,7 @@ namespace Xilium.CefGlue.Interop
         public int uncaught_exception_stack_size;
         public int context_safety_implementation;
         public int ignore_certificate_errors;
+        public int enable_net_security_expiration;
         public uint background_color;
         public cef_string_t accept_language_list;
 
