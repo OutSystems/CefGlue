@@ -12,7 +12,6 @@ namespace Xilium.CefGlue
     public enum CefWindowOpenDisposition
     {
         Unknown = 0,
-        SuppressOpen,
         CurrentTab,
         SingletonTab,
         NewForegroundTab,
