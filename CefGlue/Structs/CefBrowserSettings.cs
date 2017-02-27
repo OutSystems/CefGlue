@@ -193,16 +193,6 @@
         }
 
         /// <summary>
-        /// Controls whether the caret position will be drawn. Also configurable using
-        /// the "enable-caret-browsing" command-line switch.
-        /// </summary>
-        public CefState CaretBrowsing
-        {
-            get { return _self->caret_browsing; }
-            set { _self->caret_browsing = value; }
-        }
-
-        /// <summary>
         /// Controls whether any plugins will be loaded. Also configurable using the
         /// "disable-plugins" command-line switch.
         /// </summary>

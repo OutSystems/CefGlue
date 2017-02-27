@@ -34,11 +34,22 @@
 
         /// <summary>
         /// The path to a separate executable that will be launched for sub-processes.
-        /// By default the browser process executable is used. See the comments on
-        /// CefExecuteProcess() for details. Also configurable using the
-        /// "browser-subprocess-path" command-line switch.
+        /// If this value is empty on Windows or Linux then the main process executable
+        /// will be used. If this value is empty on macOS then a helper executable must
+        /// exist at "Contents/Frameworks/&lt;app&gt; Helper.app/Contents/MacOS/&lt;app&gt; Helper"
+        /// in the top-level app bundle. See the comments on CefExecuteProcess() for
+        /// details. Also configurable using the "browser-subprocess-path" command-line
+        /// switch.
         /// </summary>
         public string BrowserSubprocessPath { get; set; }
+
+        /// <summary>
+        /// The path to the CEF framework directory on macOS. If this value is empty
+        /// then the framework must exist at "Contents/Frameworks/Chromium Embedded
+        /// Framework.framework" in the top-level app bundle. Also configurable using
+        /// the "framework-dir-path" command-line switch.
+        /// </summary>
+        public string FrameworkDirPath { get; set; }
 
         /// <summary>
         /// Set to <c>true</c> to have the browser process message loop run in a separate
@@ -281,6 +292,7 @@
             ptr->single_process = SingleProcess ? 1 : 0;
             ptr->no_sandbox = NoSandbox ? 1 : 0;
             cef_string_t.Copy(BrowserSubprocessPath, &ptr->browser_subprocess_path);
+            cef_string_t.Copy(FrameworkDirPath, &ptr->framework_dir_path);
             ptr->multi_threaded_message_loop = MultiThreadedMessageLoop ? 1 : 0;
             ptr->windowless_rendering_enabled = WindowlessRenderingEnabled ? 1 : 0;
             ptr->external_message_pump = ExternalMessagePump ? 1 : 0;

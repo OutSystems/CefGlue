@@ -1067,6 +1067,9 @@
         ///           information; default to "CEF"&gt;
         ///  ExternalHandler=&lt;Windows only; Name of the external handler exe to use
         ///                   instead of re-launching the main exe; default to empty&gt;
+        ///  BrowserCrashForwardingEnabled=&lt;macOS only; True if browser process crashes
+        ///                                should be forwarded to the system crash
+        ///                                reporter; default to false&gt;
         ///  ServerURL=&lt;crash server URL; default to empty&gt;
         ///  RateLimitEnabled=&lt;True if uploads should be rate limited; default to true&gt;
         ///  MaxUploadsPerDay=&lt;Max uploads per 24 hours, used if rate limit is enabled;
@@ -1097,6 +1100,12 @@
         /// exe. The value can be an absolute path or a path relative to the main exe
         /// directory. On Linux the CefSettings.browser_subprocess_path value will be
         /// used. On macOS the existing subprocess app bundle will be used.
+        ///
+        /// If "BrowserCrashForwardingEnabled" is set to true on macOS then browser
+        /// process crashes will be forwarded to the system crash reporter. This results
+        /// in the crash UI dialog being displayed to the user and crash reports being
+        /// logged under "~/Library/Logs/DiagnosticReports". Forwarding of crash reports
+        /// from non-browser processes and Debug builds is always disabled.
         ///
         /// If "ServerURL" is set then crashes will be uploaded as a multi-part POST
         /// request to the specified URL. Otherwise, reports will only be stored locally
@@ -1148,7 +1157,7 @@
             fixed (char* value_ptr = value)
             {
                 var n_key = new cef_string_t(key_ptr, key.Length);
-                var n_value = new cef_string_t(value_ptr, value.Length);
+                var n_value = new cef_string_t(value_ptr, value != null ? value.Length : 0);
                 libcef.set_crash_key_value(&n_key, &n_value);
             }
         }

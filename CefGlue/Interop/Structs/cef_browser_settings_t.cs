@@ -32,7 +32,6 @@ namespace Xilium.CefGlue.Interop
         public CefState javascript_close_windows;
         public CefState javascript_access_clipboard;
         public CefState javascript_dom_paste;
-        public CefState caret_browsing;
         public CefState plugins;
         public CefState universal_access_from_file_urls;
         public CefState file_access_from_file_urls;
