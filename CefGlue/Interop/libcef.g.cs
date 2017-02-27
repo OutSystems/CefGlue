@@ -41,6 +41,14 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_enable_highdpi_support", CallingConvention = libcef.CEF_CALL)]
         public static extern void enable_highdpi_support();
         
+        // CefCrashReportingEnabled
+        [DllImport(libcef.DllName, EntryPoint = "cef_crash_reporting_enabled", CallingConvention = libcef.CEF_CALL)]
+        public static extern int crash_reporting_enabled();
+        
+        // CefSetCrashKeyValue
+        [DllImport(libcef.DllName, EntryPoint = "cef_set_crash_key_value", CallingConvention = libcef.CEF_CALL)]
+        public static extern void set_crash_key_value(cef_string_t* key, cef_string_t* value);
+        
         // CefCreateDirectory
         [DllImport(libcef.DllName, EntryPoint = "cef_create_directory", CallingConvention = libcef.CEF_CALL)]
         public static extern int create_directory(cef_string_t* full_path);

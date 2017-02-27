@@ -88,6 +88,19 @@
         }
 
         /// <summary>
+        /// Returns the title text or the alt text if the context menu was invoked on
+        /// an image.
+        /// </summary>
+        public string TitleText
+        {
+            get
+            {
+                var n_result = cef_context_menu_params_t.get_title_text(_self);
+                return cef_string_userfree.ToString(n_result);
+            }
+        }
+
+        /// <summary>
         /// Returns the URL of the top level page that the context menu was invoked on.
         /// </summary>
         public string PageUrl

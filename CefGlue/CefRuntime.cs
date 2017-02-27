@@ -1047,6 +1047,112 @@
             return libcef.is_cert_status_minor_error(status) != 0;
         }
 
+    #endregion
+
+        #region cef_crash_util
+
+        /// <summary>
+        /// Crash reporting is configured using an INI-style config file named
+        /// "crash_reporter.cfg". On Windows and Linux this file must be placed next to
+        /// the main application executable. On macOS this file must be placed in the
+        /// top-level app bundle Resources directory (e.g.
+        /// "&lt;appname&gt;.app/Contents/Resources"). File contents are as follows:
+        ///
+        ///  # Comments start with a hash character and must be on their own line.
+        ///
+        ///  [Config]
+        ///  ProductName=&lt;Value of the "prod" crash key; defaults to "cef"&gt;
+        ///  ProductVersion=&lt;Value of the "ver" crash key; defaults to the CEF version&gt;
+        ///  AppName=&lt;Windows only; App-specific folder name component for storing crash
+        ///           information; default to "CEF"&gt;
+        ///  ExternalHandler=&lt;Windows only; Name of the external handler exe to use
+        ///                   instead of re-launching the main exe; default to empty&gt;
+        ///  ServerURL=&lt;crash server URL; default to empty&gt;
+        ///  RateLimitEnabled=&lt;True if uploads should be rate limited; default to true&gt;
+        ///  MaxUploadsPerDay=&lt;Max uploads per 24 hours, used if rate limit is enabled;
+        ///                    default to 5&gt;
+        ///  MaxDatabaseSizeInMb=&lt;Total crash report disk usage greater than this value
+        ///                       will cause older reports to be deleted; default to 20&gt;
+        ///  MaxDatabaseAgeInDays=&lt;Crash reports older than this value will be deleted;
+        ///                        default to 5&gt;
+        ///
+        ///  [CrashKeys]
+        ///  my_key1=&lt;small|medium|large&gt;
+        ///  my_key2=&lt;small|medium|large&gt;
+        ///
+        /// Config section:
+        ///
+        /// If "ProductName" and/or "ProductVersion" are set then the specified values
+        /// will be included in the crash dump metadata. On macOS if these values are set
+        /// to empty then they will be retrieved from the Info.plist file using the
+        /// "CFBundleName" and "CFBundleShortVersionString" keys respectively.
+        ///
+        /// If "AppName" is set on Windows then crash report information (metrics,
+        /// database and dumps) will be stored locally on disk under the
+        /// "C:\Users\[CurrentUser]\AppData\Local\[AppName]\User Data" folder. On other
+        /// platforms the CefSettings.user_data_path value will be used.
+        ///
+        /// If "ExternalHandler" is set on Windows then the specified exe will be
+        /// launched as the crashpad-handler instead of re-launching the main process
+        /// exe. The value can be an absolute path or a path relative to the main exe
+        /// directory. On Linux the CefSettings.browser_subprocess_path value will be
+        /// used. On macOS the existing subprocess app bundle will be used.
+        ///
+        /// If "ServerURL" is set then crashes will be uploaded as a multi-part POST
+        /// request to the specified URL. Otherwise, reports will only be stored locally
+        /// on disk.
+        ///
+        /// If "RateLimitEnabled" is set to true then crash report uploads will be rate
+        /// limited as follows:
+        ///  1. If "MaxUploadsPerDay" is set to a positive value then at most the
+        ///     specified number of crashes will be uploaded in each 24 hour period.
+        ///  2. If crash upload fails due to a network or server error then an
+        ///     incremental backoff delay up to a maximum of 24 hours will be applied for
+        ///     retries.
+        ///  3. If a backoff delay is applied and "MaxUploadsPerDay" is > 1 then the
+        ///     "MaxUploadsPerDay" value will be reduced to 1 until the client is
+        ///     restarted. This helps to avoid an upload flood when the network or
+        ///     server error is resolved.
+        /// Rate limiting is not supported on Linux.
+        ///
+        /// If "MaxDatabaseSizeInMb" is set to a positive value then crash report storage
+        /// on disk will be limited to that size in megabytes. For example, on Windows
+        /// each dump is about 600KB so a "MaxDatabaseSizeInMb" value of 20 equates to
+        /// about 34 crash reports stored on disk. Not supported on Linux.
+        ///
+        /// If "MaxDatabaseAgeInDays" is set to a positive value then crash reports older
+        /// than the specified age in days will be deleted. Not supported on Linux.
+        ///
+        /// CrashKeys section:
+        ///
+        /// Any number of crash keys can be specified for use by the application. Crash
+        /// key values will be truncated based on the specified size (small = 63 bytes,
+        /// medium = 252 bytes, large = 1008 bytes). The value of crash keys can be set
+        /// from any thread or process using the CefSetCrashKeyValue function. These
+        /// key/value pairs will be sent to the crash server along with the crash dump
+        /// file. Medium and large values will be chunked for submission. For example,
+        /// if your key is named "mykey" then the value will be broken into ordered
+        /// chunks and submitted using keys named "mykey-1", "mykey-2", etc.
+        /// </summary>
+        public static bool CrashReportingEnabled()
+        {
+            return libcef.crash_reporting_enabled() != 0;
+        }
+
+        /// <summary>
+        /// Sets or clears a specific key-value pair from the crash metadata.
+        /// </summary>
+        public static void SetCrashKeyValue(string key, string value)
+        {
+            fixed (char* key_ptr = key)
+            fixed (char* value_ptr = value)
+            {
+                var n_key = new cef_string_t(key_ptr, key.Length);
+                var n_value = new cef_string_t(value_ptr, value.Length);
+                libcef.set_crash_key_value(&n_key, &n_value);
+            }
+        }
+
         #endregion
 
         private static void LoadIfNeed()

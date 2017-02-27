@@ -44,7 +44,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int on_before_plugin_load_delegate(cef_request_context_handler_t* self, cef_string_t* mime_type, cef_string_t* plugin_url, cef_string_t* top_origin_url, cef_web_plugin_info_t* plugin_info, CefPluginPolicy* plugin_policy);
+        internal delegate int on_before_plugin_load_delegate(cef_request_context_handler_t* self, cef_string_t* mime_type, cef_string_t* plugin_url, int is_main_frame, cef_string_t* top_origin_url, cef_web_plugin_info_t* plugin_info, CefPluginPolicy* plugin_policy);
         
         private static int _sizeof;
         

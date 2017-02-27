@@ -20,6 +20,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_unfiltered_link_url;
         internal IntPtr _get_source_url;
         internal IntPtr _has_image_contents;
+        internal IntPtr _get_title_text;
         internal IntPtr _get_page_url;
         internal IntPtr _get_frame_url;
         internal IntPtr _get_frame_charset;
@@ -93,6 +94,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int has_image_contents_delegate(cef_context_menu_params_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate cef_string_userfree* get_title_text_delegate(cef_context_menu_params_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -342,223 +349,240 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetPageUrl
+        // GetTitleText
         private static IntPtr _pa;
-        private static get_page_url_delegate _da;
+        private static get_title_text_delegate _da;
         
-        public static cef_string_userfree* get_page_url(cef_context_menu_params_t* self)
+        public static cef_string_userfree* get_title_text(cef_context_menu_params_t* self)
         {
-            get_page_url_delegate d;
-            var p = self->_get_page_url;
+            get_title_text_delegate d;
+            var p = self->_get_title_text;
             if (p == _pa) { d = _da; }
             else
             {
-                d = (get_page_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_page_url_delegate));
+                d = (get_title_text_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_title_text_delegate));
                 if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
             }
             return d(self);
         }
         
-        // GetFrameUrl
+        // GetPageUrl
         private static IntPtr _pb;
-        private static get_frame_url_delegate _db;
+        private static get_page_url_delegate _db;
         
-        public static cef_string_userfree* get_frame_url(cef_context_menu_params_t* self)
+        public static cef_string_userfree* get_page_url(cef_context_menu_params_t* self)
         {
-            get_frame_url_delegate d;
-            var p = self->_get_frame_url;
+            get_page_url_delegate d;
+            var p = self->_get_page_url;
             if (p == _pb) { d = _db; }
             else
             {
-                d = (get_frame_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_url_delegate));
+                d = (get_page_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_page_url_delegate));
                 if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
             }
             return d(self);
         }
         
-        // GetFrameCharset
+        // GetFrameUrl
         private static IntPtr _pc;
-        private static get_frame_charset_delegate _dc;
+        private static get_frame_url_delegate _dc;
         
-        public static cef_string_userfree* get_frame_charset(cef_context_menu_params_t* self)
+        public static cef_string_userfree* get_frame_url(cef_context_menu_params_t* self)
         {
-            get_frame_charset_delegate d;
-            var p = self->_get_frame_charset;
+            get_frame_url_delegate d;
+            var p = self->_get_frame_url;
             if (p == _pc) { d = _dc; }
             else
             {
-                d = (get_frame_charset_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_charset_delegate));
+                d = (get_frame_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_url_delegate));
                 if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
             }
             return d(self);
         }
         
-        // GetMediaType
+        // GetFrameCharset
         private static IntPtr _pd;
-        private static get_media_type_delegate _dd;
+        private static get_frame_charset_delegate _dd;
         
-        public static CefContextMenuMediaType get_media_type(cef_context_menu_params_t* self)
+        public static cef_string_userfree* get_frame_charset(cef_context_menu_params_t* self)
         {
-            get_media_type_delegate d;
-            var p = self->_get_media_type;
+            get_frame_charset_delegate d;
+            var p = self->_get_frame_charset;
             if (p == _pd) { d = _dd; }
             else
             {
-                d = (get_media_type_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_media_type_delegate));
+                d = (get_frame_charset_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_charset_delegate));
                 if (_pd == IntPtr.Zero) { _dd = d; _pd = p; }
             }
             return d(self);
         }
         
-        // GetMediaStateFlags
+        // GetMediaType
         private static IntPtr _pe;
-        private static get_media_state_flags_delegate _de;
+        private static get_media_type_delegate _de;
         
-        public static CefContextMenuMediaStateFlags get_media_state_flags(cef_context_menu_params_t* self)
+        public static CefContextMenuMediaType get_media_type(cef_context_menu_params_t* self)
         {
-            get_media_state_flags_delegate d;
-            var p = self->_get_media_state_flags;
+            get_media_type_delegate d;
+            var p = self->_get_media_type;
             if (p == _pe) { d = _de; }
             else
             {
-                d = (get_media_state_flags_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_media_state_flags_delegate));
+                d = (get_media_type_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_media_type_delegate));
                 if (_pe == IntPtr.Zero) { _de = d; _pe = p; }
             }
             return d(self);
         }
         
-        // GetSelectionText
+        // GetMediaStateFlags
         private static IntPtr _pf;
-        private static get_selection_text_delegate _df;
+        private static get_media_state_flags_delegate _df;
         
-        public static cef_string_userfree* get_selection_text(cef_context_menu_params_t* self)
+        public static CefContextMenuMediaStateFlags get_media_state_flags(cef_context_menu_params_t* self)
         {
-            get_selection_text_delegate d;
-            var p = self->_get_selection_text;
+            get_media_state_flags_delegate d;
+            var p = self->_get_media_state_flags;
             if (p == _pf) { d = _df; }
             else
             {
-                d = (get_selection_text_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_selection_text_delegate));
+                d = (get_media_state_flags_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_media_state_flags_delegate));
                 if (_pf == IntPtr.Zero) { _df = d; _pf = p; }
             }
             return d(self);
         }
         
-        // GetMisspelledWord
+        // GetSelectionText
         private static IntPtr _p10;
-        private static get_misspelled_word_delegate _d10;
+        private static get_selection_text_delegate _d10;
         
-        public static cef_string_userfree* get_misspelled_word(cef_context_menu_params_t* self)
+        public static cef_string_userfree* get_selection_text(cef_context_menu_params_t* self)
         {
-            get_misspelled_word_delegate d;
-            var p = self->_get_misspelled_word;
+            get_selection_text_delegate d;
+            var p = self->_get_selection_text;
             if (p == _p10) { d = _d10; }
             else
             {
-                d = (get_misspelled_word_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_misspelled_word_delegate));
+                d = (get_selection_text_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_selection_text_delegate));
                 if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
             }
             return d(self);
         }
         
-        // GetDictionarySuggestions
+        // GetMisspelledWord
         private static IntPtr _p11;
-        private static get_dictionary_suggestions_delegate _d11;
+        private static get_misspelled_word_delegate _d11;
+        
+        public static cef_string_userfree* get_misspelled_word(cef_context_menu_params_t* self)
+        {
+            get_misspelled_word_delegate d;
+            var p = self->_get_misspelled_word;
+            if (p == _p11) { d = _d11; }
+            else
+            {
+                d = (get_misspelled_word_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_misspelled_word_delegate));
+                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetDictionarySuggestions
+        private static IntPtr _p12;
+        private static get_dictionary_suggestions_delegate _d12;
         
         public static int get_dictionary_suggestions(cef_context_menu_params_t* self, cef_string_list* suggestions)
         {
             get_dictionary_suggestions_delegate d;
             var p = self->_get_dictionary_suggestions;
-            if (p == _p11) { d = _d11; }
+            if (p == _p12) { d = _d12; }
             else
             {
                 d = (get_dictionary_suggestions_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_dictionary_suggestions_delegate));
-                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
+                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
             }
             return d(self, suggestions);
         }
         
         // IsEditable
-        private static IntPtr _p12;
-        private static is_editable_delegate _d12;
+        private static IntPtr _p13;
+        private static is_editable_delegate _d13;
         
         public static int is_editable(cef_context_menu_params_t* self)
         {
             is_editable_delegate d;
             var p = self->_is_editable;
-            if (p == _p12) { d = _d12; }
-            else
-            {
-                d = (is_editable_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_editable_delegate));
-                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
-            }
-            return d(self);
-        }
-        
-        // IsSpellCheckEnabled
-        private static IntPtr _p13;
-        private static is_spell_check_enabled_delegate _d13;
-        
-        public static int is_spell_check_enabled(cef_context_menu_params_t* self)
-        {
-            is_spell_check_enabled_delegate d;
-            var p = self->_is_spell_check_enabled;
             if (p == _p13) { d = _d13; }
             else
             {
-                d = (is_spell_check_enabled_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_spell_check_enabled_delegate));
+                d = (is_editable_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_editable_delegate));
                 if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
             }
             return d(self);
         }
         
-        // GetEditStateFlags
+        // IsSpellCheckEnabled
         private static IntPtr _p14;
-        private static get_edit_state_flags_delegate _d14;
+        private static is_spell_check_enabled_delegate _d14;
         
-        public static CefContextMenuEditStateFlags get_edit_state_flags(cef_context_menu_params_t* self)
+        public static int is_spell_check_enabled(cef_context_menu_params_t* self)
         {
-            get_edit_state_flags_delegate d;
-            var p = self->_get_edit_state_flags;
+            is_spell_check_enabled_delegate d;
+            var p = self->_is_spell_check_enabled;
             if (p == _p14) { d = _d14; }
             else
             {
-                d = (get_edit_state_flags_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_edit_state_flags_delegate));
+                d = (is_spell_check_enabled_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_spell_check_enabled_delegate));
                 if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
             }
             return d(self);
         }
         
-        // IsCustomMenu
+        // GetEditStateFlags
         private static IntPtr _p15;
-        private static is_custom_menu_delegate _d15;
+        private static get_edit_state_flags_delegate _d15;
         
-        public static int is_custom_menu(cef_context_menu_params_t* self)
+        public static CefContextMenuEditStateFlags get_edit_state_flags(cef_context_menu_params_t* self)
         {
-            is_custom_menu_delegate d;
-            var p = self->_is_custom_menu;
+            get_edit_state_flags_delegate d;
+            var p = self->_get_edit_state_flags;
             if (p == _p15) { d = _d15; }
             else
             {
-                d = (is_custom_menu_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_custom_menu_delegate));
+                d = (get_edit_state_flags_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_edit_state_flags_delegate));
                 if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
             }
             return d(self);
         }
         
-        // IsPepperMenu
+        // IsCustomMenu
         private static IntPtr _p16;
-        private static is_pepper_menu_delegate _d16;
+        private static is_custom_menu_delegate _d16;
+        
+        public static int is_custom_menu(cef_context_menu_params_t* self)
+        {
+            is_custom_menu_delegate d;
+            var p = self->_is_custom_menu;
+            if (p == _p16) { d = _d16; }
+            else
+            {
+                d = (is_custom_menu_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_custom_menu_delegate));
+                if (_p16 == IntPtr.Zero) { _d16 = d; _p16 = p; }
+            }
+            return d(self);
+        }
+        
+        // IsPepperMenu
+        private static IntPtr _p17;
+        private static is_pepper_menu_delegate _d17;
         
         public static int is_pepper_menu(cef_context_menu_params_t* self)
         {
             is_pepper_menu_delegate d;
             var p = self->_is_pepper_menu;
-            if (p == _p16) { d = _d16; }
+            if (p == _p17) { d = _d17; }
             else
             {
                 d = (is_pepper_menu_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_pepper_menu_delegate));
-                if (_p16 == IntPtr.Zero) { _d16 = d; _p16 = p; }
+                if (_p17 == IntPtr.Zero) { _d17 = d; _p17 = p; }
             }
             return d(self);
         }
