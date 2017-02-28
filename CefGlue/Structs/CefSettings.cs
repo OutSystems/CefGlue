@@ -323,6 +323,7 @@
         private static void Clear(cef_settings_t* ptr)
         {
             libcef.string_clear(&ptr->browser_subprocess_path);
+            libcef.string_clear(&ptr->framework_dir_path);
             libcef.string_clear(&ptr->cache_path);
             libcef.string_clear(&ptr->user_data_path);
             libcef.string_clear(&ptr->user_agent);
