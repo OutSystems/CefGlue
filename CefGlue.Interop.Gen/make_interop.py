@@ -78,6 +78,8 @@ def get_base_func(cls, slot, name, cname):
         cretval = 'int'
     elif name == 'HasOneRef':
         cretval = 'int'
+    elif name == 'Del':
+        cretval = 'void'
     return {
             'basefunc': True,
             'virtual': True,
@@ -101,11 +103,19 @@ def get_base_func(cls, slot, name, cname):
         }
 
 def get_base_funcs(cls):
-    return [
-        get_base_func(cls, 0, 'AddRef', 'add_ref'),
-        get_base_func(cls, 1, 'Release', 'release'),
-        get_base_func(cls, 2, 'HasOneRef', 'has_one_ref'),
-        ]
+    baseClassName = cls.get_parent_capi_name() # FIXME: It should get real base class, not direct parent.
+    if baseClassName == "cef_base_t" or baseClassName == "cef_base_ref_counted_t":
+        return [
+            get_base_func(cls, 0, 'AddRef', 'add_ref'),
+            get_base_func(cls, 1, 'Release', 'release'),
+            get_base_func(cls, 2, 'HasOneRef', 'has_one_ref'),
+            ]
+    elif baseClassName == "cef_base_scoped_t":
+        return [
+            get_base_func(cls, 0, 'Del', 'del'),
+            ]
+    else:
+        raise Exception("Unknown base class.")
 
 def make_file_header():
     return """//
@@ -154,7 +164,7 @@ def get_funcs(cls, base = True):
         for func in get_base_funcs(cls):
             funcs.append( func )
 
-    i = 3
+    i = len(funcs)
     for func in cls.get_virtual_funcs():
         funcs.append( get_func_parts(func, i) )
         i += 1
@@ -174,7 +184,13 @@ def make_struct_members(cls):
     for func in cls.get_static_funcs():
         static_funcs.append( get_func_parts(func, 0) )
 
-    result.append('internal cef_base_t _base;')
+    parentClassName = cls.get_parent_capi_name()
+    if (parentClassName != "cef_base_ref_counted_t"
+        and parentClassName != "cef_base_scoped_t"):
+        message = "Error: Generation for base class \"" + cls.get_parent_name() + "\" is not supported."
+        raise Exception(message)
+
+    result.append('internal {0} _base;'.format(parentClassName))
     for func in funcs:
         if not func['basefunc']:
             result.append('internal IntPtr %(field_name)s;' % func)
@@ -295,8 +311,18 @@ def make_wrapper_g_file(cls):
     for line in schema.get_overview(cls):
         body.append('// %s' % line)
 
+    isRefCounted = cls.get_parent_capi_name() == "cef_base_ref_counted_t"
+    isScoped = cls.get_parent_capi_name() == "cef_base_scoped_t"
+
     if schema.is_proxy(cls):
-        body.append('public sealed unsafe partial class %s : IDisposable' % schema.cpp2csname(cls.get_name()))
+        proxyBase = None
+        if isRefCounted:
+            proxyBase = " : IDisposable"
+        elif isScoped:
+            proxyBase = ""
+        else:
+            raise Exception("Unknown base class type.")
+        body.append(('public sealed unsafe partial class %s' + proxyBase) % schema.cpp2csname(cls.get_name()))
         body.append('{')
         body.append( indent + ('\n' + indent + indent).join( make_proxy_g_body(cls) ) )
         body.append('}')
@@ -361,45 +387,54 @@ def make_proxy_g_body(cls):
     result.append('}')
     result.append('')
 
-    # disposable
-    result.append('~%s()' % csname)
-    result.append('{')
-    result.append(indent + 'if (_self != null)')
-    result.append(indent + '{')
-    result.append(indent + indent + 'Release();')
-    result.append(indent + indent + '_self = null;')
-    result.append(indent + '}')
-    result.append('}')
-    result.append('')
+    isRefCounted = cls.get_parent_capi_name() == "cef_base_ref_counted_t"
+    isScoped = cls.get_parent_capi_name() == "cef_base_scoped_t"
 
-    result.append('public void Dispose()')
-    result.append('{')
-    result.append(indent + 'if (_self != null)')
-    result.append(indent + '{')
-    result.append(indent + indent + 'Release();')
-    result.append(indent + indent + '_self = null;')
-    result.append(indent + '}')
-    result.append(indent + 'GC.SuppressFinalize(this);')
-    result.append('}')
-    result.append('')
+    if isRefCounted:
+        # disposable
+        result.append('~%s()' % csname)
+        result.append('{')
+        result.append(indent + 'if (_self != null)')
+        result.append(indent + '{')
+        result.append(indent + indent + 'Release();')
+        result.append(indent + indent + '_self = null;')
+        result.append(indent + '}')
+        result.append('}')
+        result.append('')
 
-    result.append('internal void AddRef()')
-    result.append('{')
-    result.append(indent + '%(iname)s.add_ref(_self);' % { 'iname': iname })
-    result.append('}')
-    result.append('')
+        result.append('public void Dispose()')
+        result.append('{')
+        result.append(indent + 'if (_self != null)')
+        result.append(indent + '{')
+        result.append(indent + indent + 'Release();')
+        result.append(indent + indent + '_self = null;')
+        result.append(indent + '}')
+        result.append(indent + 'GC.SuppressFinalize(this);')
+        result.append('}')
+        result.append('')
 
-    result.append('internal bool Release()')
-    result.append('{')
-    result.append(indent + 'return %(iname)s.release(_self) != 0;' % { 'iname': iname })
-    result.append('}')
-    result.append('')
+        result.append('internal void AddRef()')
+        result.append('{')
+        result.append(indent + '%(iname)s.add_ref(_self);' % { 'iname': iname })
+        result.append('}')
+        result.append('')
 
-    result.append('internal bool HasOneRef')
-    result.append('{')
-    result.append(indent + 'get { return %(iname)s.has_one_ref(_self) != 0; }' % { 'iname': iname })
-    result.append('}')
-    result.append('')
+        result.append('internal bool Release()')
+        result.append('{')
+        result.append(indent + 'return %(iname)s.release(_self) != 0;' % { 'iname': iname })
+        result.append('}')
+        result.append('')
+
+        result.append('internal bool HasOneRef')
+        result.append('{')
+        result.append(indent + 'get { return %(iname)s.has_one_ref(_self) != 0; }' % { 'iname': iname })
+        result.append('}')
+        result.append('')
+    elif isScoped:
+        result.append("// FIXME: code for CefBaseScoped is not generated")
+        result.append("")
+    else:
+        raise Exception("Unsupported base class name.")
 
     # TODO: use it only if it is really necessary!
     # result.append('internal %(iname)s* Pointer' % { 'iname' : iname })
@@ -410,7 +445,8 @@ def make_proxy_g_body(cls):
 
     result.append('internal %(iname)s* ToNative()' % { 'iname' : iname })
     result.append('{')
-    result.append(indent + 'AddRef();')
+    if isRefCounted:
+        result.append(indent + 'AddRef();')
     result.append(indent + 'return _self;')
     result.append('}')
 
@@ -771,7 +807,7 @@ def write_interop(header, filepath, backup, schema_name, cppheaderdir):
         writect += update_file(filepath + '/' + schema.wrapper_g_path, schema.cpp2csname(cls.get_name()) + ".g.cs", content, backup)
 
     # userdata    
-    userdatacls = obj_class(header, 'CefUserData', '', 'CefUserData', '', '', '', '', [])
+    userdatacls = obj_class(header, 'CefUserData', '', 'CefUserData', 'CefBaseRefCounted', '', '', '', [])
     content = make_struct_file(userdatacls)
     writect += update_file(filepath + '/' + schema.struct_path, userdatacls.get_capi_name() + ".g.cs", content, backup)
     content = make_wrapper_g_file(userdatacls)

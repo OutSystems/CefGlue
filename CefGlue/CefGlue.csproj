@@ -70,7 +70,6 @@
     <Compile Include="Classes.g\CefDictionaryValue.g.cs" />
     <Compile Include="Classes.g\CefDisplayHandler.g.cs" />
     <Compile Include="Classes.g\CefDomDocument.g.cs" />
-    <Compile Include="Classes.g\CefDomEvent.g.cs" />
     <Compile Include="Classes.g\CefDomNode.g.cs" />
     <Compile Include="Classes.g\CefDomVisitor.g.cs" />
     <Compile Include="Classes.g\CefDownloadHandler.g.cs" />
@@ -259,6 +258,7 @@
     <Compile Include="Classes.Proxies\CefZipReader.cs" />
     <Compile Include="Enums\CefCdmRegistrationError.cs" />
     <Compile Include="Enums\CefCrossAxisAlignment.cs" />
+    <Compile Include="Enums\CefMenuColorType.cs" />
     <Compile Include="Enums\CefMainAxisAlignment.cs" />
     <Compile Include="Enums\CefSslContentStatus.cs" />
     <Compile Include="Enums\CefSslVersion.cs" />
@@ -322,9 +322,8 @@
     <Compile Include="ExceptionBuilder.cs" />
     <Compile Include="Exceptions\CefVersionMismatchException.cs" />
     <Compile Include="Exceptions\CefRuntimeException.cs" />
-    <Compile Include="Interop\Base\bool_t.cs" />
-    <Compile Include="Interop\Base\cefglue_userdata_t.cs" />
-    <Compile Include="Interop\Base\cef_base_t.cs" />
+    <Compile Include="Interop\Base\cef_base_scoped_t.cs" />
+    <Compile Include="Interop\Base\cef_base_ref_counted_t.cs" />
     <Compile Include="Interop\Base\cef_string_t.cs" />
     <Compile Include="Interop\Classes.g\cef_before_download_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_browser_process_handler_t.g.cs" />
@@ -336,8 +335,6 @@
     <Compile Include="Interop\Classes.g\cef_delete_cookies_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_dialog_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_domdocument_t.g.cs" />
-    <Compile Include="Interop\Classes.g\cef_domevent_listener_t.g.cs" />
-    <Compile Include="Interop\Classes.g\cef_domevent_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_domnode_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_domvisitor_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_download_handler_t.g.cs" />

@@ -1,13 +1,11 @@
 ﻿namespace Xilium.CefGlue.Interop
 {
     using System;
-    using System.Collections.Generic;
     using System.Runtime.InteropServices;
     using System.Security;
-    using System.Text;
 
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
-    internal unsafe struct cef_base_t
+    internal unsafe struct cef_base_ref_counted_t
     {
         internal UIntPtr _size;
         internal IntPtr _add_ref;
@@ -18,18 +16,18 @@
 #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
 #endif
-        public delegate void add_ref_delegate(cef_base_t* self);
+        public delegate void add_ref_delegate(cef_base_ref_counted_t* self);
 
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
 #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
 #endif
-        public delegate int release_delegate(cef_base_t* self);
+        public delegate int release_delegate(cef_base_ref_counted_t* self);
 
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
 #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
 #endif
-        public delegate int has_one_ref_delegate(cef_base_t* self);
+        public delegate int has_one_ref_delegate(cef_base_ref_counted_t* self);
     }
 }

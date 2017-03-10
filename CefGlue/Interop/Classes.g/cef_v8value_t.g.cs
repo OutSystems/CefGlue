@@ -12,7 +12,7 @@ namespace Xilium.CefGlue.Interop
     [SuppressMessage("Microsoft.Design", "CA1049:TypesThatOwnNativeResourcesShouldBeDisposable")]
     internal unsafe struct cef_v8value_t
     {
-        internal cef_base_t _base;
+        internal cef_base_ref_counted_t _base;
         internal IntPtr _is_valid;
         internal IntPtr _is_undefined;
         internal IntPtr _is_null;
@@ -334,13 +334,13 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_user_data_delegate(cef_v8value_t* self, cef_base_t* user_data);
+        private delegate int set_user_data_delegate(cef_v8value_t* self, cef_base_ref_counted_t* user_data);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_base_t* get_user_data_delegate(cef_v8value_t* self);
+        private delegate cef_base_ref_counted_t* get_user_data_delegate(cef_v8value_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -1034,7 +1034,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p26;
         private static set_user_data_delegate _d26;
         
-        public static int set_user_data(cef_v8value_t* self, cef_base_t* user_data)
+        public static int set_user_data(cef_v8value_t* self, cef_base_ref_counted_t* user_data)
         {
             set_user_data_delegate d;
             var p = self->_set_user_data;
@@ -1051,7 +1051,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p27;
         private static get_user_data_delegate _d27;
         
-        public static cef_base_t* get_user_data(cef_v8value_t* self)
+        public static cef_base_ref_counted_t* get_user_data(cef_v8value_t* self)
         {
             get_user_data_delegate d;
             var p = self->_get_user_data;

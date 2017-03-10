@@ -53,6 +53,8 @@ c2cs_types = {
     'cef_cursor_handle_t': 'IntPtr',
 
     'cef_base_t': 'cef_base_t',
+    'cef_base_ref_counted_t': 'cef_base_ref_counted_t',
+    'cef_base_scoped_t': 'cef_base_scoped_t',
 
     'cef_color_t': 'uint',
 
@@ -153,6 +155,7 @@ c2cs_enumtypes = {
     'cef_cdm_registration_error_t': 'CefCdmRegistrationError',
 	'cef_ssl_version_t': 'CefSslVersion',
 	'cef_ssl_content_status_t': 'CefSslContentStatus',
+    'cef_menu_color_type_t': 'CefMenuColorType',
     }
 
 c2cs_structtypes = { }

@@ -10,7 +10,7 @@ namespace Xilium.CefGlue
     using Xilium.CefGlue.Interop;
     
     // Role: PROXY
-    public sealed unsafe partial class CefSchemeRegistrar : IDisposable
+    public sealed unsafe partial class CefSchemeRegistrar
     {
         internal static CefSchemeRegistrar FromNative(cef_scheme_registrar_t* ptr)
         {
@@ -31,43 +31,10 @@ namespace Xilium.CefGlue
             _self = ptr;
         }
         
-        ~CefSchemeRegistrar()
-        {
-            if (_self != null)
-            {
-                Release();
-                _self = null;
-            }
-        }
-        
-        public void Dispose()
-        {
-            if (_self != null)
-            {
-                Release();
-                _self = null;
-            }
-            GC.SuppressFinalize(this);
-        }
-        
-        internal void AddRef()
-        {
-            cef_scheme_registrar_t.add_ref(_self);
-        }
-        
-        internal bool Release()
-        {
-            return cef_scheme_registrar_t.release(_self) != 0;
-        }
-        
-        internal bool HasOneRef
-        {
-            get { return cef_scheme_registrar_t.has_one_ref(_self) != 0; }
-        }
+        // FIXME: code for CefBaseScoped is not generated
         
         internal cef_scheme_registrar_t* ToNative()
         {
-            AddRef();
             return _self;
         }
     }

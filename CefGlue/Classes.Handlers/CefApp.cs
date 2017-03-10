@@ -43,7 +43,7 @@
 
             OnRegisterCustomSchemes(m_registrar);
 
-            m_registrar.Dispose();
+            m_registrar.ReleaseObject();
         }
 
         /// <summary>

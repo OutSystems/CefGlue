@@ -517,7 +517,7 @@
         /// </summary>
         public bool SetUserData(CefUserData userData)
         {
-            return cef_v8value_t.set_user_data(_self, userData != null ? (cef_base_t*)userData.ToNative() : null) != 0;
+            return cef_v8value_t.set_user_data(_self, userData != null ? (cef_base_ref_counted_t*)userData.ToNative() : null) != 0;
         }
 
         /// <summary>
