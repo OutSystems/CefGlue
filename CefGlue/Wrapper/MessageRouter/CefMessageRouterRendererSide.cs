@@ -241,19 +241,28 @@
         {
             Helpers.RequireRendererThread();
 
+            // Do not keep any references to CefV8Value objects, otherwise
+            // we should release all of them in OnContextReleased method (so we
+            // can't rely on GC for this purpose).
+
             // Register function handlers with the 'window' object.
-            var window = context.GetGlobal();
+            using (var window = context.GetGlobal())
+            {
+                var handler = new V8HandlerImpl(this, _config);
+                CefV8PropertyAttribute attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontEnum | CefV8PropertyAttribute.DontDelete;
 
-            var handler = new V8HandlerImpl(this, _config);
-            CefV8PropertyAttribute attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontEnum | CefV8PropertyAttribute.DontDelete;
+                // Add the query function.
+                using (var queryFunc = CefV8Value.CreateFunction(_config.JSQueryFunction, handler))
+                {
+                    window.SetValue(_config.JSQueryFunction, queryFunc, attributes);
+                }
 
-            // Add the query function.
-            var queryFunc = CefV8Value.CreateFunction(_config.JSQueryFunction, handler);
-            window.SetValue(_config.JSQueryFunction, queryFunc, attributes);
-
-            // Add the cancel function.
-            var cancelFunc = CefV8Value.CreateFunction(_config.JSCancelFunction, handler);
-            window.SetValue(_config.JSCancelFunction, cancelFunc, attributes);
+                // Add the cancel function.
+                using (var cancelFunc = CefV8Value.CreateFunction(_config.JSCancelFunction, handler))
+                {
+                    window.SetValue(_config.JSCancelFunction, cancelFunc, attributes);
+                }
+            }
         }
 
         /// <summary>
@@ -388,7 +397,7 @@
 
         // If |requestId| is kReservedId all requests associated with |contextId|
         // will be canceled, otherwise only the specified |requestId| will be
-        // canceled. Returns true if any request was canceled. 
+        // canceled. Returns true if any request was canceled.
         private bool SendCancel(CefBrowser browser, long frameId, int contextId, int requestId)
         {
             Helpers.RequireRendererThread();
@@ -512,6 +521,9 @@
                     if (remove)
                     {
                         removeContextId = contextId;
+
+                        // "Release" stored context.
+                        kv.Value.Dispose();
                     }
                     break;
                 }

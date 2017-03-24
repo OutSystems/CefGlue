@@ -20,11 +20,19 @@
         protected override void OnContextCreated(CefBrowser browser, CefFrame frame, CefV8Context context)
         {
             MessageRouter.OnContextCreated(browser, frame, context);
+
+            // MessageRouter.OnContextCreated doesn't capture CefV8Context immediately,
+            // so we able to release it immediately in this call.
+            context.Dispose();
         }
 
         protected override void OnContextReleased(CefBrowser browser, CefFrame frame, CefV8Context context)
         {
+            // MessageRouter.OnContextReleased releases captured CefV8Context (if have).
             MessageRouter.OnContextReleased(browser, frame, context);
+
+            // Release CefV8Context.
+            context.Dispose();
         }
 
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
