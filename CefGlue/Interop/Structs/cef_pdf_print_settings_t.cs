@@ -13,6 +13,7 @@ namespace Xilium.CefGlue.Interop
         public cef_string_t header_footer_url;
         public int page_width;
         public int page_height;
+        public int scale_factor;
         public double margin_top;
         public double margin_right;
         public double margin_bottom;
