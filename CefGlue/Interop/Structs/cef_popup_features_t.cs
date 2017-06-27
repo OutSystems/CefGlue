@@ -27,6 +27,5 @@ namespace Xilium.CefGlue.Interop
 
         public int fullscreen;
         public int dialog;
-        public cef_string_list* additionalFeatures;
     }
 }

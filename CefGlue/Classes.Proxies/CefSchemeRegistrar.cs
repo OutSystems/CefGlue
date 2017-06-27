@@ -57,13 +57,16 @@
         /// If |is_secure| is true the scheme will be treated with the same security
         /// rules as those applied to "https" URLs. For example, loading this scheme
         /// from other secure schemes will not trigger mixed content warnings.
-        /// If |is_cors_enabled| is true the scheme that can be sent CORS requests.
-        /// This value should be true in most cases where |is_standard| is true.
+        /// If |is_cors_enabled| is true the scheme can be sent CORS requests. This
+        /// value should be true in most cases where |is_standard| is true.
+        /// If |is_csp_bypassing| is true the scheme can bypass Content-Security-Policy
+        /// (CSP) checks. This value should be false in most cases where |is_standard|
+        /// is true.
         /// This function may be called on any thread. It should only be called once
         /// per unique |scheme_name| value. If |scheme_name| is already registered or
         /// if an error occurs this method will return false.
         /// </summary>
-        public bool AddCustomScheme(string schemeName, bool standard, bool local, bool displayIsolated, bool secure, bool corsEnabled)
+        public bool AddCustomScheme(string schemeName, bool standard, bool local, bool displayIsolated, bool secure, bool corsEnabled, bool cspBypassing)
         {
             if (schemeName == null) throw new ArgumentNullException("schemeName");
 
@@ -77,7 +80,8 @@
                     local ? 1 : 0,
                     displayIsolated ? 1 : 0,
                     secure ? 1 : 0,
-                    corsEnabled ? 1 : 0
+                    corsEnabled ? 1 : 0,
+                    cspBypassing ? 1 : 0
                     ) != 0;
             }
         }

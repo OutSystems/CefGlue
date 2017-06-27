@@ -127,15 +127,6 @@
             }
         }
 
-        public string[] AdditionalFeatures
-        {
-            get
-            {
-                ThrowIfObjectDisposed();
-                return cef_string_list.ToArray(_self->additionalFeatures);
-            }
-        }
-
         private void ThrowIfObjectDisposed()
         {
             if (_self == null) throw ExceptionBuilder.ObjectDisposed();
