@@ -48,25 +48,25 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_print_settings_delegate(cef_print_handler_t* self, cef_print_settings_t* settings, int get_defaults);
+        internal delegate void on_print_settings_delegate(cef_print_handler_t* self, cef_browser_t* browser, cef_print_settings_t* settings, int get_defaults);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int on_print_dialog_delegate(cef_print_handler_t* self, int has_selection, cef_print_dialog_callback_t* callback);
+        internal delegate int on_print_dialog_delegate(cef_print_handler_t* self, cef_browser_t* browser, int has_selection, cef_print_dialog_callback_t* callback);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int on_print_job_delegate(cef_print_handler_t* self, cef_string_t* document_name, cef_string_t* pdf_file_path, cef_print_job_callback_t* callback);
+        internal delegate int on_print_job_delegate(cef_print_handler_t* self, cef_browser_t* browser, cef_string_t* document_name, cef_string_t* pdf_file_path, cef_print_job_callback_t* callback);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_print_reset_delegate(cef_print_handler_t* self);
+        internal delegate void on_print_reset_delegate(cef_print_handler_t* self, cef_browser_t* browser);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

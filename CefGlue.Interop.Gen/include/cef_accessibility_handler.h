@@ -1,4 +1,4 @@
-// Copyright (c) 2016 Marshall A. Greenblatt. All rights reserved.
+// Copyright (c) 2017 Marshall A. Greenblatt. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -34,50 +34,33 @@
 // tools directory for more information.
 //
 
-#ifndef CEF_INCLUDE_CEF_SSL_STATUS_H_
-#define CEF_INCLUDE_CEF_SSL_STATUS_H_
+#ifndef CEF_INCLUDE_CEF_ACCESSIBILITY_HANDLER_H_
+#define CEF_INCLUDE_CEF_ACCESSIBILITY_HANDLER_H_
 #pragma once
 
-#include "include/cef_base.h"
 #include "include/cef_values.h"
-#include "include/cef_x509_certificate.h"
 
 ///
-// Class representing the SSL information for a navigation entry.
+// Implement this interface to receive accessibility notification when
+// accessibility events have been registered. The methods of this class will
+// be called on the UI thread.
 ///
-/*--cef(source=library)--*/
-class CefSSLStatus : public virtual CefBaseRefCounted {
+/*--cef(source=client)--*/
+class CefAccessibilityHandler : public virtual CefBaseRefCounted {
  public:
   ///
-  // Returns true if the status is related to a secure SSL/TLS connection.
+  // Called after renderer process sends accessibility tree changes to the
+  // browser process.
   ///
   /*--cef()--*/
-  virtual bool IsSecureConnection() = 0;
+  virtual void OnAccessibilityTreeChange(CefRefPtr<CefValue> value) = 0;
 
   ///
-  // Returns a bitmask containing any and all problems verifying the server
-  // certificate.
-  ///
-  /*--cef(default_retval=CERT_STATUS_NONE)--*/
-  virtual cef_cert_status_t GetCertStatus() = 0;
-
-  ///
-  // Returns the SSL version used for the SSL connection.
-  ///
-  /*--cef(default_retval=SSL_CONNECTION_VERSION_UNKNOWN)--*/
-  virtual cef_ssl_version_t GetSSLVersion() = 0;
-
-  ///
-  // Returns a bitmask containing the page security content status.
-  ///
-  /*--cef(default_retval=SSL_CONTENT_NORMAL_CONTENT)--*/
-  virtual cef_ssl_content_status_t GetContentStatus() = 0;
-
-  ///
-  // Returns the X.509 certificate.
+  // Called after renderer process sends accessibility location changes to the
+  // browser process.
   ///
   /*--cef()--*/
-  virtual CefRefPtr<CefX509Certificate> GetX509Certificate() = 0;
+  virtual void OnAccessibilityLocationChange(CefRefPtr<CefValue> value) = 0;
 };
 
-#endif  // CEF_INCLUDE_CEF_SSL_STATUS_H_
+#endif  // CEF_INCLUDE_CEF_ACCESSIBILITY_HANDLER_H_

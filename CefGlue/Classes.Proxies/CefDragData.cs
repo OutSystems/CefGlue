@@ -274,5 +274,35 @@
                 cef_drag_data_t.add_file(_self, &n_path, &n_displayName);
             }
         }
+
+        /// <summary>
+        /// Get the image representation of drag data. May return NULL if no image
+        /// representation is available.
+        /// </summary>
+        public CefImage GetImage()
+        {
+            var result = cef_drag_data_t.get_image(_self);
+            return CefImage.FromNativeOrNull(result);
+        }
+
+        /// <summary>
+        /// Get the image hotspot (drag start location relative to image dimensions).
+        /// </summary>
+        public CefPoint GetImageHotspot()
+        {
+            var result = cef_drag_data_t.get_image_hotspot(_self);
+            return new CefPoint(result.x, result.y);
+        }
+
+        /// <summary>
+        /// Returns true if an image representation of drag data is available.
+        /// </summary>
+        public bool HasImage
+        {
+            get
+            {
+                return cef_drag_data_t.has_image(_self) != 0;
+            }
+        }
     }
 }

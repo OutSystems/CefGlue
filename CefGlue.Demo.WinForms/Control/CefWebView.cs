@@ -8,6 +8,7 @@
     using Xilium.CefGlue.Platform.Windows;
     using System.Runtime.InteropServices;
 
+    // There is old / incomplete code. Don't rely on it.
     public class CefWebView
     {
         private bool _handleCreated;
@@ -24,7 +25,6 @@
             windowInfo.Name = url;
             if (transparent)
             {
-                windowInfo.TransparentPaintingEnabled = true;
                 windowInfo.Width = 500;
                 windowInfo.Height = 500;
                 //windowInfo.Style = WindowStyle.WS_POPUP | WindowStyle.WS_SIZEFRAME | WindowStyle.WS_VISIBLE;

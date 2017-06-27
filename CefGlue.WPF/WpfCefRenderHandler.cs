@@ -34,6 +34,11 @@ namespace Xilium.CefGlue.WPF
             _uiHelper = uiHelper;
         }
 
+        protected override CefAccessibilityHandler GetAccessibilityHandler()
+        {
+            return null;
+        }
+
         protected override bool GetRootScreenRect(CefBrowser browser, ref CefRectangle rect)
         {
             return _owner.GetViewRect(ref rect);

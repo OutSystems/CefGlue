@@ -29,10 +29,9 @@ namespace Xilium.CefGlue.Interop
         // |parent_window| to be used for identifying monitor info
         // (MonitorFromWindow). If |parent_window| is not provided the main screen
         // monitor will be used.
+        // Transparent painting is enabled by default but can be disabled by setting
+        // CefBrowserSettings.background_color to an opaque value.
         public int windowless_rendering_enabled;
-
-        // Set to true to enable transparent painting.
-        public int transparent_painting_enabled;
 
         // Handle for the new browser window.
         public IntPtr window;
@@ -72,7 +71,6 @@ namespace Xilium.CefGlue.Interop
 
         public IntPtr parent_window;
         public int windowless_rendering_enabled;
-        public int transparent_painting_enabled;
         public IntPtr window;
 
         #region Alloc & Free
@@ -113,7 +111,6 @@ namespace Xilium.CefGlue.Interop
         public IntPtr parent_view;
 
         public int windowless_rendering_enabled;
-        public int transparent_painting_enabled;
 
         // NSView pointer for the new browser view.
         public IntPtr view;

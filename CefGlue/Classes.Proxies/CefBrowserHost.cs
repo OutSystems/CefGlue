@@ -782,5 +782,34 @@
                 cef_browser_host_t.get_visible_navigation_entry(_self)
                 );
         }
+
+        /// <summary>
+        /// Set accessibility state for all frames. |accessibility_state| may be
+        /// default, enabled or disabled. If |accessibility_state| is STATE_DEFAULT
+        /// then accessibility will be disabled by default and the state may be further
+        /// controlled with the "force-renderer-accessibility" and
+        /// "disable-renderer-accessibility" command-line switches. If
+        /// |accessibility_state| is STATE_ENABLED then accessibility will be enabled.
+        /// If |accessibility_state| is STATE_DISABLED then accessibility will be
+        /// completely disabled.
+        /// For windowed browsers accessibility will be enabled in Complete mode (which
+        /// corresponds to kAccessibilityModeComplete in Chromium). In this mode all
+        /// platform accessibility objects will be created and managed by Chromium's
+        /// internal implementation. The client needs only to detect the screen reader
+        /// and call this method appropriately. For example, on macOS the client can
+        /// handle the @"AXEnhancedUserInterface" accessibility attribute to detect
+        /// VoiceOver state changes and on Windows the client can handle WM_GETOBJECT
+        /// with OBJID_CLIENT to detect accessibility readers.
+        /// For windowless browsers accessibility will be enabled in TreeOnly mode
+        /// (which corresponds to kAccessibilityModeWebContentsOnly in Chromium). In
+        /// this mode renderer accessibility is enabled, the full tree is computed, and
+        /// events are passed to CefAccessibiltyHandler, but platform accessibility
+        /// objects are not created. The client may implement platform accessibility
+        /// objects using CefAccessibiltyHandler callbacks if desired.
+        /// </summary>
+        public void SetAccessibilityState(CefState accessibilityState)
+        {
+            cef_browser_host_t.set_accessibility_state(_self, accessibilityState);
+        }
     }
 }

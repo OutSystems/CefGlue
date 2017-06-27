@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="CefRuntime.cs" />
     <Compile Include="CefRuntimePlatform.cs" />
+    <Compile Include="Classes.g\CefAccessibilityHandler.g.cs" />
     <Compile Include="Classes.g\CefApp.g.cs" />
     <Compile Include="Classes.g\CefAuthCallback.g.cs" />
     <Compile Include="Classes.g\CefBeforeDownloadCallback.g.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="Classes.g\CefX509CertPrincipal.g.cs" />
     <Compile Include="Classes.g\CefXmlReader.g.cs" />
     <Compile Include="Classes.g\CefZipReader.g.cs" />
+    <Compile Include="Classes.Handlers\CefAccessibilityHandler.cs" />
     <Compile Include="Classes.Handlers\CefApp.cs" />
     <Compile Include="Classes.Handlers\CefBrowserProcessHandler.cs" />
     <Compile Include="Classes.Handlers\CefClient.cs" />
@@ -325,6 +327,7 @@
     <Compile Include="Interop\Base\cef_base_scoped_t.cs" />
     <Compile Include="Interop\Base\cef_base_ref_counted_t.cs" />
     <Compile Include="Interop\Base\cef_string_t.cs" />
+    <Compile Include="Interop\Classes.g\cef_accessibility_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_before_download_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_browser_process_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_completion_callback_t.g.cs" />

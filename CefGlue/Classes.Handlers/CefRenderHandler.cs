@@ -14,6 +14,22 @@
     {
         private static readonly CefRectangle[] s_emptyRectangleArray = new CefRectangle[0];
 
+
+        private cef_accessibility_handler_t* get_accessibility_handler(cef_render_handler_t* self)
+        {
+            CheckSelf(self);
+            var result = GetAccessibilityHandler();
+            if (result == null) return null;
+            return result.ToNative();
+        }
+
+        /// <summary>
+        /// Return the handler for accessibility notifications. If no handler is
+        /// provided the default implementation will be used.
+        /// </summary>
+        protected abstract CefAccessibilityHandler GetAccessibilityHandler();
+
+
         private int get_root_screen_rect(cef_render_handler_t* self, cef_browser_t* browser, cef_rect_t* rect)
         {
             CheckSelf(self);

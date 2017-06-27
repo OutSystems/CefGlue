@@ -108,11 +108,5 @@
             get { ThrowIfDisposed(); return _self->windowless_rendering_enabled != 0; }
             set { ThrowIfDisposed(); _self->windowless_rendering_enabled = value ? 1 : 0; }
         }
-
-        public override bool TransparentPaintingEnabled
-        {
-            get { ThrowIfDisposed(); return _self->transparent_painting_enabled != 0; }
-            set { ThrowIfDisposed(); _self->transparent_painting_enabled = value ? 1 : 0; }
-        }
     }
 }

@@ -35,6 +35,9 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _set_fragment_base_url;
         internal IntPtr _reset_file_contents;
         internal IntPtr _add_file;
+        internal IntPtr _get_image;
+        internal IntPtr _get_image_hotspot;
+        internal IntPtr _has_image;
         
         // Create
         [DllImport(libcef.DllName, EntryPoint = "cef_drag_data_create", CallingConvention = libcef.CEF_CALL)]
@@ -189,6 +192,24 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate void add_file_delegate(cef_drag_data_t* self, cef_string_t* path, cef_string_t* display_name);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate cef_image_t* get_image_delegate(cef_drag_data_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate cef_point_t get_image_hotspot_delegate(cef_drag_data_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate int has_image_delegate(cef_drag_data_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -613,6 +634,57 @@ namespace Xilium.CefGlue.Interop
                 if (_p18 == IntPtr.Zero) { _d18 = d; _p18 = p; }
             }
             d(self, path, display_name);
+        }
+        
+        // GetImage
+        private static IntPtr _p19;
+        private static get_image_delegate _d19;
+        
+        public static cef_image_t* get_image(cef_drag_data_t* self)
+        {
+            get_image_delegate d;
+            var p = self->_get_image;
+            if (p == _p19) { d = _d19; }
+            else
+            {
+                d = (get_image_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_image_delegate));
+                if (_p19 == IntPtr.Zero) { _d19 = d; _p19 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetImageHotspot
+        private static IntPtr _p1a;
+        private static get_image_hotspot_delegate _d1a;
+        
+        public static cef_point_t get_image_hotspot(cef_drag_data_t* self)
+        {
+            get_image_hotspot_delegate d;
+            var p = self->_get_image_hotspot;
+            if (p == _p1a) { d = _d1a; }
+            else
+            {
+                d = (get_image_hotspot_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_image_hotspot_delegate));
+                if (_p1a == IntPtr.Zero) { _d1a = d; _p1a = p; }
+            }
+            return d(self);
+        }
+        
+        // HasImage
+        private static IntPtr _p1b;
+        private static has_image_delegate _d1b;
+        
+        public static int has_image(cef_drag_data_t* self)
+        {
+            has_image_delegate d;
+            var p = self->_has_image;
+            if (p == _p1b) { d = _d1b; }
+            else
+            {
+                d = (has_image_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_image_delegate));
+                if (_p1b == IntPtr.Zero) { _d1b = d; _p1b = p; }
+            }
+            return d(self);
         }
         
     }

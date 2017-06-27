@@ -156,6 +156,7 @@ c2cs_enumtypes = {
 	'cef_ssl_version_t': 'CefSslVersion',
 	'cef_ssl_content_status_t': 'CefSslContentStatus',
     'cef_menu_color_type_t': 'CefMenuColorType',
+    'cef_state_t': 'CefState',
     }
 
 c2cs_structtypes = { }
