@@ -1172,6 +1172,29 @@
 
         #endregion
 
+        #region file_util
+
+        /// <summary>
+        /// Loads the existing "Certificate Revocation Lists" file that is managed by
+        /// Google Chrome. This file can generally be found in Chrome's User Data
+        /// directory (e.g. "C:\Users\[User]\AppData\Local\Google\Chrome\User Data\" on
+        /// Windows) and is updated periodically by Chrome's component updater service.
+        /// Must be called in the browser process after the context has been initialized.
+        /// See https://dev.chromium.org/Home/chromium-security/crlsets for background.
+        /// </summary>
+        public static void LoadCrlSetsFile(string path)
+        {
+            if (path == null) throw new ArgumentNullException(nameof(path));
+
+            fixed (char* path_ptr = path)
+            {
+                var n_path = new cef_string_t(path_ptr, path.Length);
+                libcef.load_crlsets_file(&n_path);
+            }
+        }
+
+        #endregion
+
         private static void LoadIfNeed()
         {
             if (!_loaded) Load();
