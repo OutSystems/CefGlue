@@ -144,4 +144,8 @@ classdef = {
 	'CefWaitableEvent': { 'role': ROLE_PROXY },
     # 59
     'CefAccessibilityHandler': { 'role': ROLE_HANDLER },
+    # 62
+    'CefExtension': { 'role': ROLE_PROXY },
+    'CefExtensionHandler': { 'role': ROLE_HANDLER, 'reversible': True },
+    'CefGetExtensionResourceCallback': { 'role': ROLE_PROXY },
     }
