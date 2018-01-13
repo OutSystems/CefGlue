@@ -1,4 +1,4 @@
-﻿//
+//
 // This file manually written from cef/include/internal/cef_types.h.
 // C API name: cef_path_key_t.
 //
@@ -51,5 +51,11 @@ namespace Xilium.CefGlue
         /// and "~/Library/Application Support" directory on Mac OS X.
         /// </summary>
         UserData,
+
+        /// <summary>
+        /// Directory containing application resources. Can be configured via
+        /// CefSettings.resources_dir_path.
+        /// </summary>
+        Resources,
     }
 }
