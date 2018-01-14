@@ -129,6 +129,8 @@
     <Compile Include="Classes.g\CefSchemeHandlerFactory.g.cs" />
     <Compile Include="Classes.g\CefSchemeRegistrar.g.cs" />
     <Compile Include="Classes.g\CefSelectClientCertificateCallback.g.cs" />
+    <Compile Include="Classes.g\CefServer.g.cs" />
+    <Compile Include="Classes.g\CefServerHandler.g.cs" />
     <Compile Include="Classes.g\CefSetCookieCallback.g.cs" />
     <Compile Include="Classes.g\CefSslInfo.g.cs" />
     <Compile Include="Classes.g\CefSslStatus.g.cs" />
@@ -197,6 +199,7 @@
     <Compile Include="Classes.Handlers\CefResponseFilter.cs" />
     <Compile Include="Classes.Handlers\CefRunFileDialogCallback.cs" />
     <Compile Include="Classes.Handlers\CefSchemeHandlerFactory.cs" />
+    <Compile Include="Classes.Handlers\CefServerHandler.cs" />
     <Compile Include="Classes.Handlers\CefSetCookieCallback.cs" />
     <Compile Include="Classes.Handlers\CefStringVisitor.cs" />
     <Compile Include="Classes.Handlers\CefUrlRequestClient.cs" />
@@ -247,6 +250,7 @@
     <Compile Include="Classes.Proxies\CefRunContextMenuCallback.cs" />
     <Compile Include="Classes.Proxies\CefSchemeRegistrar.cs" />
     <Compile Include="Classes.Proxies\CefSelectClientCertificateCallback.cs" />
+    <Compile Include="Classes.Proxies\CefServer.cs" />
     <Compile Include="Classes.Proxies\CefSslInfo.cs" />
     <Compile Include="Classes.Proxies\CefSslStatus.cs" />
     <Compile Include="Classes.Proxies\CefStreamReader.cs" />
@@ -385,6 +389,8 @@
     <Compile Include="Interop\Classes.g\cef_run_file_dialog_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_scheme_registrar_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_select_client_certificate_callback_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_server_handler_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_server_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_set_cookie_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_sslinfo_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_sslstatus_t.g.cs" />
