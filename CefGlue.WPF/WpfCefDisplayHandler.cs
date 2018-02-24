@@ -34,7 +34,7 @@ namespace Xilium.CefGlue.WPF
         {
         }
 
-        protected override bool OnConsoleMessage(CefBrowser browser, string message, string source, int line)
+        protected override bool OnConsoleMessage(CefBrowser browser, CefLogSeverity level, string message, string source, int line)
         {
             return false;
         }

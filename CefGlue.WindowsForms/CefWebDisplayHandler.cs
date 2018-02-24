@@ -32,9 +32,9 @@
             _core.InvokeIfRequired(() => _core.OnStatusMessage(new StatusMessageEventArgs(value)));
         }
 
-		protected override bool OnConsoleMessage(CefBrowser browser, string message, string source, int line)
+		protected override bool OnConsoleMessage(CefBrowser browser, CefLogSeverity level, string message, string source, int line)
 		{
-			var e = new ConsoleMessageEventArgs(message, source, line);
+			var e = new ConsoleMessageEventArgs(level, message, source, line);
 			_core.InvokeIfRequired(() => _core.OnConsoleMessage(e));
 
 			return e.Handled;
