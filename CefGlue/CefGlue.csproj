@@ -140,6 +140,7 @@
     <Compile Include="Classes.g\CefUrlRequestClient.g.cs" />
     <Compile Include="Classes.g\CefUserData.g.cs" />
     <Compile Include="Classes.g\CefV8Accessor.g.cs" />
+    <Compile Include="Classes.g\CefV8ArrayBufferReleaseCallback.g.cs" />
     <Compile Include="Classes.g\CefV8Context.g.cs" />
     <Compile Include="Classes.g\CefV8Exception.g.cs" />
     <Compile Include="Classes.g\CefV8Handler.g.cs" />
@@ -200,6 +201,7 @@
     <Compile Include="Classes.Handlers\CefUrlRequestClient.cs" />
     <Compile Include="Classes.Handlers\CefUserData.cs" />
     <Compile Include="Classes.Handlers\CefV8Accessor.cs" />
+    <Compile Include="Classes.Handlers\CefV8ArrayBufferReleaseCallback.cs" />
     <Compile Include="Classes.Handlers\CefV8Handler.cs" />
     <Compile Include="Classes.Handlers\CefV8Interceptor.cs" />
     <Compile Include="Classes.Handlers\CefWebPluginInfoVisitor.cs" />
@@ -420,6 +422,7 @@
     <Compile Include="Interop\Classes.g\cef_urlrequest_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_user_data_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_v8accessor_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_v8array_buffer_release_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_v8context_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_v8exception_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_v8handler_t.g.cs" />

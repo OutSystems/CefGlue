@@ -25,6 +25,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_header;
         internal IntPtr _get_header_map;
         internal IntPtr _set_header_map;
+        internal IntPtr _get_url;
+        internal IntPtr _set_url;
         
         // Create
         [DllImport(libcef.DllName, EntryPoint = "cef_response_create", CallingConvention = libcef.CEF_CALL)]
@@ -119,6 +121,18 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate void set_header_map_delegate(cef_response_t* self, cef_string_multimap* headerMap);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate cef_string_userfree* get_url_delegate(cef_response_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void set_url_delegate(cef_response_t* self, cef_string_t* url);
         
         // AddRef
         private static IntPtr _p0;
@@ -373,6 +387,40 @@ namespace Xilium.CefGlue.Interop
                 if (_pe == IntPtr.Zero) { _de = d; _pe = p; }
             }
             d(self, headerMap);
+        }
+        
+        // GetURL
+        private static IntPtr _pf;
+        private static get_url_delegate _df;
+        
+        public static cef_string_userfree* get_url(cef_response_t* self)
+        {
+            get_url_delegate d;
+            var p = self->_get_url;
+            if (p == _pf) { d = _df; }
+            else
+            {
+                d = (get_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_url_delegate));
+                if (_pf == IntPtr.Zero) { _df = d; _pf = p; }
+            }
+            return d(self);
+        }
+        
+        // SetURL
+        private static IntPtr _p10;
+        private static set_url_delegate _d10;
+        
+        public static void set_url(cef_response_t* self, cef_string_t* url)
+        {
+            set_url_delegate d;
+            var p = self->_set_url;
+            if (p == _p10) { d = _d10; }
+            else
+            {
+                d = (set_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_url_delegate));
+                if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
+            }
+            d(self, url);
         }
         
     }

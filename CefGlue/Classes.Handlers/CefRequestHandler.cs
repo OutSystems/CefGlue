@@ -12,16 +12,17 @@
     /// </summary>
     public abstract unsafe partial class CefRequestHandler
     {
-        private int on_before_browse(cef_request_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_request_t* request, int is_redirect)
+        private int on_before_browse(cef_request_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_request_t* request, int user_gesture, int is_redirect)
         {
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
             var m_frame = CefFrame.FromNative(frame);
             var m_request = CefRequest.FromNative(request);
+            var m_userGesture = user_gesture != 0;
             var m_isRedirect = is_redirect != 0;
 
-            var result = OnBeforeBrowse(m_browser, m_frame, m_request, m_isRedirect);
+            var result = OnBeforeBrowse(m_browser, m_frame, m_request, m_userGesture, m_isRedirect);
 
             return result ? 1 : 0;
         }
@@ -34,9 +35,11 @@
         /// If the navigation is allowed CefLoadHandler::OnLoadStart and
         /// CefLoadHandler::OnLoadEnd will be called. If the navigation is canceled
         /// CefLoadHandler::OnLoadError will be called with an |errorCode| value of
-        /// ERR_ABORTED.
+        /// ERR_ABORTED. The |user_gesture| value will be true if the browser
+        /// navigated via explicit user gesture (e.g. clicking a link) or false if it
+        /// navigated automatically (e.g. via the DomContentLoaded event).
         /// </summary>
-        protected virtual bool OnBeforeBrowse(CefBrowser browser, CefFrame frame, CefRequest request, bool isRedirect)
+        protected virtual bool OnBeforeBrowse(CefBrowser browser, CefFrame frame, CefRequest request, bool userGesture, bool isRedirect)
         {
             return false;
         }

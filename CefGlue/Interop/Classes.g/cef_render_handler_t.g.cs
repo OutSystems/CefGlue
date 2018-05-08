@@ -26,6 +26,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _update_drag_cursor;
         internal IntPtr _on_scroll_offset_changed;
         internal IntPtr _on_ime_composition_range_changed;
+        internal IntPtr _on_text_selection_changed;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -122,6 +123,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_ime_composition_range_changed_delegate(cef_render_handler_t* self, cef_browser_t* browser, cef_range_t* selected_range, UIntPtr character_boundsCount, cef_rect_t* character_bounds);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void on_text_selection_changed_delegate(cef_render_handler_t* self, cef_browser_t* browser, cef_string_t* selected_text, cef_range_t* selected_range);
         
         private static int _sizeof;
         

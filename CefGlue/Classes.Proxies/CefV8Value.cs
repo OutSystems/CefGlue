@@ -135,6 +135,29 @@
         }
 
         /// <summary>
+        /// Create a new CefV8Value object of type ArrayBuffer which wraps the provided
+        /// |buffer| of size |length| bytes. The ArrayBuffer is externalized, meaning
+        /// that it does not own |buffer|. The caller is responsible for freeing
+        /// |buffer| when requested via a call to CefV8ArrayBufferReleaseCallback::
+        /// ReleaseBuffer. This method should only be called from within the scope of a
+        /// CefRenderProcessHandler, CefV8Handler or CefV8Accessor callback, or in
+        /// combination with calling Enter() and Exit() on a stored CefV8Context
+        /// reference.
+        /// </summary>
+        public static CefV8Value CreateArrayBuffer(IntPtr buffer, ulong length, CefV8ArrayBufferReleaseCallback releaseCallback)
+        {
+            if (releaseCallback == null) throw new ArgumentNullException(nameof(releaseCallback));
+
+            var n_value = cef_v8value_t.create_array_buffer(
+                (void*)buffer,
+                checked((UIntPtr)length),
+                releaseCallback.ToNative()
+                );
+
+            return CefV8Value.FromNative(n_value);
+        }
+
+        /// <summary>
         /// Create a new CefV8Value object of type function. This method should only be
         /// called from within the scope of a CefRenderProcessHandler, CefV8Handler or
         /// CefV8Accessor callback, or in combination with calling Enter() and Exit()
@@ -240,6 +263,14 @@
         public bool IsArray
         {
             get { return cef_v8value_t.is_array(_self) != 0; }
+        }
+
+        /// <summary>
+        /// True if the value type is an ArrayBuffer.
+        /// </summary>
+        public bool IsArrayBuffer
+        {
+            get { return cef_v8value_t.is_array_buffer(_self) != 0; }
         }
 
         /// <summary>
@@ -562,6 +593,28 @@
         public int GetArrayLength()
         {
             return cef_v8value_t.get_array_length(_self);
+        }
+
+        /// <summary>
+        /// ARRAY BUFFER METHODS - These methods are only available on ArrayBuffers.
+        /// Returns the ReleaseCallback object associated with the ArrayBuffer or NULL
+        /// if the ArrayBuffer was not created with CreateArrayBuffer.
+        /// </summary>
+        public CefV8ArrayBufferReleaseCallback GetArrayBufferReleaseCallback()
+        {
+            var n_releaseCallback = cef_v8value_t.get_array_buffer_release_callback(_self);
+            return CefV8ArrayBufferReleaseCallback.FromNativeOrNull(n_releaseCallback);
+        }
+
+        /// <summary>
+        /// Prevent the ArrayBuffer from using it's memory block by setting the length
+        /// to zero. This operation cannot be undone. If the ArrayBuffer was created
+        /// with CreateArrayBuffer then CefV8ArrayBufferReleaseCallback::ReleaseBuffer
+        /// will be called to release the underlying buffer.
+        /// </summary>
+        public bool NeuterArrayBuffer()
+        {
+            return cef_v8value_t.neuter_array_buffer(_self) != 0;
         }
 
         /// <summary>

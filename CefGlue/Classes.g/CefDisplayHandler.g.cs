@@ -30,6 +30,7 @@ namespace Xilium.CefGlue
         private cef_display_handler_t.on_status_message_delegate _ds8;
         private cef_display_handler_t.on_console_message_delegate _ds9;
         private cef_display_handler_t.on_auto_resize_delegate _dsa;
+        private cef_display_handler_t.on_loading_progress_change_delegate _dsb;
         
         protected CefDisplayHandler()
         {
@@ -57,6 +58,8 @@ namespace Xilium.CefGlue
             _self->_on_console_message = Marshal.GetFunctionPointerForDelegate(_ds9);
             _dsa = new cef_display_handler_t.on_auto_resize_delegate(on_auto_resize);
             _self->_on_auto_resize = Marshal.GetFunctionPointerForDelegate(_dsa);
+            _dsb = new cef_display_handler_t.on_loading_progress_change_delegate(on_loading_progress_change);
+            _self->_on_loading_progress_change = Marshal.GetFunctionPointerForDelegate(_dsb);
         }
         
         ~CefDisplayHandler()

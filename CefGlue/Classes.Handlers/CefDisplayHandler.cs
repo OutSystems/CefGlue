@@ -176,5 +176,20 @@
         {
             return false;
         }
+
+
+        private void on_loading_progress_change(cef_display_handler_t* self, cef_browser_t* browser, double progress)
+        {
+            CheckSelf(self);
+
+            var mBrowser = CefBrowser.FromNative(browser);
+            OnLoadingProgressChange(mBrowser, progress);
+        }
+
+        /// <summary>
+        /// Called when the overall page loading progress has changed. |progress|
+        /// ranges from 0.0 to 1.0.
+        /// </summary>
+        protected virtual void OnLoadingProgressChange(CefBrowser browser, double progress) { }
     }
 }

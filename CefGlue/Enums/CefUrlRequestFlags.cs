@@ -52,5 +52,11 @@ namespace Xilium.CefGlue
         /// originated in the browser process.
         /// </summary>
         NoRetryOn5XX = 1 << 5,
+
+        /// <summary>
+        /// If set 3XX responses will cause the fetch to halt immediately rather than
+        /// continue through the redirect.
+        /// </summary>
+        StopOnRedirect = 1 << 6,
     }
 }

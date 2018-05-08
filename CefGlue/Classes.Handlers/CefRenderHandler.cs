@@ -342,5 +342,24 @@
         /// bounds of each character in view coordinates.
         /// </summary>
         protected abstract void OnImeCompositionRangeChanged(CefBrowser browser, CefRange selectedRange, CefRectangle[] characterBounds);
+
+
+        private void on_text_selection_changed(cef_render_handler_t* self, cef_browser_t* browser, cef_string_t* selected_text, cef_range_t* selected_range)
+        {
+            CheckSelf(self);
+
+            var m_browser = CefBrowser.FromNative(browser);
+            var m_selected_text = cef_string_t.ToString(selected_text);
+            var m_selected_range = new CefRange(selected_range->from, selected_range->to);
+
+            OnTextSelectionChanged(m_browser, m_selected_text, m_selected_range);
+        }
+
+        /// <summary>
+        /// Called when text selection has changed for the specified |browser|.
+        /// |selected_text| is the currently selected text and |selected_range| is
+        /// the character range.
+        /// </summary>
+        protected virtual void OnTextSelectionChanged(CefBrowser browser, string selectedText, CefRange selectedRange) { }
     }
 }

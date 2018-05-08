@@ -127,5 +127,26 @@
             cef_response_t.set_header_map(_self, headerMap);
             libcef.string_multimap_free(headerMap);
         }
+
+
+        /// <summary>
+        /// Gets or sets the resolved URL after redirects or changed as a result of HSTS.
+        /// </summary>
+        public string Url
+        {
+            get
+            {
+                var n_result = cef_response_t.get_url(_self);
+                return cef_string_userfree.ToString(n_result);
+            }
+            set
+            {
+                fixed (char* value_str = value)
+                {
+                    var n_value = new cef_string_t(value_str, value != null ? value.Length : 0);
+                    cef_response_t.set_url(_self, &n_value);
+                }
+            }
+        }
     }
 }

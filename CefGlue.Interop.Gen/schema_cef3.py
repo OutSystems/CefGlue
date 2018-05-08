@@ -151,4 +151,6 @@ classdef = {
     # 63
     'CefServer': { 'role': ROLE_PROXY },
     'CefServerHandler': { 'role': ROLE_HANDLER },
+    # 66
+    'CefV8ArrayBufferReleaseCallback': { 'role': ROLE_HANDLER, 'reversible': True },
     }
