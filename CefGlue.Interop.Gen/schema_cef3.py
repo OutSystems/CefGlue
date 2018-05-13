@@ -35,7 +35,7 @@ classdef = {
     'CefStreamReader': { 'role': ROLE_PROXY },
     'CefWriteHandler': { 'role': ROLE_HANDLER },
     'CefStreamWriter': { 'role': ROLE_PROXY },
-    'CefStringVisitor': { 'role': ROLE_HANDLER },
+    'CefStringVisitor': { 'role': ROLE_HANDLER, 'autodispose': True },
     'CefTask': { 'role': ROLE_HANDLER },
     'CefV8Context': { 'role': ROLE_PROXY },
     'CefV8Handler': { 'role': ROLE_HANDLER, 'reversible': True },
@@ -64,7 +64,7 @@ classdef = {
     'CefMenuModel': { 'role': ROLE_PROXY },
     'CefSchemeRegistrar': { 'role': ROLE_PROXY },
     'CefWebPluginInfo': { 'role': ROLE_PROXY },
-    'CefWebPluginInfoVisitor': { 'role': ROLE_HANDLER },
+    'CefWebPluginInfoVisitor': { 'role': ROLE_HANDLER, 'autodispose': True },
     'CefFocusHandler': { 'role': ROLE_HANDLER },
     'CefKeyboardHandler': { 'role': ROLE_HANDLER },
     'CefBrowserProcessHandler': { 'role': ROLE_HANDLER },
@@ -106,7 +106,7 @@ classdef = {
     'CefPrintHandler': { 'role': ROLE_HANDLER },
     'CefPrintSettings': { 'role': ROLE_PROXY },
     # r1949
-    'CefNavigationEntryVisitor': { 'role': ROLE_HANDLER },
+    'CefNavigationEntryVisitor': { 'role': ROLE_HANDLER, 'autodispose': True },
     'CefNavigationEntry': { 'role': ROLE_PROXY },
     # 2272 branch
     # r2035
