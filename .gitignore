@@ -1,0 +1,31 @@
+# Repository/Project Specific
+/src.g/
+
+# Repository/Project Shared
+/bin/
+/obj/
+/out/
+/external/
+
+# Build Results
+[Bb]in/
+[Oo]bj/
+
+# Python
+*.pyc
+
+# IDE: Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# IDE: Visual Studio Code
+!.vscode/
+
+# IDE: IDEA family
+.idea
+
+# IDE: Xamarin Studio (MonoDevelop)
+*.userprefs
