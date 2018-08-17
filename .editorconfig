@@ -1,0 +1,8 @@
+# EditorConfig: http://editorconfig.org
+root = false
+
+[*.cs]
+charset = utf-8
+tab_width = 4
+indent_size = 4
+indent_style = space
