@@ -40,7 +40,6 @@
             var cefSettings = new CefSettings
             {
                 // BrowserSubprocessPath = browserSubprocessPath,
-                SingleProcess = false,
                 WindowlessRenderingEnabled = true,
                 MultiThreadedMessageLoop = true,
                 LogSeverity = CefLogSeverity.Verbose,
