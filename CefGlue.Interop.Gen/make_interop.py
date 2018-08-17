@@ -78,6 +78,8 @@ def get_base_func(cls, slot, name, cname):
         cretval = 'int'
     elif name == 'HasOneRef':
         cretval = 'int'
+    elif name == 'HasAtLeastOneRef':
+        cretval = 'int'
     elif name == 'Del':
         cretval = 'void'
     return {
@@ -109,6 +111,7 @@ def get_base_funcs(cls):
             get_base_func(cls, 0, 'AddRef', 'add_ref'),
             get_base_func(cls, 1, 'Release', 'release'),
             get_base_func(cls, 2, 'HasOneRef', 'has_one_ref'),
+            get_base_func(cls, 3, 'HasAtLeastOneRef', 'has_at_least_one_ref'),
             ]
     elif baseClassName == "cef_base_scoped_t":
         return [
@@ -430,6 +433,12 @@ def make_proxy_g_body(cls):
         result.append(indent + 'get { return %(iname)s.has_one_ref(_self) != 0; }' % { 'iname': iname })
         result.append('}')
         result.append('')
+
+        result.append('internal bool HasAtLeastOneRef')
+        result.append('{')
+        result.append(indent + 'get { return %(iname)s.has_at_least_one_ref(_self) != 0; }' % { 'iname': iname })
+        result.append('}')
+        result.append('')
     elif isScoped:
         result.append("// FIXME: code for CefBaseScoped is not generated")
         result.append("")
@@ -572,6 +581,12 @@ def make_handler_g_body(cls):
     result.append('private int has_one_ref(%s* self)' % iname)
     result.append('{')
     result.append(indent + 'lock (SyncRoot) { return _refct == 1 ? 1 : 0; }')
+    result.append('}')
+    result.append('')
+
+    result.append('private int has_at_least_one_ref(%s* self)' % iname)
+    result.append('{')
+    result.append(indent + 'lock (SyncRoot) { return _refct != 0 ? 1 : 0; }')
     result.append('}')
     result.append('')
 
