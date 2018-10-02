@@ -181,7 +181,7 @@ typedef struct _cef_settings_t {
   // Set to true (1) to have the browser process message loop run in a separate
   // thread. If false (0) than the CefDoMessageLoopWork() function must be
   // called from your application message loop. This option is only supported on
-  // Windows.
+  // Windows and Linux.
   ///
   int multi_threaded_message_loop;
 
@@ -789,6 +789,11 @@ typedef enum {
   // Segmentation fault.
   ///
   TS_PROCESS_CRASHED,
+
+  ///
+  // Out of memory. Some platforms may use TS_PROCESS_CRASHED instead.
+  ///
+  TS_PROCESS_OOM,
 } cef_termination_status_t;
 
 ///

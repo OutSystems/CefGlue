@@ -518,6 +518,15 @@
         }
 
         /// <summary>
+        /// Issue a BeginFrame request to Chromium.  Only valid when
+        /// CefWindowInfo::external_begin_frame_enabled is set to true.
+        /// </summary>
+        public void SendExternalBeginFrame()
+        {
+            cef_browser_host_t.send_external_begin_frame(_self);
+        }
+
+        /// <summary>
         /// Send a key event to the browser.
         /// </summary>
         public void SendKeyEvent(CefKeyEvent keyEvent)

@@ -21,6 +21,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _on_popup_show;
         internal IntPtr _on_popup_size;
         internal IntPtr _on_paint;
+        internal IntPtr _on_accelerated_paint;
         internal IntPtr _on_cursor_change;
         internal IntPtr _start_dragging;
         internal IntPtr _update_drag_cursor;
@@ -68,7 +69,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int get_view_rect_delegate(cef_render_handler_t* self, cef_browser_t* browser, cef_rect_t* rect);
+        internal delegate void get_view_rect_delegate(cef_render_handler_t* self, cef_browser_t* browser, cef_rect_t* rect);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -99,6 +100,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_paint_delegate(cef_render_handler_t* self, cef_browser_t* browser, CefPaintElementType type, UIntPtr dirtyRectsCount, cef_rect_t* dirtyRects, void* buffer, int width, int height);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void on_accelerated_paint_delegate(cef_render_handler_t* self, cef_browser_t* browser, CefPaintElementType type, UIntPtr dirtyRectsCount, cef_rect_t* dirtyRects, void* shared_handle);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
