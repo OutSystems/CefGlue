@@ -41,12 +41,13 @@ namespace Xilium.CefGlue.WPF
 
         protected override bool GetRootScreenRect(CefBrowser browser, ref CefRectangle rect)
         {
-            return _owner.GetViewRect(ref rect);
+            _owner.GetViewRect(out rect);
+            return true;
         }
 
-        protected override bool GetViewRect(CefBrowser browser, ref CefRectangle rect)
+        protected override void GetViewRect(CefBrowser browser, out CefRectangle rect)
         {
-            return _owner.GetViewRect(ref rect);
+            _owner.GetViewRect(out rect);
         }
 
         protected override bool GetScreenPoint(CefBrowser browser, int viewX, int viewY, ref int screenX, ref int screenY)
@@ -68,6 +69,10 @@ namespace Xilium.CefGlue.WPF
         protected override void OnPopupSize(CefBrowser browser, CefRectangle rect)
         {
             _owner.OnPopupSize(rect);
+        }
+
+        protected override void OnAcceleratedPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr sharedHandle)
+        {
         }
 
         protected override void OnPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr buffer, int width, int height)

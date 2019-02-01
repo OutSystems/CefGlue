@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Xilium")]
 [assembly: AssemblyProduct("Xilium CefGlue")]
-[assembly: AssemblyCopyright("Copyright © Xilium 2018")]
+[assembly: AssemblyCopyright("Copyright © Xilium 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,6 +32,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("70.0.0.0")]
-[assembly: AssemblyFileVersion("70.0.0.0")]
-[assembly: AssemblyInformationalVersion("70.0.0")]
+[assembly: AssemblyVersion("72.0.0.0")]
+[assembly: AssemblyFileVersion("72.0.0.0")]
+[assembly: AssemblyInformationalVersion("72.0.0")]

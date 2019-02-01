@@ -633,39 +633,11 @@ namespace Xilium.CefGlue.WPF
             // 			}));
         }
 
-        internal bool GetViewRect(ref CefRectangle rect)
+        internal void GetViewRect(out CefRectangle rect)
         {
-            bool rectProvided = false;
-            CefRectangle browserRect = new CefRectangle();
-
-            // TODO: simplify this
-            //_mainUiDispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
-            //{
-                try
-                {
-                    // The simulated screen and view rectangle are the same. This is necessary
-                    // for popup menus to be located and sized inside the view.
-                    browserRect.X = browserRect.Y = 0;
-                    browserRect.Width = (int)_browserWidth;
-                    browserRect.Height = (int)_browserHeight;
-
-                    rectProvided = true;
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("WpfCefBrowser: Caught exception in GetViewRect()", ex);
-                    rectProvided = false;
-                }
-            //}));
-
-            if (rectProvided)
-            {
-                rect = browserRect;
-            }
-
-            _logger.Debug("GetViewRect result provided:{0} Rect: X{1} Y{2} H{3} W{4}", rectProvided, browserRect.X, browserRect.Y, browserRect.Height, browserRect.Width);
-
-            return rectProvided;
+            // The simulated screen and view rectangle are the same. This is necessary
+            // for popup menus to be located and sized inside the view.
+            rect = new CefRectangle(0, 0, (int)_browserWidth, (int)_browserHeight);
         }
 
         internal void GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY)
