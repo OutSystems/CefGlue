@@ -52,6 +52,7 @@
     <Compile Include="CefRuntimePlatform.cs" />
     <Compile Include="Classes.g\CefAccessibilityHandler.g.cs" />
     <Compile Include="Classes.g\CefApp.g.cs" />
+    <Compile Include="Classes.g\CefAudioHandler.g.cs" />
     <Compile Include="Classes.g\CefAuthCallback.g.cs" />
     <Compile Include="Classes.g\CefBeforeDownloadCallback.g.cs" />
     <Compile Include="Classes.g\CefBinaryValue.g.cs" />
@@ -159,6 +160,7 @@
     <Compile Include="Classes.g\CefZipReader.g.cs" />
     <Compile Include="Classes.Handlers\CefAccessibilityHandler.cs" />
     <Compile Include="Classes.Handlers\CefApp.cs" />
+    <Compile Include="Classes.Handlers\CefAudioHandler.cs" />
     <Compile Include="Classes.Handlers\CefBrowserProcessHandler.cs" />
     <Compile Include="Classes.Handlers\CefClient.cs" />
     <Compile Include="Classes.Handlers\CefCompletionCallback.cs" />
@@ -268,6 +270,11 @@
     <Compile Include="Enums\CefCrossAxisAlignment.cs" />
     <Compile Include="Enums\CefMenuColorType.cs" />
     <Compile Include="Enums\CefMainAxisAlignment.cs" />
+    <Compile Include="Enums\CefPointerType.cs" />
+    <Compile Include="Enums\CefChannelLayout.cs" />
+    <Compile Include="Enums\CefSchemeOptions.cs" />
+    <Compile Include="Enums\CefTouchEventType.cs" />
+    <Compile Include="Enums\CefTextInputMode.cs" />
     <Compile Include="Enums\CefSslContentStatus.cs" />
     <Compile Include="Enums\CefSslVersion.cs" />
     <Compile Include="Enums\CefTextStyle.cs" />
@@ -334,6 +341,7 @@
     <Compile Include="Interop\Base\cef_string_t.cs" />
     <Compile Include="Interop\Classes.g\cef_accessibility_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_app_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_audio_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_auth_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_before_download_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_binary_value_t.g.cs" />
@@ -439,6 +447,7 @@
     <Compile Include="Interop\Classes.g\cef_x509cert_principal_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_xml_reader_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_zip_reader_t.g.cs" />
+    <Compile Include="Interop\Structs\cef_touch_event_t.cs" />
     <Compile Include="Interop\Structs\cef_composition_underline.cs" />
     <Compile Include="Interop\Structs\cef_pdf_print_settings_t.cs" />
     <Compile Include="Interop\Structs\cef_draggable_region_t.cs" />
@@ -473,6 +482,7 @@
     <Compile Include="Structs\CefSize.cs" />
     <Compile Include="Structs\CefRectangle.cs" />
     <Compile Include="Structs\CefSettings.cs" />
+    <Compile Include="Structs\CefTouchEvent.cs" />
     <Compile Include="Structs\CefUrlParts.cs" />
     <Compile Include="Structs\CefWindowInfo.cs" />
     <Compile Include="Structs\CefBrowserSettings.cs" />

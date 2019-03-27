@@ -572,6 +572,16 @@
         }
 
         /// <summary>
+        /// Send a touch event to the browser for a windowless browser.
+        /// </summary>
+        public void SendTouchEvent(CefTouchEvent @event)
+        {
+            cef_touch_event_t n_event;
+            @event.ToNative(out n_event);
+            cef_browser_host_t.send_touch_event(_self, &n_event);
+        }
+
+        /// <summary>
         /// Send a focus event to the browser.
         /// </summary>
         public void SendFocusEvent(bool setFocus)
@@ -853,6 +863,26 @@
             get
             {
                 return cef_browser_host_t.is_background_host(_self) != 0;
+            }
+        }
+
+        /// <summary>
+        /// Set whether the browser's audio is muted.
+        /// </summary>
+        public void SetAudioMuted(bool value)
+        {
+            cef_browser_host_t.set_audio_muted(_self, value ? 1 : 0);
+        }
+
+        /// <summary>
+        /// Returns true if the browser's audio is muted.  This method can only be
+        /// called on the UI thread.
+        /// </summary>
+        public bool IsAudioMuted
+        {
+            get
+            {
+                return cef_browser_host_t.is_audio_muted(_self) != 0;
             }
         }
     }

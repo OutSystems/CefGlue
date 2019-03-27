@@ -153,4 +153,6 @@ classdef = {
     'CefServerHandler': { 'role': ROLE_HANDLER },
     # 66
     'CefV8ArrayBufferReleaseCallback': { 'role': ROLE_HANDLER, 'reversible': True },
+    # 73
+    'CefAudioHandler': { 'role': ROLE_HANDLER }
     }

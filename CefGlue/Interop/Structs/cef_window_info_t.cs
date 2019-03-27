@@ -57,6 +57,7 @@ namespace Xilium.CefGlue.Interop
 
     internal unsafe struct cef_window_info_t_linux
     {
+        public cef_string_t window_name;
         public uint x;
         public uint y;
         public uint width;
@@ -86,6 +87,7 @@ namespace Xilium.CefGlue.Interop
         {
             if (ptr != null)
             {
+                libcef.string_clear(&ptr->window_name);
                 Marshal.FreeHGlobal((IntPtr)ptr);
             }
         }
