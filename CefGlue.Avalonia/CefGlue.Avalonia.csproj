@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Xilium.CefGlue.Avalonia</RootNamespace>
+    <AssemblyName>Xilium.CefGlue.Avalonia</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>AVALONIA</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>AVALONIA</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="AvaloniaCefBrowser.xaml" />
+    <None Remove="AvaloniaTheme.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="AvaloniaCefBrowser.xaml">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AvaloniaTheme.xaml">
+      <Generator></Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj" />
+    <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
+  </ItemGroup>
+
+</Project>

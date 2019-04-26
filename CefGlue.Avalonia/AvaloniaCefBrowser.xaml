@@ -1,0 +1,13 @@
+﻿<Style xmlns="https://github.com/avaloniaui" xmlns:local="clr-namespace:Xilium.CefGlue.Avalonia;assembly=Xilium.CefGlue.Avalonia" Selector="local|AvaloniaCefBrowser">
+    <Setter Property="Template">
+        <ControlTemplate>
+            <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                    BorderThickness="{TemplateBinding BorderThickness}" 
+                    Padding="{TemplateBinding Padding}">
+                <Grid Background="{TemplateBinding Background}">
+                    <Image Name="PART_Image" Stretch="None" Focusable="false" />
+                </Grid>
+            </Border>
+        </ControlTemplate>
+    </Setter>
+</Style>
