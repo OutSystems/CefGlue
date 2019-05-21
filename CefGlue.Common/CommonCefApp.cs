@@ -7,6 +7,7 @@ namespace Xilium.CefGlue.Common
     public class CommonCefApp : CefApp
     {
         private readonly CefBrowserProcessHandler _browserProcessHandler;
+        private readonly CefRenderProcessHandler _renderProcessHandler = new CommonCefRenderProcessHandler();
 
         public CommonCefApp(CefBrowserProcessHandler browserProcessHandler = null)
         {
@@ -27,6 +28,11 @@ namespace Xilium.CefGlue.Common
         protected override CefBrowserProcessHandler GetBrowserProcessHandler()
         {
             return _browserProcessHandler;
+        }
+
+        protected override CefRenderProcessHandler GetRenderProcessHandler()
+        {
+            return _renderProcessHandler;
         }
 
         public void Run(string[] args)

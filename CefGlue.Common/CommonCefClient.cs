@@ -3,7 +3,7 @@ using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.Common
 {
-    public sealed class CommonCefClient : CefClient
+    internal sealed class CommonCefClient : CefClient
     {
         private readonly CommonCefLifeSpanHandler _lifeSpanHandler;
         private readonly CommonCefDisplayHandler _displayHandler;
@@ -24,6 +24,8 @@ namespace Xilium.CefGlue.Common
             _loadHandler = new CommonCefLoadHandler(owner);
             _jsDialogHandler = new CommonCefJSDialogHandler();
         }
+
+        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
         protected override CefLifeSpanHandler GetLifeSpanHandler()
         {
@@ -48,6 +50,17 @@ namespace Xilium.CefGlue.Common
         protected override CefJSDialogHandler GetJSDialogHandler()
         {
             return _jsDialogHandler;
+        }
+
+        protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
+        {
+            MessageReceived?.Invoke(this, new MessageReceivedEventArgs() {
+                Browser = browser,
+                ProcessId = sourceProcess,
+                Message = message
+            });
+
+            return base.OnProcessMessageReceived(browser, sourceProcess, message);
         }
     }
 }

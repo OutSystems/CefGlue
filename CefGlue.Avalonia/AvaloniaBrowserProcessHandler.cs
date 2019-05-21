@@ -1,6 +1,6 @@
-using Avalonia.Threading;
 using System;
 using System.Reactive.Linq;
+using Avalonia.Threading;
 
 namespace Xilium.CefGlue.Avalonia
 {

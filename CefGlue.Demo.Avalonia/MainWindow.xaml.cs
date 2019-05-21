@@ -1,3 +1,4 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
@@ -26,9 +27,19 @@ namespace Xilium.CefGlue.Demo.Avalonia
             browserWrapper.Child = browser;
         }
 
-        private void OnEvaluateJavascriptMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)
+        private async void OnEvaluateJavascriptMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)
         {
-            throw new System.NotImplementedException();
+            object result = await browser.EvaluateJavaScript<string>("\"hi\"", "about:blank");
+            Console.WriteLine(result);
+
+            result = await browser.EvaluateJavaScript<int>("1+1", "about:blank");
+            Console.WriteLine(result);
+
+            result = await browser.EvaluateJavaScript<bool>("false", "about:blank");
+            Console.WriteLine(result);
+
+            result = await browser.EvaluateJavaScript<double>("1.5+1.5", "about:blank");
+            Console.WriteLine(result);
         }
 
         private void OnOpenDevToolsMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)

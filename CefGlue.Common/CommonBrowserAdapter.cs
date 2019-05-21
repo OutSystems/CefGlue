@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.Common
@@ -15,6 +16,7 @@ namespace Xilium.CefGlue.Common
         private CefBrowser _browser;
         private CefBrowserHost _browserHost;
         private CommonCefClient _cefClient;
+        private JavascriptExecutionEngine _javascriptExecutionEngine;
 
         public CommonBrowserAdapter(ILogger logger)
         {
@@ -116,6 +118,16 @@ namespace Xilium.CefGlue.Common
         {
             if (_browser != null)
                 _browser.GetMainFrame().ExecuteJavaScript(code, url, line);
+        }
+
+        public Task<T> EvaluateJavaScript<T>(string code, string url, int line)
+        {
+            if (_browser == null)
+            {
+                return Task.FromResult<T>(default(T));
+            }
+
+            return _javascriptExecutionEngine.Evaluate<T>(code, url, line);
         }
 
         public void HandleGotFocus()
@@ -375,6 +387,7 @@ namespace Xilium.CefGlue.Common
             }
             else
             {
+                _javascriptExecutionEngine = new JavascriptExecutionEngine(browser, _cefClient);
                 _browser = browser;
                 _browserHost = browser.GetHost();
                 // _browserHost.SetFocus(IsFocused);

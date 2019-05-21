@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using System;
+using System.Threading.Tasks;
 using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Helpers.Logger;
 
@@ -92,9 +93,14 @@ namespace Xilium.CefGlue.Avalonia
             _adapter.Refresh();
         }
 
-        public void ExecuteJavaScript(string code, string url, int line)
+        public void ExecuteJavaScript(string code, string url, int line = 1)
         {
             _adapter.ExecuteJavaScript(code, url, line);
+        }
+
+        public Task<T> EvaluateJavaScript<T>(string code, string url, int line = 1)
+        {
+            return _adapter.EvaluateJavaScript<T>(code, url, line);
         }
 
         public void ShowDeveloperTools()
