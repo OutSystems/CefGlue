@@ -1,7 +1,4 @@
 using Avalonia.Controls;
-using System;
-using System.Reflection;
-using System.Text.RegularExpressions;
 using Xilium.CefGlue.Common;
 
 namespace Xilium.CefGlue.Avalonia
@@ -10,25 +7,22 @@ namespace Xilium.CefGlue.Avalonia
     {
         public static T ConfigureCefGlue<T>(this T builder, string[] args) where T : AppBuilderBase<T>, new()
         {
-            return builder.AfterSetup((b) =>
+            CefBrowserProcessHandler browserProcessHandler = null;
+
+            switch (CefRuntime.Platform)
             {
-                CefRuntime.Load();
+                case CefRuntimePlatform.Windows:
+                    break;
+                case CefRuntimePlatform.MacOSX:
+                    browserProcessHandler = new AvaloniaBrowserProcessHandler();
+                    break;
+            }
 
-                CefBrowserProcessHandler browserProcessHandler = null;
+            var cefApp = new CommonCefApp(args, browserProcessHandler);
 
-                switch (CefRuntime.Platform)
-                {
-                    case CefRuntimePlatform.Windows:
-                        break;
-                    case CefRuntimePlatform.MacOSX:
-                        browserProcessHandler = new AvaloniaBrowserProcessHandler();
-                        break;
-                }
+            cefApp.Prepare();
 
-                var cefApp = new CommonCefApp(browserProcessHandler);
-                
-                cefApp.Run(args);
-            });
+            return builder.AfterSetup(_ => cefApp.Run());
         }
     }          
 }

@@ -8,9 +8,11 @@ namespace Xilium.CefGlue.Common
     {
         private readonly CefBrowserProcessHandler _browserProcessHandler;
         private readonly CefRenderProcessHandler _renderProcessHandler = new CommonCefRenderProcessHandler();
+        private readonly CefMainArgs _processArgs;
 
-        public CommonCefApp(CefBrowserProcessHandler browserProcessHandler = null)
+        public CommonCefApp(string[] args, CefBrowserProcessHandler browserProcessHandler = null)
         {
+            _processArgs = new CefMainArgs(args);
             _browserProcessHandler = browserProcessHandler;
         }
 
@@ -35,17 +37,19 @@ namespace Xilium.CefGlue.Common
             return _renderProcessHandler;
         }
 
-        public void Run(string[] args)
+        public void Prepare()
         {
-            var mainArgs = new CefMainArgs(args);
+            CefRuntime.Load();
 
-            var exitCode = CefRuntime.ExecuteProcess(mainArgs, this, IntPtr.Zero);
+            var exitCode = CefRuntime.ExecuteProcess(_processArgs, this, IntPtr.Zero);
             if (exitCode != -1)
             {
                 Environment.Exit(exitCode);
-                return;
             }
+        }
 
+        public void Run()
+        {
             var cefSettings = new CefSettings
             {
                 WindowlessRenderingEnabled = true,
@@ -66,7 +70,7 @@ namespace Xilium.CefGlue.Common
                     break;
             }
 
-            CefRuntime.Initialize(mainArgs, cefSettings, this, IntPtr.Zero);
+            CefRuntime.Initialize(_processArgs, cefSettings, this, IntPtr.Zero);
 
             // TODO call shutdown when on exit
         }
