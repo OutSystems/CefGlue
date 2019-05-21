@@ -26,6 +26,16 @@ namespace Xilium.CefGlue.Demo.Avalonia
             browserWrapper.Child = browser;
         }
 
+        private void OnEvaluateJavascriptMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void OnOpenDevToolsMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            browser.ShowDeveloperTools();
+        }
+
         private void OnUrlTextBoxKeyDown(object sender, global::Avalonia.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)

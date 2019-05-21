@@ -97,6 +97,11 @@ namespace Xilium.CefGlue.Avalonia
             _adapter.ExecuteJavaScript(code, url, line);
         }
 
+        public void ShowDeveloperTools()
+        {
+            _adapter.ShowDeveloperTools();
+        }
+
         protected override void OnTemplateApplied(TemplateAppliedEventArgs e)
         {
             base.OnTemplateApplied(e);

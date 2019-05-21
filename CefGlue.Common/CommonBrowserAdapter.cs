@@ -289,7 +289,15 @@ namespace Xilium.CefGlue.Common
                     }
                 }
             }
-        }      
+        }
+
+        public void ShowDeveloperTools()
+        {
+            var windowInfo = CefWindowInfo.Create();
+            windowInfo.SetAsPopup(_browserHost.GetWindowHandle(), "DevTools");
+
+            _browserHost.ShowDevTools(windowInfo, _browserHost.GetClient(), new CefBrowserSettings(), new CefPoint());
+        }
 
         protected abstract IntPtr? GetHostWindowHandle();
 

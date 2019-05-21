@@ -3,7 +3,8 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Open Dev Tools..."/>
+                <MenuItem Header="_Open Dev Tools..." Click="OnOpenDevToolsMenuItemClick"/>
+                <MenuItem Header="_Evaluate Javascript" Click="OnEvaluateJavascriptMenuItemClick" />
             </MenuItem>
         </Menu>
         <TextBox DockPanel.Dock="Top" KeyDown="OnUrlTextBoxKeyDown"/>
