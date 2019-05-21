@@ -14,8 +14,6 @@ namespace Xilium.CefGlue.Avalonia
             {
                 CefRuntime.Load();
 
-                var mainArgs = new CefMainArgs(args);
-
                 CefBrowserProcessHandler browserProcessHandler = null;
 
                 switch (CefRuntime.Platform)
@@ -28,36 +26,8 @@ namespace Xilium.CefGlue.Avalonia
                 }
 
                 var cefApp = new CommonCefApp(browserProcessHandler);
-
-                var exitCode = CefRuntime.ExecuteProcess(mainArgs, cefApp, IntPtr.Zero);
-                if (exitCode != -1)
-                {
-                    return;
-                }
-
-                var cefSettings = new CefSettings
-                {
-                    WindowlessRenderingEnabled = true,
-                };
-
-                switch (CefRuntime.Platform)
-                {
-                    case CefRuntimePlatform.Windows:
-                        var path = new Uri(Assembly.GetEntryAssembly().CodeBase).LocalPath;
-                        path = Regex.Replace(path, ".dll$", ".exe");
-                        cefSettings.BrowserSubprocessPath = path;
-                        cefSettings.MultiThreadedMessageLoop = true;
-                        break;
-
-                    case CefRuntimePlatform.MacOSX:
-                        cefSettings.MultiThreadedMessageLoop = false;
-                        cefSettings.ExternalMessagePump = true;
-                        break;
-                }
-
-                CefRuntime.Initialize(mainArgs, cefSettings, cefApp, IntPtr.Zero);
-
-                // TODO call shutdown when on exit
+                
+                cefApp.Run(args);
             });
         }
     }          
