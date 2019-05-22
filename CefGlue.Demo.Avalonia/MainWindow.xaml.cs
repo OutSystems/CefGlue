@@ -1,4 +1,6 @@
 using System;
+using System.Dynamic;
+using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
@@ -29,17 +31,19 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
         private async void OnEvaluateJavascriptMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)
         {
-            object result = await browser.EvaluateJavaScript<string>("\"hi\"", "about:blank");
-            Console.WriteLine(result);
+            Console.WriteLine(await browser.EvaluateJavaScript<string>("\"Hello World!\""));
 
-            result = await browser.EvaluateJavaScript<int>("1+1", "about:blank");
-            Console.WriteLine(result);
+            Console.WriteLine(await browser.EvaluateJavaScript<int>("1+1"));
 
-            result = await browser.EvaluateJavaScript<bool>("false", "about:blank");
-            Console.WriteLine(result);
+            Console.WriteLine(await browser.EvaluateJavaScript<bool>("false"));
 
-            result = await browser.EvaluateJavaScript<double>("1.5+1.5", "about:blank");
-            Console.WriteLine(result);
+            Console.WriteLine(await browser.EvaluateJavaScript<double>("1.5+1.5"));
+
+            Console.WriteLine(await browser.EvaluateJavaScript<double>("3+1.5"));
+
+            Console.WriteLine(string.Join(", ", await browser.EvaluateJavaScript<object[]>("[1, 2, 3]")));
+
+            Console.WriteLine(string.Join(", ", (await browser.EvaluateJavaScript<ExpandoObject>("(function() { return { a: 'valueA', b: 1, c: true } })()")).Select(p => p.Key + ":" + p.Value)));
         }
 
         private void OnOpenDevToolsMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 
 namespace Xilium.CefGlue.Common
@@ -221,15 +222,26 @@ namespace Xilium.CefGlue.Common
                     return value.GetBool();
 
                 case CefValueType.Dictionary:
-                    // TODO
-                    break;
+                    IDictionary<string, object> dictionary = new ExpandoObject();
+                    var v8Dictionary = value.GetDictionary();
+                    var keys = v8Dictionary.GetKeys();
+                    foreach(var key in keys)
+                    {
+                        dictionary[key] = DeserializeV8Object(v8Dictionary.GetValue(key));
+                    }
+                    return dictionary;
 
                 case CefValueType.Double:
                     return value.GetDouble();
 
                 case CefValueType.List:
-                    //  TODO
-                    break;
+                    var v8list = value.GetList();
+                    var array = new object[v8list.Count];
+                    for (var i = 0; i < v8list.Count; i++)
+                    {
+                        array[i] = DeserializeV8Object(v8list.GetValue(i));
+                    }
+                    return array;
 
                 case CefValueType.Int:
                     return value.GetInt();

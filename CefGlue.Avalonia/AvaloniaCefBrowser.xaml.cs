@@ -93,14 +93,14 @@ namespace Xilium.CefGlue.Avalonia
             _adapter.Refresh();
         }
 
-        public void ExecuteJavaScript(string code, string url, int line = 1)
+        public void ExecuteJavaScript(string code, string url = null, int line = 1)
         {
-            _adapter.ExecuteJavaScript(code, url, line);
+            _adapter.ExecuteJavaScript(code, url ?? "about:blank", line);
         }
 
-        public Task<T> EvaluateJavaScript<T>(string code, string url, int line = 1)
+        public Task<T> EvaluateJavaScript<T>(string code, string url = null, int line = 1)
         {
-            return _adapter.EvaluateJavaScript<T>(code, url, line);
+            return _adapter.EvaluateJavaScript<T>(code, url ?? "about:blank", line);
         }
 
         public void ShowDeveloperTools()
