@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
@@ -7,8 +8,8 @@ namespace Xilium.CefGlue.Common
     {
         public static class MessageNames
         {
-            public const string EvaluateJs = "evaluateJs";
-            public const string EvaluateJsResult = "evaluateJsResult";
+            public const string EvaluateJs = "EvaluateJs";
+            public const string EvaluateJsResult = "EvaluateJsResult";
         }
 
         private static volatile int lastTaskId;
@@ -35,46 +36,20 @@ namespace Xilium.CefGlue.Common
 
         private void HandleScriptEvaluationResultMessage(CefProcessMessage message)
         {
-            const int ResponseValueIndex = 1;
-
             var taskId = message.Arguments.GetInt(0);
             if (_pendingTasks.TryRemove(taskId, out var pendingTask))
             {
-                object clrResult = null;
-
                 var messageArgs = message.Arguments;
-                var result = messageArgs.GetValue(1);
-                
-                switch(messageArgs.GetValueType(1))
+                var success = messageArgs.GetBool(1);
+
+                if (success)
                 {
-                    case CefValueType.Bool:
-                        clrResult = messageArgs.GetBool(ResponseValueIndex);
-                        break;
-
-                    case CefValueType.Dictionary:
-                        // TODO clrResult = messageArgs.GetBool(ResponseValue);
-                        break;
-
-                    case CefValueType.Double:
-                        clrResult = messageArgs.GetDouble(ResponseValueIndex);
-                        break;
-
-                    case CefValueType.List:
-                        //  TODO
-                        break;
-
-                    case CefValueType.Int:
-                        clrResult = messageArgs.GetInt(ResponseValueIndex);
-                        break;
-
-                    case CefValueType.String:
-                        clrResult = messageArgs.GetString(ResponseValueIndex);
-                        break;
-
-                    case CefValueType.Null:
-                        break;
+                    pendingTask.SetResult(V8Serialization.DeserializeV8Object(messageArgs.GetValue(2)));
                 }
-                pendingTask.SetResult(clrResult);
+                else
+                {
+                    pendingTask.SetException(new Exception(messageArgs.GetString(3)));
+                }
             }
         }
 
@@ -104,7 +79,14 @@ namespace Xilium.CefGlue.Common
             }
 
             var result = messageReceiveCompletionSource.Task.Result;
-            return (T) result;
+
+            if (typeof(T) == typeof(double) && result is int)
+            {
+                // javascript numbers sometimes can lose the decimal part becoming integers, prevent that
+                return (T) (object) Convert.ToDouble(result);
+            }
+
+            return (T)result;
         }
     }
 }
