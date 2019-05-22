@@ -14,6 +14,7 @@ namespace Xilium.CefGlue.Common
             public abstract void SetInt(int value);
             public abstract void SetDouble(double value);
             public abstract void SetString(string value);
+            public abstract void SetBinary(CefBinaryValue value);
             public abstract void SetList(CefListValue value);
             public abstract void SetDictionary(CefDictionaryValue value);
         }
@@ -61,6 +62,11 @@ namespace Xilium.CefGlue.Common
                 _container.SetString(_index, value);
             }
 
+            public override void SetBinary(CefBinaryValue value)
+            {
+                _container.SetBinary(_index, value);
+            }
+
             public override void SetList(CefListValue value)
             {
                 _container.SetList(_index, value);
@@ -101,6 +107,11 @@ namespace Xilium.CefGlue.Common
             public override void SetString(string value)
             {
                 _container.SetString(_index, value);
+            }
+
+            public override void SetBinary(CefBinaryValue value)
+            {
+                _container.SetBinary(_index, value);
             }
 
             public override void SetList(CefListValue value)
@@ -150,15 +161,10 @@ namespace Xilium.CefGlue.Common
             }
             else if (obj.IsDate)
             {
-                // TODO
-                //SetCefTime(container, containerIndex, obj.GetDateValue());
-                //auto doubleT = value.GetDoubleT();
-                //unsigned char mem[1 + sizeof(double)];
-                //mem[0] = static_cast < unsigned char> (PrimitiveType::CEFTIME);
-                //memcpy(reinterpret_cast<void*>(mem + 1), &doubleT, sizeof(double));
-
-                //auto binaryValue = CefBinaryValue::Create(mem, sizeof(mem));
-                //list->SetBinary(index, binaryValue);
+                // TODO time returned is UTC
+                var date = obj.GetDateValue();
+                var binaryValue = CefBinaryValue.Create(BitConverter.GetBytes(date.ToBinary()));
+                container.SetBinary(binaryValue);
             }
             else if (obj.IsArray)
             {
@@ -215,8 +221,8 @@ namespace Xilium.CefGlue.Common
             switch (value.GetValueType())
             {
                 case CefValueType.Binary:
-                    // TODO
-                    break;
+                    var binaryDate = BitConverter.ToInt64(value.GetBinary().ToArray(), 0);
+                    return DateTime.FromBinary(binaryDate);
 
                 case CefValueType.Bool:
                     return value.GetBool();

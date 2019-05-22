@@ -41,6 +41,8 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
             Console.WriteLine(await browser.EvaluateJavaScript<double>("3+1.5"));
 
+            Console.WriteLine(await browser.EvaluateJavaScript<DateTime>("new Date()"));
+
             Console.WriteLine(string.Join(", ", await browser.EvaluateJavaScript<object[]>("[1, 2, 3]")));
 
             Console.WriteLine(string.Join(", ", (await browser.EvaluateJavaScript<ExpandoObject>("(function() { return { a: 'valueA', b: 1, c: true } })()")).Select(p => p.Key + ":" + p.Value)));
