@@ -1,4 +1,6 @@
 using System;
+using Xilium.CefGlue.Common.ObjectBinding;
+using Xilium.CefGlue.Common.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common
 {
@@ -8,44 +10,45 @@ namespace Xilium.CefGlue.Common
         {
            switch(message.Name)
             {
-                case JavascriptExecutionEngine.MessageNames.EvaluateJs:
+                case Messages.JsEvaluationRequest.Name:
                     HandleScriptEvaluationMessage(browser, message);
+                    return true;
+
+                case Messages.JsObjectRegistrationRequest.Name:
+                    HandleJavascriptObjectRegistration(browser, message);
                     return true;
             }
 
             return base.OnProcessMessageReceived(browser, sourceProcess, message);
         }
 
-        private void HandleScriptEvaluationMessage(CefBrowser browser, CefProcessMessage message)
+        private void HandleScriptEvaluationMessage(CefBrowser browser, CefProcessMessage cefMessage)
         {
             var context = browser.GetMainFrame().V8Context;
-
-            var response = CefProcessMessage.Create(JavascriptExecutionEngine.MessageNames.EvaluateJsResult);
-            var responseArgs = response.Arguments;
 
             if (context.Enter()) {
                 try
                 {
-                    var taskId = message.Arguments.GetInt(0);
-                    var script = message.Arguments.GetString(1);
-                    var url = message.Arguments.GetString(2);
-                    var line = message.Arguments.GetInt(3);
+                    var message = Messages.JsEvaluationRequest.FromCefMessage(cefMessage);
 
-                    var success = context.TryEval(script, url, line, out var value, out var exception);
+                    // send script to browser
+                    var success = context.TryEval(message.Script, message.Url, message.Line, out var value, out var exception);
 
-                    responseArgs.SetInt(0, taskId);
-                    responseArgs.SetBool(1, success);
+                    var response = new Messages.JsEvaluationResponse()
+                    {
+                        TaskId = message.TaskId,
+                        Success = success,
+                        Exception = success ? null : BuildExceptionString(exception)
+                    };
+
+                    var cefResponseMessage = response.ToCefProcessMessage();
 
                     if (success)
                     {
-                        V8Serialization.SerializeV8Object(value, responseArgs, 2);
+                        V8Serialization.SerializeV8Object(value, cefResponseMessage.Arguments, 2);
                     }
-                    else
-                    {
-                        responseArgs.SetString(3, BuildExceptionString(exception));
-                    }
-
-                    browser.SendProcessMessage(CefProcessId.Browser, response);
+                    
+                    browser.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
                 }
                 finally
                 {
@@ -67,6 +70,41 @@ namespace Xilium.CefGlue.Common
             }
             result += ":" + exception.LineNumber + ":" + exception.StartColumn;
             return result;
+        }
+
+        private void HandleJavascriptObjectRegistration(CefBrowser browser, CefProcessMessage cefMessage)
+        {
+            var context = browser.GetMainFrame().V8Context;
+
+            if (context.Enter())
+            {
+                try
+                {
+                    var message = Messages.JsObjectRegistrationRequest.FromCefMessage(cefMessage);
+
+                    var global = context.GetGlobal();
+                    var handler = new V8FunctionHandler(message.ObjectTrackId);
+                    var attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontEnum | CefV8PropertyAttribute.DontDelete;
+
+                    using (var v8Obj = CefV8Value.CreateObject())
+                    {
+                        var functionName = "testFunction";
+                        using (var v8Function = CefV8Value.CreateFunction(functionName, handler))
+                        {
+                            v8Obj.SetValue(functionName, v8Function, attributes);
+                        }
+                        global.SetValue("test", v8Obj);
+                    }
+                }
+                finally
+                {
+                    context.Exit();
+                }
+            }
+            else
+            {
+                // TODO
+            }
         }
     }
 }

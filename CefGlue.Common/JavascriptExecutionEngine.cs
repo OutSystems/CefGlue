@@ -1,16 +1,12 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Xilium.CefGlue.Common.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common
 {
     internal class JavascriptExecutionEngine
     {
-        public static class MessageNames
-        {
-            public const string EvaluateJs = "EvaluateJs";
-            public const string EvaluateJsResult = "EvaluateJsResult";
-        }
 
         private static volatile int lastTaskId;
 
@@ -28,27 +24,25 @@ namespace Xilium.CefGlue.Common
         {
             switch(e.Message.Name)
             {
-                case MessageNames.EvaluateJsResult:
+                case Messages.JsEvaluationResponse.Name:
                     HandleScriptEvaluationResultMessage(e.Message);
                     break;
             }
         }
 
-        private void HandleScriptEvaluationResultMessage(CefProcessMessage message)
+        private void HandleScriptEvaluationResultMessage(CefProcessMessage cefMessage)
         {
-            var taskId = message.Arguments.GetInt(0);
-            if (_pendingTasks.TryRemove(taskId, out var pendingTask))
-            {
-                var messageArgs = message.Arguments;
-                var success = messageArgs.GetBool(1);
+            var message = Messages.JsEvaluationResponse.FromCefMessage(cefMessage);
 
-                if (success)
+            if (_pendingTasks.TryRemove(message.TaskId, out var pendingTask))
+            {
+                if (message.Success)
                 {
-                    pendingTask.SetResult(V8Serialization.DeserializeV8Object(messageArgs.GetValue(2)));
+                    pendingTask.SetResult(V8Serialization.DeserializeV8Object(message.Result));
                 }
                 else
                 {
-                    pendingTask.SetException(new Exception(messageArgs.GetString(3)));
+                    pendingTask.SetException(new Exception(message.Exception));
                 }
             }
         }
@@ -56,11 +50,13 @@ namespace Xilium.CefGlue.Common
         public async Task<T> Evaluate<T>(string script, string url, int line)
         {
             var taskId = lastTaskId++;
-            var message = CefProcessMessage.Create(MessageNames.EvaluateJs);
-            message.Arguments.SetInt(0, taskId);
-            message.Arguments.SetString(1, script);
-            message.Arguments.SetString(2, url);
-            message.Arguments.SetInt(3, line);
+            var message = new Messages.JsEvaluationRequest()
+            {
+                TaskId = taskId,
+                Script = script,
+                Url = url,
+                Line = line
+            };
 
             var messageReceiveCompletionSource = new TaskCompletionSource<object>();
 
@@ -68,7 +64,7 @@ namespace Xilium.CefGlue.Common
 
             try
             {
-                _browser.SendProcessMessage(CefProcessId.Renderer, message);
+                _browser.SendProcessMessage(CefProcessId.Renderer, message.ToCefProcessMessage());
 
                 await messageReceiveCompletionSource.Task;
             }
