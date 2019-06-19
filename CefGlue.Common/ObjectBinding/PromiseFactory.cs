@@ -1,12 +1,13 @@
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
-    internal class PromiseFactory
+    internal static class PromiseFactory
     {
         public struct PromiseHolder
         {
             public CefV8Value Promise;
             public CefV8Value Resolve;
             public CefV8Value Reject;
+            public CefV8Context Context;
         }
 
         private const string PromiseFactoryFunctionName = "cefglue_createPromise";
@@ -29,7 +30,6 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         public static PromiseHolder CreatePromise()
         {
             var context = CefV8Context.GetCurrentContext();
-            var browser = context.GetBrowser();
             var promiseFactory = context.GetGlobal().GetValue(PromiseFactoryFunctionName);
 
             // create a promise and return the resolve and reject callbacks
@@ -43,7 +43,8 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 Promise = promise,
                 Resolve = resolve,
-                Reject = reject
+                Reject = reject,
+                Context = context
             };
         }
     }

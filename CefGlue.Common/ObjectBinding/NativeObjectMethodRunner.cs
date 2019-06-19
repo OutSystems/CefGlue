@@ -12,10 +12,10 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         {
             _objectRegistry = objectRegistry;
 
-            dispatcher.RegisterMessageHandler(Messages.NativeObjectCallRequest.Name, HandleNativeObjectCallDispatch);
+            dispatcher.RegisterMessageHandler(Messages.NativeObjectCallRequest.Name, HandleNativeObjectCallRequest);
         }
 
-        private void HandleNativeObjectCallDispatch(MessageReceivedEventArgs args)
+        private void HandleNativeObjectCallRequest(MessageReceivedEventArgs args)
         {
             var message = Messages.NativeObjectCallRequest.FromCefMessage(args.Message);
             var targetObj = _objectRegistry.Get(message.ObjectName);
@@ -24,7 +24,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 Task.Run(() =>
                 {
-                    ExecuteMethod(args.Browser, targetObj, message.MemberName, new object[0]);
+                    ExecuteMethod(args.Browser, message.CallId, targetObj, message.MemberName, new object[0]);
                 });
             }
             else
@@ -33,14 +33,20 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             }
         }
 
-        private void ExecuteMethod(CefBrowser browser, object targetObj, string methodName, object[] args)
+        private void ExecuteMethod(CefBrowser browser, int callId, object targetObj, string methodName, object[] args)
         {
 
             // TODO :
             // find .net method
             // call .net method
+            var result = CefValue.Create();
+            result.SetString("Hello world!");
+
             var message = new Messages.NativeObjectCallResult()
             {
+                CallId = callId,
+                Success = true,
+                Result = result
             };
             browser.SendProcessMessage(CefProcessId.Renderer, message.ToCefProcessMessage());
         }

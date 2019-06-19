@@ -109,6 +109,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
         {
             public const string Name = nameof(NativeObjectCallRequest);
 
+            public int CallId;
             public string ObjectName;
             public string MemberName;
             public CefListValue Arguments;
@@ -117,9 +118,10 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             {
                 var message = CefProcessMessage.Create(Name);
                 var arguments = message.Arguments;
-                arguments.SetString(0, ObjectName);
-                arguments.SetString(1, MemberName);
-                arguments.SetList(2, Arguments);
+                arguments.SetInt(0, CallId);
+                arguments.SetString(1, ObjectName);
+                arguments.SetString(2, MemberName);
+                arguments.SetList(3, Arguments);
                 return message;
             }
 
@@ -128,9 +130,10 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                 var arguments = message.Arguments;
                 return new NativeObjectCallRequest()
                 {
-                    ObjectName = arguments.GetString(0),
-                    MemberName = arguments.GetString(1),
-                    Arguments = arguments.GetList(2)
+                    CallId = arguments.GetInt(0),
+                    ObjectName = arguments.GetString(1),
+                    MemberName = arguments.GetString(2),
+                    Arguments = arguments.GetList(3)
                 };
             }
         }
@@ -139,6 +142,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
         {
             public const string Name = nameof(NativeObjectCallResult);
 
+            public int CallId;
             public bool Success;
             public CefValue Result;
             public string Exception;
@@ -147,6 +151,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             {
                 var message = CefProcessMessage.Create(Name);
                 var arguments = message.Arguments;
+                arguments.SetInt(0, CallId);
                 arguments.SetBool(1, Success);
                 if (Result != null)
                 {
@@ -161,6 +166,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                 var arguments = message.Arguments;
                 return new NativeObjectCallResult()
                 {
+                    CallId = arguments.GetInt(0),
                     Success = arguments.GetBool(1),
                     Result = arguments.GetValue(2),
                     Exception = arguments.GetString(3)
