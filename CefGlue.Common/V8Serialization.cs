@@ -130,6 +130,16 @@ namespace Xilium.CefGlue.Common
             SerializeV8Object(obj, new ListContainer(container, containerIndex), new Stack<CefV8Value>());
         }
 
+        public static CefListValue SerializeV8Object(CefV8Value[] objs)
+        {
+            var list = CefListValue.Create();
+            for (var i = 0; i < objs.Length; i++)
+            {
+                SerializeV8Object(objs[i], new ListContainer(list, i), new Stack<CefV8Value>());
+            }
+            return list;
+        }
+
         private static void SerializeV8Object(CefV8Value obj, BaseContainer container, Stack<CefV8Value> visitedObjects)
         {
             if (visitedObjects.Any(o => o.IsSame(obj)))

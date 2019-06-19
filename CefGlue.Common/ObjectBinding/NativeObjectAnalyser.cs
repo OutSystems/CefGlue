@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
-    internal static class ObjectAnalyser
+    internal static class NativeObjectAnalyser
     {
         public static string[] AnalyseObjectMembers(object obj)
         {

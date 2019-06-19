@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers.Logger;
+using Xilium.CefGlue.Common.JavascriptExecution;
 using Xilium.CefGlue.Common.ObjectBinding;
 
 namespace Xilium.CefGlue.Common
@@ -18,7 +19,8 @@ namespace Xilium.CefGlue.Common
         private CefBrowserHost _browserHost;
         private CommonCefClient _cefClient;
         private JavascriptExecutionEngine _javascriptExecutionEngine;
-        private ObjectRegistry _objectRegistry;
+        private NativeObjectRegistry _objectRegistry;
+        private NativeObjectMethodRunner _objectMethodRunner;
 
         public CommonBrowserAdapter(ILogger logger)
         {
@@ -395,7 +397,9 @@ namespace Xilium.CefGlue.Common
             else
             {
                 _javascriptExecutionEngine = new JavascriptExecutionEngine(browser, _cefClient);
-                _objectRegistry = new ObjectRegistry(browser);
+                _objectRegistry = new NativeObjectRegistry(browser, _cefClient);
+                _objectMethodRunner = new NativeObjectMethodRunner(browser, _cefClient, _objectRegistry);
+
                 _browser = browser;
                 _browserHost = browser.GetHost();
                 // _browserHost.SetFocus(IsFocused);

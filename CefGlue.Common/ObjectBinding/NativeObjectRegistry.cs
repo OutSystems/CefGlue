@@ -3,14 +3,12 @@ using Xilium.CefGlue.Common.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
-    internal class ObjectRegistry
+    internal class NativeObjectRegistry
     {
-        private static volatile int objTrackIdCounter;
-
         private readonly CefBrowser _browser;
         private readonly ConcurrentDictionary<string, object> _registeredObjects = new ConcurrentDictionary<string, object>();
 
-        public ObjectRegistry(CefBrowser browser)
+        public NativeObjectRegistry(CefBrowser browser, CommonCefClient cefClient)
         {
             _browser = browser;
         }
@@ -28,12 +26,10 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 return false;
             }
 
-            var trackId = objTrackIdCounter++;
-            var objectMembers = ObjectAnalyser.AnalyseObjectMembers(obj);
+            var objectMembers = NativeObjectAnalyser.AnalyseObjectMembers(obj);
             
-            var message = new Messages.JsObjectRegistrationRequest()
+            var message = new Messages.NativeObjectRegistrationRequest()
             {
-                ObjectTrackId = trackId,
                 ObjectName = name,
                 MethodsNames = objectMembers
             };
@@ -41,6 +37,12 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             _browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
 
             return true;
+        }
+
+        public object Get(string name)
+        {
+            _registeredObjects.TryGetValue(name, out var obj);
+            return obj;
         }
     }
 }

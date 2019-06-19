@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.Common
@@ -10,6 +11,8 @@ namespace Xilium.CefGlue.Common
         private readonly CommonCefRenderHandler _renderHandler;
         private readonly CommonCefLoadHandler _loadHandler;
         private readonly CommonCefJSDialogHandler _jsDialogHandler;
+
+        private readonly Dictionary<string, EventHandler<MessageReceivedEventArgs>> _messageHandlers = new Dictionary<string, EventHandler<MessageReceivedEventArgs>>();
 
         public CommonCefClient(ICefBrowserHost owner)
         {
@@ -24,8 +27,6 @@ namespace Xilium.CefGlue.Common
             _loadHandler = new CommonCefLoadHandler(owner);
             _jsDialogHandler = new CommonCefJSDialogHandler();
         }
-
-        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
         protected override CefLifeSpanHandler GetLifeSpanHandler()
         {
@@ -54,13 +55,23 @@ namespace Xilium.CefGlue.Common
 
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
         {
-            MessageReceived?.Invoke(this, new MessageReceivedEventArgs() {
-                Browser = browser,
-                ProcessId = sourceProcess,
-                Message = message
-            });
+            if (_messageHandlers.TryGetValue(message.Name, out var existingHandler))
+            {
+                existingHandler(this, new MessageReceivedEventArgs()
+                {
+                    Browser = browser,
+                    ProcessId = sourceProcess,
+                    Message = message
+                });
+            }
 
             return base.OnProcessMessageReceived(browser, sourceProcess, message);
+        }
+
+        public void RegisterMessageHandler(string messageName, EventHandler<MessageReceivedEventArgs> handler)
+        {
+            _messageHandlers.TryGetValue(messageName, out var existingHandler);
+            _messageHandlers[messageName] = existingHandler + handler;
         }
     }
 }

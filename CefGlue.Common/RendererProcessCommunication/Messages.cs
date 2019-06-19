@@ -35,9 +35,9 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             }
         }
 
-        public struct JsEvaluationResponse
+        public struct JsEvaluationResult
         {
-            public const string Name = nameof(JsEvaluationResponse);
+            public const string Name = nameof(JsEvaluationResult);
 
             public int TaskId;
             public bool Success;
@@ -58,10 +58,10 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                 return message;
             }
 
-            public static JsEvaluationResponse FromCefMessage(CefProcessMessage message)
+            public static JsEvaluationResult FromCefMessage(CefProcessMessage message)
             {
                 var arguments = message.Arguments;
-                return new JsEvaluationResponse()
+                return new JsEvaluationResult()
                 {
                     TaskId = arguments.GetInt(0),
                     Success = arguments.GetBool(1),
@@ -71,11 +71,10 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             }
         }
 
-        public struct JsObjectRegistrationRequest
+        public struct NativeObjectRegistrationRequest
         {
-            public const string Name = nameof(JsObjectRegistrationRequest);
+            public const string Name = nameof(NativeObjectRegistrationRequest);
 
-            public int ObjectTrackId;
             public string ObjectName;
             public string[] MethodsNames;
 
@@ -83,8 +82,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             {
                 var message = CefProcessMessage.Create(Name);
                 var arguments = message.Arguments;
-                arguments.SetInt(0, ObjectTrackId);
-                arguments.SetString(1, ObjectName);
+                arguments.SetString(0, ObjectName);
 
                 var methods = CefListValue.Create();
                 for(var i = 0; i < MethodsNames.Length; i++)
@@ -92,18 +90,80 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                     methods.SetString(i, MethodsNames[i]);
                 }
 
-                arguments.SetList(2, methods);
+                arguments.SetList(1, methods);
                 return message;
             }
 
-            public static JsObjectRegistrationRequest FromCefMessage(CefProcessMessage message)
+            public static NativeObjectRegistrationRequest FromCefMessage(CefProcessMessage message)
             {
                 var arguments = message.Arguments;
-                return new JsObjectRegistrationRequest()
+                return new NativeObjectRegistrationRequest()
                 {
-                    ObjectTrackId = arguments.GetInt(0),
-                    ObjectName = arguments.GetString(1),
-                    MethodsNames = V8Serialization.DeserializeV8List<string>(arguments.GetList(2))
+                    ObjectName = arguments.GetString(0),
+                    MethodsNames = V8Serialization.DeserializeV8List<string>(arguments.GetList(1))
+                };
+            }
+        }
+
+        public struct NativeObjectCallRequest
+        {
+            public const string Name = nameof(NativeObjectCallRequest);
+
+            public string ObjectName;
+            public string MemberName;
+            public CefListValue Arguments;
+
+            public CefProcessMessage ToCefProcessMessage()
+            {
+                var message = CefProcessMessage.Create(Name);
+                var arguments = message.Arguments;
+                arguments.SetString(0, ObjectName);
+                arguments.SetString(1, MemberName);
+                arguments.SetList(2, Arguments);
+                return message;
+            }
+
+            public static NativeObjectCallRequest FromCefMessage(CefProcessMessage message)
+            {
+                var arguments = message.Arguments;
+                return new NativeObjectCallRequest()
+                {
+                    ObjectName = arguments.GetString(0),
+                    MemberName = arguments.GetString(1),
+                    Arguments = arguments.GetList(2)
+                };
+            }
+        }
+
+        public struct NativeObjectCallResult
+        {
+            public const string Name = nameof(NativeObjectCallResult);
+
+            public bool Success;
+            public CefValue Result;
+            public string Exception;
+
+            public CefProcessMessage ToCefProcessMessage()
+            {
+                var message = CefProcessMessage.Create(Name);
+                var arguments = message.Arguments;
+                arguments.SetBool(1, Success);
+                if (Result != null)
+                {
+                    arguments.SetValue(2, Result);
+                }
+                arguments.SetString(3, Exception);
+                return message;
+            }
+
+            public static NativeObjectCallResult FromCefMessage(CefProcessMessage message)
+            {
+                var arguments = message.Arguments;
+                return new NativeObjectCallResult()
+                {
+                    Success = arguments.GetBool(1),
+                    Result = arguments.GetValue(2),
+                    Exception = arguments.GetString(3)
                 };
             }
         }

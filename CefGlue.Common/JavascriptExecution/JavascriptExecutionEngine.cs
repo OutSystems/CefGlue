@@ -3,11 +3,10 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
 
-namespace Xilium.CefGlue.Common
+namespace Xilium.CefGlue.Common.JavascriptExecution
 {
     internal class JavascriptExecutionEngine
     {
-
         private static volatile int lastTaskId;
 
         private readonly CefBrowser _browser;
@@ -17,22 +16,12 @@ namespace Xilium.CefGlue.Common
         {
             _browser = browser;
 
-            cefClient.MessageReceived += OnCefClientMessageReceived;
-        }
-
-        private void OnCefClientMessageReceived(object sender, MessageReceivedEventArgs e)
-        {
-            switch(e.Message.Name)
-            {
-                case Messages.JsEvaluationResponse.Name:
-                    HandleScriptEvaluationResultMessage(e.Message);
-                    break;
-            }
+            cefClient.RegisterMessageHandler(Messages.JsEvaluationResult.Name, (o, e) => HandleScriptEvaluationResultMessage(e.Message));
         }
 
         private void HandleScriptEvaluationResultMessage(CefProcessMessage cefMessage)
         {
-            var message = Messages.JsEvaluationResponse.FromCefMessage(cefMessage);
+            var message = Messages.JsEvaluationResult.FromCefMessage(cefMessage);
 
             if (_pendingTasks.TryRemove(message.TaskId, out var pendingTask))
             {
