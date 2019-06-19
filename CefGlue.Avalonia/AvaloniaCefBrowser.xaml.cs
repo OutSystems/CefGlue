@@ -108,9 +108,9 @@ namespace Xilium.CefGlue.Avalonia
             _adapter.ShowDeveloperTools();
         }
 
-        public void RegisterJavascriptObject(object targetObject)
+        public void RegisterJavascriptObject(object targetObject, string name)
         {
-            _adapter.RegisterJavascriptObject(targetObject);
+            _adapter.RegisterJavascriptObject(targetObject, name);
         }
 
         protected override void OnTemplateApplied(TemplateAppliedEventArgs e)

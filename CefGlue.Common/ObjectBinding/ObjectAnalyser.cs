@@ -1,15 +1,14 @@
-using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
+using System.Linq;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
-    internal class ObjectAnalyser
+    internal static class ObjectAnalyser
     {
-        public void AnalyseObjectMembers(object obj)
+        public static string[] AnalyseObjectMembers(object obj)
         {
             var methods = obj.GetType().GetMethods();
+            return methods.Select(m => m.Name.Substring(0, 1).ToLowerInvariant() + m.Name.Substring(1)).ToArray();
         }
     }
 }

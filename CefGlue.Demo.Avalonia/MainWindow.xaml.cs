@@ -48,6 +48,12 @@ namespace Xilium.CefGlue.Demo.Avalonia
             Console.WriteLine(string.Join(", ", (await browser.EvaluateJavaScript<ExpandoObject>("(function() { return { a: 'valueA', b: 1, c: true } })()")).Select(p => p.Key + ":" + p.Value)));
         }
 
+        private void OnBindJavascriptObjectMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var x = new Object();
+            browser.RegisterJavascriptObject(x, "dotNetObject");
+        }
+
         private void OnOpenDevToolsMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)
         {
             browser.ShowDeveloperTools();

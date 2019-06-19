@@ -76,12 +76,23 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             public const string Name = nameof(JsObjectRegistrationRequest);
 
             public int ObjectTrackId;
+            public string ObjectName;
+            public string[] MethodsNames;
 
             public CefProcessMessage ToCefProcessMessage()
             {
                 var message = CefProcessMessage.Create(Name);
                 var arguments = message.Arguments;
                 arguments.SetInt(0, ObjectTrackId);
+                arguments.SetString(1, ObjectName);
+
+                var methods = CefListValue.Create();
+                for(var i = 0; i < MethodsNames.Length; i++)
+                {
+                    methods.SetString(i, MethodsNames[i]);
+                }
+
+                arguments.SetList(2, methods);
                 return message;
             }
 
@@ -91,6 +102,8 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                 return new JsObjectRegistrationRequest()
                 {
                     ObjectTrackId = arguments.GetInt(0),
+                    ObjectName = arguments.GetString(1),
+                    MethodsNames = V8Serialization.DeserializeV8List<string>(arguments.GetList(2))
                 };
             }
         }

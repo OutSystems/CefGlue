@@ -26,7 +26,8 @@ namespace Xilium.CefGlue.Common
         {
             var context = browser.GetMainFrame().V8Context;
 
-            if (context.Enter()) {
+            if (context.Enter())
+            {
                 try
                 {
                     var message = Messages.JsEvaluationRequest.FromCefMessage(cefMessage);
@@ -47,14 +48,15 @@ namespace Xilium.CefGlue.Common
                     {
                         V8Serialization.SerializeV8Object(value, cefResponseMessage.Arguments, 2);
                     }
-                    
+
                     browser.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
                 }
                 finally
                 {
                     context.Exit();
                 }
-            } else
+            }
+            else
             {
                 // TODO
             }
@@ -88,12 +90,15 @@ namespace Xilium.CefGlue.Common
 
                     using (var v8Obj = CefV8Value.CreateObject())
                     {
-                        var functionName = "testFunction";
-                        using (var v8Function = CefV8Value.CreateFunction(functionName, handler))
+                        foreach(var methodName in message.MethodsNames)
                         {
-                            v8Obj.SetValue(functionName, v8Function, attributes);
+                            using (var v8Function = CefV8Value.CreateFunction(methodName, handler))
+                            {
+                                v8Obj.SetValue(methodName, v8Function, attributes);
+                            }
                         }
-                        global.SetValue("test", v8Obj);
+                        
+                        global.SetValue(message.ObjectName, v8Obj);
                     }
                 }
                 finally

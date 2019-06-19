@@ -241,13 +241,7 @@ namespace Xilium.CefGlue.Common
                     return value.GetDouble();
 
                 case CefValueType.List:
-                    var v8list = value.GetList();
-                    var array = new object[v8list.Count];
-                    for (var i = 0; i < v8list.Count; i++)
-                    {
-                        array[i] = DeserializeV8Object(v8list.GetValue(i));
-                    }
-                    return array;
+                    return DeserializeV8List<object>(value.GetList());
 
                 case CefValueType.Int:
                     return value.GetInt();
@@ -260,6 +254,16 @@ namespace Xilium.CefGlue.Common
             }
 
             return null;
+        }
+
+        public static ListElementType[] DeserializeV8List<ListElementType>(CefListValue v8List)
+        {
+            var array = new ListElementType[v8List.Count];
+            for (var i = 0; i < v8List.Count; i++)
+            {
+                array[i] = (ListElementType) DeserializeV8Object(v8List.GetValue(i));
+            }
+            return array;
         }
     }
 }
