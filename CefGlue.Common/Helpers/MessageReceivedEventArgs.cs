@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Xilium.CefGlue.Common
+namespace Xilium.CefGlue.Common.Helpers
 {
-    internal class MessageReceivedEventArgs : EventArgs
+    internal class MessageReceivedEventArgs
     {
         public CefBrowser Browser { get; set; }
         public CefProcessId ProcessId { get; set; }

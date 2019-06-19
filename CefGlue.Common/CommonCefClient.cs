@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.Common
@@ -12,7 +12,7 @@ namespace Xilium.CefGlue.Common
         private readonly CommonCefLoadHandler _loadHandler;
         private readonly CommonCefJSDialogHandler _jsDialogHandler;
 
-        private readonly Dictionary<string, EventHandler<MessageReceivedEventArgs>> _messageHandlers = new Dictionary<string, EventHandler<MessageReceivedEventArgs>>();
+        private readonly MessageDispatcher _messageDispatcher = new MessageDispatcher();
 
         public CommonCefClient(ICefBrowserHost owner)
         {
@@ -55,23 +55,10 @@ namespace Xilium.CefGlue.Common
 
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
         {
-            if (_messageHandlers.TryGetValue(message.Name, out var existingHandler))
-            {
-                existingHandler(this, new MessageReceivedEventArgs()
-                {
-                    Browser = browser,
-                    ProcessId = sourceProcess,
-                    Message = message
-                });
-            }
-
+            _messageDispatcher.DispatchMessage(browser, sourceProcess, message);
             return base.OnProcessMessageReceived(browser, sourceProcess, message);
         }
 
-        public void RegisterMessageHandler(string messageName, EventHandler<MessageReceivedEventArgs> handler)
-        {
-            _messageHandlers.TryGetValue(messageName, out var existingHandler);
-            _messageHandlers[messageName] = existingHandler + handler;
-        }
+        public MessageDispatcher Dispatcher => _messageDispatcher;
     }
 }

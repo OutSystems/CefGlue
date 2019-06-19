@@ -1,31 +1,30 @@
 using System.Threading.Tasks;
+using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
     internal class NativeObjectMethodRunner
     {
-        private readonly CefBrowser _browser;
         private readonly NativeObjectRegistry _objectRegistry;
 
-        public NativeObjectMethodRunner(CefBrowser browser, CommonCefClient cefClient, NativeObjectRegistry objectRegistry)
+        public NativeObjectMethodRunner(MessageDispatcher dispatcher, NativeObjectRegistry objectRegistry)
         {
-            _browser = browser;
             _objectRegistry = objectRegistry;
 
-            cefClient.RegisterMessageHandler(Messages.NativeObjectCallRequest.Name, (o, e) => HandleNativeObjectCallDispatch(e.Message));
+            dispatcher.RegisterMessageHandler(Messages.NativeObjectCallRequest.Name, HandleNativeObjectCallDispatch);
         }
 
-        private void HandleNativeObjectCallDispatch(CefProcessMessage cefMessage)
+        private void HandleNativeObjectCallDispatch(MessageReceivedEventArgs args)
         {
-            var message = Messages.NativeObjectCallRequest.FromCefMessage(cefMessage);
+            var message = Messages.NativeObjectCallRequest.FromCefMessage(args.Message);
             var targetObj = _objectRegistry.Get(message.ObjectName);
 
             if (targetObj != null)
             {
                 Task.Run(() =>
                 {
-                    ExecuteMethod(targetObj, message.MemberName, new object[0]);
+                    ExecuteMethod(args.Browser, targetObj, message.MemberName, new object[0]);
                 });
             }
             else
@@ -34,7 +33,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             }
         }
 
-        private void ExecuteMethod(object targetObj, string methodName, object[] args)
+        private void ExecuteMethod(CefBrowser browser, object targetObj, string methodName, object[] args)
         {
 
             // TODO :
@@ -43,7 +42,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             var message = new Messages.NativeObjectCallResult()
             {
             };
-            _browser.SendProcessMessage(CefProcessId.Renderer, message.ToCefProcessMessage());
+            browser.SendProcessMessage(CefProcessId.Renderer, message.ToCefProcessMessage());
         }
     }
 }

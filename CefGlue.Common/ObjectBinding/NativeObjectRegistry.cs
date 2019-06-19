@@ -8,7 +8,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         private readonly CefBrowser _browser;
         private readonly ConcurrentDictionary<string, object> _registeredObjects = new ConcurrentDictionary<string, object>();
 
-        public NativeObjectRegistry(CefBrowser browser, CommonCefClient cefClient)
+        public NativeObjectRegistry(CefBrowser browser)
         {
             _browser = browser;
         }

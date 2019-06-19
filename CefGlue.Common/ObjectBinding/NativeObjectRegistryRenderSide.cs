@@ -1,18 +1,25 @@
+using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
-    internal static class NativeObjectRegistryRenderSide
+    internal class NativeObjectRegistryRenderSide
     {
-        public static void HandleNativeObjectRegistration(CefBrowser browser, CefProcessMessage cefMessage)
+        public NativeObjectRegistryRenderSide(MessageDispatcher dispatcher)
         {
+            dispatcher.RegisterMessageHandler(Messages.NativeObjectRegistrationRequest.Name, HandleNativeObjectRegistration);
+        }
+
+        private void HandleNativeObjectRegistration(MessageReceivedEventArgs args)
+        {
+            var browser = args.Browser;
             var context = browser.GetMainFrame().V8Context;
 
             if (context.Enter())
             {
                 try
                 {
-                    var message = Messages.NativeObjectRegistrationRequest.FromCefMessage(cefMessage);
+                    var message = Messages.NativeObjectRegistrationRequest.FromCefMessage(args.Message);
 
                     var global = context.GetGlobal();
                     var handler = new V8FunctionHandler(message.ObjectName);

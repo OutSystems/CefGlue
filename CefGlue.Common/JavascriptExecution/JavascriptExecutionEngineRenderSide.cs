@@ -1,20 +1,29 @@
 using System;
+using Xilium.CefGlue.Common.Helpers;
+using Xilium.CefGlue.Common.ObjectBinding;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common.JavascriptExecution
 {
-    internal static class JavascriptExecutionEngineRenderSide
+    internal class JavascriptExecutionEngineRenderSide
     {
-        public static void HandleScriptEvaluation(CefBrowser browser, CefProcessMessage cefMessage)
+        public JavascriptExecutionEngineRenderSide(MessageDispatcher dispatcher)
+        {
+            PromiseFactory.Register();
+            dispatcher.RegisterMessageHandler(Messages.JsEvaluationRequest.Name, HandleScriptEvaluation);
+        }
+
+        private void HandleScriptEvaluation(MessageReceivedEventArgs args)
         {
             // TODO get the appropriate frame
+            var browser = args.Browser;
             var context = browser.GetMainFrame().V8Context;
 
             if (context.Enter())
             {
                 try
                 {
-                    var message = Messages.JsEvaluationRequest.FromCefMessage(cefMessage);
+                    var message = Messages.JsEvaluationRequest.FromCefMessage(args.Message);
 
                     // send script to browser
                     var success = context.TryEval(message.Script, message.Url, message.Line, out var value, out var exception);

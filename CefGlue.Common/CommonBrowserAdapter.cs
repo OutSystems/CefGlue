@@ -396,9 +396,9 @@ namespace Xilium.CefGlue.Common
             }
             else
             {
-                _javascriptExecutionEngine = new JavascriptExecutionEngine(browser, _cefClient);
-                _objectRegistry = new NativeObjectRegistry(browser, _cefClient);
-                _objectMethodRunner = new NativeObjectMethodRunner(browser, _cefClient, _objectRegistry);
+                _javascriptExecutionEngine = new JavascriptExecutionEngine(browser, _cefClient.Dispatcher);
+                _objectRegistry = new NativeObjectRegistry(browser);
+                _objectMethodRunner = new NativeObjectMethodRunner(_cefClient.Dispatcher, _objectRegistry);
 
                 _browser = browser;
                 _browserHost = browser.GetHost();

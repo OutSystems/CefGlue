@@ -1,15 +1,18 @@
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
+using Xilium.CefGlue.Common.Helpers;
+using Xilium.CefGlue.Common.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
-    internal static class NativeObjectMethodRunnerRenderSide
+    internal class NativeObjectMethodRunnerRenderSide
     {
         //private ConcurrentDictionary<int, object> _pendingCalls;
 
-        public static void HandleNativeObjectCallResult(CefBrowser browser, CefProcessMessage message)
+        public NativeObjectMethodRunnerRenderSide(MessageDispatcher dispatcher)
+        {
+            dispatcher.RegisterMessageHandler(Messages.NativeObjectCallResult.Name, HandleNativeObjectCallResult);
+        }
+        
+        private void HandleNativeObjectCallResult(MessageReceivedEventArgs args)
         {
 
         }
