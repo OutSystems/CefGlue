@@ -21,7 +21,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         {
             var promiseHolder = PromiseFactory.CreatePromise();
 
-            var argsCopy = V8Serialization.SerializeV8Object(arguments); // create a copy of the args to pass to the browser process
+            var argsCopy = V8ValueSerialization.SerializeV8Object(arguments); // create a copy of the args to pass to the browser process
             var message = new Messages.NativeObjectCallRequest()
             {
                 CallId = lastCallId++,

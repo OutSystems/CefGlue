@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Xilium.CefGlue.Common.Helpers;
@@ -60,19 +61,26 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             var message = Messages.NativeObjectCallResult.FromCefMessage(args.Message);
             if (_pendingCalls.TryGetValue(message.CallId, out var promiseHolder))
             {
-                try {
+                try
+                {
                     var context = promiseHolder.Context;
-                    if (context.Enter()) {
-                        try {
-                            //  TODO pass result
-                            promiseHolder.Resolve.ExecuteFunction(null, null);
-                        } finally {
+                    if (context.Enter())
+                    {
+                        try
+                        {
+                            var result = V8ValueSerialization.SerializeCefValue(message.Result);
+                            promiseHolder.Resolve.ExecuteFunction(null, new[] { result });
+                        }
+                        finally
+                        {
                             context.Exit();
                         }
-                    } else {
+                    }
+                    else
+                    {
                         // TODO
                     }
-                } 
+                }
                 finally
                 {
                     _pendingCalls.Remove(message.CallId);
@@ -81,6 +89,17 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             else
             {
                 // TODO
+            }
+        }
+
+        public void HandleContextReleased(CefV8Context context)
+        {
+            foreach (var promiseHolderEntry in _pendingCalls.ToArray())
+            {
+                if (promiseHolderEntry.Value.Context == context)
+                {
+                    _pendingCalls.Remove(promiseHolderEntry.Key);
+                }
             }
         }
     }

@@ -100,7 +100,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                 return new NativeObjectRegistrationRequest()
                 {
                     ObjectName = arguments.GetString(0),
-                    MethodsNames = V8Serialization.DeserializeV8List<string>(arguments.GetList(1))
+                    MethodsNames = CefValueSerialization.DeserializeCefList<string>(arguments.GetList(1))
                 };
             }
         }

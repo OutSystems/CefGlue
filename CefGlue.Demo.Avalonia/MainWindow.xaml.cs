@@ -14,7 +14,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
         public MainWindow()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         private void InitializeComponent()
@@ -50,8 +50,15 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
         private void OnBindJavascriptObjectMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)
         {
-            var x = new Object();
-            browser.RegisterJavascriptObject(x, "dotNetObject");
+            const string TestObject = "dotNetObject";
+
+            var obj = new BindingTestClass();
+            browser.RegisterJavascriptObject(obj, "dotNetObject");
+
+            var methods = obj.GetType().GetMethods().Select(m => m.Name.Substring(0, 1).ToLowerInvariant() + m.Name.Substring(1));
+            var script = string.Join(";", methods.Select(m => $"{TestObject}.{m}().then(r => console.log(r))"));
+
+            browser.ExecuteJavaScript(script);
         }
 
         private void OnOpenDevToolsMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)

@@ -23,5 +23,11 @@ namespace Xilium.CefGlue.Common
             _messageDispatcher.DispatchMessage(browser, sourceProcess, message);
             return base.OnProcessMessageReceived(browser, sourceProcess, message);
         }
+
+        protected override void OnContextReleased(CefBrowser browser, CefFrame frame, CefV8Context context)
+        {
+            _nativeObjectRegistry.HandleContextReleased(context);
+            base.OnContextReleased(browser, frame, context);
+        }
     }
 }

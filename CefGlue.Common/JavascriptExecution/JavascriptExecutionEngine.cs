@@ -28,7 +28,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             {
                 if (message.Success)
                 {
-                    pendingTask.SetResult(V8Serialization.DeserializeV8Object(message.Result));
+                    pendingTask.SetResult(CefValueSerialization.DeserializeCefValue(message.Result));
                 }
                 else
                 {

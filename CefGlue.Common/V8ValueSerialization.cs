@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 
 namespace Xilium.CefGlue.Common
 {
-    internal static class V8Serialization
+    internal static class V8ValueSerialization
     {
         private abstract class BaseContainer
         {
@@ -181,7 +180,7 @@ namespace Xilium.CefGlue.Common
                 var arrLength = obj.GetArrayLength();
                 if (arrLength > 0)
                 {
-                    var keys =  obj.GetKeys();
+                    var keys = obj.GetKeys();
                     var array = CefListValue.Create();
                     for (var i = 0; i < arrLength; i++)
                     {
@@ -197,10 +196,10 @@ namespace Xilium.CefGlue.Common
             }
             else if (obj.IsFunction)
             {
-            // TODO
-            //    var context = CefV8Context.GetCurrentContext();
-            //    var jsCallback = callbackRegistry.Register(context, obj);
-            //    SetJsCallback(list, index, jsCallback);
+                // TODO
+                //    var context = CefV8Context.GetCurrentContext();
+                //    var jsCallback = callbackRegistry.Register(context, obj);
+                //    SetJsCallback(list, index, jsCallback);
             }
             else if (obj.IsObject)
             {
@@ -226,54 +225,51 @@ namespace Xilium.CefGlue.Common
             visitedObjects.Pop();
         }
 
-        public static object DeserializeV8Object(CefValue value)
+        public static CefV8Value SerializeCefValue(CefValue value)
         {
             switch (value.GetValueType())
             {
                 case CefValueType.Binary:
-                    var binaryDate = BitConverter.ToInt64(value.GetBinary().ToArray(), 0);
-                    return DateTime.FromBinary(binaryDate);
+                    // var binary = value.GetBinary();
+                    // var v8Binary = CefV8Value.CreateArrayBuffer();
+                    // TODO not supported yet
+                    throw new NotImplementedException("Cannot serialize a binary into a v8 object");
 
                 case CefValueType.Bool:
-                    return value.GetBool();
+                    return CefV8Value.CreateBool(value.GetBool());
 
                 case CefValueType.Dictionary:
-                    IDictionary<string, object> dictionary = new ExpandoObject();
-                    var v8Dictionary = value.GetDictionary();
-                    var keys = v8Dictionary.GetKeys();
-                    foreach(var key in keys)
+                    var dictionary = value.GetDictionary();
+                    var v8Dictionary = CefV8Value.CreateObject();
+                    foreach (var key in dictionary.GetKeys())
                     {
-                        dictionary[key] = DeserializeV8Object(v8Dictionary.GetValue(key));
+                        v8Dictionary.SetValue(key, SerializeCefValue(dictionary.GetValue(key)));
                     }
-                    return dictionary;
+                    return v8Dictionary;
 
                 case CefValueType.Double:
-                    return value.GetDouble();
+                    return CefV8Value.CreateDouble(value.GetDouble());
 
                 case CefValueType.List:
-                    return DeserializeV8List<object>(value.GetList());
+                    var list = value.GetList();
+                    var v8List = CefV8Value.CreateArray(list.Count);
+                    for (var i = 0; i < list.Count; i++)
+                    {
+                        v8List.SetValue(i, SerializeCefValue(list.GetValue(i)));
+                    }
+                    return v8List;
 
                 case CefValueType.Int:
-                    return value.GetInt();
+                    return CefV8Value.CreateInt(value.GetInt());
 
                 case CefValueType.String:
-                    return value.GetString();
+                    return CefV8Value.CreateString(value.GetString());
 
                 case CefValueType.Null:
-                    return null;
+                    return CefV8Value.CreateNull();
             }
 
-            return null;
-        }
-
-        public static ListElementType[] DeserializeV8List<ListElementType>(CefListValue v8List)
-        {
-            var array = new ListElementType[v8List.Count];
-            for (var i = 0; i < v8List.Count; i++)
-            {
-                array[i] = (ListElementType) DeserializeV8Object(v8List.GetValue(i));
-            }
-            return array;
+            return CefV8Value.CreateUndefined();
         }
     }
 }

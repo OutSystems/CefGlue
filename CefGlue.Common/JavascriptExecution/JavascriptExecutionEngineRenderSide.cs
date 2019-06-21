@@ -39,7 +39,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
                     if (success)
                     {
-                        V8Serialization.SerializeV8Object(value, cefResponseMessage.Arguments, 2);
+                        V8ValueSerialization.SerializeV8Object(value, cefResponseMessage.Arguments, 2);
                     }
 
                     browser.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
