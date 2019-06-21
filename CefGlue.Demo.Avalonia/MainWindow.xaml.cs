@@ -1,6 +1,7 @@
 using System;
 using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
@@ -25,7 +26,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
             browser = new AvaloniaCefBrowser();
             browser.StartUrl = "http://www.google.com";
-
+            
             browserWrapper.Child = browser;
         }
 
@@ -55,8 +56,8 @@ namespace Xilium.CefGlue.Demo.Avalonia
             var obj = new BindingTestClass();
             browser.RegisterJavascriptObject(obj, "dotNetObject");
 
-            var methods = obj.GetType().GetMethods().Select(m => m.Name.Substring(0, 1).ToLowerInvariant() + m.Name.Substring(1));
-            var script = string.Join(";", methods.Select(m => $"{TestObject}.{m}().then(r => console.log(r))"));
+            var methods = obj.GetType().GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public).Select(m => m.Name.Substring(0, 1).ToLowerInvariant() + m.Name.Substring(1));
+            var script = string.Join(";", methods.Select(m => $"{TestObject}.{m}().then(r => console.log('{m}: ' + r))"));
 
             browser.ExecuteJavaScript(script);
         }

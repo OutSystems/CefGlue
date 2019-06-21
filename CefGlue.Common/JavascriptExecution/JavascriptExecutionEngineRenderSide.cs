@@ -2,6 +2,7 @@ using System;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.ObjectBinding;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Serialization;
 
 namespace Xilium.CefGlue.Common.JavascriptExecution
 {
@@ -27,7 +28,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
                     // send script to browser
                     var success = context.TryEval(message.Script, message.Url, message.Line, out var value, out var exception);
-
+                    
                     var response = new Messages.JsEvaluationResult()
                     {
                         TaskId = message.TaskId,

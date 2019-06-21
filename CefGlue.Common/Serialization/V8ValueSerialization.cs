@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xilium.CefGlue.Common
+namespace Xilium.CefGlue.Common.Serialization
 {
     internal static class V8ValueSerialization
     {

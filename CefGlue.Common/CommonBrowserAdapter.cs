@@ -20,7 +20,7 @@ namespace Xilium.CefGlue.Common
         private CommonCefClient _cefClient;
         private JavascriptExecutionEngine _javascriptExecutionEngine;
         private NativeObjectRegistry _objectRegistry;
-        private NativeObjectMethodRunner _objectMethodRunner;
+        private NativeObjectMethodDispatcher _objectMethodDispatcher;
 
         public CommonBrowserAdapter(ILogger logger)
         {
@@ -398,7 +398,7 @@ namespace Xilium.CefGlue.Common
             {
                 _javascriptExecutionEngine = new JavascriptExecutionEngine(browser, _cefClient.Dispatcher);
                 _objectRegistry = new NativeObjectRegistry(browser);
-                _objectMethodRunner = new NativeObjectMethodRunner(_cefClient.Dispatcher, _objectRegistry);
+                _objectMethodDispatcher = new NativeObjectMethodDispatcher(_cefClient.Dispatcher, _objectRegistry);
 
                 _browser = browser;
                 _browserHost = browser.GetHost();

@@ -7,7 +7,7 @@ namespace Xilium.CefGlue.Common
     internal class CommonCefRenderProcessHandler : CefRenderProcessHandler
     {
         private JavascriptExecutionEngineRenderSide _javascriptExecutionEngine;
-        private NativeObjectRegistryRenderSide _nativeObjectRegistry;
+        private JavascriptToNativeDispatcherRenderSide _javascriptToNativeDispatcher;
 
         private readonly MessageDispatcher _messageDispatcher = new MessageDispatcher();
 
@@ -15,7 +15,7 @@ namespace Xilium.CefGlue.Common
         {
             base.OnWebKitInitialized();
             _javascriptExecutionEngine = new JavascriptExecutionEngineRenderSide(_messageDispatcher);
-            _nativeObjectRegistry = new NativeObjectRegistryRenderSide(_messageDispatcher);
+            _javascriptToNativeDispatcher = new JavascriptToNativeDispatcherRenderSide(_messageDispatcher);
         }
 
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
@@ -26,7 +26,7 @@ namespace Xilium.CefGlue.Common
 
         protected override void OnContextReleased(CefBrowser browser, CefFrame frame, CefV8Context context)
         {
-            _nativeObjectRegistry.HandleContextReleased(context);
+            _javascriptToNativeDispatcher.HandleContextReleased(context);
             base.OnContextReleased(browser, frame, context);
         }
     }

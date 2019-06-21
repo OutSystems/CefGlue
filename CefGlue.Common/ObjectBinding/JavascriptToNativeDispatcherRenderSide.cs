@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
 using static Xilium.CefGlue.Common.ObjectBinding.PromiseFactory;
+using Xilium.CefGlue.Common.Serialization;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
-    internal class NativeObjectRegistryRenderSide
+    internal class JavascriptToNativeDispatcherRenderSide
     {
         private readonly IDictionary<int, PromiseHolder> _pendingCalls = new ConcurrentDictionary<int, PromiseHolder>();
 
-        public NativeObjectRegistryRenderSide(MessageDispatcher dispatcher)
+        public JavascriptToNativeDispatcherRenderSide(MessageDispatcher dispatcher)
         {
             dispatcher.RegisterMessageHandler(Messages.NativeObjectRegistrationRequest.Name, HandleNativeObjectRegistration);
             dispatcher.RegisterMessageHandler(Messages.NativeObjectCallResult.Name, HandleNativeObjectCallResult);

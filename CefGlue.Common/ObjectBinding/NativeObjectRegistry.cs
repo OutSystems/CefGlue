@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Concurrent;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
 
@@ -6,7 +7,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
     internal class NativeObjectRegistry
     {
         private readonly CefBrowser _browser;
-        private readonly ConcurrentDictionary<string, object> _registeredObjects = new ConcurrentDictionary<string, object>();
+        private readonly ConcurrentDictionary<string, NativeObject> _registeredObjects = new ConcurrentDictionary<string, NativeObject>();
 
         public NativeObjectRegistry(CefBrowser browser)
         {
@@ -21,17 +22,19 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         /// <returns>True if the object was successfully registered, false if the object was already registered before.</returns>
         public bool Register(object obj, string name)
         {
-            if (!_registeredObjects.TryAdd(name, obj))
+            if (_registeredObjects.ContainsKey(name))
             {
                 return false;
             }
 
             var objectMembers = NativeObjectAnalyser.AnalyseObjectMembers(obj);
-            
+
+            _registeredObjects.TryAdd(name, new NativeObject(obj, objectMembers));
+
             var message = new Messages.NativeObjectRegistrationRequest()
             {
                 ObjectName = name,
-                MethodsNames = objectMembers
+                MethodsNames = objectMembers.Keys.ToArray()
             };
 
             _browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
@@ -39,7 +42,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             return true;
         }
 
-        public object Get(string name)
+        public NativeObject Get(string name)
         {
             _registeredObjects.TryGetValue(name, out var obj);
             return obj;

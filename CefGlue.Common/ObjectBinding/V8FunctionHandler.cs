@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Serialization;
 using static Xilium.CefGlue.Common.ObjectBinding.PromiseFactory;
 
 namespace Xilium.CefGlue.Common.ObjectBinding

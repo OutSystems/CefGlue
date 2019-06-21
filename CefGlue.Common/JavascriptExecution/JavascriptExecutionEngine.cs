@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Serialization;
 
 namespace Xilium.CefGlue.Common.JavascriptExecution
 {

@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace Xilium.CefGlue.Demo.Avalonia
 {
     internal class BindingTestClass
@@ -6,6 +9,11 @@ namespace Xilium.CefGlue.Demo.Avalonia
         {
             public string Name;
             public int Value;
+        }
+
+        public DateTime GetDate()
+        {
+            return new DateTime();
         }
 
         public string GetString()
@@ -31,6 +39,15 @@ namespace Xilium.CefGlue.Demo.Avalonia
         public string[] GetList()
         {
             return new [] { "item 1", "item 2", "item 3" };
+        }
+
+        public IDictionary<string, object> GetDictionary()
+        {
+            return new Dictionary<string, object>
+            {
+                { "Name", "This is a dictionary" },
+                { "Value", 10.5 }
+            };
         }
 
         public object GetObject()
