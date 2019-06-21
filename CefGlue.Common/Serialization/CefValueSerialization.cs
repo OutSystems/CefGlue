@@ -8,6 +8,12 @@ namespace Xilium.CefGlue.Common.Serialization
 {
     internal static class CefValueSerialization
     {
+        public enum BinaryMagicBytes : byte
+        {
+            DateTime,
+            Binary
+        }
+
         public static CefValue Serialize(object value)
         {
             return Serialize(value, new Stack<object>());
@@ -47,23 +53,32 @@ namespace Xilium.CefGlue.Common.Serialization
                 case TypeCode.Boolean:
                     cefValue.SetBool((bool)value);
                     break;
+
                 case TypeCode.Byte:
-                    // TODO
+                    var originalBinary = ((byte[])value);
+                    cefValue.SetBinary(ToCefBinary(BinaryMagicBytes.Binary, originalBinary));
                     break;
+
                 case TypeCode.Char:
                     cefValue.SetString(((char)value).ToString());
                     break;
+
                 case TypeCode.DateTime:
-                    // TODO
+                    // datetime is serialized into a binary (cef value does not support datetime)
+                    var dateBinary = BitConverter.GetBytes(((DateTime)value).ToBinary());
+                    cefValue.SetBinary(ToCefBinary(BinaryMagicBytes.DateTime, dateBinary));
                     break;
+                    
                 case TypeCode.Decimal:
                 case TypeCode.Double:
                 case TypeCode.Single:
                     cefValue.SetDouble((double)value);
                     break;
+
                 case TypeCode.Empty:
                     cefValue.SetNull();
                     break;
+
                 case TypeCode.Int16:
                 case TypeCode.Int32:
                 case TypeCode.Int64:
@@ -72,9 +87,11 @@ namespace Xilium.CefGlue.Common.Serialization
                 case TypeCode.UInt64:
                     cefValue.SetInt((int)value);
                     break;
+
                 case TypeCode.SByte:
                     cefValue.SetInt((sbyte)value);
                     break;
+
                 case TypeCode.String:
                     cefValue.SetString((string)value);
                     break;
@@ -99,8 +116,7 @@ namespace Xilium.CefGlue.Common.Serialization
 
                 cefValue.SetDictionary(cefDictionary);
             }
-
-            if (value is IEnumerable enumerable)
+            else if (value is IEnumerable enumerable)
             {
                 var list = CefListValue.Create();
                 var i = 0;
@@ -111,6 +127,25 @@ namespace Xilium.CefGlue.Common.Serialization
 
                 cefValue.SetList(list);
             }
+            else
+            {
+                var fields = value.GetType().GetFields();
+                var properties = value.GetType().GetProperties();
+
+                var cefDictionary = CefDictionaryValue.Create();
+
+                foreach (var field in fields)
+                {
+                    cefDictionary.SetValue(field.Name, Serialize(field.GetValue(value), visitedObjects));
+                }
+
+                foreach (var property in properties)
+                {
+                    cefDictionary.SetValue(property.Name, Serialize(property.GetValue(value), visitedObjects));
+                }
+
+                cefValue.SetDictionary(cefDictionary);
+            }
 
             return cefValue;
         }
@@ -120,8 +155,7 @@ namespace Xilium.CefGlue.Common.Serialization
             switch (value.GetValueType())
             {
                 case CefValueType.Binary:
-                    var binaryDate = BitConverter.ToInt64(value.GetBinary().ToArray(), 0);
-                    return DateTime.FromBinary(binaryDate);
+                    return FromCefBinary(value.GetBinary(), out var kind);
 
                 case CefValueType.Bool:
                     return value.GetBool();
@@ -163,6 +197,40 @@ namespace Xilium.CefGlue.Common.Serialization
                 array[i] = (ListElementType)DeserializeCefValue(cefList.GetValue(i));
             }
             return array;
+        }
+
+        internal static CefBinaryValue ToCefBinary(BinaryMagicBytes kind, byte[] originalBinary)
+        {
+            var binary = new byte[originalBinary.Length + 1]; // alloc space for the magic byte
+            binary[0] = (byte)kind;
+            originalBinary.CopyTo(binary, 1);
+
+            return CefBinaryValue.Create(binary);
+        }
+
+        internal static object FromCefBinary(CefBinaryValue value, out BinaryMagicBytes kind)
+        {
+            var binary = value.ToArray();
+            if (binary.Length > 0)
+            {
+                var rest = binary.Skip(1).ToArray();
+                kind = (BinaryMagicBytes)binary[0];
+                switch (kind)
+                {
+                    case BinaryMagicBytes.Binary:
+                        return rest;
+
+                    case BinaryMagicBytes.DateTime:
+                        var binaryDate = BitConverter.ToInt64(rest, 0);
+                        return DateTime.FromBinary(binaryDate);
+
+                    default:
+                        throw new InvalidOperationException("Unrecognized binary type: " + binary[0]);
+                }
+            }
+
+            kind = BinaryMagicBytes.Binary;
+            return new byte[0];
         }
     }
 }

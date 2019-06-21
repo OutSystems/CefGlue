@@ -172,8 +172,8 @@ namespace Xilium.CefGlue.Common.Serialization
             {
                 // TODO time returned is UTC
                 var date = obj.GetDateValue();
-                var binaryValue = CefBinaryValue.Create(BitConverter.GetBytes(date.ToBinary()));
-                container.SetBinary(binaryValue);
+                var binary = CefValueSerialization.ToCefBinary(CefValueSerialization.BinaryMagicBytes.DateTime, BitConverter.GetBytes(date.ToBinary()));
+                container.SetBinary(binary);
             }
             else if (obj.IsArray)
             {
@@ -230,10 +230,19 @@ namespace Xilium.CefGlue.Common.Serialization
             switch (value.GetValueType())
             {
                 case CefValueType.Binary:
-                    // var binary = value.GetBinary();
-                    // var v8Binary = CefV8Value.CreateArrayBuffer();
-                    // TODO not supported yet
-                    throw new NotImplementedException("Cannot serialize a binary into a v8 object");
+                    var nativeValue = CefValueSerialization.FromCefBinary(value.GetBinary(), out var kind);
+                    switch(kind)
+                    {
+                        case CefValueSerialization.BinaryMagicBytes.Binary:
+                            // TODO not supported yet
+                            throw new NotImplementedException("Cannot serialize a binary into a v8 object");
+
+                        case CefValueSerialization.BinaryMagicBytes.DateTime:
+                            return CefV8Value.CreateDate((DateTime)nativeValue);
+
+                        default:
+                            throw new NotImplementedException("Cannot serialize an unknown binary format into a v8 object");
+                    }
 
                 case CefValueType.Bool:
                     return CefV8Value.CreateBool(value.GetBool());

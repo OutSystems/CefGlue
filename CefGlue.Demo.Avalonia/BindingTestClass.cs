@@ -13,7 +13,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
         public DateTime GetDate()
         {
-            return new DateTime();
+            return DateTime.Now;
         }
 
         public string GetString()

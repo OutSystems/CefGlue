@@ -57,7 +57,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             browser.RegisterJavascriptObject(obj, "dotNetObject");
 
             var methods = obj.GetType().GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public).Select(m => m.Name.Substring(0, 1).ToLowerInvariant() + m.Name.Substring(1));
-            var script = string.Join(";", methods.Select(m => $"{TestObject}.{m}().then(r => console.log('{m}: ' + r))"));
+            var script = string.Join(";", methods.Select(m => $"{TestObject}.{m}().then(r => console.log('{m}: ' + JSON.stringify(r)))"));
 
             browser.ExecuteJavaScript(script);
         }
