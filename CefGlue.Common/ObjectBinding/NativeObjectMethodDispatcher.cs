@@ -46,6 +46,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                     else
                     {
                         resultMessage.Success = false;
+                        resultMessage.Exception = $"Object named {message.ObjectName} was not found. Make sure it was registered before.";
                     }
                 }
                 catch (Exception e)
@@ -65,7 +66,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             var parameters = method.GetParameters();
             if (args.Length != parameters.Length)
             {
-                //throw new InvalidArgumentsException();
+                throw new ArgumentException($"Number of arguments provided does not match the number of {methodName} method parameters.");
             }
 
             var convertedArgs = parameters.Select((p, i) => JavascriptToNativeTypeConverter.ConvertToNative(args[i], p.ParameterType)).ToArray();

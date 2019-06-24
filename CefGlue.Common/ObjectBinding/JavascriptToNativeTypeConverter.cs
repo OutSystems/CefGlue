@@ -9,7 +9,10 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 {
     internal static class JavascriptToNativeTypeConverter
     {
-        private readonly static MethodInfo ToArrayMethodInfo = typeof(Enumerable).GetMethod("ToArray", BindingFlags.Public | BindingFlags.Static);
+        private delegate IList ListContructor(int length, out Type genericType);
+
+        private static readonly IDictionary<Type, MemberInfo[]> _typeMembersCache = new Dictionary<Type, MemberInfo[]>();
+        private static readonly IDictionary<Type, ListContructor> _typeListConstructorCache = new Dictionary<Type, ListContructor>();
 
         /// <summary>
         /// Converts an object from javascript into 
@@ -44,7 +47,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 return typeConverter.ConvertTo(obj, expectedType);
             }
-            
+
             if (expectedType.IsCollection() || expectedType.IsArray() || expectedType.IsEnumerable())
             {
                 return ConvertToNativeList(obj, expectedType);
@@ -76,35 +79,18 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 return null;
             }
 
-            Type genericType = null;
+            var nativeList = GetListConstructor(expectedType)(collection.Count, out var listItemType);
 
-            // Make sure it has a generic type
-            if (expectedType.GetTypeInfo().IsGenericType)
-            {
-                genericType = expectedType.GetGenericArguments().FirstOrDefault();
-            }
-            else
-            {
-                var ienumerable = expectedType.GetInterfaces().Where(i => i.GetTypeInfo().IsGenericType).FirstOrDefault(i => i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
-                genericType = ienumerable?.GetGenericArguments().FirstOrDefault();
-            }
-
-            if (genericType == null)
-            {
-                // If we don't have a generic type then just use object
-                genericType = typeof(object);
-            }
-
-            var listType = typeof(List<>).MakeGenericType(genericType);
-            var nativeList = (IList)Activator.CreateInstance(listType);
+            var i = 0;
 
             foreach (var item in collection)
             {
+                var convertedItem = item;
                 // if the value is null then we'll add null to the collection,
                 if (item == null)
                 {
                     // for value types like int we'll create the default value and assign that as we cannot assign null
-                    nativeList.Add(genericType.IsValueType ? Activator.CreateInstance(genericType) : null);
+                    convertedItem = listItemType.IsValueType ? Activator.CreateInstance(listItemType) : null;
                 }
                 else
                 {
@@ -113,21 +99,11 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                     if (typeof(IDictionary<string, object>).IsAssignableFrom(itemType) ||
                         typeof(IList<object>).IsAssignableFrom(itemType))
                     {
-                        var subValue = ConvertToNative(item, genericType);
-                        nativeList.Add(subValue);
-                    }
-                    else
-                    {
-                        nativeList.Add(item);
+                        convertedItem = ConvertToNative(item, listItemType);
                     }
                 }
-            }
 
-            if (expectedType.IsArray())
-            {
-                // TODO is there any other way to do this?
-                var genericToArrayMethod = ToArrayMethodInfo.MakeGenericMethod(new[] { genericType });
-                return genericToArrayMethod.Invoke(null, new[] { nativeList });
+                nativeList[i++] = convertedItem;
             }
 
             return nativeList;
@@ -154,7 +130,64 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             return nativeObject;
         }
 
+        private static ListContructor GetListConstructor(Type expectedType)
+        {
+            if (!_typeListConstructorCache.TryGetValue(expectedType, out var listContructor))
+            {
+                listContructor = InnerGetListConstructor(expectedType);
+                _typeListConstructorCache[expectedType] = listContructor;
+            }
+
+            return listContructor;
+        }
+
+        private static ListContructor InnerGetListConstructor(Type expectedType)
+        {
+            Type listType = null;
+            Type listItemType = null;
+
+            // make sure it has a generic type
+            if (expectedType.GetTypeInfo().IsGenericType)
+            {
+                listType = expectedType;
+            }
+            else
+            {
+                listType = expectedType.GetInterfaces().Where(itf => itf.GetTypeInfo().IsGenericType).FirstOrDefault(itf => itf.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+            }
+
+            // if we don't have a generic type then just use object
+            listItemType = listType?.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+            if (expectedType.IsArray())
+            {
+                return (int length, out Type _listItemType) =>
+                {
+                    _listItemType = listItemType;
+                    return Array.CreateInstance(listItemType, length);
+                };
+            }
+
+            var listGenericType = typeof(List<>).MakeGenericType(listItemType);
+            return (int length, out Type _listItemType) =>
+            {
+                _listItemType = listItemType;
+                return (IList)Activator.CreateInstance(listGenericType, new object[] { length });
+            };
+        }
+
         private static IEnumerable<MemberInfo> CollectMembers(Type type)
+        {
+            if (!_typeMembersCache.TryGetValue(type, out var members))
+            {
+                members = InnerCollectMembers(type).ToArray();
+                _typeMembersCache[type] = members;
+            }
+
+            return members;
+        }
+
+        private static IEnumerable<MemberInfo> InnerCollectMembers(Type type)
         {
             var eligibleMembers = BindingFlags.Public | BindingFlags.Instance;
 
