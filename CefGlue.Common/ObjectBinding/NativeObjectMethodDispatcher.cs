@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
@@ -36,12 +37,19 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                     var targetObj = _objectRegistry.Get(message.ObjectName);
                     if (targetObj != null)
                     {
-                        var nativeMethodName = targetObj.GetNativeMethodName(message.MemberName);
-                        
-                        var result = ExecuteMethod(targetObj.Target, nativeMethodName, arguments);
+                        var nativeMethod = targetObj.GetNativeMethod(message.MemberName);
+                        if (nativeMethod != null)
+                        {
+                            var result = ExecuteMethod(targetObj.Target, nativeMethod, arguments);
 
-                        resultMessage.Result = CefValueSerialization.Serialize(result);
-                        resultMessage.Success = true;
+                            resultMessage.Result = CefValueSerialization.Serialize(result);
+                            resultMessage.Success = true;
+                        }
+                        else
+                        {
+                            resultMessage.Success = false;
+                            resultMessage.Exception = $"Object does not have a {message.ObjectName} method.";
+                        }
                     }
                     else
                     {
@@ -59,17 +67,17 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             });
         }
 
-        private object ExecuteMethod(object targetObj, string methodName, object[] args)
+        private object ExecuteMethod(object targetObj, MethodInfo method, object[] args)
         {
-            // TODO improve perf
-            var method = targetObj.GetType().GetMethod(methodName);
             var parameters = method.GetParameters();
             if (args.Length != parameters.Length)
             {
-                throw new ArgumentException($"Number of arguments provided does not match the number of {methodName} method parameters.");
+                throw new ArgumentException($"Number of arguments provided does not match the number of {method.Name} method parameters.");
             }
 
             var convertedArgs = parameters.Select((p, i) => JavascriptToNativeTypeConverter.ConvertToNative(args[i], p.ParameterType)).ToArray();
+
+            // TODO improve call perf
             return method.Invoke(targetObj, convertedArgs);
         }
     }
