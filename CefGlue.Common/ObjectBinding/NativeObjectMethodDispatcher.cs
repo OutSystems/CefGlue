@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
@@ -18,50 +20,56 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
         private void HandleNativeObjectCallRequest(MessageReceivedEventArgs args)
         {
-            // message must be deserialized at this point because it will be disposed after
+            // message and arguments must be deserialized at this point because it will be disposed after
             var message = Messages.NativeObjectCallRequest.FromCefMessage(args.Message);
-            
+            var arguments = CefValueSerialization.DeserializeCefList<object>(message.Arguments);
+
             Task.Run(() =>
             {
+                var resultMessage = new Messages.NativeObjectCallResult()
+                {
+                    CallId = message.CallId
+                };
+
                 try
                 {
                     var targetObj = _objectRegistry.Get(message.ObjectName);
                     if (targetObj != null)
                     {
                         var nativeMethodName = targetObj.GetNativeMethodName(message.MemberName);
-                        var arguments = CefValueSerialization.DeserializeCefList<object>(message.Arguments);
                         
-                        ExecuteMethod(args.Browser, message.CallId, targetObj.Target, nativeMethodName, arguments);
+                        var result = ExecuteMethod(targetObj.Target, nativeMethodName, arguments);
+
+                        resultMessage.Result = CefValueSerialization.Serialize(result);
+                        resultMessage.Success = true;
                     }
                     else
                     {
-                        // TODO send error when object is not found
+                        resultMessage.Success = false;
                     }
                 }
-                catch
+                catch (Exception e)
                 {
-                    // TODO handle error
+                    resultMessage.Success = false;
+                    resultMessage.Exception = e.Message;
                 }
+                
+                args.Browser.SendProcessMessage(CefProcessId.Renderer, resultMessage.ToCefProcessMessage());
             });
         }
 
-        private void ExecuteMethod(CefBrowser browser, int callId, object targetObj, string methodName, object[] args)
+        private object ExecuteMethod(object targetObj, string methodName, object[] args)
         {
-            // TODO :
-            // serialize arguments properly based on method param types
-
+            // TODO improve perf
             var method = targetObj.GetType().GetMethod(methodName);
-            var result = method.Invoke(targetObj, args);
-
-            var cefValue = CefValueSerialization.Serialize(result);
-
-            var message = new Messages.NativeObjectCallResult()
+            var parameters = method.GetParameters();
+            if (args.Length != parameters.Length)
             {
-                CallId = callId,
-                Success = true,
-                Result = cefValue
-            };
-            browser.SendProcessMessage(CefProcessId.Renderer, message.ToCefProcessMessage());
+                //throw new InvalidArgumentsException();
+            }
+
+            var convertedArgs = parameters.Select((p, i) => JavascriptToNativeTypeConverter.ConvertToNative(args[i], p.ParameterType)).ToArray();
+            return method.Invoke(targetObj, convertedArgs);
         }
     }
 }

@@ -56,8 +56,16 @@ namespace Xilium.CefGlue.Demo.Avalonia
             var obj = new BindingTestClass();
             browser.RegisterJavascriptObject(obj, "dotNetObject");
 
-            var methods = obj.GetType().GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public).Select(m => m.Name.Substring(0, 1).ToLowerInvariant() + m.Name.Substring(1));
-            var script = string.Join(";", methods.Select(m => $"{TestObject}.{m}().then(r => console.log('{m}: ' + JSON.stringify(r)))"));
+            var methods = obj.GetType().GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public)
+                                       .Where(m => m.GetParameters().Length == 0)
+                                       .Select(m => m.Name.Substring(0, 1).ToLowerInvariant() + m.Name.Substring(1));
+
+            var script = "(function () {" +
+                "let calls = [];" +
+                //string.Join("", methods.Select(m => $"calls.push({{ name: '{m}', promise: {TestObject}.{m}() }});")) +
+                $"calls.push({{ name: 'getObjectWithParams', promise: {TestObject}.getObjectWithParams(5, 'a string', {{ Name: 'obj name', Value: 10 }}) }});" +
+                "calls.forEach(c => c.promise.then(r => console.log(c.name + ': ' + JSON.stringify(r))).catch(e => console.log(e)));" +
+                "})()";
 
             browser.ExecuteJavaScript(script);
         }

@@ -5,7 +5,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
 {
     internal class BindingTestClass
     {
-        private class InnerObject
+        public class InnerObject
         {
             public string Name;
             public int Value;
@@ -38,7 +38,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
         public string[] GetList()
         {
-            return new [] { "item 1", "item 2", "item 3" };
+            return new[] { "item 1", "item 2", "item 3" };
         }
 
         public IDictionary<string, object> GetDictionary()
@@ -51,6 +51,11 @@ namespace Xilium.CefGlue.Demo.Avalonia
         }
 
         public object GetObject()
+        {
+            return new InnerObject { Name = "This is an object", Value = 5 };
+        }
+
+        public object GetObjectWithParams(int anIntParam, string aStringParam, InnerObject anObjectParam)
         {
             return new InnerObject { Name = "This is an object", Value = 5 };
         }
