@@ -81,7 +81,7 @@ namespace Xilium.CefGlue.Avalonia
 
         protected override void OnPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
         {
-            _mainUiDispatcher.InvokeAsync(new Action(delegate
+            _mainUiDispatcher.InvokeAsync(() =>
             {
                 // Actual browser size changed check.
                 if (_browserSizeChanged && (width != _browserWidth || height != _browserHeight))
@@ -106,7 +106,7 @@ namespace Xilium.CefGlue.Avalonia
                     }
 
                 });
-            }));
+            });
         }
 
         protected override void AttachEventHandlers()
@@ -119,14 +119,16 @@ namespace Xilium.CefGlue.Avalonia
         {
             var ptScreen = new Point();
 
-            _mainUiDispatcher.Post(new Action(delegate
-            {
-                WithErrorHandling(nameof(GetScreenPoint), () =>
+            _mainUiDispatcher.Post(
+                () =>
                 {
-                    var ptView = new Point(viewX, viewY);
-                    ptScreen = _control.PointToScreen(ptView);
-                });
-            }), DispatcherPriority.Normal);
+                    WithErrorHandling(nameof(GetScreenPoint), () =>
+                    {
+                        var ptView = new Point(viewX, viewY);
+                        ptScreen = _control.PointToScreen(ptView);
+                    });
+                }, 
+                DispatcherPriority.Normal);
 
             screenX = (int)ptScreen.X;
             screenY = (int)ptScreen.Y;
@@ -139,25 +141,24 @@ namespace Xilium.CefGlue.Avalonia
                 return;
             }
 
-            _mainUiDispatcher.Post(new Action(() => _popup.IsOpen = show));
+            _mainUiDispatcher.Post(() => _popup.IsOpen = show);
         }
 
         protected override void OnPopupSizeChanged(CefRectangle rect)
         {
             _mainUiDispatcher.Post(
-                new Action(
-                    () =>
-                    {
-                        _popupImageBitmap = null;
-                        _popupImageBitmap = new WriteableBitmap(new PixelSize(rect.Width, rect.Height), new Vector(96, 96), PixelFormat.Bgra8888);
+                () =>
+                {
+                    _popupImageBitmap = null;
+                    _popupImageBitmap = new WriteableBitmap(new PixelSize(rect.Width, rect.Height), new Vector(96, 96), PixelFormat.Bgra8888);
 
-                        _popupImage.Source = this._popupImageBitmap;
+                    _popupImage.Source = this._popupImageBitmap;
 
-                        _popup.Width = rect.Width;
-                        _popup.Height = rect.Height;
-                        _popup.HorizontalOffset = rect.X;
-                        _popup.VerticalOffset = rect.Y;
-                    }));
+                    _popup.Width = rect.Width;
+                    _popup.Height = rect.Height;
+                    _popup.HorizontalOffset = rect.X;
+                    _popup.VerticalOffset = rect.Y;
+                });
         }
 
         protected override void OnPopupPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
@@ -168,14 +169,8 @@ namespace Xilium.CefGlue.Avalonia
 
         protected override void OnCursorChanged(IntPtr cursorHandle)
         {
-            // TODO avalonia port
-            //_mainUiDispatcher.Post(
-            //    new Action(
-            //        () =>
-            //        {
-            //            var cursor = CursorInteropHelper.Create(new SafeFileHandle(cursorHandle, false));
-            //            Cursor = cursor;
-            //        }));
+            var cursor = CursorsProvider.GetCursorFromHandle(cursorHandle);
+            _mainUiDispatcher.Post(() => _control.Cursor = cursor);
         }
         
         protected override bool OnTooltipChanged(string text)
@@ -196,20 +191,19 @@ namespace Xilium.CefGlue.Avalonia
             // TODO BUG: sometimes the tooltips are left hanging when the user moves the cursor over the tooltip but meanwhile
             // the tooltip is destroyed
             _mainUiDispatcher.Post(
-                new Action(
-                    () =>
+                () =>
+                {
+                    if (string.IsNullOrEmpty(text))
                     {
-                        if (string.IsNullOrEmpty(text))
-                        {
-                            ToolTip.SetIsOpen(_control, false);
-                        }
-                        else
-                        {
-                            ToolTip.SetTip(_control, text);
-                            ToolTip.SetShowDelay(_control, 0);
-                            ToolTip.SetIsOpen(_control, true);
-                        }
-                    }), DispatcherPriority.Input);
+                        ToolTip.SetIsOpen(_control, false);
+                    }
+                    else
+                    {
+                        ToolTip.SetTip(_control, text);
+                        ToolTip.SetShowDelay(_control, 0);
+                        ToolTip.SetIsOpen(_control, true);
+                    }
+                }, DispatcherPriority.Input);
         }
 
         protected override int RenderedWidth => (int) _browserBitmap.Size.Width;
