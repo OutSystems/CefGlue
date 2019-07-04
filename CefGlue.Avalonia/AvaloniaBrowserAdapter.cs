@@ -28,26 +28,14 @@ namespace Xilium.CefGlue.Avalonia
         private Image _popupImage;
         private WriteableBitmap _popupImageBitmap;
 
-        private ToolTip _tooltip;
-        private DispatcherTimer _tooltipTimer;
+        private string _tooltip;
 
         private Dispatcher _mainUiDispatcher;
 
         public AvaloniaBrowserAdapter(TemplatedControl control, ILogger logger) : base(logger)
         {
             _control = control;
-
             _popup = CreatePopup();
-
-            _tooltip = new ToolTip();
-            // TODO avalonia port
-            // _tooltip.StaysOpen = true;
-            _tooltip.IsVisible = false;
-            // TODO avalonia port
-            // _tooltip.Closed += TooltipOnClosed;
-
-            _tooltipTimer = new DispatcherTimer();
-            _tooltipTimer.Interval = TimeSpan.FromSeconds(0.5);
 
             // TODO avalonia port
             // KeyboardNavigation.SetAcceptsReturn(this, true);
@@ -189,53 +177,40 @@ namespace Xilium.CefGlue.Avalonia
             //            Cursor = cursor;
             //        }));
         }
-
+        
         protected override bool OnTooltipChanged(string text)
         {
-            if (string.IsNullOrEmpty(text))
+            if (_tooltip == text)
             {
-                _tooltipTimer.Stop();
-                UpdateTooltip(null);
+                return true;
             }
-            else
-            {
-                _tooltipTimer.Tick += (sender, args) => UpdateTooltip(text);
-                _tooltipTimer.Start();
-            }
+
+            _tooltip = text;
+            UpdateTooltip(text);
 
             return true;
         }
 
         private void UpdateTooltip(string text)
         {
+            // TODO BUG: sometimes the tooltips are left hanging when the user moves the cursor over the tooltip but meanwhile
+            // the tooltip is destroyed
             _mainUiDispatcher.Post(
                 new Action(
                     () =>
                     {
-                        // TODO avalonia port
-                        //if (string.IsNullOrEmpty(text))
-                        //{
-                        //    _tooltip.IsOpen = false;
-                        //}
-                        //else
-                        //{
-                        //    _tooltip.Placement = PlacementMode.Mouse;
-                        //    _tooltip.Content = text;
-                        //    _tooltip.IsOpen = true;
-                        //    _tooltip.Visibility = Visibility.Visible;
-                        //}
-                    }), DispatcherPriority.Render);
-
-            _tooltipTimer.Stop();
+                        if (string.IsNullOrEmpty(text))
+                        {
+                            ToolTip.SetIsOpen(_control, false);
+                        }
+                        else
+                        {
+                            ToolTip.SetTip(_control, text);
+                            ToolTip.SetShowDelay(_control, 0);
+                            ToolTip.SetIsOpen(_control, true);
+                        }
+                    }), DispatcherPriority.Input);
         }
-
-        // TODO avalonia port
-        //private void TooltipOnClosed(object sender, RoutedEventArgs routedEventArgs)
-        //{
-
-        //    _tooltip.Visibility = Visibility.Collapsed;
-        //    _tooltip.Placement = PlacementMode.Absolute;
-        //}
 
         protected override int RenderedWidth => (int) _browserBitmap.Size.Width;
 
