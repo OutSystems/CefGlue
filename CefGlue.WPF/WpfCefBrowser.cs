@@ -43,6 +43,7 @@ namespace Xilium.CefGlue.WPF
         }
 
         protected virtual void Dispose(bool disposing) {
+
             _adapter.Dispose(disposing);
         }
 
@@ -246,30 +247,6 @@ namespace Xilium.CefGlue.WPF
         {
         }
 
-        public WpfCefBrowser(ILogger logger)
-        {
-            if (logger == null)
-            {
-                throw new ArgumentNullException("logger");
-            }
-
-            _logger = logger;
-
-            StartUrl = "about:blank";
-
-            _popup = CreatePopup();
-
-            _tooltip = new ToolTip();
-            _tooltip.StaysOpen = true;
-            _tooltip.Visibility = Visibility.Collapsed;
-            _tooltip.Closed += TooltipOnClosed;
-
-            _tooltipTimer = new DispatcherTimer();
-            _tooltipTimer.Interval = TimeSpan.FromSeconds(0.5);
-
-            KeyboardNavigation.SetAcceptsReturn(this, true);
-            _mainUiDispatcher = Dispatcher.CurrentDispatcher;
-        }
 
         #region Disposable
 
@@ -325,150 +302,6 @@ namespace Xilium.CefGlue.WPF
         }
 
         #endregion
-
-
-
-        internal void HandleViewPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr buffer, int width, int height)
-        {
-            // When browser size changed - we just skip frame updating.
-            // This is dirty precheck to do not do Invoke whenever is possible.
-            if (_browserSizeChanged && (width != _browserWidth || height != _browserHeight)) return;
-
-            _mainUiDispatcher.Invoke(DispatcherPriority.Render, new Action(delegate
-            {
-                // Actual browser size changed check.
-                if (_browserSizeChanged && (width != _browserWidth || height != _browserHeight)) return;
-
-                try
-                {
-                    if (_browserSizeChanged)
-                    {
-                        _browserPageBitmap = new WriteableBitmap((int)_browserWidth, (int)_browserHeight, 96, 96, AllowsTransparency ? PixelFormats.Bgra32 : PixelFormats.Bgr32, null);
-                        _browserPageImage.Source = _browserPageBitmap;
-
-                        _browserSizeChanged = false;
-                    }
-
-                    if (_browserPageBitmap != null)
-                    {
-                        DoRenderBrowser(_browserPageBitmap, width, height, dirtyRects, buffer);
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorException("WpfCefBrowser: Caught exception in HandleViewPaint()", ex);
-                }
-            }));
-        }
-
-        internal void HandlePopupPaint(int width, int height, CefRectangle[] dirtyRects, IntPtr sourceBuffer)
-        {
-            if (width == 0 || height == 0)
-            {
-                return;
-            }
-
-            _mainUiDispatcher.Invoke(
-                DispatcherPriority.Render,
-                new Action(
-                    () =>
-                    {
-                        int stride = width * 4;
-                        int sourceBufferSize = stride * height;
-
-                        _logger.Debug("RenderPopup() Bitmap H{0}xW{1}, Browser H{2}xW{3}", _popupImageBitmap.Height, _popupImageBitmap.Width, width, height);
-
-
-                        foreach (CefRectangle dirtyRect in dirtyRects)
-                        {
-                            _logger.Debug(
-                                string.Format(
-                                    "Dirty rect [{0},{1},{2},{3}]",
-                                    dirtyRect.X,
-                                    dirtyRect.Y,
-                                    dirtyRect.Width,
-                                    dirtyRect.Height));
-
-                            if (dirtyRect.Width == 0 || dirtyRect.Height == 0)
-                            {
-                                continue;
-                            }
-
-                            int adjustedWidth = dirtyRect.Width;
-
-                            int adjustedHeight = dirtyRect.Height;
-
-                            Int32Rect sourceRect = new Int32Rect(dirtyRect.X, dirtyRect.Y, adjustedWidth, adjustedHeight);
-
-                            _popupImageBitmap.WritePixels(sourceRect, sourceBuffer, sourceBufferSize, stride, dirtyRect.X, dirtyRect.Y);
-                        }
-                    }));
-        }
-
-        private void DoRenderBrowser(WriteableBitmap bitmap, int browserWidth, int browserHeight, CefRectangle[] dirtyRects, IntPtr sourceBuffer)
-        {
-            int stride = browserWidth * 4;
-            int sourceBufferSize = stride * browserHeight;
-
-            _logger.Debug("DoRenderBrowser() Bitmap H{0}xW{1}, Browser H{2}xW{3}", bitmap.Height, bitmap.Width, browserHeight, browserWidth);
-
-            if (browserWidth == 0 || browserHeight == 0)
-            {
-                return;
-            }
-
-            foreach (CefRectangle dirtyRect in dirtyRects)
-            {
-                _logger.Debug(string.Format("Dirty rect [{0},{1},{2},{3}]", dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height));
-
-                if (dirtyRect.Width == 0 || dirtyRect.Height == 0)
-                {
-                    continue;
-                }
-
-                // If the window has been resized, make sure we never try to render too much
-                int adjustedWidth = (int)dirtyRect.Width;
-                //if (dirtyRect.X + dirtyRect.Width > (int) bitmap.Width)
-                //{
-                //    adjustedWidth = (int) bitmap.Width - (int) dirtyRect.X;
-                //}
-
-                int adjustedHeight = (int)dirtyRect.Height;
-                //if (dirtyRect.Y + dirtyRect.Height > (int) bitmap.Height)
-                //{
-                //    adjustedHeight = (int) bitmap.Height - (int) dirtyRect.Y;
-                //}
-
-                // Update the dirty region
-                Int32Rect sourceRect = new Int32Rect((int)dirtyRect.X, (int)dirtyRect.Y, adjustedWidth, adjustedHeight);
-                bitmap.WritePixels(sourceRect, sourceBuffer, sourceBufferSize, stride, (int)dirtyRect.X, (int)dirtyRect.Y);
-
-                // 			int adjustedWidth = browserWidth;
-                // 			if (browserWidth > (int)bitmap.Width)
-                // 				adjustedWidth = (int)bitmap.Width;
-                // 
-                // 			int adjustedHeight = browserHeight;
-                // 			if (browserHeight > (int)bitmap.Height)
-                // 				adjustedHeight = (int)bitmap.Height;
-                // 
-                // 			int sourceBufferSize = browserWidth * browserHeight * 4;
-                // 			int stride = browserWidth * 4;
-                // 
-                // 			Int32Rect sourceRect = new Int32Rect(0, 0, adjustedWidth, adjustedHeight);
-                // 			bitmap.WritePixels(sourceRect, sourceBuffer, sourceBufferSize, stride, 0, 0);
-            }
-        }
-
-        internal void OnPopupShow(bool show)
-        {
-            if (_popup == null)
-            {
-                return;
-            }
-
-            _mainUiDispatcher.Invoke(new Action(() => _popup.IsOpen = show));
-        }
 
     }
 }

@@ -2,7 +2,7 @@ using System;
 
 namespace Xilium.CefGlue.Common.Platform
 {
-    internal abstract class UIControl
+    internal abstract class UIControl : IControl
     {
         public delegate void KeyEventHandler(CefKeyEvent e, out bool handled);
         public delegate void TextInputEventHandler(string text, out bool handled);

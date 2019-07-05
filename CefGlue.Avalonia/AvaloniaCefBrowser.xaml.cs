@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Xilium.CefGlue.Avalonia.Platform;
 using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Helpers.Logger;
 
@@ -11,21 +12,34 @@ namespace Xilium.CefGlue.Avalonia
     public class AvaloniaCefBrowser : TemplatedControl, IDisposable
     {
         private readonly ILogger _logger;
-        private readonly AvaloniaBrowserAdapter _adapter;
+        private readonly CommonBrowserAdapter _adapter;
 
-        public AvaloniaCefBrowser() : this(new NLogLogger(nameof(AvaloniaCefBrowser)))
-        {
-        }
+        private readonly Popup _popup;
+        private readonly Image _popupImage;
 
-        private AvaloniaCefBrowser(ILogger logger)
+        private Image _image;
+
+        public AvaloniaCefBrowser()
         {
-            if (logger == null)
+            _logger = new NLogLogger(nameof(AvaloniaCefBrowser));
+
+            // TODO
+           //_popupImage = new Image()
+           //{
+           //    Stretch = Stretch.None,
+           //    HorizontalAlignment = HorizontalAlignment.Left,
+           //    VerticalAlignment = VerticalAlignment.Top,
+           //    Source = _popupBitmap
+           //};
+
+            _popup = new Popup
             {
-                throw new ArgumentNullException(nameof(logger));
-            }
+                Child = _popupImage,
+                PlacementTarget = this,
+                PlacementMode = PlacementMode.Bottom
+            };
 
-            _logger = logger;
-            _adapter = new AvaloniaBrowserAdapter(this, logger);
+            _adapter = new CommonBrowserAdapter(nameof(AvaloniaCefBrowser), new AvaloniaControl(this), new AvaloniaPopup(_popup), _logger);
         }
 
         #region Disposable
@@ -43,6 +57,8 @@ namespace Xilium.CefGlue.Avalonia
 
         protected virtual void Dispose(bool disposing)
         {
+            _adapter.RenderHandler?.Dispose();
+            _adapter.PopupRenderHandler?.Dispose();
             _adapter.Dispose(disposing);
         }
 
@@ -115,19 +131,41 @@ namespace Xilium.CefGlue.Avalonia
         protected override void OnTemplateApplied(TemplateAppliedEventArgs e)
         {
             base.OnTemplateApplied(e);
-            _adapter.BrowserImage = e.NameScope.Find<Image>("PART_Image");
+            _image = e.NameScope.Find<Image>("PART_Image");
+            _adapter.RenderHandler?.Dispose();
+            _adapter.RenderHandler = new AvaloniaRenderHandler(_image, _logger);
         }
 
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
             var size = base.ArrangeOverride(arrangeBounds);
 
-            if (_adapter.BrowserImage != null)
+            if (_image != null)
             {
                 _adapter.CreateOrUpdateBrowser((int) size.Width, (int) size.Height);
             }
 
             return size;
+        }
+
+        protected void OnPopupSizeChanged(CefRectangle rect)
+        {
+            // TODO
+            //_mainUiDispatcher.Post(
+            //    () =>
+            //    {
+            //        _popupRenderHandler.Dispose();
+            //        _popupRenderHandler = new RenderHandler(_popupImage, _logger);
+
+            //        _popupBitmap = new WriteableBitmap(new PixelSize(rect.Width, rect.Height), new Vector(96, 96), PixelFormat.Bgra8888);
+
+            //        _popupImage.Source = _popupBitmap;
+
+            //        _popup.Width = rect.Width;
+            //        _popup.Height = rect.Height;
+            //        _popup.HorizontalOffset = rect.X;
+            //        _popup.VerticalOffset = rect.Y;
+            //    });
         }
     }
 }

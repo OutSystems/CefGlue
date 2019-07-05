@@ -100,6 +100,5 @@ namespace Xilium.CefGlue.Avalonia.Platform
         }
 
         public override bool IsFocused => _control.IsFocused;
-       
     }
 }

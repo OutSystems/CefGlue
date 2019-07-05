@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="InputExtensions.cs" />
     <Compile Include="IUiHelper.cs" />
+    <Compile Include="Platform\WpfControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -106,6 +107,7 @@
     <Compile Include="WpfCefLifeSpanHandler.cs" />
     <Compile Include="WpfCefLoadHandler.cs" />
     <Compile Include="WpfCefRenderHandler.cs" />
+    <Compile Include="WpfRenderHandler.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

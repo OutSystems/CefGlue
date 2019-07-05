@@ -1,12 +1,20 @@
 using System;
+using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.Common.Helpers
 {
     internal abstract class RenderHandler : IDisposable
     {
+        protected readonly ILogger _logger;
+
         protected bool _sizeChanged;
         private int _width;
         private int _height;
+
+        protected RenderHandler(ILogger logger)
+        {
+            _logger = logger;
+        }
 
         public int Width
         {

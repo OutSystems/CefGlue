@@ -8,9 +8,12 @@ using Xilium.CefGlue.Common.Platform;
 
 namespace Xilium.CefGlue.Common
 {
-    internal abstract class CommonBrowserAdapter : ICefBrowserHost, IDisposable
+    internal class CommonBrowserAdapter : ICefBrowserHost, IDisposable
     {
-        protected readonly ILogger _logger;
+        private readonly string _name;
+        private readonly ILogger _logger;
+        private readonly IControl _control;
+        private readonly IPopup _popup;
 
         private bool _browserCreated;
 
@@ -26,14 +29,11 @@ namespace Xilium.CefGlue.Common
         private NativeObjectRegistry _objectRegistry;
         private NativeObjectMethodDispatcher _objectMethodDispatcher;
 
-        private UIControl _control;
-
-        protected RenderHandler _renderHandler;
-        protected RenderHandler _popupRenderHandler;
-
-        public CommonBrowserAdapter(UIControl control, ILogger logger)
+        public CommonBrowserAdapter(string name, IControl control, IPopup popup, ILogger logger)
         {
+            _name = name;
             _control = control;
+            _popup = popup;
             _logger = logger;
 
             StartUrl = "about:blank";
@@ -62,8 +62,8 @@ namespace Xilium.CefGlue.Common
 
             if (disposing)
             {
-                _renderHandler?.Dispose();
-                _popupRenderHandler?.Dispose();
+                RenderHandler?.Dispose();
+                PopupRenderHandler?.Dispose();
             }
         }
 
@@ -72,11 +72,13 @@ namespace Xilium.CefGlue.Common
         public event LoadingStateChangeEventHandler LoadingStateChange;
         public event LoadErrorEventHandler LoadError;
 
-        protected abstract string Name { get; }
-
         public string StartUrl { get; set; }
 
         public bool AllowsTransparency { get; set; }
+
+        public RenderHandler RenderHandler { get; set; }
+
+        public RenderHandler PopupRenderHandler { get; set; }
 
         public void NavigateTo(string url)
         {
@@ -296,7 +298,7 @@ namespace Xilium.CefGlue.Common
                 if (!_browserCreated)
                 {
                     AttachEventHandlers(_control);
-                    AttachEventHandlers(Popup);
+                    AttachEventHandlers(_popup);
 
                     // Create the bitmap that holds the rendered website bitmap
                     OnBrowserSizeChanged(newWidth, newHeight);
@@ -348,7 +350,7 @@ namespace Xilium.CefGlue.Common
             _objectRegistry.Register(targetObject, name);
         }
 
-        protected void AttachEventHandlers(UIControl control)
+        protected void AttachEventHandlers(IControl control)
         {
             control.GotFocus += HandleGotFocus;
             control.LostFocus += HandleLostFocus;
@@ -365,16 +367,17 @@ namespace Xilium.CefGlue.Common
             control.TextInput += HandleTextInput;
         }
 
-        protected int RenderedWidth => _renderHandler.Width;
+        protected int RenderedWidth => RenderHandler.Width;
 
-        protected int RenderedHeight => _renderHandler.Height;
+        protected int RenderedHeight => RenderHandler.Height;
 
         protected void OnBrowserSizeChanged(int newWidth, int newHeight)
         {
-            if (_renderHandler != null)
+            var renderhandler = RenderHandler;
+            if (renderhandler != null)
             {
-                _renderHandler.Width = newWidth;
-                _renderHandler.Height = newHeight;
+                renderhandler.Width = newWidth;
+                renderhandler.Height = newHeight;
             }
         }
 
@@ -406,17 +409,16 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandlePopupShow(bool show)
         {
-            OnPopupShow(show);
+            _popup.Show();
         }
-
-        protected abstract void OnPopupShow(bool show);
 
         void ICefBrowserHost.HandlePopupSizeChange(CefRectangle rect)
         {
-            OnPopupSizeChanged(rect);
+            _popup.Width = rect.Width;
+            _popup.Height = rect.Height;
+            _popup.OffsetX = rect.X;
+            _popup.OffsetY = rect.Y;
         }
-
-        protected abstract void OnPopupSizeChanged(CefRectangle rect);
 
         void ICefBrowserHost.HandleCursorChange(IntPtr cursorHandle)
         {
@@ -506,11 +508,11 @@ namespace Xilium.CefGlue.Common
             RenderHandler renderHandler;
             if (isPopup)
             {
-                renderHandler = _popupRenderHandler;
+                renderHandler = PopupRenderHandler;
             }
             else
             {
-                renderHandler = _renderHandler;
+                renderHandler = RenderHandler;
             }
 
             renderHandler?.Paint(buffer, width, height, dirtyRects);
@@ -536,10 +538,8 @@ namespace Xilium.CefGlue.Common
             }
             catch (Exception ex)
             {
-                _logger.ErrorException($"{Name} : Caught exception in {scopeName}()", ex);
+                _logger.ErrorException($"{_name} : Caught exception in {scopeName}()", ex);
             }
         }
-
-        protected abstract UIControl Popup { get; }
     }
 }

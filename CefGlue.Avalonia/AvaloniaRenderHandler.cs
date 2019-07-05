@@ -12,13 +12,10 @@ namespace Xilium.CefGlue.Avalonia
 {
     internal class AvaloniaRenderHandler : RenderHandler
     {
-        private readonly ILogger _logger;
-
         private WriteableBitmap _bitmap;
 
-        public AvaloniaRenderHandler(Image image, ILogger logger)
+        public AvaloniaRenderHandler(Image image, ILogger logger) : base(logger)
         {
-            _logger = logger;
             Image = image;
         }
 
@@ -46,7 +43,7 @@ namespace Xilium.CefGlue.Avalonia
 
                     if (_bitmap != null)
                     {
-                        Paint(_bitmap, buffer, width, height, dirtyRects);
+                        InnerPaint(buffer, width, height, dirtyRects);
 
                         Image.InvalidateVisual();
                     }
@@ -58,12 +55,12 @@ namespace Xilium.CefGlue.Avalonia
             });
         }
 
-        private void Paint(WriteableBitmap bitmap, IntPtr sourceBuffer, int browserWidth, int browserHeight, CefRectangle[] dirtyRects)
+        private void InnerPaint(IntPtr sourceBuffer, int browserWidth, int browserHeight, CefRectangle[] dirtyRects)
         {
             int stride = browserWidth * 4;
             int sourceBufferSize = stride * browserHeight;
 
-            _logger.Debug("Paint() Bitmap H{0}xW{1}, Browser H{2}xW{3}", bitmap.Size.Height, bitmap.Size.Width, browserHeight, browserWidth);
+            _logger.Debug("Paint() Bitmap H{0}xW{1}, Browser H{2}xW{3}", _bitmap.Size.Height, _bitmap.Size.Width, browserHeight, browserWidth);
 
             if (browserWidth == 0 || browserHeight == 0)
             {
@@ -72,7 +69,7 @@ namespace Xilium.CefGlue.Avalonia
 
             // TODO avalonia port - render only dirty regions
             // bitmap.WritePixels(sourceRect, sourceBuffer, sourceBufferSize, stride, (int)dirtyRect.X, (int)dirtyRect.Y);
-            using (var l = bitmap.Lock())
+            using (var l = _bitmap.Lock())
             {
                 byte[] managedArray = new byte[sourceBufferSize];
 
