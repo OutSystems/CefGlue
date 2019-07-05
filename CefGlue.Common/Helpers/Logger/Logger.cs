@@ -4,12 +4,12 @@ using NLog;
 
 namespace Xilium.CefGlue.Common.Helpers.Logger
 {
-    public interface ILogInitializer
+    internal interface ILogInitializer
     {
         NLog.Logger CreateLogger();
     }
 
-    public class NLogLogger : ILogger
+    public class Logger : ILogger
     {
         private readonly object _syncObject = new object();
         private readonly ILogInitializer _logInitializer;
@@ -69,28 +69,28 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
             }
         }
 
-        public NLogLogger(ILogInitializer logInitializer)
+        private Logger(ILogInitializer logInitializer)
         {
             _logInitializer = logInitializer;
         }
 
-        public NLogLogger()
+        public Logger()
             : this(new CurrentLogInitilizer())
         {
         }
 
-        internal NLogLogger(NLog.Logger log)
+        private Logger(NLog.Logger log)
         {
             _log = log;
             _logInitializer = null;
         }
 
-        public NLogLogger(string loggerName)
+        public Logger(string loggerName)
             : this(new NamedLogInitilizer(loggerName))
         {
         }
 
-        public NLogLogger(Type type)
+        public Logger(Type type)
             : this(new TypeLogInitilizer(type))
         {
         }
@@ -120,7 +120,7 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
 
         public static ILogger GetLogger()
         {
-            return new NLogLogger(GetCurrentLogger());
+            return new Logger(GetCurrentLogger());
         }
 
         public void TraceException(string message, Exception exception)

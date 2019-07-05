@@ -58,9 +58,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.2.0.1.2\lib\net35\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -74,7 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InputExtensions.cs" />
-    <Compile Include="IUiHelper.cs" />
+    <Compile Include="Platform\WpfPopup.cs" />
     <Compile Include="Platform\WpfControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -89,11 +86,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="UiHelper.cs" />
-    <Compile Include="WpfBrowserAdapter.cs" />
     <Compile Include="WpfCefBrowser.cs" />
-    <Compile Include="WpfCefClient.cs" />
-    <Compile Include="WpfCefDisplayHandler.cs" />
     <Compile Include="WpfCefJSAlert.xaml.cs">
       <DependentUpon>WpfCefJSAlert.xaml</DependentUpon>
     </Compile>
@@ -104,9 +97,6 @@
     <Compile Include="WpfCefJSPrompt.xaml.cs">
       <DependentUpon>WpfCefJSPrompt.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WpfCefLifeSpanHandler.cs" />
-    <Compile Include="WpfCefLoadHandler.cs" />
-    <Compile Include="WpfCefRenderHandler.cs" />
     <Compile Include="WpfRenderHandler.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

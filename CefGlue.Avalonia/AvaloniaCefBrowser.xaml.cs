@@ -21,7 +21,7 @@ namespace Xilium.CefGlue.Avalonia
 
         public AvaloniaCefBrowser()
         {
-            _logger = new NLogLogger(nameof(AvaloniaCefBrowser));
+            _logger = new Logger(nameof(AvaloniaCefBrowser));
 
             // TODO
            //_popupImage = new Image()
@@ -57,8 +57,6 @@ namespace Xilium.CefGlue.Avalonia
 
         protected virtual void Dispose(bool disposing)
         {
-            _adapter.RenderHandler?.Dispose();
-            _adapter.PopupRenderHandler?.Dispose();
             _adapter.Dispose(disposing);
         }
 

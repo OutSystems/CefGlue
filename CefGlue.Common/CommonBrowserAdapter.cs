@@ -39,13 +39,13 @@ namespace Xilium.CefGlue.Common
             StartUrl = "about:blank";
         }
 
-        public virtual void Dispose()
+        public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        public virtual void Dispose(bool disposing)
+        public void Dispose(bool disposing)
         {
             // TODO: What's the right way of disposing the browser instance?
             if (_browserHost != null)

@@ -22,7 +22,6 @@ namespace Xilium.CefGlue.WPF
 
         public override void Dispose()
         {
-            throw new NotImplementedException();
         }
 
         public bool AllowsTransparency { get; set; }

@@ -23,7 +23,7 @@ namespace Xilium.CefGlue.Common
 
             _lifeSpanHandler = new CommonCefLifeSpanHandler(owner);
             _displayHandler = new CommonCefDisplayHandler(owner);
-            _renderHandler = new CommonCefRenderHandler(owner, new NLogLogger("CefRenderHandler"));
+            _renderHandler = new CommonCefRenderHandler(owner, new Logger("CefRenderHandler"));
             _loadHandler = new CommonCefLoadHandler(owner);
             _jsDialogHandler = new CommonCefJSDialogHandler();
         }

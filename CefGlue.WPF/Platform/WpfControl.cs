@@ -4,20 +4,21 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using Microsoft.Win32.SafeHandles;
 using Xilium.CefGlue.Common.Platform;
 using Point = Xilium.CefGlue.Common.Platform.Point;
 using WpfPoint = System.Windows.Point;
 
 namespace Xilium.CefGlue.WPF.Platform
 {
-    internal class WpfControl : UIControl
+    internal class WpfControl : UIControl, IDisposable
     {
-        private readonly UIElement _control;
+        private readonly FrameworkElement _control;
 
         private ToolTip _tooltip;
         private DispatcherTimer _tooltipTimer;
 
-        public WpfControl(UIElement control)
+        public WpfControl(FrameworkElement control)
         {
             _control = control;
 
@@ -30,7 +31,7 @@ namespace Xilium.CefGlue.WPF.Platform
             _tooltipTimer.Interval = TimeSpan.FromSeconds(0.5);
         }
 
-        public override bool IsFocused => _control.IsFocused;
+        public override bool IsFocused => _control.Dispatcher.Invoke(() => _control.IsFocused);
 
         public override void Focus()
         {
@@ -62,7 +63,11 @@ namespace Xilium.CefGlue.WPF.Platform
 
         public override void SetCursor(IntPtr cursorHandle)
         {
-            throw new NotImplementedException();
+            _control.Dispatcher.Invoke(() =>
+            {
+                var cursor = CursorInteropHelper.Create(new SafeFileHandle(cursorHandle, false));
+                _control.Cursor = cursor;
+            });
         }
 
         public override void SetTooltip(string text)
@@ -105,6 +110,11 @@ namespace Xilium.CefGlue.WPF.Platform
         {
             _tooltip.Visibility = Visibility.Collapsed;
             _tooltip.Placement = PlacementMode.Absolute;
+        }
+
+        public void Dispose()
+        {
+            _tooltipTimer.Stop();
         }
     }
 }

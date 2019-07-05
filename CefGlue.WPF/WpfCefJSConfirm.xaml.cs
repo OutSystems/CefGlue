@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +13,8 @@ using System.Windows.Shapes;
 
 namespace Xilium.CefGlue.WPF
 {
+
+    // TODO
     /// <summary>
     /// Interaction logic for WpfCefJSConfirm.xaml
     /// </summary>

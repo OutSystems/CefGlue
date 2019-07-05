@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +7,7 @@ using System.Windows.Controls;
 
 namespace Xilium.CefGlue.WPF
 {
+    // TODO
     public class WpfCefJSDialogHandler : CefJSDialogHandler
     {
         protected override bool OnJSDialog(CefBrowser browser, string originUrl, CefJSDialogType dialogType, string message_text, string default_prompt_text, CefJSDialogCallback callback, out bool suppress_message)
