@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -21,16 +20,17 @@ namespace Xilium.CefGlue.Avalonia
 
         private readonly TemplatedControl _control;
 
-        private Image _browserImage;
         private WriteableBitmap _browserBitmap;
 
         private Popup _popup;
         private Image _popupImage;
-        private WriteableBitmap _popupImageBitmap;
+        private WriteableBitmap _popupBitmap;
 
         private string _tooltip;
 
         private Dispatcher _mainUiDispatcher;
+        private RenderHandler _renderHandler;
+        private RenderHandler _popupRenderHandler;
 
         public AvaloniaBrowserAdapter(TemplatedControl control, ILogger logger) : base(logger)
         {
@@ -42,7 +42,17 @@ namespace Xilium.CefGlue.Avalonia
             _mainUiDispatcher = Dispatcher.UIThread;
         }
 
-        public Image BrowserImage { get => _browserImage; set => _browserImage = value; }
+        public Image BrowserImage
+        {
+            get
+            {
+                return _renderHandler?.Image;
+            }
+            set
+            {
+                _renderHandler = new RenderHandler(_mainUiDispatcher, value, _browserBitmap, _logger);
+            }
+        }
 
         protected override object EventsEmitter => _control;
 
@@ -50,19 +60,27 @@ namespace Xilium.CefGlue.Avalonia
         {
             if (disposing)
             {
-                if (_browserImage != null)
+                if (BrowserImage != null)
                 {
-                    _browserImage.Source = null;
-                    _browserImage = null;
+                    BrowserImage.Source = null;
+                }
+
+                if (_popupImage != null)
+                {
+                    _popupImage = null;
                 }
 
                 if (_browserBitmap != null)
                 {
+                    _browserBitmap.Dispose();
                     _browserBitmap = null;
                 }
 
-                // 					if (this.browserPageD3dImage != null)
-                // 						this.browserPageD3dImage = null;
+                if (_popupBitmap != null)
+                {
+                    _popupBitmap.Dispose();
+                    _popupBitmap = null;
+                }
             }
 
             base.Dispose(disposing);
@@ -79,34 +97,19 @@ namespace Xilium.CefGlue.Avalonia
             return null;
         }
 
-        protected override void OnPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
+        protected override void OnPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects, bool isPopup)
         {
-            _mainUiDispatcher.InvokeAsync(() =>
+            RenderHandler renderHandler;
+            if (isPopup)
             {
-                // Actual browser size changed check.
-                if (_browserSizeChanged && (width != _browserWidth || height != _browserHeight))
-                    return;
+                renderHandler = _popupRenderHandler;
+            }
+            else
+            {
+                renderHandler = _renderHandler;
+            }
 
-                WithErrorHandling(nameof(OnPaint), () =>
-                {
-                    if (_browserSizeChanged)
-                    {
-                        // TODO handle trasparency
-                        _browserBitmap = new WriteableBitmap(new PixelSize(_browserWidth, _browserHeight), new Vector(96, 96), PixelFormat.Bgra8888);
-                        _browserImage.Source = _browserBitmap;
-
-                        _browserSizeChanged = false;
-                    }
-
-                    if (_browserBitmap != null)
-                    {
-                        Paint(_browserBitmap, buffer, width, height, dirtyRects);
-
-                        _browserImage.InvalidateVisual();
-                    }
-
-                });
-            });
+            renderHandler?.Paint(buffer, width, height, dirtyRects);
         }
 
         protected override void AttachEventHandlers()
@@ -149,22 +152,18 @@ namespace Xilium.CefGlue.Avalonia
             _mainUiDispatcher.Post(
                 () =>
                 {
-                    _popupImageBitmap = null;
-                    _popupImageBitmap = new WriteableBitmap(new PixelSize(rect.Width, rect.Height), new Vector(96, 96), PixelFormat.Bgra8888);
+                    _popupBitmap?.Dispose();
+                    _popupBitmap = new WriteableBitmap(new PixelSize(rect.Width, rect.Height), new Vector(96, 96), PixelFormat.Bgra8888);
 
-                    _popupImage.Source = this._popupImageBitmap;
+                    _popupImage.Source = _popupBitmap;
 
                     _popup.Width = rect.Width;
                     _popup.Height = rect.Height;
                     _popup.HorizontalOffset = rect.X;
                     _popup.VerticalOffset = rect.Y;
-                });
-        }
 
-        protected override void OnPopupPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
-        {
-            // TODO avalonia port
-            throw new NotImplementedException();
+                    _popupRenderHandler = new RenderHandler(_mainUiDispatcher, _popupImage, _popupBitmap, _logger);
+                });
         }
 
         protected override void OnCursorChanged(IntPtr cursorHandle)
@@ -206,9 +205,9 @@ namespace Xilium.CefGlue.Avalonia
                 }, DispatcherPriority.Input);
         }
 
-        protected override int RenderedWidth => (int) _browserBitmap.Size.Width;
+        protected override int RenderedWidth => _renderHandler.Width;
 
-        protected override int RenderedHeight => (int) _browserBitmap.Size.Height;
+        protected override int RenderedHeight => _renderHandler.Height;
 
         private void AttachEventHandlers(InputElement target)
         {
@@ -248,52 +247,36 @@ namespace Xilium.CefGlue.Avalonia
 
         private Popup CreatePopup()
         {
-            var popup = new Popup
+            _popupImage = CreatePopupImage();
+
+            return new Popup
             {
-                Child = this._popupImage = CreatePopupImage(),
+                Child = _popupImage,
                 PlacementTarget = _control,
                 PlacementMode = PlacementMode.Bottom
             };
-
-            return popup;
         }
 
         private Image CreatePopupImage()
         {
-            var temp = new Image();
-
-            // TODO avalonia port
-            // RenderOptions.SetBitmapScalingMode(temp, BitmapScalingMode.NearestNeighbor);
-
-            temp.Stretch = Stretch.None;
-            temp.HorizontalAlignment = HorizontalAlignment.Left;
-            temp.VerticalAlignment = VerticalAlignment.Top;
-            temp.Source = _popupImageBitmap;
-
-            return temp;
+            return new Image()
+            {
+                Stretch = Stretch.None,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Source = _popupBitmap
+            };
         }
 
-        private void Paint(WriteableBitmap bitmap, IntPtr sourceBuffer, int browserWidth, int browserHeight, CefRectangle[] dirtyRects)
+        protected override void OnBrowserSizeChanged(int newWidth, int newHeight)
         {
-            int stride = browserWidth * 4;
-            int sourceBufferSize = stride * browserHeight;
-
-            _logger.Debug("Paint() Bitmap H{0}xW{1}, Browser H{2}xW{3}", bitmap.Size.Height, bitmap.Size.Width, browserHeight, browserWidth);
-
-            if (browserWidth == 0 || browserHeight == 0)
+            if (_renderHandler != null)
             {
-                return;
-            }
-
-            // TODO avalonia port - render only dirty regions
-            // bitmap.WritePixels(sourceRect, sourceBuffer, sourceBufferSize, stride, (int)dirtyRect.X, (int)dirtyRect.Y);
-            using (var l = bitmap.Lock())
-            {
-                byte[] managedArray = new byte[sourceBufferSize];
-
-                Marshal.Copy(sourceBuffer, managedArray, 0, sourceBufferSize);
-                Marshal.Copy(managedArray, 0, l.Address, sourceBufferSize);
+                _renderHandler.Width = newWidth;
+                _renderHandler.Height = newHeight;
             }
         }
+
+        protected override bool IsFocused => _control.IsFocused;
     }
 }

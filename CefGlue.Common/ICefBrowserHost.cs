@@ -9,9 +9,8 @@ namespace Xilium.CefGlue.Common
 
         void HandlePopupShow(bool show);
         void HandlePopupSizeChange(CefRectangle rect);
-        void HandlePopupPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects);
 
-        void HandleViewPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects);
+        void HandleViewPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects, bool isPopup);
         
         void HandleCursorChange(IntPtr cursorHandle);
 

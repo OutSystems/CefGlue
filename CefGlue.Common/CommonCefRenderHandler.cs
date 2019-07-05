@@ -70,15 +70,7 @@ namespace Xilium.CefGlue.Common
                 }
             }
 
-            switch (type)
-            {
-                case CefPaintElementType.View:
-                    _owner.HandleViewPaint(buffer, width, height, dirtyRects);
-                    break;
-                case CefPaintElementType.Popup:
-                    _owner.HandlePopupPaint(buffer, width, height, dirtyRects);
-                    break;
-            }
+            _owner.HandleViewPaint(buffer, width, height, dirtyRects, type == CefPaintElementType.Popup);
         }
 
         protected override void OnCursorChange(CefBrowser browser, IntPtr cursorHandle, CefCursorType type, CefCursorInfo customCursorInfo)

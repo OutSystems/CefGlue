@@ -10,10 +10,10 @@ namespace Xilium.CefGlue.Common
     {
         protected readonly ILogger _logger;
 
-        protected int _browserWidth;
-        protected int _browserHeight;
         private bool _browserCreated;
-        protected bool _browserSizeChanged;
+
+        protected int _popupWidth;
+        protected int _popupHeight;
 
         private CefBrowser _browser;
         private CefBrowserHost _browserHost;
@@ -258,7 +258,7 @@ namespace Xilium.CefGlue.Common
 
         public void CreateOrUpdateBrowser(int newWidth, int newHeight)
         {
-            _logger.Debug("BrowserResize. Old H{0}xW{1}; New H{2}xW{3}.", _browserHeight, _browserWidth, newHeight, newWidth);
+            _logger.Debug("BrowserResize. Old H{0}xW{1}; New H{2}xW{3}.", RenderedWidth, RenderedHeight, newHeight, newWidth);
 
             if (newWidth > 0 && newHeight > 0)
             {
@@ -267,9 +267,7 @@ namespace Xilium.CefGlue.Common
                     AttachEventHandlers();
 
                     // Create the bitmap that holds the rendered website bitmap
-                    _browserWidth = newWidth;
-                    _browserHeight = newHeight;
-                    _browserSizeChanged = true;
+                    OnBrowserSizeChanged(newWidth, newHeight);
 
                     // Find the window that's hosting us
                     var hParentWnd = GetHostWindowHandle();
@@ -292,9 +290,7 @@ namespace Xilium.CefGlue.Common
                     // Only update the bitmap if the size has changed
                     if (RenderedWidth != newWidth || RenderedHeight != newHeight)
                     {
-                        _browserWidth = newWidth;
-                        _browserHeight = newHeight;
-                        _browserSizeChanged = true;
+                        OnBrowserSizeChanged(newWidth, newHeight);
 
                         // If the window has already been created, just resize it
                         if (_browserHost != null)
@@ -328,6 +324,8 @@ namespace Xilium.CefGlue.Common
 
         protected abstract int RenderedHeight { get; }
 
+        protected abstract void OnBrowserSizeChanged(int newWidth, int newHeight);
+
         #region ICefBrowserHost
 
         void ICefBrowserHost.GetViewRect(out CefRectangle rect)
@@ -339,7 +337,7 @@ namespace Xilium.CefGlue.Common
         {
             // The simulated screen and view rectangle are the same. This is necessary
             // for popup menus to be located and sized inside the view.
-            rect = new CefRectangle(0, 0, (int)_browserWidth, (int)_browserHeight);
+            rect = new CefRectangle(0, 0, RenderedWidth, RenderedHeight);
         }
 
         void ICefBrowserHost.GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY)
@@ -363,13 +361,6 @@ namespace Xilium.CefGlue.Common
 
         protected abstract void OnPopupSizeChanged(CefRectangle rect);
 
-        void ICefBrowserHost.HandlePopupPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
-        {
-            OnPopupPaint(buffer, width, height, dirtyRects);
-        }
-
-        protected abstract void OnPopupPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects);
-
         void ICefBrowserHost.HandleCursorChange(IntPtr cursorHandle)
         {
             OnCursorChanged(cursorHandle);
@@ -386,13 +377,10 @@ namespace Xilium.CefGlue.Common
         {
             int width = 0, height = 0;
 
-            //bool hasAlreadyBeenInitialized = false;
-
-            //_mainUiDispatcher.Post(new Action(delegate
-            //{
             if (_browser != null)
             {
-                //hasAlreadyBeenInitialized = true;
+                // Make sure we don't initialize ourselves more than once. That seems to break things.
+                return;
             }
             else
             {
@@ -402,28 +390,14 @@ namespace Xilium.CefGlue.Common
 
                 _browser = browser;
                 _browserHost = browser.GetHost();
-                // _browserHost.SetFocus(IsFocused);
+                _browserHost.SetFocus(IsFocused);
 
-                width = (int)_browserWidth;
-                height = (int)_browserHeight;
+                width = RenderedWidth;
+                height = RenderedHeight;
             }
-            //}), DispatcherPriority.Normal);
-
-            // Make sure we don't initialize ourselves more than once. That seems to break things.
-            //if (hasAlreadyBeenInitialized)
-            //    return;
 
             if (width > 0 && height > 0)
                 _browserHost.WasResized();
-
-            // 			mainUiDispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
-            // 			{
-            // 				if (!string.IsNullOrEmpty(this.initialUrl))
-            // 				{
-            // 					NavigateTo(this.initialUrl);
-            // 					this.initialUrl = string.Empty;
-            // 				}
-            // 			}));
         }
 
         bool ICefBrowserHost.HandleTooltip(string text)
@@ -453,17 +427,25 @@ namespace Xilium.CefGlue.Common
             LoadingStateChange?.Invoke(this, args);
         }
 
-        void ICefBrowserHost.HandleViewPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
+        void ICefBrowserHost.HandleViewPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects, bool isPopup)
         {
             // When browser size changed - we just skip frame updating.
             // This is dirty precheck to do not do Invoke whenever is possible.
-            if (_browserSizeChanged && (width != _browserWidth || height != _browserHeight))
-                return;
+            if (isPopup)
+            {
+                if (width != _popupWidth || height != _popupHeight)
+                    return;
+            }
+            else
+            {
+                if (width != RenderedWidth || height != RenderedHeight)
+                    return;
+            }
 
-            OnPaint(buffer, width, height, dirtyRects);
+            OnPaint(buffer, width, height, dirtyRects, isPopup);
         }
 
-        protected abstract void OnPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects);
+        protected abstract void OnPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects, bool isPopup);
 
         #endregion
 
@@ -488,5 +470,7 @@ namespace Xilium.CefGlue.Common
                 _logger.ErrorException($"{Name} : Caught exception in {scopeName}()", ex);
             }
         }
+
+        protected abstract bool IsFocused { get; }
     }
 }
