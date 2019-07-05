@@ -1,8 +1,8 @@
+using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using System;
-using System.Threading.Tasks;
 using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Helpers.Logger;
 
@@ -10,7 +10,6 @@ namespace Xilium.CefGlue.Avalonia
 {
     public class AvaloniaCefBrowser : TemplatedControl, IDisposable
     {
-
         private readonly ILogger _logger;
         private readonly AvaloniaBrowserAdapter _adapter;
 

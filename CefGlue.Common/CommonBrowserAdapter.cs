@@ -1,8 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Helpers.Logger;
 using Xilium.CefGlue.Common.JavascriptExecution;
 using Xilium.CefGlue.Common.ObjectBinding;
+using Xilium.CefGlue.Common.Platform;
 
 namespace Xilium.CefGlue.Common
 {
@@ -12,8 +14,10 @@ namespace Xilium.CefGlue.Common
 
         private bool _browserCreated;
 
-        protected int _popupWidth;
-        protected int _popupHeight;
+        private string _tooltip;
+
+        private int _popupWidth;
+        private int _popupHeight;
 
         private CefBrowser _browser;
         private CefBrowserHost _browserHost;
@@ -22,9 +26,15 @@ namespace Xilium.CefGlue.Common
         private NativeObjectRegistry _objectRegistry;
         private NativeObjectMethodDispatcher _objectMethodDispatcher;
 
-        public CommonBrowserAdapter(ILogger logger)
+        private UIControl _control;
+
+        protected RenderHandler _renderHandler;
+        protected RenderHandler _popupRenderHandler;
+
+        public CommonBrowserAdapter(UIControl control, ILogger logger)
         {
-            this._logger = logger;
+            _control = control;
+            _logger = logger;
 
             StartUrl = "about:blank";
         }
@@ -49,6 +59,12 @@ namespace Xilium.CefGlue.Common
                 _browser.Dispose();
                 _browser = null;
             }
+
+            if (disposing)
+            {
+                _renderHandler?.Dispose();
+                _popupRenderHandler?.Dispose();
+            }
         }
 
         public event LoadStartEventHandler LoadStart;
@@ -57,8 +73,6 @@ namespace Xilium.CefGlue.Common
         public event LoadErrorEventHandler LoadError;
 
         protected abstract string Name { get; }
-
-        protected abstract object EventsEmitter { get; }
 
         public string StartUrl { get; set; }
 
@@ -185,6 +199,7 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleMouseButtonDown), () =>
             {
+                _control.Focus();
                 if (_browserHost != null)
                 {
                     SendMouseClickEvent(mouseEvent, mouseButton, false, clickCount);
@@ -218,9 +233,10 @@ namespace Xilium.CefGlue.Common
             });
         }
 
-        public bool HandleTextInput(string text)
+        public void HandleTextInput(string text, out bool handled)
         {
-            var handled = false;
+            var _handled = false;
+
             WithErrorHandling(nameof(HandleMouseWheel), () =>
             {
                 if (_browserHost != null)
@@ -237,14 +253,14 @@ namespace Xilium.CefGlue.Common
                         _browserHost.SendKeyEvent(keyEvent);
                     }
 
-                    handled = true;
+                    _handled = true;
                 }
             });
 
-            return handled;
+            handled = _handled;
         }
 
-        public void HandleKeyPress(CefKeyEvent keyEvent)
+        public void HandleKeyPress(CefKeyEvent keyEvent, out bool handled)
         {
             WithErrorHandling(nameof(HandleKeyPress), () =>
             {
@@ -254,6 +270,21 @@ namespace Xilium.CefGlue.Common
                     SendKeyPressEvent(keyEvent);
                 }
             });
+
+            // TODO
+            //if (key == Key.Tab  // Avoid tabbing out the web browser control
+            //    || key == Key.Home || key == Key.End // Prevent keyboard navigation using home and end keys
+            //    || key == Key.Up || key == Key.Down || key == Key.Left || key == Key.Right // Prevent keyboard navigation using arrows
+            //)
+            //{
+            //    handled = true;
+            //}
+            //else
+            //{
+            //    handled = false;
+            //}
+
+            handled = false;
         }
 
         public void CreateOrUpdateBrowser(int newWidth, int newHeight)
@@ -264,13 +295,14 @@ namespace Xilium.CefGlue.Common
             {
                 if (!_browserCreated)
                 {
-                    AttachEventHandlers();
+                    AttachEventHandlers(_control);
+                    AttachEventHandlers(Popup);
 
                     // Create the bitmap that holds the rendered website bitmap
                     OnBrowserSizeChanged(newWidth, newHeight);
 
                     // Find the window that's hosting us
-                    var hParentWnd = GetHostWindowHandle();
+                    var hParentWnd = _control.GetHostWindowHandle();
                     if (hParentWnd != null)
                     {
                         var windowInfo = CefWindowInfo.Create();
@@ -316,15 +348,35 @@ namespace Xilium.CefGlue.Common
             _objectRegistry.Register(targetObject, name);
         }
 
-        protected abstract IntPtr? GetHostWindowHandle();
+        protected void AttachEventHandlers(UIControl control)
+        {
+            control.GotFocus += HandleGotFocus;
+            control.LostFocus += HandleLostFocus;
 
-        protected abstract void AttachEventHandlers();
+            control.MouseMoved += HandleMouseMove;
+            control.MouseLeave += HandleMouseLeave;
+            control.MouseButtonPressed += HandleMouseButtonDown;
+            control.MouseButtonReleased += HandleMouseButtonUp;
+            control.MouseWheelChanged += HandleMouseWheel;
 
-        protected abstract int RenderedWidth { get; }
+            control.KeyDown += HandleKeyPress;
+            control.KeyUp += HandleKeyPress;
 
-        protected abstract int RenderedHeight { get; }
+            control.TextInput += HandleTextInput;
+        }
 
-        protected abstract void OnBrowserSizeChanged(int newWidth, int newHeight);
+        protected int RenderedWidth => _renderHandler.Width;
+
+        protected int RenderedHeight => _renderHandler.Height;
+
+        protected void OnBrowserSizeChanged(int newWidth, int newHeight)
+        {
+            if (_renderHandler != null)
+            {
+                _renderHandler.Width = newWidth;
+                _renderHandler.Height = newHeight;
+            }
+        }
 
         #region ICefBrowserHost
 
@@ -345,7 +397,12 @@ namespace Xilium.CefGlue.Common
             GetScreenPoint(viewX, viewY, ref screenX, ref screenY);
         }
 
-        protected abstract void GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY);
+        protected void GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY)
+        {
+            var point = _control.PointToScreen(new Point(viewX, viewY));
+            screenX = point.X;
+            screenY = point.Y;
+        }
 
         void ICefBrowserHost.HandlePopupShow(bool show)
         {
@@ -363,10 +420,8 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandleCursorChange(IntPtr cursorHandle)
         {
-            OnCursorChanged(cursorHandle);
+            _control.SetCursor(cursorHandle);
         }
-
-        protected abstract void OnCursorChanged(IntPtr cursorHandle);
 
         void ICefBrowserHost.HandleBrowserCreated(CefBrowser browser)
         {
@@ -390,7 +445,7 @@ namespace Xilium.CefGlue.Common
 
                 _browser = browser;
                 _browserHost = browser.GetHost();
-                _browserHost.SetFocus(IsFocused);
+                _browserHost.SetFocus(_control.IsFocused);
 
                 width = RenderedWidth;
                 height = RenderedHeight;
@@ -402,10 +457,16 @@ namespace Xilium.CefGlue.Common
 
         bool ICefBrowserHost.HandleTooltip(string text)
         {
-            return OnTooltipChanged(text);
-        }
+            if (_tooltip == text)
+            {
+                return true;
+            }
 
-        protected abstract bool OnTooltipChanged(string text);
+            _tooltip = text;
+            _control.SetTooltip(text);
+
+            return true;
+        }
 
         void ICefBrowserHost.HandleLoadStart(LoadStartEventArgs args)
         {
@@ -442,10 +503,18 @@ namespace Xilium.CefGlue.Common
                     return;
             }
 
-            OnPaint(buffer, width, height, dirtyRects, isPopup);
-        }
+            RenderHandler renderHandler;
+            if (isPopup)
+            {
+                renderHandler = _popupRenderHandler;
+            }
+            else
+            {
+                renderHandler = _renderHandler;
+            }
 
-        protected abstract void OnPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects, bool isPopup);
+            renderHandler?.Paint(buffer, width, height, dirtyRects);
+        }
 
         #endregion
 
@@ -471,6 +540,6 @@ namespace Xilium.CefGlue.Common
             }
         }
 
-        protected abstract bool IsFocused { get; }
+        protected abstract UIControl Popup { get; }
     }
 }

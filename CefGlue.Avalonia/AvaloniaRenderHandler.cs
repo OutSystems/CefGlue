@@ -5,67 +5,28 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.Avalonia
 {
-    internal class RenderHandler
+    internal class AvaloniaRenderHandler : RenderHandler
     {
+        private readonly ILogger _logger;
+
         private WriteableBitmap _bitmap;
-        private Dispatcher _uiDispatcher;        
-        private ILogger _logger;
 
-        private bool _sizeChanged;
-        private int _width;
-        private int _height;
-
-        public RenderHandler(Dispatcher uiDispatcher, Image image, WriteableBitmap bitmap, ILogger logger)
+        public AvaloniaRenderHandler(Image image, ILogger logger)
         {
-            _uiDispatcher = uiDispatcher;
-            _bitmap = bitmap;
             _logger = logger;
             Image = image;
         }
 
-        public event Action<Exception> ExceptionOcurred;
+        public Image Image { get; }
 
-        public Image Image { get; private set; }
-
-        public int Width
+        public override void Paint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
         {
-            get
-            {
-                return _width;
-            }
-            set
-            {
-                if (_width != value)
-                {
-                    _width = value;
-                    _sizeChanged = true;
-                }
-            }
-        }
-
-        public int Height
-        {
-            get
-            {
-                return _height;
-            }
-            set
-            {
-                if (_height != value)
-                {
-                    _height = value;
-                    _sizeChanged = true;
-                }
-            }
-        }
-
-        public void Paint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
-        {
-            _uiDispatcher.InvokeAsync(() =>
+            Dispatcher.UIThread.InvokeAsync(() =>
             {
                 // Actual browser size changed check.
                 if (_sizeChanged && (width != Width || height != Height))
@@ -90,9 +51,9 @@ namespace Xilium.CefGlue.Avalonia
                         Image.InvalidateVisual();
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    ExceptionOcurred?.Invoke(e);
+                    HandleException(e);
                 }
             });
         }
@@ -118,6 +79,12 @@ namespace Xilium.CefGlue.Avalonia
                 Marshal.Copy(sourceBuffer, managedArray, 0, sourceBufferSize);
                 Marshal.Copy(managedArray, 0, l.Address, sourceBufferSize);
             }
+        }
+
+        public override void Dispose()
+        {
+            _bitmap?.Dispose();
+            _bitmap = null;
         }
     }
 }

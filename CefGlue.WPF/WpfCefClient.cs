@@ -1,5 +1,5 @@
-﻿using System;
-using Xilium.CefGlue.Helpers.Log;
+using System;
+using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.WPF
 {
