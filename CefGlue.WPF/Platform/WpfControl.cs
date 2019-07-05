@@ -22,6 +22,35 @@ namespace Xilium.CefGlue.WPF.Platform
         {
             _control = control;
 
+            _control.GotFocus += delegate { TriggerGotFocus(); };
+            _control.LostFocus += delegate { TriggerLostFocus(); };
+
+            _control.MouseMove += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent());
+            _control.MouseLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent());
+            _control.MouseDown += (sender, arg) => TriggerMouseButtonPressed(arg.AsCefMouseEvent(), arg.ChangedButton.AsCefMouseButtonType(), arg.ClickCount);
+            _control.MouseUp += (sender, arg) => TriggerMouseButtonReleased(arg.AsCefMouseEvent(), arg.ChangedButton.AsCefMouseButtonType());
+            _control.MouseWheel += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(), 0, (int)arg.Delta);
+
+            _control.KeyDown += (sender, arg) =>
+            {
+                bool handled;
+                TriggerKeyDown(arg.AsCefKeyEvent(false), out handled);
+                arg.Handled = handled;
+            };
+            _control.KeyUp += (sender, arg) =>
+            {
+                bool handled;
+                TriggerKeyUp(arg.AsCefKeyEvent(true), out handled);
+                arg.Handled = handled;
+            };
+
+            _control.TextInput += (sender, arg) =>
+            {
+                bool handled;
+                TriggerTextInput(arg.Text, out handled);
+                arg.Handled = handled;
+            };
+
             _tooltip = new ToolTip();
             _tooltip.StaysOpen = true;
             _tooltip.Visibility = Visibility.Collapsed;

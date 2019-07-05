@@ -25,6 +25,23 @@ namespace Xilium.CefGlue.WPF
         public WpfCefBrowser() {
             _logger = new Logger(nameof(WpfCefBrowser));
 
+            _popupImage = new Image()
+            {
+                Stretch = Stretch.None,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                // TODO Source = _popupBitmap
+            };
+
+            RenderOptions.SetBitmapScalingMode(_popupImage, BitmapScalingMode.NearestNeighbor);
+
+            _popup = new Popup
+            {
+                Child = _popupImage,
+                PlacementTarget = this,
+                Placement = PlacementMode.Relative
+            };
+
             var control = new WpfControl(this);
             var popup = new WpfPopup(_popup);
             _adapter = new CommonBrowserAdapter(nameof(WpfCefBrowser), control, popup, _logger);
@@ -140,6 +157,7 @@ namespace Xilium.CefGlue.WPF
             return size;
         }
 
+        // TODO
         //protected override void OnPopupSizeChanged(CefRectangle rect)
         //{
         //    _mainUiDispatcher.Invoke(
@@ -157,33 +175,5 @@ namespace Xilium.CefGlue.WPF
         //                _popup.VerticalOffset = rect.Y;
         //            }));
         //}
-
-        //private Popup CreatePopup()
-        //{
-        //    _popupImage = CreatePopupImage();
-
-        //    return new Popup
-        //    {
-        //        Child = _popupImage,
-        //        PlacementTarget = _control,
-        //        Placement = PlacementMode.Relative
-        //    };
-        //}
-
-        //private Image CreatePopupImage()
-        //{
-        //    var image = new Image()
-        //    {
-        //        Stretch = Stretch.None,
-        //        HorizontalAlignment = HorizontalAlignment.Left,
-        //        VerticalAlignment = VerticalAlignment.Top,
-        //        Source = _popupBitmap
-        //    };
-
-        //    RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
-
-        //    return image;
-        //}
-
     }
 }
