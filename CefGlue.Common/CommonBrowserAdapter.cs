@@ -405,7 +405,14 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandlePopupShow(bool show)
         {
-            _popup.Show();
+            if (show)
+            {
+                _popup.Open();
+            }
+            else
+            {
+                _popup.Close();
+            }
         }
 
         void ICefBrowserHost.HandlePopupSizeChange(CefRectangle rect)

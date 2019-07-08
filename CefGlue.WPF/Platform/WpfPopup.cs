@@ -32,9 +32,19 @@ namespace Xilium.CefGlue.WPF.Platform
             });
         }
 
-        public void Show()
+        public void Open()
         {
-            _popup.Dispatcher.Invoke(() => _popup.IsOpen = true);
-        }   
+            SetIsOpen(true);
+        }
+
+        public void Close()
+        {
+            SetIsOpen(false);
+        }
+
+        private void SetIsOpen(bool isOpen)
+        {
+            _popup.Dispatcher.Invoke(() => _popup.IsOpen = isOpen);
+        }
     }
 }

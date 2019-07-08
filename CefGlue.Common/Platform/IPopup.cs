@@ -12,7 +12,9 @@ namespace Xilium.CefGlue.Common.Platform
 
         int OffsetY { get; }
 
-        void Show();
+        void Open();
+
+        void Close();
 
         void MoveAndResize(int x, int y, int width, int height);
     }
