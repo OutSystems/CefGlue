@@ -12,6 +12,9 @@ namespace Xilium.CefGlue.Avalonia.Platform
 {
     internal class AvaloniaControl : UIControl
     {
+        // TODO avalonia: get value from OS
+        private const int MouseWheelDelta = 100;
+
         private readonly Control _control;
 
         public AvaloniaControl(Control control, RenderHandler renderHandler) : base(renderHandler)
@@ -25,7 +28,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             _control.PointerLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent());
             _control.PointerPressed += (sender, arg) => TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(), arg.MouseButton.AsCefMouseButtonType(), arg.ClickCount);
             _control.PointerReleased += (sender, arg) => TriggerMouseButtonReleased(arg.AsCefMouseEvent(), arg.MouseButton.AsCefMouseButtonType());
-            _control.PointerWheelChanged += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(), (int)arg.Delta.X, (int)arg.Delta.Y);
+            _control.PointerWheelChanged += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(), (int)arg.Delta.X * MouseWheelDelta, (int)arg.Delta.Y * MouseWheelDelta);
 
             _control.KeyDown += (sender, arg) =>
             {

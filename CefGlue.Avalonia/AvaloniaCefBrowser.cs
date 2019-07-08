@@ -33,7 +33,7 @@ namespace Xilium.CefGlue.Avalonia
             };
 
             var renderHandler = new AvaloniaRenderHandler(image, _logger);
-            var controlAdapter = new AvaloniaControl(this, renderHandler);
+            var controlAdapter = new AvaloniaControl(image, renderHandler); // use the image, otherwise some behaviors won't work as expected (eg: cursors do not change)
 
             var popupRenderHandler = new AvaloniaRenderHandler(popupImage, _logger);
             var popupAdapter = new AvaloniaPopup(popup, popupRenderHandler);
