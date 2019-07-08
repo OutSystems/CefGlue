@@ -19,6 +19,7 @@ namespace Xilium.CefGlue.Common
 
         private string _tooltip;
 
+        // TODO
         private int _popupWidth;
         private int _popupHeight;
 
@@ -76,9 +77,9 @@ namespace Xilium.CefGlue.Common
 
         public bool AllowsTransparency { get; set; }
 
-        public RenderHandler RenderHandler { get; set; }
+        public RenderHandler RenderHandler => _control.RenderHandler;
 
-        public RenderHandler PopupRenderHandler { get; set; }
+        public RenderHandler PopupRenderHandler => _popup.RenderHandler;
 
         public void NavigateTo(string url)
         {
@@ -150,7 +151,7 @@ namespace Xilium.CefGlue.Common
             return _javascriptExecutionEngine.Evaluate<T>(code, url, line);
         }
 
-        public void HandleGotFocus()
+        private void HandleGotFocus()
         {
             WithErrorHandling(nameof(HandleGotFocus), () =>
             {
@@ -161,7 +162,7 @@ namespace Xilium.CefGlue.Common
             });
         }
 
-        public void HandleLostFocus()
+        private void HandleLostFocus()
         {
             WithErrorHandling(nameof(HandleLostFocus), () =>
             { 
@@ -172,7 +173,7 @@ namespace Xilium.CefGlue.Common
             });
         }
 
-        public void HandleMouseMove(CefMouseEvent mouseEvent)
+        private void HandleMouseMove(CefMouseEvent mouseEvent)
         {
             WithErrorHandling(nameof(HandleMouseMove), () =>
             {
@@ -185,7 +186,7 @@ namespace Xilium.CefGlue.Common
             });
         }
 
-        public void HandleMouseLeave(CefMouseEvent mouseEvent)
+        private void HandleMouseLeave(CefMouseEvent mouseEvent)
         {
             WithErrorHandling(nameof(HandleMouseLeave), () =>
             {
@@ -197,11 +198,11 @@ namespace Xilium.CefGlue.Common
             });
         }
 
-        public void HandleMouseButtonDown(CefMouseEvent mouseEvent, CefMouseButtonType mouseButton, int clickCount)
+        private void HandleMouseButtonDown(IControl control, CefMouseEvent mouseEvent, CefMouseButtonType mouseButton, int clickCount)
         {
             WithErrorHandling(nameof(HandleMouseButtonDown), () =>
             {
-                _control.Focus();
+                control.Focus();
                 if (_browserHost != null)
                 {
                     SendMouseClickEvent(mouseEvent, mouseButton, false, clickCount);
@@ -211,7 +212,7 @@ namespace Xilium.CefGlue.Common
             });
         }
 
-        public void HandleMouseButtonUp(CefMouseEvent mouseEvent, CefMouseButtonType mouseButton)
+        private void HandleMouseButtonUp(CefMouseEvent mouseEvent, CefMouseButtonType mouseButton)
         {
             WithErrorHandling(nameof(HandleMouseButtonUp), () =>
             {
@@ -224,7 +225,7 @@ namespace Xilium.CefGlue.Common
             });
         }
 
-        public void HandleMouseWheel(CefMouseEvent mouseEvent, int deltaX, int deltaY)
+        private void HandleMouseWheel(CefMouseEvent mouseEvent, int deltaX, int deltaY)
         {
             WithErrorHandling(nameof(HandleMouseWheel), () =>
             {
@@ -235,7 +236,7 @@ namespace Xilium.CefGlue.Common
             });
         }
 
-        public void HandleTextInput(string text, out bool handled)
+        private void HandleTextInput(string text, out bool handled)
         {
             var _handled = false;
 
@@ -262,7 +263,7 @@ namespace Xilium.CefGlue.Common
             handled = _handled;
         }
 
-        public void HandleKeyPress(CefKeyEvent keyEvent, out bool handled)
+        private void HandleKeyPress(CefKeyEvent keyEvent, out bool handled)
         {
             WithErrorHandling(nameof(HandleKeyPress), () =>
             {
@@ -373,12 +374,7 @@ namespace Xilium.CefGlue.Common
 
         protected void OnBrowserSizeChanged(int newWidth, int newHeight)
         {
-            var renderhandler = RenderHandler;
-            if (renderhandler != null)
-            {
-                renderhandler.Width = newWidth;
-                renderhandler.Height = newHeight;
-            }
+            RenderHandler?.Resize(newWidth, newHeight);
         }
 
         #region ICefBrowserHost
@@ -414,10 +410,8 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandlePopupSizeChange(CefRectangle rect)
         {
-            _popup.Width = rect.Width;
-            _popup.Height = rect.Height;
-            _popup.OffsetX = rect.X;
-            _popup.OffsetY = rect.Y;
+            _popup.RenderHandler.Resize(rect.Width, rect.Height);
+            _popup.MoveAndResize(rect.X, rect.Y, rect.Width, rect.Height);
         }
 
         void ICefBrowserHost.HandleCursorChange(IntPtr cursorHandle)
@@ -492,19 +486,6 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandleViewPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects, bool isPopup)
         {
-            // When browser size changed - we just skip frame updating.
-            // This is dirty precheck to do not do Invoke whenever is possible.
-            if (isPopup)
-            {
-                if (width != _popupWidth || height != _popupHeight)
-                    return;
-            }
-            else
-            {
-                if (width != RenderedWidth || height != RenderedHeight)
-                    return;
-            }
-
             RenderHandler renderHandler;
             if (isPopup)
             {

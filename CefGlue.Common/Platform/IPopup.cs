@@ -1,15 +1,19 @@
+using Xilium.CefGlue.Common.Helpers;
+
 namespace Xilium.CefGlue.Common.Platform
 {
     internal interface IPopup : IControl
     {
-        int Width { get; set; }
+        int Width { get; }
 
-        int Height { get; set; }
+        int Height { get; }
 
-        int OffsetX { get; set; }
+        int OffsetX { get; }
 
-        int OffsetY { get; set; }
+        int OffsetY { get; }
 
         void Show();
+
+        void MoveAndResize(int x, int y, int width, int height);
     }
 }

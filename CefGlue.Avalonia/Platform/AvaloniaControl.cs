@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 using AvaloniaPoint = Avalonia.Point;
 using Point = Xilium.CefGlue.Common.Platform.Point;
@@ -13,7 +14,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
     {
         private readonly Control _control;
 
-        public AvaloniaControl(Control control)
+        public AvaloniaControl(Control control, RenderHandler renderHandler) : base(renderHandler)
         {
             _control = control;
 
@@ -22,7 +23,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
             _control.PointerMoved += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent());
             _control.PointerLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent());
-            _control.PointerPressed += (sender, arg) => TriggerMouseButtonPressed(arg.AsCefMouseEvent(), arg.MouseButton.AsCefMouseButtonType(), arg.ClickCount);
+            _control.PointerPressed += (sender, arg) => TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(), arg.MouseButton.AsCefMouseButtonType(), arg.ClickCount);
             _control.PointerReleased += (sender, arg) => TriggerMouseButtonReleased(arg.AsCefMouseEvent(), arg.MouseButton.AsCefMouseButtonType());
             _control.PointerWheelChanged += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(), (int)arg.Delta.X, (int)arg.Delta.Y);
 

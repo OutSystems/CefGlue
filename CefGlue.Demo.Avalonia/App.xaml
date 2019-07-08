@@ -2,6 +2,5 @@
     <Application.Styles>
         <StyleInclude Source="resm:Avalonia.Themes.Default.DefaultTheme.xaml?assembly=Avalonia.Themes.Default"/>
         <StyleInclude Source="resm:Avalonia.Themes.Default.Accents.BaseLight.xaml?assembly=Avalonia.Themes.Default"/>
-        <StyleInclude Source="resm:Xilium.CefGlue.Avalonia.AvaloniaCefBrowser.xaml?assembly=Xilium.CefGlue.Avalonia"/>
     </Application.Styles>
 </Application>

@@ -69,7 +69,6 @@ namespace Xilium.CefGlue.Common
                     _logger.Debug("   DirtyRect: X={0} Y={1} W={2} H={3}", rect.X, rect.Y, rect.Width, rect.Height);
                 }
             }
-
             _owner.HandleViewPaint(buffer, width, height, dirtyRects, type == CefPaintElementType.Popup);
         }
 

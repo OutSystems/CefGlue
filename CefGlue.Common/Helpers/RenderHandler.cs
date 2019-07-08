@@ -16,47 +16,43 @@ namespace Xilium.CefGlue.Common.Helpers
             _logger = logger;
         }
 
-        public int Width
-        {
-            get
-            {
-                return _width;
-            }
-            set
-            {
-                if (_width != value)
-                {
-                    _width = value;
-                    _sizeChanged = true;
-                }
-            }
-        }
+        public int Width => _width;
 
-        public int Height
-        {
-            get
-            {
-                return _height;
-            }
-            set
-            {
-                if (_height != value)
-                {
-                    _height = value;
-                    _sizeChanged = true;
-                }
-            }
-        }
+        public int Height => _height;
 
         public event Action<Exception> ExceptionOcurred;
 
         public abstract void Dispose();
 
-        public abstract void Paint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects);
+        public void Paint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
+        {
+            // When browser size changed - we just skip frame updating.
+            // This is dirty precheck to do not do Invoke whenever is possible.
+            if (_sizeChanged && (width != Width || height != Height))
+                return;
+
+            InnerPaint(buffer, width, height, dirtyRects);
+        }
+
+        protected abstract void InnerPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects);
 
         protected void HandleException(Exception e)
         {
             ExceptionOcurred?.Invoke(e);
+        }
+
+        public void Resize(int width, int height)
+        {
+            if (_width != width)
+            {
+                _width = width;
+                _sizeChanged = true;
+            }
+            if (_height != height)
+            {
+                _height = height;
+                _sizeChanged = true;
+            }
         }
     }
 }

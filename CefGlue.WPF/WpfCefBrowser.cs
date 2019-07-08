@@ -17,36 +17,29 @@ namespace Xilium.CefGlue.WPF
         private readonly CommonBrowserAdapter _adapter;
         private readonly IDisposable[] _disposables;
 
-        private readonly Popup _popup;
-        private readonly Image _popupImage;
-
-        private Image _image;
-
         public WpfCefBrowser() {
             _logger = new Logger(nameof(WpfCefBrowser));
 
-            _popupImage = new Image()
-            {
-                Stretch = Stretch.None,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
-                // TODO Source = _popupBitmap
-            };
+            var image = CreateImage();
+            Content = image;
 
-            RenderOptions.SetBitmapScalingMode(_popupImage, BitmapScalingMode.NearestNeighbor);
-
-            _popup = new Popup
+            var popupImage = CreateImage();
+            var popup = new Popup
             {
-                Child = _popupImage,
                 PlacementTarget = this,
-                Placement = PlacementMode.Relative
+                Placement = PlacementMode.Relative,
+                Child = popupImage
             };
 
-            var control = new WpfControl(this);
-            var popup = new WpfPopup(_popup);
-            _adapter = new CommonBrowserAdapter(nameof(WpfCefBrowser), control, popup, _logger);
+            var renderHandler = new WpfRenderHandler(image, _logger);
+            var controlAdapter = new WpfControl(this, renderHandler);
+            
+            var popupRenderHandler = new WpfRenderHandler(popupImage, _logger);
+            var popupAdapter = new WpfPopup(popup, popupRenderHandler);
 
-            _disposables = new IDisposable[] { control, popup };
+            _adapter = new CommonBrowserAdapter(nameof(WpfCefBrowser), controlAdapter, popupAdapter, _logger);
+
+            _disposables = new IDisposable[] { controlAdapter, popupAdapter };
 
             KeyboardNavigation.SetAcceptsReturn(this, true);
         }
@@ -128,52 +121,25 @@ namespace Xilium.CefGlue.WPF
             _adapter.RegisterJavascriptObject(targetObject, name);
         }
 
-
-        public override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
-
-            _image = new Image()
-            {
-                Focusable = false,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
-                Stretch = Stretch.None
-            };
-
-            Content = _image;
-
-            _adapter.RenderHandler?.Dispose();
-            _adapter.RenderHandler = new WpfRenderHandler(_image, _logger);
-        }
-
         protected override Size ArrangeOverride(Size arrangeBounds) {
             var size = base.ArrangeOverride(arrangeBounds);
-
-            if (_image != null) {
-                _adapter.CreateOrUpdateBrowser((int)size.Width, (int)size.Height);
-            }
+            _adapter.CreateOrUpdateBrowser((int)size.Width, (int)size.Height);
 
             return size;
         }
 
-        // TODO
-        //protected override void OnPopupSizeChanged(CefRectangle rect)
-        //{
-        //    _mainUiDispatcher.Invoke(
-        //        new Action(
-        //            () =>
-        //            {
-        //                _popupBitmap = null;
-        //                _popupBitmap = new WriteableBitmap(rect.Width, rect.Height, 96, 96, PixelFormats.Bgr32, null);
+        private static Image CreateImage()
+        {
+            var image = new Image()
+            {
+                Stretch = Stretch.None,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+            };
 
-        //                _popupImage.Source = _popupBitmap;
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
 
-        //                _popup.Width = rect.Width;
-        //                _popup.Height = rect.Height;
-        //                _popup.HorizontalOffset = rect.X;
-        //                _popup.VerticalOffset = rect.Y;
-        //            }));
-        //}
+            return image;
+        }
     }
 }

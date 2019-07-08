@@ -1,4 +1,5 @@
 using System;
+using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Common.Platform
 {
@@ -6,6 +7,13 @@ namespace Xilium.CefGlue.Common.Platform
     {
         public delegate void KeyEventHandler(CefKeyEvent e, out bool handled);
         public delegate void TextInputEventHandler(string text, out bool handled);
+
+        protected UIControl(RenderHandler renderHandler)
+        {
+            RenderHandler = renderHandler;
+        }
+
+        public RenderHandler RenderHandler { get; }
 
         public abstract Point PointToScreen(Point point);
 
@@ -47,11 +55,11 @@ namespace Xilium.CefGlue.Common.Platform
             MouseLeave?.Invoke(e);
         }
 
-        public event Action<CefMouseEvent, CefMouseButtonType, int> MouseButtonPressed;
+        public event Action<IControl, CefMouseEvent, CefMouseButtonType, int> MouseButtonPressed;
 
-        protected void TriggerMouseButtonPressed(CefMouseEvent e, CefMouseButtonType button, int clickCount)
+        protected void TriggerMouseButtonPressed(IControl control, CefMouseEvent e, CefMouseButtonType button, int clickCount)
         {
-            MouseButtonPressed?.Invoke(e, button, clickCount);
+            MouseButtonPressed?.Invoke(control, e, button, clickCount);
         }
 
         public event Action<CefMouseEvent, CefMouseButtonType> MouseButtonReleased;

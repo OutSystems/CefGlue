@@ -1,5 +1,6 @@
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
+using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 
 namespace Xilium.CefGlue.Avalonia.Platform
@@ -8,18 +9,29 @@ namespace Xilium.CefGlue.Avalonia.Platform
     {
         private readonly Popup _popup;
 
-        public AvaloniaPopup(Popup popup) : base(popup)
+        public AvaloniaPopup(Popup popup, RenderHandler renderHandler) : base(popup, renderHandler)
         {
             _popup = popup;
         }
 
-        public int Width { get => (int) _popup.Width; set => _popup.Width = value; }
+        public int Width => (int)_popup.Width;
 
-        public int Height { get => (int)_popup.Height; set => _popup.Height = value; }
+        public int Height => (int)_popup.Height;
 
-        public int OffsetX { get => (int)_popup.HorizontalOffset; set => _popup.HorizontalOffset = value; }
+        public int OffsetX => (int)_popup.HorizontalOffset;
 
-        public int OffsetY { get => (int)_popup.VerticalOffset; set => _popup.VerticalOffset = value; }
+        public int OffsetY => (int)_popup.VerticalOffset;
+
+        public void MoveAndResize(int x, int y, int width, int height)
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                _popup.HorizontalOffset = x;
+                _popup.VerticalOffset = y;
+                _popup.Width = width;
+                _popup.Height = height;
+            });
+        }
 
         public void Show()
         {

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Common.Platform
 {
@@ -10,7 +11,7 @@ namespace Xilium.CefGlue.Common.Platform
         event UIControl.KeyEventHandler KeyDown;
         event UIControl.KeyEventHandler KeyUp;
         event Action LostFocus;
-        event Action<CefMouseEvent, CefMouseButtonType, int> MouseButtonPressed;
+        event Action<IControl, CefMouseEvent, CefMouseButtonType, int> MouseButtonPressed;
         event Action<CefMouseEvent, CefMouseButtonType> MouseButtonReleased;
         event Action<CefMouseEvent> MouseLeave;
         event Action<CefMouseEvent> MouseMoved;
@@ -22,5 +23,7 @@ namespace Xilium.CefGlue.Common.Platform
         Point PointToScreen(Point point);
         void SetCursor(IntPtr cursorHandle);
         void SetTooltip(string text);
+
+        RenderHandler RenderHandler { get; }
     }
 }

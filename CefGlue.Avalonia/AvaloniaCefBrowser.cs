@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Media;
 using Xilium.CefGlue.Avalonia.Platform;
 using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Helpers.Logger;
@@ -15,31 +16,29 @@ namespace Xilium.CefGlue.Avalonia
         private readonly CommonBrowserAdapter _adapter;
 
         private readonly Popup _popup;
-        private readonly Image _popupImage;
-
-        private Image _image;
 
         public AvaloniaCefBrowser()
         {
             _logger = new Logger(nameof(AvaloniaCefBrowser));
 
-            // TODO
-           //_popupImage = new Image()
-           //{
-           //    Stretch = Stretch.None,
-           //    HorizontalAlignment = HorizontalAlignment.Left,
-           //    VerticalAlignment = VerticalAlignment.Top,
-           //    Source = _popupBitmap
-           //};
+            var image = CreateImage();
+            VisualChildren.Add(image);
 
-            _popup = new Popup
+            var popupImage = CreateImage();
+            var popup = new Popup
             {
-                Child = _popupImage,
                 PlacementTarget = this,
-                PlacementMode = PlacementMode.Bottom
+                PlacementMode = PlacementMode.Bottom,
+                Child = popupImage
             };
 
-            _adapter = new CommonBrowserAdapter(nameof(AvaloniaCefBrowser), new AvaloniaControl(this), new AvaloniaPopup(_popup), _logger);
+            var renderHandler = new AvaloniaRenderHandler(image, _logger);
+            var controlAdapter = new AvaloniaControl(this, renderHandler);
+
+            var popupRenderHandler = new AvaloniaRenderHandler(popupImage, _logger);
+            var popupAdapter = new AvaloniaPopup(popup, popupRenderHandler);
+
+            _adapter = new CommonBrowserAdapter(nameof(AvaloniaCefBrowser), controlAdapter, popupAdapter, _logger);
         }
 
         #region Disposable
@@ -126,44 +125,22 @@ namespace Xilium.CefGlue.Avalonia
             _adapter.RegisterJavascriptObject(targetObject, name);
         }
 
-        protected override void OnTemplateApplied(TemplateAppliedEventArgs e)
-        {
-            base.OnTemplateApplied(e);
-            _image = e.NameScope.Find<Image>("PART_Image");
-            _adapter.RenderHandler?.Dispose();
-            _adapter.RenderHandler = new AvaloniaRenderHandler(_image, _logger);
-        }
-
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
             var size = base.ArrangeOverride(arrangeBounds);
-
-            if (_image != null)
-            {
-                _adapter.CreateOrUpdateBrowser((int) size.Width, (int) size.Height);
-            }
-
+            _adapter.CreateOrUpdateBrowser((int) size.Width, (int) size.Height);
             return size;
         }
 
-        protected void OnPopupSizeChanged(CefRectangle rect)
+        private static Image CreateImage()
         {
-            // TODO
-            //_mainUiDispatcher.Post(
-            //    () =>
-            //    {
-            //        _popupRenderHandler.Dispose();
-            //        _popupRenderHandler = new RenderHandler(_popupImage, _logger);
-
-            //        _popupBitmap = new WriteableBitmap(new PixelSize(rect.Width, rect.Height), new Vector(96, 96), PixelFormat.Bgra8888);
-
-            //        _popupImage.Source = _popupBitmap;
-
-            //        _popup.Width = rect.Width;
-            //        _popup.Height = rect.Height;
-            //        _popup.HorizontalOffset = rect.X;
-            //        _popup.VerticalOffset = rect.Y;
-            //    });
+            return new Image()
+            {
+                Focusable = false,
+                Stretch = Stretch.None,
+                HorizontalAlignment = global::Avalonia.Layout.HorizontalAlignment.Left,
+                VerticalAlignment = global::Avalonia.Layout.VerticalAlignment.Top,
+            };
         }
     }
 }

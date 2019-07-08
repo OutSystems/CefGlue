@@ -15,20 +15,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="AvaloniaCefBrowser.xaml" />
-    <None Remove="AvaloniaTheme.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="AvaloniaCefBrowser.xaml">
-      <Generator></Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AvaloniaTheme.xaml">
-      <Generator></Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.7.0" />
   </ItemGroup>
 

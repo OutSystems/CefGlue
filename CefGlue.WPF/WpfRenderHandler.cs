@@ -26,7 +26,7 @@ namespace Xilium.CefGlue.WPF
 
         public bool AllowsTransparency { get; set; }
 
-        public override void Paint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
+        protected override void InnerPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
         {
             Image.Dispatcher.Invoke(DispatcherPriority.Render, new Action(delegate
             {

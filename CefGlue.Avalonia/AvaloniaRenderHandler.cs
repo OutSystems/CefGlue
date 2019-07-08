@@ -21,7 +21,7 @@ namespace Xilium.CefGlue.Avalonia
 
         public Image Image { get; }
 
-        public override void Paint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
+        protected override void InnerPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -43,7 +43,7 @@ namespace Xilium.CefGlue.Avalonia
 
                     if (_bitmap != null)
                     {
-                        InnerPaint(buffer, width, height, dirtyRects);
+                        InternalPaint(buffer, width, height, dirtyRects);
 
                         Image.InvalidateVisual();
                     }
@@ -55,7 +55,7 @@ namespace Xilium.CefGlue.Avalonia
             });
         }
 
-        private void InnerPaint(IntPtr sourceBuffer, int browserWidth, int browserHeight, CefRectangle[] dirtyRects)
+        private void InternalPaint(IntPtr sourceBuffer, int browserWidth, int browserHeight, CefRectangle[] dirtyRects)
         {
             int stride = browserWidth * 4;
             int sourceBufferSize = stride * browserHeight;

@@ -5,6 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using Microsoft.Win32.SafeHandles;
+using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 using Point = Xilium.CefGlue.Common.Platform.Point;
 using WpfPoint = System.Windows.Point;
@@ -18,7 +19,7 @@ namespace Xilium.CefGlue.WPF.Platform
         private ToolTip _tooltip;
         private DispatcherTimer _tooltipTimer;
 
-        public WpfControl(FrameworkElement control)
+        public WpfControl(FrameworkElement control, RenderHandler renderHandler) : base(renderHandler)
         {
             _control = control;
 
@@ -27,7 +28,7 @@ namespace Xilium.CefGlue.WPF.Platform
 
             _control.MouseMove += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent());
             _control.MouseLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent());
-            _control.MouseDown += (sender, arg) => TriggerMouseButtonPressed(arg.AsCefMouseEvent(), arg.ChangedButton.AsCefMouseButtonType(), arg.ClickCount);
+            _control.MouseDown += (sender, arg) => TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(), arg.ChangedButton.AsCefMouseButtonType(), arg.ClickCount);
             _control.MouseUp += (sender, arg) => TriggerMouseButtonReleased(arg.AsCefMouseEvent(), arg.ChangedButton.AsCefMouseButtonType());
             _control.MouseWheel += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(), 0, (int)arg.Delta);
 
