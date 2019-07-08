@@ -24,11 +24,11 @@ namespace Xilium.CefGlue.Avalonia.Platform
             _control.GotFocus += delegate { TriggerGotFocus(); };
             _control.LostFocus += delegate { TriggerLostFocus(); };
 
-            _control.PointerMoved += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent());
-            _control.PointerLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent());
-            _control.PointerPressed += (sender, arg) => TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(), arg.MouseButton.AsCefMouseButtonType(), arg.ClickCount);
-            _control.PointerReleased += (sender, arg) => TriggerMouseButtonReleased(arg.AsCefMouseEvent(), arg.MouseButton.AsCefMouseButtonType());
-            _control.PointerWheelChanged += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(), (int)arg.Delta.X * MouseWheelDelta, (int)arg.Delta.Y * MouseWheelDelta);
+            _control.PointerMoved += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent(MousePositionReferential));
+            _control.PointerLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
+            _control.PointerPressed += (sender, arg) => TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.MouseButton.AsCefMouseButtonType(), arg.ClickCount);
+            _control.PointerReleased += (sender, arg) => TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.MouseButton.AsCefMouseButtonType());
+            _control.PointerWheelChanged += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), (int)arg.Delta.X * MouseWheelDelta, (int)arg.Delta.Y * MouseWheelDelta);
 
             _control.KeyDown += (sender, arg) =>
             {
@@ -50,6 +50,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 arg.Handled = handled;
             };
         }
+
+        protected virtual IVisual MousePositionReferential => _control;
 
         public override Point PointToScreen(Point point)
         {

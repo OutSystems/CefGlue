@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Controls.Primitives;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
@@ -12,6 +13,8 @@ namespace Xilium.CefGlue.WPF.Platform
         {
             _popup = popup;
         }
+
+        protected override IInputElement MousePositionReferential => _popup.PlacementTarget;
 
         public int Width => (int) _popup.Width;
 

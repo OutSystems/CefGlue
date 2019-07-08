@@ -6,9 +6,9 @@ namespace Xilium.CefGlue.WPF
     internal static class InputExtensions
     {
 
-        public static CefMouseEvent AsCefMouseEvent(this MouseEventArgs eventArgs)
+        public static CefMouseEvent AsCefMouseEvent(this MouseEventArgs eventArgs, IInputElement mouseCoordinatesReferencial)
         {
-            var cursorPos = eventArgs.GetPosition((IInputElement) eventArgs.Source);
+            var cursorPos = eventArgs.GetPosition(mouseCoordinatesReferencial);
 
             return new CefMouseEvent((int) cursorPos.X, (int) cursorPos.Y, Keyboard.Modifiers.AsCefKeyboardModifiers());
         }

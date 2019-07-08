@@ -26,11 +26,11 @@ namespace Xilium.CefGlue.WPF.Platform
             _control.GotFocus += delegate { TriggerGotFocus(); };
             _control.LostFocus += delegate { TriggerLostFocus(); };
 
-            _control.MouseMove += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent());
-            _control.MouseLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent());
-            _control.MouseDown += (sender, arg) => TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(), arg.ChangedButton.AsCefMouseButtonType(), arg.ClickCount);
-            _control.MouseUp += (sender, arg) => TriggerMouseButtonReleased(arg.AsCefMouseEvent(), arg.ChangedButton.AsCefMouseButtonType());
-            _control.MouseWheel += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(), 0, (int)arg.Delta);
+            _control.MouseMove += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent(MousePositionReferential));
+            _control.MouseLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
+            _control.MouseDown += (sender, arg) => TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.ChangedButton.AsCefMouseButtonType(), arg.ClickCount);
+            _control.MouseUp += (sender, arg) => TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.ChangedButton.AsCefMouseButtonType());
+            _control.MouseWheel += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), 0, (int)arg.Delta);
 
             _control.KeyDown += (sender, arg) =>
             {
@@ -60,6 +60,8 @@ namespace Xilium.CefGlue.WPF.Platform
             _tooltipTimer = new DispatcherTimer();
             _tooltipTimer.Interval = TimeSpan.FromSeconds(0.5);
         }
+
+        protected virtual IInputElement MousePositionReferential => _control;
 
         public override bool IsFocused => _control.Dispatcher.Invoke(() => _control.IsFocused);
 

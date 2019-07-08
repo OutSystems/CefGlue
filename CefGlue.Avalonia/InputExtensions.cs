@@ -6,9 +6,9 @@ namespace Xilium.CefGlue.Avalonia
     internal static class InputExtensions
     {
 
-        public static CefMouseEvent AsCefMouseEvent(this PointerEventArgs eventArgs)
+        public static CefMouseEvent AsCefMouseEvent(this PointerEventArgs eventArgs, IVisual mousePositionReferential)
         {
-            var cursorPos = eventArgs.GetPosition((IVisual) eventArgs.Source);
+            var cursorPos = eventArgs.GetPosition(mousePositionReferential);
 
             return new CefMouseEvent((int) cursorPos.X, (int) cursorPos.Y, eventArgs.InputModifiers.AsCefMouseModifiers());
         }

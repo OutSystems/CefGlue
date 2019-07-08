@@ -1,5 +1,6 @@
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 
@@ -13,6 +14,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
         {
             _popup = popup;
         }
+
+        protected override IVisual MousePositionReferential => _popup.PlacementTarget;
 
         public int Width => (int)_popup.Width;
 
@@ -33,9 +36,19 @@ namespace Xilium.CefGlue.Avalonia.Platform
             });
         }
 
-        public void Show()
+        public void Open()
         {
-            Dispatcher.UIThread.Post(() => _popup.IsOpen = true);
+            SetIsOpen(true);
+        }
+
+        public void Close()
+        {
+            SetIsOpen(false);
+        }
+
+        private void SetIsOpen(bool isOpen)
+        {
+            Dispatcher.UIThread.Post(() => _popup.IsOpen = isOpen);
         }
     }
 }
