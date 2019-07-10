@@ -6,6 +6,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Xilium.CefGlue.Avalonia.Platform;
 using Xilium.CefGlue.Common;
+using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.Avalonia
@@ -63,6 +64,11 @@ namespace Xilium.CefGlue.Avalonia
         public event LoadingStateChangeEventHandler LoadingStateChange { add => _adapter.LoadingStateChange += value; remove => _adapter.LoadingStateChange -= value; }
         public event LoadErrorEventHandler LoadError { add => _adapter.LoadError += value; remove => _adapter.LoadError -= value; }
 
+        public event AddressChangedEventHandler AddressChanged { add => _adapter.AddressChanged += value; remove => _adapter.AddressChanged -= value; }
+        public event ConsoleMessageEventHandler ConsoleMessage { add => _adapter.ConsoleMessage += value; remove => _adapter.ConsoleMessage -= value; }
+        public event StatusMessageEventHandler StatusMessage { add => _adapter.StatusMessage += value; remove => _adapter.StatusMessage -= value; }
+        public event TitleChangedEventHandler TitleChanged { add => _adapter.TitleChanged += value; remove => _adapter.TitleChanged -= value; }
+        
         public string StartUrl { get => _adapter.StartUrl; set => _adapter.StartUrl = value; }
 
         public bool AllowsTransparency { get => _adapter.AllowsTransparency; set => _adapter.AllowsTransparency = value; }

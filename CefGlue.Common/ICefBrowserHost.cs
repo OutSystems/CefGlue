@@ -1,4 +1,5 @@
 using System;
+using Xilium.CefGlue.Common.Events;
 
 namespace Xilium.CefGlue.Common
 {
@@ -16,11 +17,16 @@ namespace Xilium.CefGlue.Common
 
         void HandleBrowserCreated(CefBrowser browser);
 
-        bool HandleTooltip(string text);
 
-        void HandleLoadStart(LoadStartEventArgs args);
-        void HandleLoadEnd(LoadEndEventArgs args);
-        void HandleLoadError(LoadErrorEventArgs args);
-        void HandleLoadingStateChange(LoadingStateChangeEventArgs args);
+        void HandleAddressChange(CefBrowser browser, CefFrame frame, string url);
+        void HandleTitleChange(CefBrowser browser, string title);
+        bool HandleTooltip(CefBrowser browser, string text);
+        void HandleStatusMessage(CefBrowser browser, string value);
+        bool HandleConsoleMessage(CefBrowser browser, CefLogSeverity level, string message, string source, int line);
+
+        void HandleLoadStart(CefBrowser browser, CefFrame frame, CefTransitionType transitionType);
+        void HandleLoadEnd(CefBrowser browser, CefFrame frame, int httpStatusCode);
+        void HandleLoadError(CefBrowser browser, CefFrame frame, CefErrorCode errorCode, string errorText, string failedUrl);
+        void HandleLoadingStateChange(CefBrowser browser, bool isLoading, bool canGoBack, bool canGoForward);
     }
 }

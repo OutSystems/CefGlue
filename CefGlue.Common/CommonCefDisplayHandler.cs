@@ -15,24 +15,27 @@ namespace Xilium.CefGlue.Common
 
         protected override void OnAddressChange(CefBrowser browser, CefFrame frame, string url)
         {
+            _owner.HandleAddressChange(browser, frame, url);
         }
 
         protected override void OnTitleChange(CefBrowser browser, string title)
         {
+            _owner.HandleTitleChange(browser, title);
         }
 
         protected override bool OnTooltip(CefBrowser browser, string text)
         {
-            return _owner.HandleTooltip(text);
+            return _owner.HandleTooltip(browser, text);
         }
 
         protected override void OnStatusMessage(CefBrowser browser, string value)
         {
+            _owner.HandleStatusMessage(browser, value);
         }
 
         protected override bool OnConsoleMessage(CefBrowser browser, CefLogSeverity level, string message, string source, int line)
         {
-            return false;
+            return _owner.HandleConsoleMessage(browser, level, message, source, line);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Helpers.Logger;
 using Xilium.CefGlue.Common.JavascriptExecution;
@@ -18,10 +19,6 @@ namespace Xilium.CefGlue.Common
         private bool _browserCreated;
 
         private string _tooltip;
-
-        // TODO
-        private int _popupWidth;
-        private int _popupHeight;
 
         private CefBrowser _browser;
         private CefBrowserHost _browserHost;
@@ -72,6 +69,11 @@ namespace Xilium.CefGlue.Common
         public event LoadEndEventHandler LoadEnd;
         public event LoadingStateChangeEventHandler LoadingStateChange;
         public event LoadErrorEventHandler LoadError;
+
+        public event AddressChangedEventHandler AddressChanged;
+        public event TitleChangedEventHandler TitleChanged;
+        public event ConsoleMessageEventHandler ConsoleMessage;
+        public event StatusMessageEventHandler StatusMessage;
 
         public string StartUrl { get; set; }
 
@@ -458,7 +460,7 @@ namespace Xilium.CefGlue.Common
                 _browserHost.WasResized();
         }
 
-        bool ICefBrowserHost.HandleTooltip(string text)
+        bool ICefBrowserHost.HandleTooltip(CefBrowser browser, string text)
         {
             if (_tooltip == text)
             {
@@ -471,24 +473,51 @@ namespace Xilium.CefGlue.Common
             return true;
         }
 
-        void ICefBrowserHost.HandleLoadStart(LoadStartEventArgs args)
+        void ICefBrowserHost.HandleAddressChange(CefBrowser browser, CefFrame frame, string url)
         {
-            LoadStart?.Invoke(this, args);
+            AddressChanged?.Invoke(this, url);
         }
 
-        void ICefBrowserHost.HandleLoadEnd(LoadEndEventArgs args)
+        void ICefBrowserHost.HandleTitleChange(CefBrowser browser, string title)
         {
-            LoadEnd?.Invoke(this, args);
+            TitleChanged?.Invoke(this, title);
         }
 
-        void ICefBrowserHost.HandleLoadError(LoadErrorEventArgs args)
+        void ICefBrowserHost.HandleStatusMessage(CefBrowser browser, string value)
         {
-            LoadError?.Invoke(this, args);
+            StatusMessage?.Invoke(this, value);
         }
 
-        void ICefBrowserHost.HandleLoadingStateChange(LoadingStateChangeEventArgs args)
+        bool ICefBrowserHost.HandleConsoleMessage(CefBrowser browser, CefLogSeverity level, string message, string source, int line)
         {
-            LoadingStateChange?.Invoke(this, args);
+            var handler = ConsoleMessage;
+            if (handler != null)
+            {
+                var args = new ConsoleMessageEventArgs(level, message, source, line);
+                ConsoleMessage?.Invoke(this, args);
+                return !args.OutputToConsole;
+            }
+            return false;
+        }
+
+        void ICefBrowserHost.HandleLoadStart(CefBrowser browser, CefFrame frame, CefTransitionType transitionType)
+        {
+            LoadStart?.Invoke(this, new LoadStartEventArgs(frame));
+        }
+
+        void ICefBrowserHost.HandleLoadEnd(CefBrowser browser, CefFrame frame, int httpStatusCode)
+        {
+            LoadEnd?.Invoke(this, new LoadEndEventArgs(frame, httpStatusCode));
+        }
+
+        void ICefBrowserHost.HandleLoadError(CefBrowser browser, CefFrame frame, CefErrorCode errorCode, string errorText, string failedUrl)
+        {
+            LoadError?.Invoke(this, new LoadErrorEventArgs(frame, errorCode, errorText, failedUrl));
+        }
+
+        void ICefBrowserHost.HandleLoadingStateChange(CefBrowser browser, bool isLoading, bool canGoBack, bool canGoForward)
+        {
+            LoadingStateChange?.Invoke(this, new LoadingStateChangeEventArgs(isLoading, canGoBack, canGoForward));
         }
 
         void ICefBrowserHost.HandleViewPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects, bool isPopup)

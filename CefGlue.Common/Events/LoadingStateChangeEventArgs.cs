@@ -1,6 +1,6 @@
 using System;
 
-namespace Xilium.CefGlue.Common
+namespace Xilium.CefGlue.Common.Events
 {
     public class LoadingStateChangeEventArgs : EventArgs
     {
