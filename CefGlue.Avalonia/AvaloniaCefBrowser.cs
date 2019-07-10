@@ -15,8 +15,6 @@ namespace Xilium.CefGlue.Avalonia
         private readonly ILogger _logger;
         private readonly CommonBrowserAdapter _adapter;
 
-        private readonly Popup _popup;
-
         public AvaloniaCefBrowser()
         {
             _logger = new Logger(nameof(AvaloniaCefBrowser));
@@ -25,11 +23,10 @@ namespace Xilium.CefGlue.Avalonia
             VisualChildren.Add(image);
 
             var popupImage = CreateImage();
-            var popup = new Popup
+            var popup = new ExtendedAvaloniaPopup
             {
-                PlacementTarget = this,
-                PlacementMode = PlacementMode.Bottom,
-                Child = popupImage
+                Content = popupImage,
+                PlacementTarget = this
             };
 
             var renderHandler = new AvaloniaRenderHandler(image, _logger);

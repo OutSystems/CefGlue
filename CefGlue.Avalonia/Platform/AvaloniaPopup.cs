@@ -1,4 +1,5 @@
-using Avalonia.Controls.Primitives;
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Xilium.CefGlue.Common.Helpers;
@@ -8,9 +9,9 @@ namespace Xilium.CefGlue.Avalonia.Platform
 {
     internal class AvaloniaPopup : AvaloniaControl, IPopup
     {
-        private readonly Popup _popup;
+        private readonly ExtendedAvaloniaPopup _popup;
 
-        public AvaloniaPopup(Popup popup, RenderHandler renderHandler) : base(popup, renderHandler)
+        public AvaloniaPopup(ExtendedAvaloniaPopup popup, RenderHandler renderHandler) : base(popup, renderHandler)
         {
             _popup = popup;
         }
@@ -21,16 +22,16 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public int Height => (int)_popup.Height;
 
-        public int OffsetX => (int)_popup.HorizontalOffset;
+        public int OffsetX => (int)_popup.Position.X;
 
-        public int OffsetY => (int)_popup.VerticalOffset;
+        public int OffsetY => (int)_popup.Position.Y;
 
         public void MoveAndResize(int x, int y, int width, int height)
         {
             Dispatcher.UIThread.Post(() =>
             {
-                _popup.HorizontalOffset = x;
-                _popup.VerticalOffset = y;
+                var origin = _popup.PlacementTarget.PointToScreen(new global::Avalonia.Point(x, y));
+                _popup.Position = new PixelPoint(origin.X, origin.Y);
                 _popup.Width = width;
                 _popup.Height = height;
             });
@@ -38,17 +39,15 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public void Open()
         {
-            SetIsOpen(true);
+            Dispatcher.UIThread.Post(() => {
+                _popup.Owner = _popup.PlacementTarget.GetVisualRoot() as Window;
+                _popup.Show();
+            });
         }
 
         public void Close()
         {
-            SetIsOpen(false);
-        }
-
-        private void SetIsOpen(bool isOpen)
-        {
-            Dispatcher.UIThread.Post(() => _popup.IsOpen = isOpen);
+            Dispatcher.UIThread.Post(() => _popup.Hide());
         }
     }
 }
