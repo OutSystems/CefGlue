@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue.Samples.WpfOsr
+﻿namespace Xilium.CefGlue.Demo.WPF
 {
     using System;
     using System.Collections.Generic;

@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 
-namespace Xilium.CefGlue.Samples.WpfOsr
+namespace Xilium.CefGlue.Demo.WPF
 {
     /// <summary>
     /// Interaction logic for App.xaml

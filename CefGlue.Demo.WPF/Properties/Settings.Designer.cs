@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Xilium.CefGlue.Samples.WpfOsr.Properties {
+namespace Xilium.CefGlue.Demo.WPF.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

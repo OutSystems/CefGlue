@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue.Samples.WpfOsr
+namespace Xilium.CefGlue.Demo.WPF
 {
     using System;
     using System.Collections.Generic;
@@ -57,7 +57,7 @@ namespace Xilium.CefGlue.Samples.WpfOsr
             }
 
 
-            var app = new Xilium.CefGlue.Samples.WpfOsr.App();
+            var app = new Xilium.CefGlue.Demo.WPF.App();
             app.InitializeComponent();
             app.Run();
 
