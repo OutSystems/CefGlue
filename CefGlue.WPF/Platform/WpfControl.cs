@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using Microsoft.Win32.SafeHandles;
@@ -12,6 +13,9 @@ using WpfPoint = System.Windows.Point;
 
 namespace Xilium.CefGlue.WPF.Platform
 {
+    /// <summary>
+    /// The WPF control wrapper.
+    /// </summary>
     internal class WpfControl : UIControl, IDisposable
     {
         private readonly FrameworkElement _control;
@@ -36,6 +40,16 @@ namespace Xilium.CefGlue.WPF.Platform
             {
                 bool handled;
                 TriggerKeyDown(arg.AsCefKeyEvent(false), out handled);
+
+                var key = arg.Key;
+                if (key == Key.Tab  // Avoid tabbing out the web browser control
+                    || key == Key.Home || key == Key.End // Prevent keyboard navigation using home and end keys
+                    || key == Key.Up || key == Key.Down || key == Key.Left || key == Key.Right // Prevent keyboard navigation using arrows
+                )
+                {
+                    handled = true;
+                }
+
                 arg.Handled = handled;
             };
             _control.KeyUp += (sender, arg) =>

@@ -78,7 +78,7 @@ namespace Xilium.CefGlue.Common
 
         public string StartUrl { get; set; }
 
-        public bool AllowsTransparency { get; set; }
+        public bool AllowsTransparency { get; set; } = false;
 
         #region Cef Handlers
 
@@ -200,8 +200,6 @@ namespace Xilium.CefGlue.Common
                 if (_browserHost != null)
                 {
                     _browserHost.SendMouseMoveEvent(mouseEvent, false);
-
-                    //_logger.Debug(string.Format("Browser_MouseMove: ({0},{1})", cursorPos.X, cursorPos.Y));
                 }
             });
         }
@@ -213,7 +211,6 @@ namespace Xilium.CefGlue.Common
                 if (_browserHost != null)
                 {
                     _browserHost.SendMouseMoveEvent(mouseEvent, true);
-                    //_logger.Debug("Browser_MouseLeave");
                 }
             });
         }
@@ -226,8 +223,6 @@ namespace Xilium.CefGlue.Common
                 if (_browserHost != null)
                 {
                     SendMouseClickEvent(mouseEvent, mouseButton, false, clickCount);
-
-                    //_logger.Debug(string.Format("Browser_MouseDown: ({0},{1})", cursorPos.X, cursorPos.Y));
                 }
             });
         }
@@ -239,8 +234,6 @@ namespace Xilium.CefGlue.Common
                 if (_browserHost != null)
                 {
                     SendMouseClickEvent(mouseEvent, mouseButton, true, 1);
-
-                    //_logger.Debug(string.Format("Browser_MouseDown: ({0},{1})", cursorPos.X, cursorPos.Y));
                 }
             });
         }
@@ -293,20 +286,6 @@ namespace Xilium.CefGlue.Common
                     SendKeyPressEvent(keyEvent);
                 }
             });
-
-            // TODO
-            //if (key == Key.Tab  // Avoid tabbing out the web browser control
-            //    || key == Key.Home || key == Key.End // Prevent keyboard navigation using home and end keys
-            //    || key == Key.Up || key == Key.Down || key == Key.Left || key == Key.Right // Prevent keyboard navigation using arrows
-            //)
-            //{
-            //    handled = true;
-            //}
-            //else
-            //{
-            //    handled = false;
-            //}
-
             handled = false;
         }
 
@@ -332,7 +311,7 @@ namespace Xilium.CefGlue.Common
                         windowInfo.SetAsWindowless(hParentWnd.Value, AllowsTransparency);
 
                         var settings = new CefBrowserSettings();
-                        _cefClient = new CommonCefClient(this);
+                        _cefClient = new CommonCefClient(this, _logger);
 
                         // This is the first time the window is being rendered, so create it.
                         CefBrowserHost.CreateBrowser(windowInfo, _cefClient, settings, string.IsNullOrEmpty(StartUrl) ? "about:blank" : StartUrl);
@@ -364,6 +343,11 @@ namespace Xilium.CefGlue.Common
             windowInfo.SetAsPopup(_browserHost.GetWindowHandle(), "DevTools");
 
             _browserHost.ShowDevTools(windowInfo, _browserHost.GetClient(), new CefBrowserSettings(), new CefPoint());
+        }
+
+        public void CloseDeveloperTools()
+        {
+            _browserHost.CloseDevTools();
         }
 
         public void RegisterJavascriptObject(object targetObject, string name)

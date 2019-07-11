@@ -15,7 +15,7 @@ namespace Xilium.CefGlue.Common
 
         private readonly MessageDispatcher _messageDispatcher = new MessageDispatcher();
 
-        public CommonCefClient(ICefBrowserHost owner)
+        public CommonCefClient(ICefBrowserHost owner, ILogger logger)
         {
             if (owner == null)
             {
@@ -25,7 +25,7 @@ namespace Xilium.CefGlue.Common
             _owner = owner; 
             _lifeSpanHandler = new CommonCefLifeSpanHandler(owner);
             _displayHandler = new CommonCefDisplayHandler(owner);
-            _renderHandler = new CommonCefRenderHandler(owner, new Logger("CefRenderHandler"));
+            _renderHandler = new CommonCefRenderHandler(owner, logger);
             _loadHandler = new CommonCefLoadHandler(owner);
         }
 

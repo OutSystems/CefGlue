@@ -10,6 +10,9 @@ using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.Avalonia
 {
+    /// <summary>
+    /// The Avalonia builtin render.
+    /// </summary>
     internal class AvaloniaRenderHandler : BuiltInRenderHandler
     {
         private WriteableBitmap _bitmap;

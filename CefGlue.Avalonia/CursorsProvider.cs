@@ -4,6 +4,9 @@ using Avalonia.Input;
 
 namespace Xilium.CefGlue.Avalonia
 {
+    /// <summary>
+    /// Provides handles for mouse cursors.
+    /// </summary>
     internal class CursorsProvider
     {
         private static Dictionary<IntPtr, Cursor> _cache = new Dictionary<IntPtr, Cursor>();

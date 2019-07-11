@@ -1,6 +1,6 @@
 namespace Xilium.CefGlue.Common.InternalHandlers
 {
-    public class CommonCefLoadHandler : CefLoadHandler
+    internal class CommonCefLoadHandler : CefLoadHandler
     {
         private readonly ICefBrowserHost _owner;
 

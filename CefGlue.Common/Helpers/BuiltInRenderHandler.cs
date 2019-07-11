@@ -3,6 +3,9 @@ using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.Common.Helpers
 {
+    /// <summary>
+    /// Builtin render handler that supports rendering into the browser contents into and image.
+    /// </summary>
     internal abstract class BuiltInRenderHandler : IDisposable
     {
         protected readonly ILogger _logger;

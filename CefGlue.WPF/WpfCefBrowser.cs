@@ -9,6 +9,9 @@ using Xilium.CefGlue.WPF.Platform;
 
 namespace Xilium.CefGlue.WPF
 {
+    /// <summary>
+    /// The WPF CEF browser.
+    /// </summary>
     public class WpfCefBrowser : BaseCefBrowser
     {
         private IDisposable[] _disposables;
@@ -60,6 +63,10 @@ namespace Xilium.CefGlue.WPF
             return size;
         }
 
+        /// <summary>
+        /// Create an image that is used to render the browser frame and popups
+        /// </summary>
+        /// <returns></returns>
         private static Image CreateImage()
         {
             var image = new Image()

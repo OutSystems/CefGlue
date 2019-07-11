@@ -7,6 +7,9 @@ using Xilium.CefGlue.Common.Platform;
 
 namespace Xilium.CefGlue.Avalonia.Platform
 {
+    /// <summary>
+    /// The Avalonia popup control wrapper.
+    /// </summary>
     internal class AvaloniaPopup : AvaloniaControl, IPopup
     {
         private readonly ExtendedAvaloniaPopup _popup;

@@ -6,6 +6,7 @@ using Avalonia.Controls.Primitives;
 namespace Xilium.CefGlue.Avalonia.Platform
 {
     /// <summary>
+    /// Enhanced version of an Avalonia popup.
     /// Fixes some problems of the Avalonia Popup implementation.
     /// TODO: 
     /// - window shows a black border: https://github.com/AvaloniaUI/Avalonia/issues/2401
@@ -30,8 +31,14 @@ namespace Xilium.CefGlue.Avalonia.Platform
             Topmost = true;
         }
 
+        /// <summary>
+        /// Controls wheteher popup will be activated on show.
+        /// </summary>
         public bool ShowActivated { get; set; } = false;
         
+        /// <summary>
+        /// The element to be used as the positioning reference.
+        /// </summary>
         public Control PlacementTarget { get; set; }
 
         public override void Show()

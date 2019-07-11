@@ -2,6 +2,9 @@ using Avalonia.Input;
 
 namespace Xilium.CefGlue.Avalonia
 {
+    /// <summary>
+    /// Performs key code convertions.
+    /// </summary>
     internal static class KeyInterop
     {
         private const int VK_CANCEL = 0x03;

@@ -1,6 +1,7 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Xilium.CefGlue.Common.Helpers;
@@ -10,6 +11,9 @@ using Point = Xilium.CefGlue.Common.Platform.Point;
 
 namespace Xilium.CefGlue.Avalonia.Platform
 {
+    /// <summary>
+    /// The Avalonia control wrapper.
+    /// </summary>
     internal class AvaloniaControl : UIControl
     {
         // TODO avalonia: get value from OS
@@ -34,6 +38,16 @@ namespace Xilium.CefGlue.Avalonia.Platform
             {
                 bool handled;
                 TriggerKeyDown(arg.AsCefKeyEvent(false), out handled);
+
+                var key = arg.Key;
+                if (key == Key.Tab  // Avoid tabbing out the web browser control
+                    || key == Key.Home || key == Key.End // Prevent keyboard navigation using home and end keys
+                    || key == Key.Up || key == Key.Down || key == Key.Left || key == Key.Right // Prevent keyboard navigation using arrows
+                )
+                {
+                    handled = true;
+                }
+
                 arg.Handled = handled;
             };
             _control.KeyUp += (sender, arg) =>

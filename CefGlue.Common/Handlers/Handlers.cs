@@ -1,5 +1,3 @@
-using System;
-
 namespace Xilium.CefGlue.Common.Handlers
 {
     public class ContextMenuHandler : CefContextMenuHandler { }

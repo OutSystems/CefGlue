@@ -5,7 +5,12 @@ namespace Xilium.CefGlue.Avalonia
 {
     internal static class InputExtensions
     {
-
+        /// <summary>
+        /// Convert a mouse event args into a cef mouse event.
+        /// </summary>
+        /// <param name="eventArgs">The mouse event args</param>
+        /// <param name="mouseCoordinatesReferencial">The element used as the positioning referential</param>
+        /// <returns></returns>
         public static CefMouseEvent AsCefMouseEvent(this PointerEventArgs eventArgs, IVisual mousePositionReferential)
         {
             var cursorPos = eventArgs.GetPosition(mousePositionReferential);
@@ -13,6 +18,11 @@ namespace Xilium.CefGlue.Avalonia
             return new CefMouseEvent((int) cursorPos.X, (int) cursorPos.Y, eventArgs.InputModifiers.AsCefMouseModifiers());
         }
 
+        /// <summary>
+        /// Convert a mouse button into a cef mouse button.
+        /// </summary>
+        /// <param name="button"></param>
+        /// <returns></returns>
         public static CefMouseButtonType AsCefMouseButtonType(this MouseButton button)
         {
             switch (button)
@@ -26,6 +36,12 @@ namespace Xilium.CefGlue.Avalonia
             }
         }
 
+        /// <summary>
+        /// Convert a key event into a cef key event.
+        /// </summary>
+        /// <param name="eventArgs"></param>
+        /// <param name="isKeyUp"></param>
+        /// <returns></returns>
         public static CefKeyEvent AsCefKeyEvent(this KeyEventArgs eventArgs, bool isKeyUp)
         {
             var modifiers = eventArgs.Modifiers.AsCefKeyboardModifiers();
@@ -39,6 +55,11 @@ namespace Xilium.CefGlue.Avalonia
             };
         }
 
+        /// <summary>
+        /// Convert mouse modifiers into cef flags.
+        /// </summary>
+        /// <param name="keyboardModifiers"></param>
+        /// <returns></returns>
         public static CefEventFlags AsCefMouseModifiers(this InputModifiers mouseModifiers)
         {
             CefEventFlags modifiers = new CefEventFlags();
@@ -55,6 +76,11 @@ namespace Xilium.CefGlue.Avalonia
             return modifiers;
         }
 
+        /// <summary>
+        /// Convert keyboard modifieers into cef flags.
+        /// </summary>
+        /// <param name="keyboardModifiers"></param>
+        /// <returns></returns>
         public static CefEventFlags AsCefKeyboardModifiers(this InputModifiers keyboardModifiers)
         {
             CefEventFlags modifiers = new CefEventFlags();

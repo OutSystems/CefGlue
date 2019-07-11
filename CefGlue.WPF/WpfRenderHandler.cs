@@ -9,6 +9,9 @@ using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.WPF
 {
+    /// <summary>
+    /// The WPF builtin render 
+    /// </summary>
     internal class WpfRenderHandler : BuiltInRenderHandler
     {
         private WriteableBitmap _bitmap;

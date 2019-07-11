@@ -5,6 +5,9 @@ using Xilium.CefGlue.Common.Platform;
 
 namespace Xilium.CefGlue.WPF.Platform
 {
+    /// <summary>
+    /// The WPF popup wrapper.
+    /// </summary>
     internal class WpfPopup : WpfControl, IPopup
     {
         private readonly Popup _popup;

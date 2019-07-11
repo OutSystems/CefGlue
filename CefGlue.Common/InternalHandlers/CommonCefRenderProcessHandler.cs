@@ -26,8 +26,21 @@ namespace Xilium.CefGlue.Common.InternalHandlers
 
         protected override void OnContextReleased(CefBrowser browser, CefFrame frame, CefV8Context context)
         {
+            // TODO make this available
             _javascriptToNativeDispatcher.HandleContextReleased(context);
             base.OnContextReleased(browser, frame, context);
+        }
+
+        protected override void OnContextCreated(CefBrowser browser, CefFrame frame, CefV8Context context)
+        {
+            // TODO make this available
+            base.OnContextCreated(browser, frame, context);
+        }
+
+        protected override void OnUncaughtException(CefBrowser browser, CefFrame frame, CefV8Context context, CefV8Exception exception, CefV8StackTrace stackTrace)
+        {
+            // TODO make this available
+            base.OnUncaughtException(browser, frame, context, exception, stackTrace);
         }
     }
 }

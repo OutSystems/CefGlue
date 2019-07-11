@@ -6,6 +6,9 @@ using Xilium.CefGlue.Common;
 
 namespace Xilium.CefGlue.Avalonia
 {
+    /// <summary>
+    /// The Avalonia CEF browser.
+    /// </summary>
     public class AvaloniaCefBrowser : BaseCefBrowser
     {
         internal override CommonBrowserAdapter CreateAdapter()
@@ -36,6 +39,10 @@ namespace Xilium.CefGlue.Avalonia
             return size;
         }
 
+        /// <summary>
+        /// Create an image that is used to render the browser frame and popups
+        /// </summary>
+        /// <returns></returns>
         private static Image CreateImage()
         {
             return new Image()

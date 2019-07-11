@@ -5,7 +5,12 @@ namespace Xilium.CefGlue.WPF
 {
     internal static class InputExtensions
     {
-
+        /// <summary>
+        /// Convert a mouse event args into a cef mouse event.
+        /// </summary>
+        /// <param name="eventArgs">The mouse event args</param>
+        /// <param name="mouseCoordinatesReferencial">The element used as the positioning referential</param>
+        /// <returns></returns>
         public static CefMouseEvent AsCefMouseEvent(this MouseEventArgs eventArgs, IInputElement mouseCoordinatesReferencial)
         {
             var cursorPos = eventArgs.GetPosition(mouseCoordinatesReferencial);
@@ -13,6 +18,11 @@ namespace Xilium.CefGlue.WPF
             return new CefMouseEvent((int) cursorPos.X, (int) cursorPos.Y, Keyboard.Modifiers.AsCefKeyboardModifiers());
         }
 
+        /// <summary>
+        /// Convert a mouse button into a cef mouse button.
+        /// </summary>
+        /// <param name="button"></param>
+        /// <returns></returns>
         public static CefMouseButtonType AsCefMouseButtonType(this MouseButton button)
         {
             switch (button)
@@ -26,6 +36,12 @@ namespace Xilium.CefGlue.WPF
             }
         }
 
+        /// <summary>
+        /// Convert a key event into a cef key event.
+        /// </summary>
+        /// <param name="eventArgs"></param>
+        /// <param name="isKeyUp"></param>
+        /// <returns></returns>
         public static CefKeyEvent AsCefKeyEvent(this KeyEventArgs eventArgs, bool isKeyUp)
         {
             var modifiers = eventArgs.KeyboardDevice.Modifiers.AsCefKeyboardModifiers();
@@ -39,22 +55,11 @@ namespace Xilium.CefGlue.WPF
             };
         }
 
-        public static CefEventFlags AsCefMouseModifiers(this MouseEventArgs eventArgs)
-        {
-            CefEventFlags modifiers = new CefEventFlags();
-            
-            if (eventArgs.LeftButton == MouseButtonState.Pressed)
-                modifiers |= CefEventFlags.LeftMouseButton;
-
-            if (eventArgs.MiddleButton == MouseButtonState.Pressed)
-                modifiers |= CefEventFlags.MiddleMouseButton;
-
-            if (eventArgs.RightButton == MouseButtonState.Pressed)
-                modifiers |= CefEventFlags.RightMouseButton;
-
-            return modifiers;
-        }
-
+        /// <summary>
+        /// Convert keyboard modifiers into cef flags.
+        /// </summary>
+        /// <param name="keyboardModifiers"></param>
+        /// <returns></returns>
         public static CefEventFlags AsCefKeyboardModifiers(this ModifierKeys keyboardModifiers)
         {
             CefEventFlags modifiers = new CefEventFlags();

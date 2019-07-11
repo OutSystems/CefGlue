@@ -3,7 +3,7 @@ using Xilium.CefGlue.Common.Handlers;
 
 namespace Xilium.CefGlue.Common
 {
-    public interface ICefBrowserHost
+    internal interface ICefBrowserHost
     {
         void GetViewRect(out CefRectangle rect);
         void GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY);
