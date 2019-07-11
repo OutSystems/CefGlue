@@ -66,17 +66,16 @@
     <Compile Include="WebBrowserState.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Xilium.CefGlue.snk">
+      <Link>Properties\Xilium.CefGlue.snk</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\CefGlue\CefGlue.csproj">
       <Project>{703ff300-34b9-48d4-a5d6-e741f48d5f95}</Project>
       <Name>CefGlue</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Xilium.CefGlue.snk">
-      <Link>Properties\Xilium.CefGlue.snk</Link>
-    </None>
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

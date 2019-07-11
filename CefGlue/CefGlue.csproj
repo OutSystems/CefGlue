@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
     <AssemblyName>Xilium.CefGlue</AssemblyName>
     <Version>72.0.3626.81</Version>
     <Company>Xilium</Company>
@@ -30,12 +30,6 @@
   <ItemGroup>
     <None Include="Interop\Base\cef_string_t.disabled.cs" />
     <None Include="Wrapper\MessageRouter\ReadMe.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Collections.Specialized" Version="4.3.0" />
-    <PackageReference Include="System.IO" Version="4.3.0" />
-    <PackageReference Include="System.IO.UnmanagedMemoryStream" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>

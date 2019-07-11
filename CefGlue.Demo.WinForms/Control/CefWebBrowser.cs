@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue.Demo
+namespace Xilium.CefGlue.Demo
 {
     using System;
     using System.Collections.Generic;
@@ -11,7 +11,6 @@
 
     public sealed class CefWebBrowser : Control
     {
-        private bool _handleCreated;
 
         private WebBrowser _core;
         private IntPtr _browserWindowHandle;
@@ -73,8 +72,6 @@
 
                 _core.Create(windowInfo);
             }
-
-            _handleCreated = true;
         }
 
         protected override void Dispose(bool disposing)

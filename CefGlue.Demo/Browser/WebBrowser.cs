@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue.Demo.Browser
+namespace Xilium.CefGlue.Demo.Browser
 {
     using System;
     using System.Collections.Generic;
@@ -11,9 +11,6 @@
         private string _startUrl;
         private CefClient _client;
         private CefBrowser _browser;
-        private IntPtr _windowHandle;
-
-        private bool _created;
 
         public WebBrowser(object owner, CefBrowserSettings settings, string startUrl)
         {
@@ -48,7 +45,6 @@
         internal void OnCreated(CefBrowser browser)
         {
             //if (_created) throw new InvalidOperationException("Browser already created.");
-            _created = true;
             _browser = browser;
 
             var handler = Created;

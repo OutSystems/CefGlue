@@ -125,7 +125,7 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
 
         public void TraceException(string message, Exception exception)
         {
-            Log.TraceException(message, exception);
+            Log.Trace(exception, message);
         }
 
         public void Trace(string message, params object[] args)
@@ -135,7 +135,7 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
 
         public void DebugException(string message, Exception exception)
         {
-            Log.DebugException(message, exception);
+            Log.Debug(exception, message);
         }
 
         public void Debug(string message, params object[] args)
@@ -145,7 +145,7 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
 
         public void ErrorException(string message, Exception exception)
         {
-            Log.ErrorException(message, exception);
+            Log.Error(exception, message);
         }
 
         public void Error(string message, params object[] args)
@@ -155,7 +155,7 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
 
         public void FatalException(string message, Exception exception)
         {
-            Log.FatalException(message, exception);
+            Log.Fatal(exception, message);
         }
 
         public void Fatal(string message, params object[] args)
@@ -165,7 +165,7 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
 
         public void InfoException(string message, Exception exception)
         {
-            Log.InfoException(message, exception);
+            Log.Info(exception, message);
         }
 
         public void Info(string message, params object[] args)
@@ -175,7 +175,7 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
 
         public void WarnException(string message, Exception exception)
         {
-            Log.WarnException(message, exception);
+            Log.Warn(exception, message);
         }
 
         public void Warn(string message, params object[] args)
