@@ -19,6 +19,7 @@ namespace Xilium.CefGlue.Common
 
         private bool _browserCreated;
 
+        private string _title;
         private string _tooltip;
 
         private CefBrowser _browser;
@@ -101,6 +102,18 @@ namespace Xilium.CefGlue.Common
 
         public BuiltInRenderHandler PopupRenderHandler => _popup.RenderHandler;
 
+        public bool IsInitialized => _browser != null;
+
+        public bool IsLoading => _browser?.IsLoading ?? false;
+
+        public string Title => _title;
+
+        public double ZoomLevel
+        {
+            get => _browser.GetHost().GetZoomLevel();
+            set => _browser.GetHost().SetZoomLevel(value);
+        }
+
         public void NavigateTo(string url)
         {
             // Remove leading whitespace from the URL
@@ -149,10 +162,19 @@ namespace Xilium.CefGlue.Common
                 _browser.GoForward();
         }
 
-        public void Refresh()
+        public void Reload(bool ignoreCache)
         {
             if (_browser != null)
-                _browser.Reload();
+            {
+                if (ignoreCache)
+                {
+                    _browser.ReloadIgnoreCache();
+                }
+                else
+                {
+                    _browser.Reload();
+                }
+            }
         }
 
         public void ExecuteJavaScript(string code, string url, int line)
@@ -482,6 +504,7 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandleTitleChange(CefBrowser browser, string title)
         {
+            _title = title;
             TitleChanged?.Invoke(this, title);
         }
 

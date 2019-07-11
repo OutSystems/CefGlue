@@ -154,6 +154,30 @@ namespace Xilium.CefGlue.Common
         public bool AllowsTransparency { get => _adapter.AllowsTransparency; set => _adapter.AllowsTransparency = value; }
 
         /// <summary>
+        /// Returns true when the underlying browser has been initialized.
+        /// </summary>
+        public bool IsBrowserInitialized => _adapter.IsInitialized;
+
+        /// <summary>
+        /// Returns true if the browser is currently loading.
+        /// </summary>
+        public bool IsLoading => _adapter.IsLoading;
+
+        /// <summary>
+        /// Returns the current page title.
+        /// </summary>
+        public string Title => _adapter.Title;
+
+        /// <summary>
+        /// Get or set the current zoom level. The default zoom level is 0.0.
+        /// </summary>
+        public double ZoomLevel
+        {
+            get => _adapter.ZoomLevel;
+            set => _adapter.ZoomLevel = value;
+        }
+
+        /// <summary>
         /// Load the specified |url|.
         /// </summary>
         public void NavigateTo(string url) {
@@ -175,9 +199,7 @@ namespace Xilium.CefGlue.Common
         /// Returns true if the browser can navigate backwards.
         /// </summary>
         /// <returns></returns>
-        public bool CanGoBack() {
-            return _adapter.CanGoBack();
-        }
+        public bool CanGoBack => _adapter.CanGoBack();
 
         /// <summary>
         /// Navigate backwards.
@@ -190,22 +212,21 @@ namespace Xilium.CefGlue.Common
         /// Returns true if the browser can navigate forward.
         /// </summary>
         /// <returns></returns>
-        public bool CanGoForward() {
-            return _adapter.CanGoForward();
-        }
+        public bool CanGoForward => _adapter.CanGoForward();
 
         /// <summary>
         /// Navigate forwards.
         /// </summary>
-        public void GoForward() {
+        public void GoForward()
+        {
             _adapter.GoForward();
         }
 
         /// <summary>
         /// Reload the current page.
         /// </summary>
-        public void Refresh() {
-            _adapter.Refresh();
+        public void Reload(bool ignoreCache = false) {
+            _adapter.Reload(ignoreCache);
         }
 
         /// <summary>

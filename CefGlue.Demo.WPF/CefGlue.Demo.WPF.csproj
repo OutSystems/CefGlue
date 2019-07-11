@@ -124,7 +124,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Xilium.CefGlue.Samples.WpfOsr.exe.nlog">
+    <None Include="CefGlue.Demo.WPF.exe.nlog">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
