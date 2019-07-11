@@ -26,7 +26,7 @@ namespace Xilium.CefGlue.Common.InternalHandlers
 
         protected override CefAccessibilityHandler GetAccessibilityHandler()
         {
-            return null;
+            return _owner.RenderHandler?.HandleGetAccessibilityHandler();
         }
 
         protected override void GetViewRect(CefBrowser browser, out CefRectangle rect)
@@ -79,10 +79,21 @@ namespace Xilium.CefGlue.Common.InternalHandlers
 
         protected override void OnScrollOffsetChanged(CefBrowser browser, double x, double y)
         {
+            _owner.RenderHandler?.HandleScrollOffsetChanged(browser, x, y);
         }
 
         protected override void OnImeCompositionRangeChanged(CefBrowser browser, CefRange selectedRange, CefRectangle[] characterBounds)
         {
+        }
+
+        protected override bool StartDragging(CefBrowser browser, CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y)
+        {
+            return (_owner.RenderHandler?.HandleStartDragging(browser, dragData, allowedOps, x, y) ?? false) || base.StartDragging(browser, dragData, allowedOps, x, y);
+        }
+
+        protected override void UpdateDragCursor(CefBrowser browser, CefDragOperationsMask operation)
+        {
+            _owner.RenderHandler?.HandleUpdateDragCursor(browser, operation);
         }
     }
 }

@@ -18,22 +18,24 @@ namespace Xilium.CefGlue.Common.InternalHandlers
 
         protected override void OnAfterCreated(CefBrowser browser)
         {
+            _owner.LifeSpanHandler?.HandleAfterCreated(browser);
             _owner.HandleBrowserCreated(browser);
         }
 
         protected override bool DoClose(CefBrowser browser)
         {
-            return base.DoClose(browser);
+            return (_owner.LifeSpanHandler?.HandleDoClose(browser) ?? false) || base.DoClose(browser);
         }
 
         protected override void OnBeforeClose(CefBrowser browser)
         {
-            base.OnBeforeClose(browser);
+            _owner.LifeSpanHandler?.HandleBeforeClose(browser);
         }
 
         protected override bool OnBeforePopup(CefBrowser browser, CefFrame frame, string targetUrl, string targetFrameName, CefWindowOpenDisposition targetDisposition, bool userGesture, CefPopupFeatures popupFeatures, CefWindowInfo windowInfo, ref CefClient client, CefBrowserSettings settings, ref bool noJavascriptAccess)
         {
-            return base.OnBeforePopup(browser, frame, targetUrl, targetFrameName, targetDisposition, userGesture, popupFeatures, windowInfo, ref client, settings, ref noJavascriptAccess);
+            return (_owner.LifeSpanHandler?.HandleBeforePopup(browser, frame, targetUrl, targetFrameName, targetDisposition, userGesture, popupFeatures, windowInfo, ref client, settings, ref noJavascriptAccess) ?? false) ||
+                base.OnBeforePopup(browser, frame, targetUrl, targetFrameName, targetDisposition, userGesture, popupFeatures, windowInfo, ref client, settings, ref noJavascriptAccess);
         }
     }
 }

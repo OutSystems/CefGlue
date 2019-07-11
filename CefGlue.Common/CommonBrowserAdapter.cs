@@ -93,7 +93,6 @@ namespace Xilium.CefGlue.Common
         public LifeSpanHandler LifeSpanHandler { get; set; }
         public DisplayHandler DisplayHandler { get; set; }
         public RenderHandler RenderHandler { get; set; }
-        public LoadHandler LoadHandler { get; set; }
         public JSDialogHandler JSDialogHandler { get; set; }
 
         #endregion

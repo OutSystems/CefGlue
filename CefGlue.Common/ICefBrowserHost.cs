@@ -1,5 +1,4 @@
 using System;
-using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Handlers;
 
 namespace Xilium.CefGlue.Common
@@ -40,7 +39,6 @@ namespace Xilium.CefGlue.Common
         LifeSpanHandler LifeSpanHandler { get; set; }
         DisplayHandler DisplayHandler { get; set; }
         RenderHandler RenderHandler { get; set; }
-        LoadHandler LoadHandler { get; set; }
         JSDialogHandler JSDialogHandler { get; set; }
     }
 }
