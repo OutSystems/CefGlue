@@ -9,7 +9,7 @@ namespace Xilium.CefGlue.WPF.Platform
     {
         private readonly Popup _popup;
 
-        public WpfPopup(Popup popup, RenderHandler renderHandler) : base(popup, renderHandler)
+        public WpfPopup(Popup popup, BuiltInRenderHandler renderHandler) : base(popup, renderHandler)
         {
             _popup = popup;
         }

@@ -1,6 +1,6 @@
 using System;
 
-namespace Xilium.CefGlue.Common
+namespace Xilium.CefGlue.Common.InternalHandlers
 {
     internal sealed class CommonCefDisplayHandler : CefDisplayHandler
     {

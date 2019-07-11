@@ -2,7 +2,7 @@ using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.JavascriptExecution;
 using Xilium.CefGlue.Common.ObjectBinding;
 
-namespace Xilium.CefGlue.Common
+namespace Xilium.CefGlue.Common.InternalHandlers
 {
     internal class CommonCefRenderProcessHandler : CefRenderProcessHandler
     {

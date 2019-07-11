@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="BaseCefBrowser.cs" />
     <Compile Remove="CommonBrowserBehaviors.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="BaseCefBrowser.cs" />
   </ItemGroup>
 
   <ItemGroup>

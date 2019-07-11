@@ -70,6 +70,10 @@
     <Reference Include="System.Xaml" Condition="$(TargetFrameworkVersion)!='v3.5'" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CefGlue.Common\BaseCefBrowser.cs">
+      <Link>Common\BaseCefBrowser.cs</Link>
+    </Compile>
+    <Compile Include="Common\BaseCefBrowser.Wpf.cs" />
     <Compile Include="InputExtensions.cs" />
     <Compile Include="Platform\WpfPopup.cs" />
     <Compile Include="Platform\WpfControl.cs" />

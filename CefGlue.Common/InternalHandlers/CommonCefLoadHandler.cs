@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue.Common
+namespace Xilium.CefGlue.Common.InternalHandlers
 {
     public class CommonCefLoadHandler : CefLoadHandler
     {

@@ -3,7 +3,7 @@ using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.Common.Helpers
 {
-    internal abstract class RenderHandler : IDisposable
+    internal abstract class BuiltInRenderHandler : IDisposable
     {
         protected readonly ILogger _logger;
 
@@ -11,7 +11,7 @@ namespace Xilium.CefGlue.Common.Helpers
         private int _width;
         private int _height;
 
-        protected RenderHandler(ILogger logger)
+        protected BuiltInRenderHandler(ILogger logger)
         {
             _logger = logger;
         }

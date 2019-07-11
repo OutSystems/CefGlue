@@ -1,7 +1,7 @@
 using System;
 using Xilium.CefGlue.Common.Helpers.Logger;
 
-namespace Xilium.CefGlue.Common
+namespace Xilium.CefGlue.Common.InternalHandlers
 {
     internal sealed class CommonCefRenderHandler : CefRenderHandler
     {

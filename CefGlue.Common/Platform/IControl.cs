@@ -24,6 +24,6 @@ namespace Xilium.CefGlue.Common.Platform
         void SetCursor(IntPtr cursorHandle);
         void SetTooltip(string text);
 
-        RenderHandler RenderHandler { get; }
+        BuiltInRenderHandler RenderHandler { get; }
     }
 }

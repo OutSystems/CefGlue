@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
+using Xilium.CefGlue.Common.Handlers;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Helpers.Logger;
 using Xilium.CefGlue.Common.JavascriptExecution;
@@ -60,7 +61,7 @@ namespace Xilium.CefGlue.Common
 
             if (disposing)
             {
-                RenderHandler?.Dispose();
+                BuiltInRenderHandler?.Dispose();
                 PopupRenderHandler?.Dispose();
             }
         }
@@ -79,9 +80,27 @@ namespace Xilium.CefGlue.Common
 
         public bool AllowsTransparency { get; set; }
 
-        public RenderHandler RenderHandler => _control.RenderHandler;
+        #region Cef Handlers
 
-        public RenderHandler PopupRenderHandler => _popup.RenderHandler;
+        public ContextMenuHandler ContextMenuHandler { get; set; }
+        public DialogHandler DialogHandler { get; set; }
+        public DownloadHandler DownloadHandler { get; set; }
+        public DragHandler DragHandler { get; set; }
+        public FindHandler FindHandler { get; set; }
+        public FocusHandler FocusHandler { get; set; }
+        public KeyboardHandler KeyboardHandler { get; set; }
+        public RequestHandler RequestHandler { get; set; }
+        public LifeSpanHandler LifeSpanHandler { get; set; }
+        public DisplayHandler DisplayHandler { get; set; }
+        public RenderHandler RenderHandler { get; set; }
+        public LoadHandler LoadHandler { get; set; }
+        public JSDialogHandler JSDialogHandler { get; set; }
+
+        #endregion
+
+        public BuiltInRenderHandler BuiltInRenderHandler => _control.RenderHandler;
+
+        public BuiltInRenderHandler PopupRenderHandler => _popup.RenderHandler;
 
         public void NavigateTo(string url)
         {
@@ -370,13 +389,13 @@ namespace Xilium.CefGlue.Common
             control.TextInput += HandleTextInput;
         }
 
-        protected int RenderedWidth => RenderHandler.Width;
+        protected int RenderedWidth => BuiltInRenderHandler.Width;
 
-        protected int RenderedHeight => RenderHandler.Height;
+        protected int RenderedHeight => BuiltInRenderHandler.Height;
 
         protected void OnBrowserSizeChanged(int newWidth, int newHeight)
         {
-            RenderHandler?.Resize(newWidth, newHeight);
+            BuiltInRenderHandler?.Resize(newWidth, newHeight);
         }
 
         #region ICefBrowserHost
@@ -522,14 +541,14 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandleViewPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects, bool isPopup)
         {
-            RenderHandler renderHandler;
+            BuiltInRenderHandler renderHandler;
             if (isPopup)
             {
                 renderHandler = PopupRenderHandler;
             }
             else
             {
-                renderHandler = RenderHandler;
+                renderHandler = BuiltInRenderHandler;
             }
 
             renderHandler?.Paint(buffer, width, height, dirtyRects);

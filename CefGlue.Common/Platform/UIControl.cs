@@ -8,12 +8,12 @@ namespace Xilium.CefGlue.Common.Platform
         public delegate void KeyEventHandler(CefKeyEvent e, out bool handled);
         public delegate void TextInputEventHandler(string text, out bool handled);
 
-        protected UIControl(RenderHandler renderHandler)
+        protected UIControl(BuiltInRenderHandler renderHandler)
         {
             RenderHandler = renderHandler;
         }
 
-        public RenderHandler RenderHandler { get; }
+        public BuiltInRenderHandler RenderHandler { get; }
 
         public abstract Point PointToScreen(Point point);
 

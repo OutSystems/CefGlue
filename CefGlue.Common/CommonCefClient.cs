@@ -1,6 +1,7 @@
 using System;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Helpers.Logger;
+using Xilium.CefGlue.Common.InternalHandlers;
 
 namespace Xilium.CefGlue.Common
 {
@@ -10,7 +11,7 @@ namespace Xilium.CefGlue.Common
         private readonly CommonCefDisplayHandler _displayHandler;
         private readonly CommonCefRenderHandler _renderHandler;
         private readonly CommonCefLoadHandler _loadHandler;
-        private readonly CommonCefJSDialogHandler _jsDialogHandler;
+        private readonly ICefBrowserHost _owner;
 
         private readonly MessageDispatcher _messageDispatcher = new MessageDispatcher();
 
@@ -21,11 +22,56 @@ namespace Xilium.CefGlue.Common
                 throw new ArgumentNullException("owner");
             }
 
+            _owner = owner; 
             _lifeSpanHandler = new CommonCefLifeSpanHandler(owner);
             _displayHandler = new CommonCefDisplayHandler(owner);
             _renderHandler = new CommonCefRenderHandler(owner, new Logger("CefRenderHandler"));
             _loadHandler = new CommonCefLoadHandler(owner);
-            _jsDialogHandler = new CommonCefJSDialogHandler();
+        }
+
+        protected override CefContextMenuHandler GetContextMenuHandler()
+        {
+            return _owner.ContextMenuHandler;
+        }
+
+        protected override CefDialogHandler GetDialogHandler()
+        {
+            return _owner.DialogHandler;
+        }
+
+        protected override CefDownloadHandler GetDownloadHandler()
+        {
+            return _owner.DownloadHandler;
+        }
+
+        protected override CefDragHandler GetDragHandler()
+        {
+            return _owner.DragHandler;
+        }
+
+        protected override CefFindHandler GetFindHandler()
+        {
+            return _owner.FindHandler;
+        }
+
+        protected override CefFocusHandler GetFocusHandler()
+        {
+            return _owner.FocusHandler;
+        }
+
+        protected override CefKeyboardHandler GetKeyboardHandler()
+        {
+            return _owner.KeyboardHandler;
+        }
+
+        protected override CefRequestHandler GetRequestHandler()
+        {
+            return _owner.RequestHandler;
+        }
+
+        protected override CefJSDialogHandler GetJSDialogHandler()
+        {
+            return _owner.JSDialogHandler;
         }
 
         protected override CefLifeSpanHandler GetLifeSpanHandler()
@@ -46,11 +92,6 @@ namespace Xilium.CefGlue.Common
         protected override CefLoadHandler GetLoadHandler()
         {
             return _loadHandler;
-        }
-
-        protected override CefJSDialogHandler GetJSDialogHandler()
-        {
-            return _jsDialogHandler;
         }
 
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)

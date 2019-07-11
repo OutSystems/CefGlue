@@ -19,7 +19,7 @@ namespace Xilium.CefGlue.WPF.Platform
         private ToolTip _tooltip;
         private DispatcherTimer _tooltipTimer;
 
-        public WpfControl(FrameworkElement control, RenderHandler renderHandler) : base(renderHandler)
+        public WpfControl(FrameworkElement control, BuiltInRenderHandler renderHandler) : base(renderHandler)
         {
             _control = control;
 

@@ -17,7 +17,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         private readonly Control _control;
 
-        public AvaloniaControl(Control control, RenderHandler renderHandler) : base(renderHandler)
+        public AvaloniaControl(Control control, BuiltInRenderHandler renderHandler) : base(renderHandler)
         {
             _control = control;
 

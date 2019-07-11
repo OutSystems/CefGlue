@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Xilium.CefGlue.Common.InternalHandlers;
 
 namespace Xilium.CefGlue.Common
 {
