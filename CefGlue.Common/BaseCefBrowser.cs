@@ -17,21 +17,25 @@ namespace Xilium.CefGlue.Common
 
         #region Disposable
 
-        public BaseCefBrowser() {
+        public BaseCefBrowser()
+        {
             _logger = new Logger(nameof(BaseCefBrowser));
             _adapter = CreateAdapter();
         }
 
-        ~BaseCefBrowser() {
+        ~BaseCefBrowser()
+        {
             Dispose(false);
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing) {
+        protected virtual void Dispose(bool disposing)
+        {
             _adapter.Dispose(disposing);
         }
 
@@ -178,9 +182,15 @@ namespace Xilium.CefGlue.Common
         }
 
         /// <summary>
+        /// The undelying cef browser instance. Can be used for advanced functionality.
+        /// </summary>
+        protected CefBrowser UnderlyingBrowser => _adapter.Browser;
+
+        /// <summary>
         /// Load the specified |url|.
         /// </summary>
-        public void NavigateTo(string url) {
+        public void NavigateTo(string url)
+        {
             _adapter.NavigateTo(url);
         }
 
@@ -191,7 +201,8 @@ namespace Xilium.CefGlue.Common
         /// </summary>
         /// <param name="content"></param>
         /// <param name="url"></param>
-        public void LoadString(string content, string url) {
+        public void LoadString(string content, string url)
+        {
             _adapter.LoadString(content, url);
         }
 
@@ -204,7 +215,8 @@ namespace Xilium.CefGlue.Common
         /// <summary>
         /// Navigate backwards.
         /// </summary>
-        public void GoBack() {
+        public void GoBack()
+        {
             _adapter.GoBack();
         }
 
@@ -225,7 +237,8 @@ namespace Xilium.CefGlue.Common
         /// <summary>
         /// Reload the current page.
         /// </summary>
-        public void Reload(bool ignoreCache = false) {
+        public void Reload(bool ignoreCache = false)
+        {
             _adapter.Reload(ignoreCache);
         }
 
@@ -235,7 +248,8 @@ namespace Xilium.CefGlue.Common
         /// <param name="code">The javascript snippet.</param>
         /// <param name="url">Url where the script in question can be found.</param>
         /// <param name="line">The base line number to use for error, if any.</param>
-        public void ExecuteJavaScript(string code, string url = null, int line = 1) {
+        public void ExecuteJavaScript(string code, string url = null, int line = 1)
+        {
             _adapter.ExecuteJavaScript(code, url ?? "about:blank", line);
         }
 
@@ -246,15 +260,32 @@ namespace Xilium.CefGlue.Common
         /// <param name="code">The javascript snippet.</param>
         /// <param name="url">Url where the script in question can be found.</param>
         /// <param name="line">The base line number to use for error, if any.</param>
+        /// <param name="frameName">The name of the frame where the script will be executed.</param>
         /// <returns>The result of the evaluation.</returns>
-        public Task<T> EvaluateJavaScript<T>(string code, string url = null, int line = 1) {
-            return _adapter.EvaluateJavaScript<T>(code, url ?? "about:blank", line);
+        public Task<T> EvaluateJavaScript<T>(string code, string frameName = null, string url = null, int line = 1)
+        {
+            return _adapter.EvaluateJavaScript<T>(code, url ?? "about:blank", line, frameName);
+        }
+
+        /// <summary>
+        /// Evaluates the specified javascript snippet.
+        /// </summary>
+        /// <typeparam name="T">The type of the resulting object.</typeparam>
+        /// <param name="code">The javascript snippet.</param>
+        /// <param name="url">Url where the script in question can be found.</param>
+        /// <param name="line">The base line number to use for error, if any.</param>
+        /// <param name="frame">The frame where the script will be executed.</param>
+        /// <returns>The result of the evaluation.</returns>
+        public Task<T> EvaluateJavaScript<T>(string code, CefFrame frame, string url = null, int line = 1)
+        {
+            return _adapter.EvaluateJavaScript<T>(code, url ?? "about:blank", line, frame);
         }
 
         /// <summary>
         /// Opens the Developer tools.
         /// </summary>
-        public void ShowDeveloperTools() {
+        public void ShowDeveloperTools()
+        {
             _adapter.ShowDeveloperTools();
         }
 
@@ -271,7 +302,8 @@ namespace Xilium.CefGlue.Common
         /// </summary>
         /// <param name="targetObject">The object to be made accessible to Javascript</param>
         /// <param name="name">The name of the object. (e.g. "potatoes", if you want the object to be accessible as window.potatoes).</param>
-        public void RegisterJavascriptObject(object targetObject, string name) {
+        public void RegisterJavascriptObject(object targetObject, string name)
+        {
             _adapter.RegisterJavascriptObject(targetObject, name);
         }
 

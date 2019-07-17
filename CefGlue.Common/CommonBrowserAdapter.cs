@@ -110,9 +110,11 @@ namespace Xilium.CefGlue.Common
 
         public double ZoomLevel
         {
-            get => _browser.GetHost().GetZoomLevel();
-            set => _browser.GetHost().SetZoomLevel(value);
+            get => _browserHost.GetZoomLevel();
+            set => _browserHost.SetZoomLevel(value);
         }
+
+        public CefBrowser Browser => _browser;
 
         public void NavigateTo(string url)
         {
@@ -183,14 +185,28 @@ namespace Xilium.CefGlue.Common
                 _browser.GetMainFrame().ExecuteJavaScript(code, url, line);
         }
 
-        public Task<T> EvaluateJavaScript<T>(string code, string url, int line)
+        public Task<T> EvaluateJavaScript<T>(string code, string url, int line, string frameName = null)
         {
-            if (_browser == null)
+            if (_browser != null)
             {
-                return Task.FromResult<T>(default(T));
+                var frame = frameName != null ? _browser.GetFrame(frameName) : _browser.GetMainFrame();
+                if (frame != null)
+                {
+                    return EvaluateJavaScript<T>(code, url, line, frame);
+                }
             }
 
-            return _javascriptExecutionEngine.Evaluate<T>(code, url, line);
+            return Task.FromResult<T>(default(T));
+        }
+
+        public Task<T> EvaluateJavaScript<T>(string code, string url, int line, CefFrame frame)
+        {
+            if (frame.IsValid)
+            {
+                return _javascriptExecutionEngine.Evaluate<T>(code, url, line, frame);
+            }
+
+            return Task.FromResult<T>(default(T));
         }
 
         private void HandleGotFocus()

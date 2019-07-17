@@ -16,16 +16,15 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         private void HandleScriptEvaluation(MessageReceivedEventArgs args)
         {
-            // TODO get the appropriate frame
-            var browser = args.Browser;
-            var context = browser.GetMainFrame().V8Context;
+            var message = Messages.JsEvaluationRequest.FromCefMessage(args.Message);
 
-            if (context.Enter())
+            var browser = args.Browser;
+            var context = browser.GetFrame(message.FrameId ?? "")?.V8Context;
+
+            if (context != null && context.Enter())
             {
                 try
                 {
-                    var message = Messages.JsEvaluationRequest.FromCefMessage(args.Message);
-
                     // send script to browser
                     var success = context.TryEval(message.Script, message.Url, message.Line, out var value, out var exception);
                     

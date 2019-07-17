@@ -38,12 +38,13 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             }
         }
 
-        public async Task<T> Evaluate<T>(string script, string url, int line)
+        public async Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame)
         {
             var taskId = lastTaskId++;
             var message = new Messages.JsEvaluationRequest()
             {
                 TaskId = taskId,
+                FrameId = frame.Name,
                 Script = script,
                 Url = url,
                 Line = line
@@ -57,6 +58,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             {
                 _browser.SendProcessMessage(CefProcessId.Renderer, message.ToCefProcessMessage());
 
+                // TODO should we add any timeout param and remove the task after that ?
                 await messageReceiveCompletionSource.Task;
             }
             catch
