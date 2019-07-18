@@ -19,6 +19,7 @@ namespace Xilium.CefGlue.Common
 
         private bool _browserCreated;
 
+        private string _startUrl;
         private string _title;
         private string _tooltip;
 
@@ -36,7 +37,7 @@ namespace Xilium.CefGlue.Common
             _popup = popup;
             _logger = logger;
 
-            StartUrl = "about:blank";
+            _startUrl = "about:blank";
         }
 
         public void Dispose()
@@ -77,7 +78,7 @@ namespace Xilium.CefGlue.Common
         public event ConsoleMessageEventHandler ConsoleMessage;
         public event StatusMessageEventHandler StatusMessage;
 
-        public string StartUrl { get; set; }
+        public string Address { get => _browser?.GetMainFrame().Url ?? _startUrl; set => NavigateTo(value); }
 
         public bool AllowsTransparency { get; set; } = false;
 
@@ -116,7 +117,7 @@ namespace Xilium.CefGlue.Common
 
         public CefBrowser Browser => _browser;
 
-        public void NavigateTo(string url)
+        private void NavigateTo(string url)
         {
             // Remove leading whitespace from the URL
             url = url.TrimStart();
@@ -124,7 +125,7 @@ namespace Xilium.CefGlue.Common
             if (_browser != null)
                 _browser.GetMainFrame().LoadUrl(url);
             else
-                StartUrl = url;
+                _startUrl = url;
         }
 
         public void LoadString(string content, string url)
@@ -352,7 +353,7 @@ namespace Xilium.CefGlue.Common
                         _cefClient = new CommonCefClient(this, _logger);
 
                         // This is the first time the window is being rendered, so create it.
-                        CefBrowserHost.CreateBrowser(windowInfo, _cefClient, settings, string.IsNullOrEmpty(StartUrl) ? "about:blank" : StartUrl);
+                        CefBrowserHost.CreateBrowser(windowInfo, _cefClient, settings, string.IsNullOrEmpty(Address) ? "about:blank" : Address);
 
                         _browserCreated = true;
                     }
@@ -491,6 +492,7 @@ namespace Xilium.CefGlue.Common
                 _browser = browser;
                 _browserHost = browser.GetHost();
                 _browserHost.SetFocus(_control.IsFocused);
+                _startUrl = null;
 
                 width = RenderedWidth;
                 height = RenderedHeight;

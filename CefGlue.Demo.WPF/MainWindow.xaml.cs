@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue.Demo.WPF
+namespace Xilium.CefGlue.Demo.WPF
 {
     using System;
     using System.Collections.Generic;
@@ -34,7 +34,7 @@
         {
             if (e.Key == Key.Return)
             {
-                browser.NavigateTo(addressTextBox.Text);
+                browser.Address = (addressTextBox.Text);
             }
         }
     }

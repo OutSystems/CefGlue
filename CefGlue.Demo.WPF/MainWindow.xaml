@@ -9,7 +9,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <TextBox Grid.Row="0" Text="" Name="addressTextBox" KeyDown="addressTextBox_KeyDown_1" />
-        <wpf:WpfCefBrowser Grid.Row="1" StartUrl="http://www.google.com" x:Name="browser">
+        <wpf:WpfCefBrowser Grid.Row="1" Address="http://www.google.com" x:Name="browser">
                 <!--
             <xi:WpfCefBrowser.RenderTransform>
                 <TransformGroup>

@@ -148,9 +148,9 @@ namespace Xilium.CefGlue.Common
         public JSDialogHandler JSDialogHandler { get => _adapter.JSDialogHandler; set => _adapter.JSDialogHandler = value; }
 
         /// <summary>
-        /// Initial url.
+        /// Gets or set the url.
         /// </summary>
-        public string StartUrl { get => _adapter.StartUrl; set => _adapter.StartUrl = value; }
+        public string Address { get => _adapter.Address; set => _adapter.Address = value; }
 
         /// <summary>
         /// Allows the browser background to be transparent.
@@ -185,14 +185,6 @@ namespace Xilium.CefGlue.Common
         /// The undelying cef browser instance. Can be used for advanced functionality.
         /// </summary>
         protected CefBrowser UnderlyingBrowser => _adapter.Browser;
-
-        /// <summary>
-        /// Load the specified |url|.
-        /// </summary>
-        public void NavigateTo(string url)
-        {
-            _adapter.NavigateTo(url);
-        }
 
         /// <summary>
         /// Load the contents specified with the specified dummy |url|. |url|

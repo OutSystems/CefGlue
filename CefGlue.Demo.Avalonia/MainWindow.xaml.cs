@@ -25,7 +25,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             var browserWrapper = this.FindControl<Decorator>("browserWrapper");
 
             browser = new AvaloniaCefBrowser();
-            browser.StartUrl = "https://jsfiddle.net/1Lz8odhs/";
+            browser.Address = "https://jsfiddle.net/1Lz8odhs/";
             
             browserWrapper.Child = browser;
         }
@@ -79,7 +79,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
         {
             if (e.Key == Key.Enter)
             {
-                browser.NavigateTo(((TextBox)sender).Text);
+                browser.Address = (((TextBox)sender).Text);
             }
         }
     }
