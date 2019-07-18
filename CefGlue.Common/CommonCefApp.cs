@@ -9,11 +9,9 @@ namespace Xilium.CefGlue.Common
     {
         private readonly CefBrowserProcessHandler _browserProcessHandler;
         private readonly CefRenderProcessHandler _renderProcessHandler = new CommonCefRenderProcessHandler();
-        private readonly CefMainArgs _processArgs;
 
-        public CommonCefApp(string[] args, CefBrowserProcessHandler browserProcessHandler = null)
+        private CommonCefApp(CefBrowserProcessHandler browserProcessHandler = null)
         {
-            _processArgs = new CefMainArgs(args);
             _browserProcessHandler = browserProcessHandler;
         }
 
@@ -38,44 +36,46 @@ namespace Xilium.CefGlue.Common
             return _renderProcessHandler;
         }
 
-        public void RunBrowserProcess()
+        public static void RunBrowserProcess(string[] args)
         {
             CefRuntime.Load();
 
-            var exitCode = CefRuntime.ExecuteProcess(_processArgs, this, IntPtr.Zero);
+            var exitCode = CefRuntime.ExecuteProcess(new CefMainArgs(args), new CommonCefApp(), IntPtr.Zero);
             if (exitCode != -1)
             {
                 Environment.Exit(exitCode);
             }
         }
 
-        public void Run()
+        public static void Run(string[] args, CefSettings settings = null, CefBrowserProcessHandler browserProcessHandler = null)
         {
             CefRuntime.Load();
 
-            var cefSettings = new CefSettings
+            if (settings == null)
             {
-                WindowlessRenderingEnabled = true,
-            };
+                settings = new CefSettings();
+            }
+
+            settings.WindowlessRenderingEnabled = true;
 
             switch (CefRuntime.Platform)
             {
                 case CefRuntimePlatform.Windows:
                     var path = new Uri(Assembly.GetEntryAssembly().CodeBase).LocalPath;
                     path = Path.Combine(Path.GetDirectoryName(path), "Xilium.CefGlue.BrowserProcess.exe");
-                    cefSettings.BrowserSubprocessPath = path;
-                    cefSettings.MultiThreadedMessageLoop = true;
+                    settings.BrowserSubprocessPath = path;
+                    settings.MultiThreadedMessageLoop = true;
                     break;
 
                 case CefRuntimePlatform.MacOSX:
-                    cefSettings.MultiThreadedMessageLoop = false;
-                    cefSettings.ExternalMessagePump = true;
+                    settings.MultiThreadedMessageLoop = false;
+                    settings.ExternalMessagePump = true;
                     break;
             }
 
             AppDomain.CurrentDomain.ProcessExit += delegate { CefRuntime.Shutdown(); };
 
-            CefRuntime.Initialize(_processArgs, cefSettings, this, IntPtr.Zero);
+            CefRuntime.Initialize(new CefMainArgs(args), settings, new CommonCefApp(browserProcessHandler), IntPtr.Zero);
         }
     }
 }

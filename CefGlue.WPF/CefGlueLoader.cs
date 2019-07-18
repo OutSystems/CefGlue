@@ -4,10 +4,9 @@ namespace Xilium.CefGlue.WPF
 {
     public static class CefGlueLoader
     {
-        public static void Initialize(string[] args)
+        public static void Initialize(string[] args, CefSettings settings = null)
         {
-            var cefApp = new CommonCefApp(args);
-            cefApp.Run();
+            CommonCefApp.Run(args, settings);
         }
     }          
 }

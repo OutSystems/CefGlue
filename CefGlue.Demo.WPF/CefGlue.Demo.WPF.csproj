@@ -136,6 +136,10 @@
       <Project>{447c6790-e36e-4a54-bfac-06c92fff4aa3}</Project>
       <Name>CefGlue.WPF</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CefGlue\CefGlue.csproj">
+      <Project>{703FF300-34B9-48D4-A5D6-E741F48D5F95}</Project>
+      <Name>CefGlue</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

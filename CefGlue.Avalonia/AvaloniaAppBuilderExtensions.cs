@@ -5,7 +5,7 @@ namespace Xilium.CefGlue.Avalonia
 {
     public static class AvaloniaAppBuilderExtensions
     {
-        public static T ConfigureCefGlue<T>(this T builder, string[] args) where T : AppBuilderBase<T>, new()
+        public static T ConfigureCefGlue<T>(this T builder, string[] args, CefSettings settings = null) where T : AppBuilderBase<T>, new()
         {
             CefBrowserProcessHandler browserProcessHandler = null;
 
@@ -17,10 +17,8 @@ namespace Xilium.CefGlue.Avalonia
                     browserProcessHandler = new AvaloniaBrowserProcessHandler();
                     break;
             }
-
-            var cefApp = new CommonCefApp(args, browserProcessHandler);
             
-            return builder.AfterSetup(_ => cefApp.Run());
+            return builder.AfterSetup(_ => CommonCefApp.Run(args, settings, browserProcessHandler));
         }
     }          
 }

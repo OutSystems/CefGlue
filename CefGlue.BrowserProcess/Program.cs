@@ -6,9 +6,7 @@ namespace Xilium.CefGlue.BrowserProcess
     {
         static void Main(string[] args)
         {
-            var cefApp = new CommonCefApp(args);
-            
-            cefApp.RunBrowserProcess();
+            CommonCefApp.RunBrowserProcess(args);
         }
     }
 }
