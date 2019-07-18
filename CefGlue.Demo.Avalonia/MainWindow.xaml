@@ -1,5 +1,5 @@
 ﻿<Window xmlns="https://github.com/avaloniaui" MinWidth="500" MinHeight="300"
-        Title="Avalonia Control Gallery">
+        Title="Avalonia CefGlue Demo">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">

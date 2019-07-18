@@ -23,6 +23,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CefGlue.Avalonia\CefGlue.Avalonia.csproj" />
+    <ProjectReference Include="..\CefGlue.BrowserProcess\CefGlue.BrowserProcess.csproj">
+      <Private></Private>
+    </ProjectReference>
     <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
   </ItemGroup>
 

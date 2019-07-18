@@ -92,7 +92,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\SampleCefApp.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -129,13 +128,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CefGlue.BrowserProcess\CefGlue.BrowserProcess.csproj">
+      <Project>{1e60fb67-049e-4877-92a9-d5480f81a324}</Project>
+      <Name>CefGlue.BrowserProcess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CefGlue.WPF\CefGlue.WPF.csproj">
       <Project>{447c6790-e36e-4a54-bfac-06c92fff4aa3}</Project>
       <Name>CefGlue.WPF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CefGlue\CefGlue.csproj">
-      <Project>{703ff300-34b9-48d4-a5d6-e741f48d5f95}</Project>
-      <Name>CefGlue</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

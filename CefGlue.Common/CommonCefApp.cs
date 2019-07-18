@@ -1,6 +1,6 @@
 using System;
+using System.IO;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using Xilium.CefGlue.Common.InternalHandlers;
 
 namespace Xilium.CefGlue.Common
@@ -38,7 +38,7 @@ namespace Xilium.CefGlue.Common
             return _renderProcessHandler;
         }
 
-        public void Prepare()
+        public void RunBrowserProcess()
         {
             CefRuntime.Load();
 
@@ -51,6 +51,8 @@ namespace Xilium.CefGlue.Common
 
         public void Run()
         {
+            CefRuntime.Load();
+
             var cefSettings = new CefSettings
             {
                 WindowlessRenderingEnabled = true,
@@ -60,7 +62,7 @@ namespace Xilium.CefGlue.Common
             {
                 case CefRuntimePlatform.Windows:
                     var path = new Uri(Assembly.GetEntryAssembly().CodeBase).LocalPath;
-                    path = Regex.Replace(path, ".dll$", ".exe");
+                    path = Path.Combine(Path.GetDirectoryName(path), "Xilium.CefGlue.BrowserProcess.exe");
                     cefSettings.BrowserSubprocessPath = path;
                     cefSettings.MultiThreadedMessageLoop = true;
                     break;
@@ -71,9 +73,9 @@ namespace Xilium.CefGlue.Common
                     break;
             }
 
-            CefRuntime.Initialize(_processArgs, cefSettings, this, IntPtr.Zero);
+            AppDomain.CurrentDomain.ProcessExit += delegate { CefRuntime.Shutdown(); };
 
-            // TODO call shutdown when on exit
+            CefRuntime.Initialize(_processArgs, cefSettings, this, IntPtr.Zero);
         }
     }
 }
