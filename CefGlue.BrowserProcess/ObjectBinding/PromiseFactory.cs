@@ -1,15 +1,7 @@
-namespace Xilium.CefGlue.Common.ObjectBinding
+namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
     internal static class PromiseFactory
     {
-        public struct PromiseHolder
-        {
-            public CefV8Value Promise;
-            public CefV8Value Resolve;
-            public CefV8Value Reject;
-            public CefV8Context Context;
-        }
-
         private const string PromiseFactoryFunctionName = "cefglue_createPromise";
         private static readonly string PromiseFactoryFunction =
         $"function {PromiseFactoryFunctionName}() {{" +

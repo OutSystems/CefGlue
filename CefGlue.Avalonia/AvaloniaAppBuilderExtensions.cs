@@ -18,7 +18,7 @@ namespace Xilium.CefGlue.Avalonia
                     break;
             }
             
-            return builder.AfterSetup(_ => CommonCefApp.Run(args, settings, browserProcessHandler));
+            return builder.AfterSetup(_ => CefRuntimeLoader.Run(args, settings, browserProcessHandler));
         }
     }          
 }

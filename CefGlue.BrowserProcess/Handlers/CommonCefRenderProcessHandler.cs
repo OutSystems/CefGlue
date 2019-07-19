@@ -1,8 +1,9 @@
+using Xilium.CefGlue.BrowserProcess.JavascriptExecution;
+using Xilium.CefGlue.BrowserProcess.ObjectBinding;
 using Xilium.CefGlue.Common.Helpers;
-using Xilium.CefGlue.Common.JavascriptExecution;
-using Xilium.CefGlue.Common.ObjectBinding;
+using Xilium.CefGlue.Common.RendererProcessCommunication;
 
-namespace Xilium.CefGlue.Common.InternalHandlers
+namespace Xilium.CefGlue.BrowserProcess.Handlers
 {
     internal class CommonCefRenderProcessHandler : CefRenderProcessHandler
     {
@@ -24,22 +25,28 @@ namespace Xilium.CefGlue.Common.InternalHandlers
             return base.OnProcessMessageReceived(browser, sourceProcess, message);
         }
 
-        protected override void OnContextReleased(CefBrowser browser, CefFrame frame, CefV8Context context)
-        {
-            // TODO make this available
-            _javascriptToNativeDispatcher.HandleContextReleased(context);
-            base.OnContextReleased(browser, frame, context);
-        }
-
         protected override void OnContextCreated(CefBrowser browser, CefFrame frame, CefV8Context context)
         {
-            // TODO make this available
             base.OnContextCreated(browser, frame, context);
+
+            var message = new Messages.JsContextCreated();
+            message.FrameId = frame.Name;
+            browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
+        }
+
+        protected override void OnContextReleased(CefBrowser browser, CefFrame frame, CefV8Context context)
+        {
+            _javascriptToNativeDispatcher.HandleContextReleased(context);
+            base.OnContextReleased(browser, frame, context);
+
+            var message = new Messages.JsContextReleased();
+            message.FrameId = frame.Name;
+            browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
         }
 
         protected override void OnUncaughtException(CefBrowser browser, CefFrame frame, CefV8Context context, CefV8Exception exception, CefV8StackTrace stackTrace)
         {
-            // TODO make this available
+            // TODO
             base.OnUncaughtException(browser, frame, context, exception, stackTrace);
         }
     }

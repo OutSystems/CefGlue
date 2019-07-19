@@ -1,10 +1,10 @@
 using System;
+using Xilium.CefGlue.BrowserProcess.ObjectBinding;
+using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.Helpers;
-using Xilium.CefGlue.Common.ObjectBinding;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
-using Xilium.CefGlue.Common.Serialization;
 
-namespace Xilium.CefGlue.Common.JavascriptExecution
+namespace Xilium.CefGlue.BrowserProcess.JavascriptExecution
 {
     internal class JavascriptExecutionEngineRenderSide
     {

@@ -48,6 +48,11 @@ namespace Xilium.CefGlue.Common
         internal abstract CommonBrowserAdapter CreateAdapter();
 
         /// <summary>
+        /// Event fired when the browser is initialized.
+        /// </summary>
+        public event Action BrowserInitialized { add => _adapter.Initialized += value; remove => _adapter.Initialized -= value; }
+        
+        /// <summary>
         /// Event fired when the browser starts loading a frame.
         /// </summary>
         public event LoadStartEventHandler LoadStart { add => _adapter.LoadStart += value; remove => _adapter.LoadStart -= value; }
@@ -161,6 +166,11 @@ namespace Xilium.CefGlue.Common
         /// Returns true when the underlying browser has been initialized.
         /// </summary>
         public bool IsBrowserInitialized => _adapter.IsInitialized;
+
+        /// <summary>
+        /// Returns true when the javascript engine of the frame.
+        /// </summary>
+        public bool IsJavascriptEngineInitialized => _adapter.IsJavascriptEngineInitialized;
 
         /// <summary>
         /// Returns true if the browser is currently loading.

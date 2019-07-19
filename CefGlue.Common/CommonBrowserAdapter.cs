@@ -73,6 +73,7 @@ namespace Xilium.CefGlue.Common
         public event LoadingStateChangeEventHandler LoadingStateChange;
         public event LoadErrorEventHandler LoadError;
 
+        public event Action Initialized;
         public event AddressChangedEventHandler AddressChanged;
         public event TitleChangedEventHandler TitleChanged;
         public event ConsoleMessageEventHandler ConsoleMessage;
@@ -104,6 +105,8 @@ namespace Xilium.CefGlue.Common
         public BuiltInRenderHandler PopupRenderHandler => _popup.RenderHandler;
 
         public bool IsInitialized => _browser != null;
+
+        //public bool IsJavascriptEngineInitialized => 
 
         public bool IsLoading => _browser?.IsLoading ?? false;
 
@@ -415,6 +418,8 @@ namespace Xilium.CefGlue.Common
 
         protected int RenderedHeight => BuiltInRenderHandler.Height;
 
+        public bool IsJavascriptEngineInitialized => _javascriptExecutionEngine.IsMainFrameContextInitialized;
+
         protected void OnBrowserSizeChanged(int newWidth, int newHeight)
         {
             BuiltInRenderHandler?.Resize(newWidth, newHeight);
@@ -483,23 +488,23 @@ namespace Xilium.CefGlue.Common
                 // Make sure we don't initialize ourselves more than once. That seems to break things.
                 return;
             }
-            else
-            {
-                _javascriptExecutionEngine = new JavascriptExecutionEngine(browser, _cefClient.Dispatcher);
-                _objectRegistry = new NativeObjectRegistry(browser);
-                _objectMethodDispatcher = new NativeObjectMethodDispatcher(_cefClient.Dispatcher, _objectRegistry);
+            
+            _javascriptExecutionEngine = new JavascriptExecutionEngine(browser, _cefClient.Dispatcher);
+            _objectRegistry = new NativeObjectRegistry(browser);
+            _objectMethodDispatcher = new NativeObjectMethodDispatcher(_cefClient.Dispatcher, _objectRegistry);
 
-                _browser = browser;
-                _browserHost = browser.GetHost();
-                _browserHost.SetFocus(_control.IsFocused);
-                _startUrl = null;
+            _browser = browser;
+            _browserHost = browser.GetHost();
+            _browserHost.SetFocus(_control.IsFocused);
+            _startUrl = null;
 
-                width = RenderedWidth;
-                height = RenderedHeight;
-            }
+            width = RenderedWidth;
+            height = RenderedHeight;
 
             if (width > 0 && height > 0)
                 _browserHost.WasResized();
+
+            Initialized?.Invoke();
         }
 
         bool ICefBrowserHost.HandleTooltip(CefBrowser browser, string text)

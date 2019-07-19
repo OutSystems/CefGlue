@@ -14,12 +14,19 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
         private readonly CefBrowser _browser;
         private readonly ConcurrentDictionary<int, TaskCompletionSource<object>> _pendingTasks = new ConcurrentDictionary<int, TaskCompletionSource<object>>();
 
-        public JavascriptExecutionEngine(CefBrowser browser, MessageDispatcher dispatcher) 
+        public JavascriptExecutionEngine(CefBrowser browser, MessageDispatcher dispatcher)
         {
             _browser = browser;
 
             dispatcher.RegisterMessageHandler(Messages.JsEvaluationResult.Name, HandleScriptEvaluationResultMessage);
+            dispatcher.RegisterMessageHandler(Messages.JsContextCreated.Name, HandleContextCreatedMessage);
+            dispatcher.RegisterMessageHandler(Messages.JsContextReleased.Name, HandleContextReleasedMessage);
         }
+
+        public bool IsMainFrameContextInitialized { get; private set; }
+
+        public Action<string> ContextCreated;
+        public Action<string> ContextReleased;
 
         private void HandleScriptEvaluationResultMessage(MessageReceivedEventArgs args)
         {
@@ -36,6 +43,26 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                     pendingTask.SetException(new Exception(message.Exception));
                 }
             }
+        }
+
+        private void HandleContextCreatedMessage(MessageReceivedEventArgs args)
+        {
+            var message = Messages.JsContextCreated.FromCefMessage(args.Message);
+            if (message.FrameId == null)
+            {
+                IsMainFrameContextInitialized = true;
+            }
+            ContextCreated?.Invoke(message.FrameId);
+        }
+
+        private void HandleContextReleasedMessage(MessageReceivedEventArgs args)
+        {
+            var message = Messages.JsContextReleased.FromCefMessage(args.Message);
+            if (message.FrameId == null)
+            {
+                IsMainFrameContextInitialized = false;
+            }
+            ContextReleased?.Invoke(message.FrameId);
         }
 
         public async Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame)

@@ -6,7 +6,7 @@ namespace Xilium.CefGlue.WPF
     {
         public static void Initialize(string[] args, CefSettings settings = null)
         {
-            CommonCefApp.Run(args, settings);
+            CefRuntimeLoader.Run(args, settings);
         }
     }          
 }

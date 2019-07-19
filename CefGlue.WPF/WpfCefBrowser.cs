@@ -41,7 +41,9 @@ namespace Xilium.CefGlue.WPF
 
             _disposables = new IDisposable[] { controlAdapter, popupAdapter };
 
-            return new CommonBrowserAdapter(nameof(WpfCefBrowser), controlAdapter, popupAdapter, _logger);
+            var adapter = new CommonBrowserAdapter(nameof(WpfCefBrowser), controlAdapter, popupAdapter, _logger);
+            adapter.AllowsTransparency = true;
+            return adapter;
         }
 
         #region Disposable

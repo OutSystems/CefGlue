@@ -1,9 +1,8 @@
 using System.Collections.Generic;
+using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
-using Xilium.CefGlue.Common.Serialization;
-using static Xilium.CefGlue.Common.ObjectBinding.PromiseFactory;
 
-namespace Xilium.CefGlue.Common.ObjectBinding
+namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
     internal class V8FunctionHandler : CefV8Handler
     {

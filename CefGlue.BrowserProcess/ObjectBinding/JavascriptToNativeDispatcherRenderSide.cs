@@ -1,12 +1,11 @@
-using System.Linq;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
-using static Xilium.CefGlue.Common.ObjectBinding.PromiseFactory;
-using Xilium.CefGlue.Common.Serialization;
 
-namespace Xilium.CefGlue.Common.ObjectBinding
+namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
     internal class JavascriptToNativeDispatcherRenderSide
     {

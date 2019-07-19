@@ -178,5 +178,53 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                 };
             }
         }
+
+        public struct JsContextCreated
+        {
+            public const string Name = nameof(JsContextCreated);
+
+            public string FrameId;
+
+            public CefProcessMessage ToCefProcessMessage()
+            {
+                var message = CefProcessMessage.Create(Name);
+                var arguments = message.Arguments;
+                arguments.SetString(0, FrameId);
+                return message;
+            }
+
+            public static JsContextCreated FromCefMessage(CefProcessMessage message)
+            {
+                var arguments = message.Arguments;
+                return new JsContextCreated()
+                {
+                    FrameId = arguments.GetString(0),
+                };
+            }
+        }
+
+        public struct JsContextReleased
+        {
+            public const string Name = nameof(JsContextReleased);
+
+            public string FrameId;
+
+            public CefProcessMessage ToCefProcessMessage()
+            {
+                var message = CefProcessMessage.Create(Name);
+                var arguments = message.Arguments;
+                arguments.SetString(0, FrameId);
+                return message;
+            }
+
+            public static JsContextReleased FromCefMessage(CefProcessMessage message)
+            {
+                var arguments = message.Arguments;
+                return new JsContextReleased()
+                {
+                    FrameId = arguments.GetString(0),
+                };
+            }
+        }
     }
 }

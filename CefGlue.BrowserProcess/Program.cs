@@ -1,4 +1,4 @@
-using Xilium.CefGlue.Common;
+using System;
 
 namespace Xilium.CefGlue.BrowserProcess
 {
@@ -6,7 +6,13 @@ namespace Xilium.CefGlue.BrowserProcess
     {
         static void Main(string[] args)
         {
-            CommonCefApp.RunBrowserProcess(args);
+            CefRuntime.Load();
+
+            var exitCode = CefRuntime.ExecuteProcess(new CefMainArgs(args), new BrowserCefApp(), IntPtr.Zero);
+            if (exitCode != -1)
+            {
+                Environment.Exit(exitCode);
+            }
         }
     }
 }

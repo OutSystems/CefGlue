@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Xilium.CefGlue.Common.Serialization;
 
-namespace Xilium.CefGlue.Common.Serialization
+namespace Xilium.CefGlue.BrowserProcess.Serialization
 {
     internal static class V8ValueSerialization
     {
