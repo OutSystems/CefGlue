@@ -314,27 +314,6 @@
         }
 
         /// <summary>
-        /// Attempts to resolve |origin| to a list of associated IP addresses using
-        /// cached data. |resolved_ips| will be populated with the list of resolved IP
-        /// addresses or empty if no cached data is available. Returns ERR_NONE on
-        /// success. This method must be called on the browser process IO thread.
-        /// </summary>
-        public CefErrorCode ResolveHostCached(string origin, out string[] resolvedIps)
-        {
-            if (string.IsNullOrEmpty(origin)) throw new ArgumentNullException("origin");
-
-            fixed (char* origin_str = origin)
-            {
-                var n_origin = new cef_string_t(origin_str, origin != null ? origin.Length : 0);
-                var n_resolved_ips = libcef.string_list_alloc();
-                var result = cef_request_context_t.resolve_host_cached(_self, &n_origin, n_resolved_ips);
-                resolvedIps = cef_string_list.ToArray(n_resolved_ips);
-                libcef.string_list_free(n_resolved_ips);
-                return result;
-            }
-        }
-
-        /// <summary>
         /// Load an extension.
         /// If extension resources will be read from disk using the default load
         /// implementation then |root_directory| should be the absolute path to the
