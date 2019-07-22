@@ -110,7 +110,5 @@ namespace Xilium.CefGlue.Common.Handlers
         }
     }
 
-    public class RenderProcessHandler : CefRenderProcessHandler { }
-
     public class RequestHandler : CefRequestHandler { }
 }

@@ -12,12 +12,12 @@ namespace Xilium.CefGlue.Common.Events
 			FailedUrl = failedUrl;
 		}
 
-		public string FailedUrl { get; private set; }
+		public string FailedUrl { get; }
 
-		public string ErrorText { get; private set; }
+		public string ErrorText { get; }
 
-		public CefErrorCode ErrorCode { get; private set; }
+		public CefErrorCode ErrorCode { get; }
 
-		public CefFrame Frame { get; private set; }
+		public CefFrame Frame { get; }
 	}
 }

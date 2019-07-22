@@ -1,4 +1,5 @@
 using System;
+using Xilium.CefGlue.Common;
 using Xilium.CefGlue.WPF;
 
 namespace Xilium.CefGlue.Demo.WPF
@@ -8,7 +9,7 @@ namespace Xilium.CefGlue.Demo.WPF
         [STAThread]
         private static int Main(string[] args)
         {
-            CefGlueLoader.Initialize(args);
+            CefRuntimeLoader.Initialize(args);
 
             var app = new Xilium.CefGlue.Demo.WPF.App();
             app.InitializeComponent();

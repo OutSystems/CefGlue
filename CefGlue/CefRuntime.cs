@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -67,6 +67,11 @@
             get { return _platform; }
         }
         #endregion
+
+        /// <summary>
+        /// Gets whether the CEF runtime has been initialized;
+        /// </summary>
+        public static bool IsInitialized => _initialized;
 
         /// <summary>
         /// Loads CEF runtime.

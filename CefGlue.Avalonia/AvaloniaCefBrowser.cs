@@ -29,7 +29,7 @@ namespace Xilium.CefGlue.Avalonia
             var popupRenderHandler = new AvaloniaRenderHandler(popupImage, _logger);
             var popupAdapter = new AvaloniaPopup(popup, popupRenderHandler);
 
-            return new CommonBrowserAdapter(nameof(AvaloniaCefBrowser), controlAdapter, popupAdapter, _logger);
+            return new CommonBrowserAdapter(this, nameof(AvaloniaCefBrowser), controlAdapter, popupAdapter, _logger);
         }
 
         protected override Size ArrangeOverride(Size arrangeBounds)

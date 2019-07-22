@@ -9,6 +9,6 @@ namespace Xilium.CefGlue.Common.Events
 			Frame = frame;
 		}
 
-		public CefFrame Frame { get; private set; }
+		public CefFrame Frame { get; }
     }
 }

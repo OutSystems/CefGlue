@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
 using Xilium.CefGlue.Common.Serialization;
@@ -25,8 +26,8 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         public bool IsMainFrameContextInitialized { get; private set; }
 
-        public Action<string> ContextCreated;
-        public Action<string> ContextReleased;
+        public event Action<CefFrame> ContextCreated;
+        public event Action<CefFrame> ContextReleased;
 
         private void HandleScriptEvaluationResultMessage(MessageReceivedEventArgs args)
         {
@@ -52,7 +53,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             {
                 IsMainFrameContextInitialized = true;
             }
-            ContextCreated?.Invoke(message.FrameId);
+            ContextCreated?.Invoke(_browser.GetFrame(message.FrameId ?? ""));
         }
 
         private void HandleContextReleasedMessage(MessageReceivedEventArgs args)
@@ -62,7 +63,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             {
                 IsMainFrameContextInitialized = false;
             }
-            ContextReleased?.Invoke(message.FrameId);
+            ContextReleased?.Invoke(_browser.GetFrame(message.FrameId ?? ""));
         }
 
         public async Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame)

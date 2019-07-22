@@ -12,6 +12,7 @@ namespace Xilium.CefGlue.Common
 {
     internal class CommonBrowserAdapter : ICefBrowserHost, IDisposable
     {
+        private readonly object _eventsEmitter;
         private readonly string _name;
         private readonly ILogger _logger;
         private readonly IControl _control;
@@ -30,8 +31,9 @@ namespace Xilium.CefGlue.Common
         private NativeObjectRegistry _objectRegistry;
         private NativeObjectMethodDispatcher _objectMethodDispatcher;
 
-        public CommonBrowserAdapter(string name, IControl control, IPopup popup, ILogger logger)
+        public CommonBrowserAdapter(object eventsEmitter, string name, IControl control, IPopup popup, ILogger logger)
         {
+            _eventsEmitter = eventsEmitter;
             _name = name;
             _control = control;
             _popup = popup;
@@ -78,6 +80,9 @@ namespace Xilium.CefGlue.Common
         public event TitleChangedEventHandler TitleChanged;
         public event ConsoleMessageEventHandler ConsoleMessage;
         public event StatusMessageEventHandler StatusMessage;
+
+        public event JavascriptContextLifetimeEventHandler JavascriptContextCreated;
+        public event JavascriptContextLifetimeEventHandler JavascriptContextReleased;
 
         public string Address { get => _browser?.GetMainFrame().Url ?? _startUrl; set => NavigateTo(value); }
 
@@ -352,12 +357,11 @@ namespace Xilium.CefGlue.Common
                         var windowInfo = CefWindowInfo.Create();
                         windowInfo.SetAsWindowless(hParentWnd.Value, AllowsTransparency);
 
-                        var settings = new CefBrowserSettings();
                         _cefClient = new CommonCefClient(this, _logger);
 
                         // This is the first time the window is being rendered, so create it.
-                        CefBrowserHost.CreateBrowser(windowInfo, _cefClient, settings, string.IsNullOrEmpty(Address) ? "about:blank" : Address);
-
+                        CefBrowserHost.CreateBrowser(windowInfo, _cefClient, Settings, string.IsNullOrEmpty(Address) ? "about:blank" : Address);
+                        
                         _browserCreated = true;
                     }
                 }
@@ -419,6 +423,8 @@ namespace Xilium.CefGlue.Common
         protected int RenderedHeight => BuiltInRenderHandler.Height;
 
         public bool IsJavascriptEngineInitialized => _javascriptExecutionEngine.IsMainFrameContextInitialized;
+
+        public CefBrowserSettings Settings { get; } = new CefBrowserSettings();
 
         protected void OnBrowserSizeChanged(int newWidth, int newHeight)
         {
@@ -490,6 +496,9 @@ namespace Xilium.CefGlue.Common
             }
             
             _javascriptExecutionEngine = new JavascriptExecutionEngine(browser, _cefClient.Dispatcher);
+            _javascriptExecutionEngine.ContextCreated += OnJavascriptExecutionEngineContextCreated;
+            _javascriptExecutionEngine.ContextReleased += OnJavascriptExecutionEngineContextReleased;
+
             _objectRegistry = new NativeObjectRegistry(browser);
             _objectMethodDispatcher = new NativeObjectMethodDispatcher(_cefClient.Dispatcher, _objectRegistry);
 
@@ -507,6 +516,16 @@ namespace Xilium.CefGlue.Common
             Initialized?.Invoke();
         }
 
+        private void OnJavascriptExecutionEngineContextCreated(CefFrame frame)
+        {
+            JavascriptContextCreated?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
+        }
+
+        private void OnJavascriptExecutionEngineContextReleased(CefFrame frame)
+        {
+            JavascriptContextReleased?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
+        }
+
         bool ICefBrowserHost.HandleTooltip(CefBrowser browser, string text)
         {
             if (_tooltip == text)
@@ -522,18 +541,18 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandleAddressChange(CefBrowser browser, CefFrame frame, string url)
         {
-            AddressChanged?.Invoke(this, url);
+            AddressChanged?.Invoke(_eventsEmitter, url);
         }
 
         void ICefBrowserHost.HandleTitleChange(CefBrowser browser, string title)
         {
             _title = title;
-            TitleChanged?.Invoke(this, title);
+            TitleChanged?.Invoke(_eventsEmitter, title);
         }
 
         void ICefBrowserHost.HandleStatusMessage(CefBrowser browser, string value)
         {
-            StatusMessage?.Invoke(this, value);
+            StatusMessage?.Invoke(_eventsEmitter, value);
         }
 
         bool ICefBrowserHost.HandleConsoleMessage(CefBrowser browser, CefLogSeverity level, string message, string source, int line)
@@ -542,7 +561,7 @@ namespace Xilium.CefGlue.Common
             if (handler != null)
             {
                 var args = new ConsoleMessageEventArgs(level, message, source, line);
-                ConsoleMessage?.Invoke(this, args);
+                ConsoleMessage?.Invoke(_eventsEmitter, args);
                 return !args.OutputToConsole;
             }
             return false;
@@ -550,22 +569,22 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandleLoadStart(CefBrowser browser, CefFrame frame, CefTransitionType transitionType)
         {
-            LoadStart?.Invoke(this, new LoadStartEventArgs(frame));
+            LoadStart?.Invoke(_eventsEmitter, new LoadStartEventArgs(frame));
         }
 
         void ICefBrowserHost.HandleLoadEnd(CefBrowser browser, CefFrame frame, int httpStatusCode)
         {
-            LoadEnd?.Invoke(this, new LoadEndEventArgs(frame, httpStatusCode));
+            LoadEnd?.Invoke(_eventsEmitter, new LoadEndEventArgs(frame, httpStatusCode));
         }
 
         void ICefBrowserHost.HandleLoadError(CefBrowser browser, CefFrame frame, CefErrorCode errorCode, string errorText, string failedUrl)
         {
-            LoadError?.Invoke(this, new LoadErrorEventArgs(frame, errorCode, errorText, failedUrl));
+            LoadError?.Invoke(_eventsEmitter, new LoadErrorEventArgs(frame, errorCode, errorText, failedUrl));
         }
 
         void ICefBrowserHost.HandleLoadingStateChange(CefBrowser browser, bool isLoading, bool canGoBack, bool canGoForward)
         {
-            LoadingStateChange?.Invoke(this, new LoadingStateChangeEventArgs(isLoading, canGoBack, canGoForward));
+            LoadingStateChange?.Invoke(_eventsEmitter, new LoadingStateChangeEventArgs(isLoading, canGoBack, canGoForward));
         }
 
         void ICefBrowserHost.HandleViewPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects, bool isPopup)

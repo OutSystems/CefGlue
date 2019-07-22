@@ -73,7 +73,6 @@
     <Compile Include="..\CefGlue.Common\BaseCefBrowser.cs">
       <Link>Common\BaseCefBrowser.cs</Link>
     </Compile>
-    <Compile Include="CefGlueLoader.cs" />
     <Compile Include="Common\BaseCefBrowser.Wpf.cs" />
     <Compile Include="InputExtensions.cs" />
     <Compile Include="Platform\WpfPopup.cs" />

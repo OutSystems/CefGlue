@@ -10,8 +10,8 @@ namespace Xilium.CefGlue.Common.Events
 			HttpStatusCode = httpStatusCode;
 		}
 
-		public int HttpStatusCode { get; private set; }
+		public int HttpStatusCode { get; }
 
-		public CefFrame Frame { get; private set; }
+		public CefFrame Frame { get; }
 	}
 }

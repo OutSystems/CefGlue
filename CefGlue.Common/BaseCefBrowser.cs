@@ -93,6 +93,16 @@ namespace Xilium.CefGlue.Common
         public event TitleChangedEventHandler TitleChanged { add => _adapter.TitleChanged += value; remove => _adapter.TitleChanged -= value; }
 
         /// <summary>
+        /// Event fired when the javascript context of the specified frame is created and ready to execute.
+        /// </summary>
+        public event JavascriptContextLifetimeEventHandler JavascriptContextCreated { add => _adapter.JavascriptContextCreated += value; remove => _adapter.JavascriptContextCreated -= value; }
+
+        /// <summary>
+        /// Event fired when the javascript context of the specified frame is destroyed .
+        /// </summary>
+        public event JavascriptContextLifetimeEventHandler JavascriptContextReleased { add => _adapter.JavascriptContextReleased += value; remove => _adapter.JavascriptContextReleased -= value; }
+
+        /// <summary>
         /// Return the handler for context menus. If no handler is provided the default implementation will be used.
         /// </summary>
         public ContextMenuHandler ContextMenuHandler { get => _adapter.ContextMenuHandler; set => _adapter.ContextMenuHandler = value; }
@@ -183,13 +193,15 @@ namespace Xilium.CefGlue.Common
         public string Title => _adapter.Title;
 
         /// <summary>
+        /// Gets or sets the initial browser settings.
+        /// Changing this property after browser becomes initialized does not have any effects.
+        /// </summary>
+        public CefBrowserSettings Settings => _adapter.Settings;
+
+        /// <summary>
         /// Get or set the current zoom level. The default zoom level is 0.0.
         /// </summary>
-        public double ZoomLevel
-        {
-            get => _adapter.ZoomLevel;
-            set => _adapter.ZoomLevel = value;
-        }
+        public double ZoomLevel { get => _adapter.ZoomLevel; set => _adapter.ZoomLevel = value; }
 
         /// <summary>
         /// The undelying cef browser instance. Can be used for advanced functionality.

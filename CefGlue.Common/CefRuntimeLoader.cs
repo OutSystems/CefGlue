@@ -4,9 +4,9 @@ using System.Reflection;
 
 namespace Xilium.CefGlue.Common
 {
-    internal class CefRuntimeLoader
+    public static class CefRuntimeLoader
     {
-        public static void Run(string[] args, CefSettings settings = null, CefBrowserProcessHandler browserProcessHandler = null)
+        public static void Initialize(string[] args, CefSettings settings = null, CefBrowserProcessHandler browserProcessHandler = null)
         {
             CefRuntime.Load();
 
@@ -36,5 +36,7 @@ namespace Xilium.CefGlue.Common
 
             CefRuntime.Initialize(new CefMainArgs(args), settings, new CommonCefApp(browserProcessHandler), IntPtr.Zero);
         }
+
+        public static bool IsInitialized => CefRuntime.IsInitialized;
     }
 }
