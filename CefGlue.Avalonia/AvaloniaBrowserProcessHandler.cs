@@ -1,10 +1,11 @@
 using System;
 using System.Reactive.Linq;
 using Avalonia.Threading;
+using Xilium.CefGlue.Common.Handlers;
 
 namespace Xilium.CefGlue.Avalonia
 {
-    internal class AvaloniaBrowserProcessHandler : CefBrowserProcessHandler
+    internal class AvaloniaBrowserProcessHandler : BrowserProcessHandler
     {
         private IDisposable _current;
         private object _schedule = new object();

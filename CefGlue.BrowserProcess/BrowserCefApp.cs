@@ -7,6 +7,10 @@ namespace Xilium.CefGlue.BrowserProcess
     {
         private readonly CefRenderProcessHandler _renderProcessHandler = new CommonCefRenderProcessHandler();
 
+        internal BrowserCefApp(CustomScheme[] customSchemes) : base(customSchemes)
+        {
+        }
+
         protected override CefRenderProcessHandler GetRenderProcessHandler()
         {
             return _renderProcessHandler;

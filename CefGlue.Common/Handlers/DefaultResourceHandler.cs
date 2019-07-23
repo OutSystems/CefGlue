@@ -35,7 +35,7 @@ namespace Xilium.CefGlue.Common.Handlers
         /// <summary>
         /// Get all response header fields.
         /// </summary>
-        public NameValueCollection Headers { get; set; }
+        public NameValueCollection Headers { get; set; } = new NameValueCollection();
 
         /// <summary>
         /// The url to redirect to;
