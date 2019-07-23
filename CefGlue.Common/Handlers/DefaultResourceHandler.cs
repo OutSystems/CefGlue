@@ -109,9 +109,16 @@ namespace Xilium.CefGlue.Common.Handlers
                 return false;
             }
 
-            bytesRead = (int)response.Length;
-            Response.CopyTo(response);
-            
+            var buffer = new byte[response.Length];
+            bytesRead = Response.Read(buffer, 0, buffer.Length);
+
+            if (bytesRead == 0)
+            {
+                return false;
+            }
+
+            response.Write(buffer, 0, buffer.Length);
+
             return bytesRead > 0;
         }
     }
