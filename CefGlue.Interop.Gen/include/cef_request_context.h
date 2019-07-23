@@ -44,9 +44,9 @@
 #include "include/cef_cookie.h"
 #include "include/cef_extension.h"
 #include "include/cef_extension_handler.h"
-#include "include/cef_request_context_handler.h"
 #include "include/cef_values.h"
 
+class CefRequestContextHandler;
 class CefSchemeHandlerFactory;
 
 ///
@@ -144,15 +144,12 @@ class CefRequestContext : public virtual CefBaseRefCounted {
   virtual CefString GetCachePath() = 0;
 
   ///
-  // Returns the default cookie manager for this object. This will be the global
-  // cookie manager if this object is the global request context. Otherwise,
-  // this will be the default cookie manager used when this request context does
-  // not receive a value via CefRequestContextHandler::GetCookieManager(). If
-  // |callback| is non-NULL it will be executed asnychronously on the IO thread
-  // after the manager's storage has been initialized.
+  // Returns the cookie manager for this object. If |callback| is non-NULL it
+  // will be executed asnychronously on the IO thread after the manager's
+  // storage has been initialized.
   ///
   /*--cef(optional_param=callback)--*/
-  virtual CefRefPtr<CefCookieManager> GetDefaultCookieManager(
+  virtual CefRefPtr<CefCookieManager> GetCookieManager(
       CefRefPtr<CefCompletionCallback> callback) = 0;
 
   ///
@@ -250,6 +247,15 @@ class CefRequestContext : public virtual CefBaseRefCounted {
   ///
   /*--cef(optional_param=callback)--*/
   virtual void ClearCertificateExceptions(
+      CefRefPtr<CefCompletionCallback> callback) = 0;
+
+  ///
+  // Clears all HTTP authentication credentials that were added as part of
+  // handling GetAuthCredentials. If |callback| is non-NULL it will be executed
+  // on the UI thread after completion.
+  ///
+  /*--cef(optional_param=callback)--*/
+  virtual void ClearHttpAuthCredentials(
       CefRefPtr<CefCompletionCallback> callback) = 0;
 
   ///

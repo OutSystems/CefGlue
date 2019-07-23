@@ -92,6 +92,7 @@ def get_comment(body, name):
   result = []
 
   pos = body.find(name)
+  in_block_comment = False
   while pos > 0:
     data = get_prev_line(body, pos)
     line = string.strip(data['line'])
@@ -104,7 +105,18 @@ def get_comment(body, name):
         result.append(None)
       else:
         break
-    elif line[0:2] == '/*' or line[-2:] == '*/':
+    # single line /*--cef()--*/
+    elif line[0:2] == '/*' and line[-2:] == '*/':
+      continue
+    # start of multi line /*--cef()--*/
+    elif in_block_comment and line[0:2] == '/*':
+      in_block_comment = False
+      continue
+    # end of multi line /*--cef()--*/
+    elif not in_block_comment and line[-2:] == '*/':
+      in_block_comment = True
+      continue
+    elif in_block_comment:
       continue
     elif line[0:2] == '//':
       # keep the comment line including any leading spaces
@@ -273,6 +285,9 @@ def format_translation_includes(header, body):
         directory = dir + '/'
     result += '#include "libcef_dll/ctocpp/'+directory+ \
               get_capi_name(item[3:], False)+'_ctocpp.h"\n'
+
+  if body.find('shutdown_checker') > 0:
+    result += '#include "libcef_dll/shutdown_checker.h"\n'
 
   if body.find('transfer_') > 0:
     result += '#include "libcef_dll/transfer_util.h"\n'

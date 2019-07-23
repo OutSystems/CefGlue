@@ -125,19 +125,16 @@
         }
 
         /// <summary>
-        /// Returns the default cookie manager for this object. This will be the global
-        /// cookie manager if this object is the global request context. Otherwise,
-        /// this will be the default cookie manager used when this request context does
-        /// not receive a value via CefRequestContextHandler::GetCookieManager(). If
-        /// |callback| is non-NULL it will be executed asnychronously on the IO thread
-        /// after the manager's storage has been initialized.
+        /// Returns the cookie manager for this object. If |callback| is non-NULL it
+        /// will be executed asnychronously on the IO thread after the manager's
+        /// storage has been initialized.
         /// </summary>
-        public CefCookieManager GetDefaultCookieManager(CefCompletionCallback callback)
+        public CefCookieManager GetCookieManager(CefCompletionCallback callback)
         {
             var n_callback = callback != null ? callback.ToNative() : null;
 
             return CefCookieManager.FromNativeOrNull(
-                cef_request_context_t.get_default_cookie_manager(_self, n_callback)
+                cef_request_context_t.get_cookie_manager(_self, n_callback)
                 );
         }
 
@@ -282,6 +279,17 @@
         {
             var n_callback = callback != null ? callback.ToNative() : null;
             cef_request_context_t.clear_certificate_exceptions(_self, n_callback);
+        }
+
+        /// <summary>
+        /// Clears all HTTP authentication credentials that were added as part of
+        /// handling GetAuthCredentials. If |callback| is non-NULL it will be executed
+        /// on the UI thread after completion.
+        /// </summary>
+        public void ClearHttpAuthCredentials(CefCompletionCallback callback)
+        {
+            var n_callback = callback != null ? callback.ToNative() : null;
+            cef_request_context_t.clear_http_auth_credentials(_self, n_callback);
         }
 
         /// <summary>

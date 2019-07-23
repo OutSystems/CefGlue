@@ -247,16 +247,16 @@
         }
 
 
-        private int on_process_message_received(cef_client_t* self, cef_browser_t* browser, CefProcessId source_process, cef_process_message_t* message)
+        private int on_process_message_received(cef_client_t* self, cef_browser_t* browser, cef_frame_t* frame, CefProcessId source_process, cef_process_message_t* message)
         {
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
+            var m_frame = CefFrame.FromNative(frame);
             var m_message = CefProcessMessage.FromNative(message);
 
-            var result = OnProcessMessageReceived(m_browser, source_process, m_message);
+            var result = OnProcessMessageReceived(m_browser, m_frame, source_process, m_message);
 
-            // m_browser.Dispose();
             m_message.Dispose();
 
             return result ? 1 : 0;
@@ -267,7 +267,7 @@
         /// if the message was handled or false otherwise. Do not keep a reference to
         /// or attempt to access the message outside of this callback.
         /// </summary>
-        protected virtual bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
+        protected virtual bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {
             return false;
         }

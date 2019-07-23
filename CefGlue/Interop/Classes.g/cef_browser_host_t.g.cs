@@ -75,11 +75,11 @@ namespace Xilium.CefGlue.Interop
         
         // CreateBrowser
         [DllImport(libcef.DllName, EntryPoint = "cef_browser_host_create_browser", CallingConvention = libcef.CEF_CALL)]
-        public static extern int create_browser(cef_window_info_t* windowInfo, cef_client_t* client, cef_string_t* url, cef_browser_settings_t* settings, cef_request_context_t* request_context);
+        public static extern int create_browser(cef_window_info_t* windowInfo, cef_client_t* client, cef_string_t* url, cef_browser_settings_t* settings, cef_dictionary_value_t* extra_info, cef_request_context_t* request_context);
         
         // CreateBrowserSync
         [DllImport(libcef.DllName, EntryPoint = "cef_browser_host_create_browser_sync", CallingConvention = libcef.CEF_CALL)]
-        public static extern cef_browser_t* create_browser_sync(cef_window_info_t* windowInfo, cef_client_t* client, cef_string_t* url, cef_browser_settings_t* settings, cef_request_context_t* request_context);
+        public static extern cef_browser_t* create_browser_sync(cef_window_info_t* windowInfo, cef_client_t* client, cef_string_t* url, cef_browser_settings_t* settings, cef_dictionary_value_t* extra_info, cef_request_context_t* request_context);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

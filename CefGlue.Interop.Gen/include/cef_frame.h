@@ -40,11 +40,14 @@
 
 #include "include/cef_base.h"
 #include "include/cef_dom.h"
+#include "include/cef_process_message.h"
 #include "include/cef_request.h"
 #include "include/cef_stream.h"
 #include "include/cef_string_visitor.h"
 
 class CefBrowser;
+class CefURLRequest;
+class CefURLRequestClient;
 class CefV8Context;
 
 ///
@@ -220,6 +223,42 @@ class CefFrame : public virtual CefBaseRefCounted {
   ///
   /*--cef()--*/
   virtual void VisitDOM(CefRefPtr<CefDOMVisitor> visitor) = 0;
+
+  ///
+  // Create a new URL request that will be treated as originating from this
+  // frame and the associated browser. This request may be intercepted by the
+  // client via CefResourceRequestHandler or CefSchemeHandlerFactory. Use
+  // CefURLRequest::Create instead if you do not want the request to have this
+  // association, in which case it may be handled differently (see documentation
+  // on that method). Requests may originate from both the browser process and
+  // the render process.
+  //
+  // For requests originating from the browser process:
+  //   - POST data may only contain a single element of type PDE_TYPE_FILE or
+  //     PDE_TYPE_BYTES.
+  // For requests originating from the render process:
+  //   - POST data may only contain a single element of type PDE_TYPE_BYTES.
+  //   - If the response contains Content-Disposition or Mime-Type header values
+  //     that would not normally be rendered then the response may receive
+  //     special handling inside the browser (for example, via the file download
+  //     code path instead of the URL request code path).
+  //
+  // The |request| object will be marked as read-only after calling this method.
+  ///
+  /*--cef()--*/
+  virtual CefRefPtr<CefURLRequest> CreateURLRequest(
+      CefRefPtr<CefRequest> request,
+      CefRefPtr<CefURLRequestClient> client) = 0;
+
+  ///
+  // Send a message to the specified |target_process|. Message delivery is not
+  // guaranteed in all cases (for example, if the browser is closing,
+  // navigating, or if the target process crashes). Send an ACK message back
+  // from the target process if confirmation is required.
+  ///
+  /*--cef()--*/
+  virtual void SendProcessMessage(CefProcessId target_process,
+                                  CefRefPtr<CefProcessMessage> message) = 0;
 };
 
 #endif  // CEF_INCLUDE_CEF_FRAME_H_

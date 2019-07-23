@@ -65,6 +65,7 @@
     <Compile Include="Classes.g\CefCompletionCallback.g.cs" />
     <Compile Include="Classes.g\CefContextMenuHandler.g.cs" />
     <Compile Include="Classes.g\CefContextMenuParams.g.cs" />
+    <Compile Include="Classes.g\CefCookieAccessFilter.g.cs" />
     <Compile Include="Classes.g\CefCookieManager.g.cs" />
     <Compile Include="Classes.g\CefCookieVisitor.g.cs" />
     <Compile Include="Classes.g\CefDeleteCookiesCallback.g.cs" />
@@ -120,6 +121,9 @@
     <Compile Include="Classes.g\CefResourceBundle.g.cs" />
     <Compile Include="Classes.g\CefResourceBundleHandler.g.cs" />
     <Compile Include="Classes.g\CefResourceHandler.g.cs" />
+    <Compile Include="Classes.g\CefResourceReadCallback.g.cs" />
+    <Compile Include="Classes.g\CefResourceRequestHandler.g.cs" />
+    <Compile Include="Classes.g\CefResourceSkipCallback.g.cs" />
     <Compile Include="Classes.g\CefResponse.g.cs" />
     <Compile Include="Classes.g\CefResponseFilter.g.cs" />
     <Compile Include="Classes.g\CefRunContextMenuCallback.g.cs" />
@@ -165,6 +169,7 @@
     <Compile Include="Classes.Handlers\CefClient.cs" />
     <Compile Include="Classes.Handlers\CefCompletionCallback.cs" />
     <Compile Include="Classes.Handlers\CefContextMenuHandler.cs" />
+    <Compile Include="Classes.Handlers\CefCookieAccessFilter.cs" />
     <Compile Include="Classes.Handlers\CefCookieVisitor.cs" />
     <Compile Include="Classes.Handlers\CefDeleteCookiesCallback.cs" />
     <Compile Include="Classes.Handlers\CefDialogHandler.cs" />
@@ -194,6 +199,7 @@
     <Compile Include="Classes.Handlers\CefResolveCallback.cs" />
     <Compile Include="Classes.Handlers\CefResourceBundleHandler.cs" />
     <Compile Include="Classes.Handlers\CefResourceHandler.cs" />
+    <Compile Include="Classes.Handlers\CefResourceRequestHandler.cs" />
     <Compile Include="Classes.Handlers\CefResponseFilter.cs" />
     <Compile Include="Classes.Handlers\CefRunFileDialogCallback.cs" />
     <Compile Include="Classes.Handlers\CefSchemeHandlerFactory.cs" />
@@ -244,6 +250,8 @@
     <Compile Include="Classes.Proxies\CefRequestCallback.cs" />
     <Compile Include="Classes.Proxies\CefRequestContext.cs" />
     <Compile Include="Classes.Proxies\CefResourceBundle.cs" />
+    <Compile Include="Classes.Proxies\CefResourceReadCallback.cs" />
+    <Compile Include="Classes.Proxies\CefResourceSkipCallback.cs" />
     <Compile Include="Classes.Proxies\CefResponse.cs" />
     <Compile Include="Classes.Proxies\CefRunContextMenuCallback.cs" />
     <Compile Include="Classes.Proxies\CefSchemeRegistrar.cs" />
@@ -354,6 +362,7 @@
     <Compile Include="Interop\Classes.g\cef_completion_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_context_menu_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_context_menu_params_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_cookie_access_filter_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_cookie_manager_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_cookie_visitor_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_delete_cookies_callback_t.g.cs" />
@@ -409,6 +418,9 @@
     <Compile Include="Interop\Classes.g\cef_resource_bundle_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_resource_bundle_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_resource_handler_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_resource_read_callback_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_resource_request_handler_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_resource_skip_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_response_filter_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_response_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_run_context_menu_callback_t.g.cs" />
@@ -490,12 +502,12 @@
     <Compile Include="Interop\_Platform\RECT.cs" />
     <Compile Include="Structs\CefMouseEvent.cs" />
     <Compile Include="Structs\CefScreenInfo.cs" />
-    <Compile Include="Wrapper\MessageRouter\CefBrowserInfoMap.cs" />
-    <Compile Include="Wrapper\MessageRouter\CefMessageRouterBrowserSide.cs" />
-    <Compile Include="Wrapper\MessageRouter\CefMessageRouterConfig.cs" />
-    <Compile Include="Wrapper\MessageRouter\CefMessageRouterRendererSide.cs" />
-    <Compile Include="Wrapper\MessageRouter\CefMessageRouter.cs" />
-    <Compile Include="Wrapper\MessageRouter\Helpers.cs" />
+    <None Include="Wrapper\MessageRouter\CefBrowserInfoMap.cs" />
+    <None Include="Wrapper\MessageRouter\CefMessageRouterBrowserSide.cs" />
+    <None Include="Wrapper\MessageRouter\CefMessageRouterConfig.cs" />
+    <None Include="Wrapper\MessageRouter\CefMessageRouterRendererSide.cs" />
+    <None Include="Wrapper\MessageRouter\CefMessageRouter.cs" />
+    <None Include="Wrapper\MessageRouter\Helpers.cs" />
     <None Include="..\Xilium.CefGlue.snk">
       <Link>Properties\Xilium.CefGlue.snk</Link>
     </None>
