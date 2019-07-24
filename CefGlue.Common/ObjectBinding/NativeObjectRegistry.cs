@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Collections.Concurrent;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Events;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
@@ -20,7 +21,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         /// <param name="obj"></param>
         /// <param name="name"></param>
         /// <returns>True if the object was successfully registered, false if the object was already registered before.</returns>
-        public bool Register(object obj, string name)
+        public bool Register(object obj, string name, JavascriptObjectMethodCallHandler methodHandler = null)
         {
             if (_registeredObjects.ContainsKey(name))
             {

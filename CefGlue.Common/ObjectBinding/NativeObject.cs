@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Xilium.CefGlue.Common.Events;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
@@ -8,10 +9,11 @@ namespace Xilium.CefGlue.Common.ObjectBinding
     {
         private readonly IDictionary<string, MethodInfo> _methods;
 
-        public NativeObject(object target, IDictionary<string, MethodInfo> methods)
+        public NativeObject(object target, IDictionary<string, MethodInfo> methods, JavascriptObjectMethodCallHandler methodHandler = null)
         {
             Target = target;
             _methods = methods;
+            MethodHandler = methodHandler;
         }
 
         public object Target { get; }
@@ -21,5 +23,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             _methods.TryGetValue(javascriptMethodName, out var nativeMethod);
             return nativeMethod;
         }
+
+        public JavascriptObjectMethodCallHandler MethodHandler { get; }
     }
 }

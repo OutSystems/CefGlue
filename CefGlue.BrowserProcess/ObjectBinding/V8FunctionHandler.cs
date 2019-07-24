@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
 
@@ -6,34 +6,26 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
     internal class V8FunctionHandler : CefV8Handler
     {
-        private static volatile int lastCallId;
-
         private readonly string _objectName;
-        private readonly IDictionary<int, PromiseHolder> _promisesStorage;
+        private readonly Func<Messages.NativeObjectCallRequest, PromiseHolder> _functionCallHandler;
 
-        public V8FunctionHandler(string objectName, IDictionary<int, PromiseHolder> promisesStorage)
+        public V8FunctionHandler(string objectName, Func<Messages.NativeObjectCallRequest, PromiseHolder> functionCallHandler)
         {
             _objectName = objectName;
-            _promisesStorage = promisesStorage;
+            _functionCallHandler = functionCallHandler;
         }
 
         protected override bool Execute(string name, CefV8Value obj, CefV8Value[] arguments, out CefV8Value returnValue, out string exception)
         {
-            var promiseHolder = PromiseFactory.CreatePromise();
-
             var argsCopy = V8ValueSerialization.SerializeV8Object(arguments); // create a copy of the args to pass to the browser process
             var message = new Messages.NativeObjectCallRequest()
             {
-                CallId = lastCallId++,
                 ObjectName = _objectName,
                 MemberName = name,
                 Arguments = argsCopy
             };
 
-            _promisesStorage.Add(message.CallId, promiseHolder);
-
-            var browser = CefV8Context.GetCurrentContext().GetBrowser();
-            browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
+            var promiseHolder = _functionCallHandler(message);
 
             returnValue = promiseHolder.Promise;
             exception = null;

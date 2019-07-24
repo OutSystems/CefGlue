@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
@@ -9,12 +9,24 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
     internal class JavascriptToNativeDispatcherRenderSide
     {
-        private readonly IDictionary<int, PromiseHolder> _pendingCalls = new ConcurrentDictionary<int, PromiseHolder>();
+        private static volatile int lastCallId;
 
+        private readonly ConcurrentDictionary<int, PromiseHolder> _pendingCalls = new ConcurrentDictionary<int, PromiseHolder>();
+        private readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _pendingBoundQueryTasks = new ConcurrentDictionary<string, TaskCompletionSource<bool>>();
+
+        private readonly JavascriptHelper _javascriptHelper = new JavascriptHelper();
+        
         public JavascriptToNativeDispatcherRenderSide(MessageDispatcher dispatcher)
         {
             dispatcher.RegisterMessageHandler(Messages.NativeObjectRegistrationRequest.Name, HandleNativeObjectRegistration);
             dispatcher.RegisterMessageHandler(Messages.NativeObjectCallResult.Name, HandleNativeObjectCallResult);
+
+            _javascriptHelper.Register(HandleJavascriptHelperObjectBoundQuery);
+        }
+
+        private Task<bool> HandleJavascriptHelperObjectBoundQuery(string objectName)
+        {
+            return _pendingBoundQueryTasks.GetOrAdd(objectName, _ => new TaskCompletionSource<bool>()).Task;
         }
 
         private void HandleNativeObjectRegistration(MessageReceivedEventArgs args)
@@ -29,7 +41,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     var message = Messages.NativeObjectRegistrationRequest.FromCefMessage(args.Message);
 
                     var global = context.GetGlobal();
-                    var handler = new V8FunctionHandler(message.ObjectName, _pendingCalls);
+                    var handler = new V8FunctionHandler(message.ObjectName, HandleNativeObjectCall);
                     var attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontEnum | CefV8PropertyAttribute.DontDelete;
 
                     using (var v8Obj = CefV8Value.CreateObject())
@@ -44,6 +56,10 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
                         global.SetValue(message.ObjectName, v8Obj);
                     }
+
+                    // notify that the object has been registered, any pending promises on the object will be resolved
+                    var taskSource = _pendingBoundQueryTasks.GetOrAdd(message.ObjectName, _ => new TaskCompletionSource<bool>());
+                    taskSource.TrySetResult(true);
                 }
                 finally
                 {
@@ -56,39 +72,42 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             }
         }
 
+        private PromiseHolder HandleNativeObjectCall(Messages.NativeObjectCallRequest message)
+        {
+            message.CallId = lastCallId++;
+
+            var promiseHolder = JavascriptHelper.CreatePromise();
+            if (!_pendingCalls.TryAdd(message.CallId, promiseHolder))
+            {
+                throw new InvalidOperationException("Call id already exists");
+            }
+
+            var browser = CefV8Context.GetCurrentContext().GetBrowser();
+            browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
+            
+            return promiseHolder;
+        }
+
         private void HandleNativeObjectCallResult(MessageReceivedEventArgs args)
         {
             var message = Messages.NativeObjectCallResult.FromCefMessage(args.Message);
-            if (_pendingCalls.TryGetValue(message.CallId, out var promiseHolder))
+            if(_pendingCalls.TryRemove(message.CallId, out var promiseHolder))
             {
-                try
+                promiseHolder.ResolveOrReject((resolve, reject) =>
                 {
-                    var context = promiseHolder.Context;
-                    if (context.Enter())
+                    if (message.Success)
                     {
-                        try
-                        {
-                            var result = V8ValueSerialization.SerializeCefValue(message.Result);
-                            promiseHolder.Resolve.ExecuteFunction(null, new[] { result });
-                        }
-                        finally
-                        {
-                            context.Exit();
-                        }
+                        resolve(V8ValueSerialization.SerializeCefValue(message.Result));
                     }
                     else
                     {
-                        // TODO
+                        reject(CefV8Value.CreateString(message.Exception));
                     }
-                }
-                finally
-                {
-                    _pendingCalls.Remove(message.CallId);
-                }
+                });
             }
             else
             {
-                // TODO
+                // probably the call context has gone, bail out
             }
         }
 
@@ -98,7 +117,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 if (promiseHolderEntry.Value.Context == context)
                 {
-                    _pendingCalls.Remove(promiseHolderEntry.Key);
+                    _pendingCalls.TryRemove(promiseHolderEntry.Key, out var dummy);
                 }
             }
         }

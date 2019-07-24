@@ -1,5 +1,4 @@
 using System;
-using Xilium.CefGlue.BrowserProcess.ObjectBinding;
 using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
@@ -10,7 +9,6 @@ namespace Xilium.CefGlue.BrowserProcess.JavascriptExecution
     {
         public JavascriptExecutionEngineRenderSide(MessageDispatcher dispatcher)
         {
-            PromiseFactory.Register();
             dispatcher.RegisterMessageHandler(Messages.JsEvaluationRequest.Name, HandleScriptEvaluation);
         }
 

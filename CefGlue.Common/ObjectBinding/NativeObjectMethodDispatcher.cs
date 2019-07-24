@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
 using Xilium.CefGlue.Common.Serialization;
@@ -40,7 +41,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                         var nativeMethod = targetObj.GetNativeMethod(message.MemberName);
                         if (nativeMethod != null)
                         {
-                            var result = ExecuteMethod(targetObj.Target, nativeMethod, arguments);
+                            var result = ExecuteMethod(targetObj.Target, nativeMethod, arguments, targetObj.MethodHandler);
 
                             resultMessage.Result = CefValueSerialization.Serialize(result);
                             resultMessage.Success = true;
@@ -67,7 +68,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             });
         }
 
-        private object ExecuteMethod(object targetObj, MethodInfo method, object[] args)
+        private object ExecuteMethod(object targetObj, MethodInfo method, object[] args, JavascriptObjectMethodCallHandler methodHandler)
         {
             var parameters = method.GetParameters();
             if (args.Length != parameters.Length)
@@ -76,6 +77,11 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             }
 
             var convertedArgs = parameters.Select((p, i) => JavascriptToNativeTypeConverter.ConvertToNative(args[i], p.ParameterType)).ToArray();
+
+            if (methodHandler != null)
+            {
+                return methodHandler(() => method.Invoke(targetObj, convertedArgs));
+            }
 
             // TODO improve call perf
             return method.Invoke(targetObj, convertedArgs);

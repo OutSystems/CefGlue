@@ -396,9 +396,14 @@ namespace Xilium.CefGlue.Common
             _browserHost.CloseDevTools();
         }
 
-        public void RegisterJavascriptObject(object targetObject, string name)
+        public void RegisterJavascriptObject(object targetObject, string name, JavascriptObjectMethodCallHandler methodHandler = null)
         {
             _objectRegistry.Register(targetObject, name);
+        }
+
+        public bool IsJavascriptObjectRegistered(string name)
+        {
+            return _objectRegistry.Get(name) != null;
         }
 
         protected void AttachEventHandlers(IControl control)
