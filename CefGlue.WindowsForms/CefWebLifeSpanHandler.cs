@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue.WindowsForms
+namespace Xilium.CefGlue.WindowsForms
 {
     using System;
     using System.Collections.Generic;
@@ -17,7 +17,7 @@
         {
             base.OnAfterCreated(browser);
 
-        	_core.InvokeIfRequired(() => _core.OnBrowserAfterCreated(browser));
+            _core.InvokeIfRequired(() => _core.OnBrowserAfterCreated(browser));
         }
 
         protected override bool DoClose(CefBrowser browser)
@@ -26,25 +26,25 @@
             return false;
         }
 
-		protected override void OnBeforeClose(CefBrowser browser)
-		{
-			if (_core.InvokeRequired)
-				_core.BeginInvoke((Action)_core.OnBeforeClose);
-			else
-				_core.OnBeforeClose();
-		}
+        protected override void OnBeforeClose(CefBrowser browser)
+        {
+            if (_core.InvokeRequired)
+                _core.BeginInvoke((Action)_core.OnBeforeClose);
+            else
+                _core.OnBeforeClose();
+        }
 
-        protected override bool OnBeforePopup(CefBrowser browser, CefFrame frame, string targetUrl, string targetFrameName, CefWindowOpenDisposition targetDisposition, bool userGesture, CefPopupFeatures popupFeatures, CefWindowInfo windowInfo, ref CefClient client, CefBrowserSettings settings, ref bool noJavascriptAccess)
-		{
-			var e = new BeforePopupEventArgs(frame, targetUrl, targetFrameName, popupFeatures, windowInfo, client, settings,
-								 noJavascriptAccess);
+        protected override bool OnBeforePopup(CefBrowser browser, CefFrame frame, string targetUrl, string targetFrameName, CefWindowOpenDisposition targetDisposition, bool userGesture, CefPopupFeatures popupFeatures, CefWindowInfo windowInfo, ref CefClient client, CefBrowserSettings settings, ref CefDictionaryValue extraInfo, ref bool noJavascriptAccess)
+        {
+            var e = new BeforePopupEventArgs(frame, targetUrl, targetFrameName, popupFeatures, windowInfo, client, settings,
+                                 noJavascriptAccess);
 
-			_core.InvokeIfRequired(() => _core.OnBeforePopup(e));
+            _core.InvokeIfRequired(() => _core.OnBeforePopup(e));
 
-			client = e.Client;
-			noJavascriptAccess = e.NoJavascriptAccess;
+            client = e.Client;
+            noJavascriptAccess = e.NoJavascriptAccess;
 
-			return e.Handled;
-		}
+            return e.Handled;
+        }
     }
 }

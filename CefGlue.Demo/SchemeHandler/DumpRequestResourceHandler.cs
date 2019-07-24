@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue.Demo
+namespace Xilium.CefGlue.Demo
 {
     using System;
     using System.Collections.Generic;
@@ -14,6 +14,13 @@
         private byte[] responseData;
         private int pos;
 
+        protected override bool Open(CefRequest request, out bool handleRequest, CefCallback callback)
+        {
+            // Backwards compatibility. ProcessRequest will be called.
+            callback.Dispose();
+            handleRequest = false;
+            return false;
+        }
 
         protected override bool ProcessRequest(CefRequest request, CefCallback callback)
         {
@@ -61,6 +68,20 @@
             redirectUrl = null;
         }
 
+        protected override bool Skip(long bytesToSkip, out long bytesSkipped, CefResourceSkipCallback callback)
+        {
+            bytesSkipped = (long)CefErrorCode.Failed;
+            return false;
+        }
+
+        protected override bool Read(IntPtr dataOut, int bytesToRead, out int bytesRead, CefResourceReadCallback callback)
+        {
+            // Backwards compatibility. ReadResponse will be called.
+            callback.Dispose();
+            bytesRead = -1;
+            return false;
+        }
+
         protected override bool ReadResponse(Stream response, int bytesToRead, out int bytesRead, CefCallback callback)
         {
             if (bytesToRead == 0 || pos >= responseData.Length)
@@ -70,21 +91,12 @@
             }
             else
             {
-                response.Write(responseData, pos, bytesToRead);
-                pos += bytesToRead;
-                bytesRead = bytesToRead;
+                var br = Math.Min(responseData.Length - pos, bytesToRead);
+                response.Write(responseData, pos, br);
+                pos += br;
+                bytesRead = br;
                 return true;
             }
-        }
-
-        protected override bool CanGetCookie(CefCookie cookie)
-        {
-            return false;
-        }
-
-        protected override bool CanSetCookie(CefCookie cookie)
-        {
-            return false;
         }
 
         protected override void Cancel()

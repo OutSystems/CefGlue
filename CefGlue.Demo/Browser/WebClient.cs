@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue.Demo.Browser
+namespace Xilium.CefGlue.Demo.Browser
 {
     using System;
     using System.Collections.Generic;
@@ -37,7 +37,7 @@
             return _loadHandler;
         }
 
-        protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
+        protected override bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {
             if (DumpProcessMessages)
             {
@@ -62,8 +62,8 @@
                 }
             }
 
-            var handled = DemoApp.BrowserMessageRouter.OnProcessMessageReceived(browser, sourceProcess, message);
-            if (handled) return true;
+            //var handled = DemoApp.BrowserMessageRouter.OnProcessMessageReceived(browser, sourceProcess, message);
+            //if (handled) return true;
 
             if (message.Name == "myMessage2" || message.Name == "myMessage3") return true;
 
