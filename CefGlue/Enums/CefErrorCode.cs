@@ -1,4 +1,4 @@
-﻿//
+//
 // This file manually written from cef/include/base/internal/cef_net_error_list.h.
 // C API name: cef_errorcode_t.
 //
@@ -423,11 +423,7 @@ namespace Xilium.CefGlue
         /// </summary>
         MSG_TOO_BIG = -142,
 
-        /// <summary>
-        /// A SPDY session already exists, and should be used instead of this connection.
-        /// </summary>
-        SPDY_SESSION_ALREADY_EXISTS = -143,
-
+        // Error -143 was removed (SPDY_SESSION_ALREADY_EXISTS)
         // Error -144 was removed (LIMIT_VIOLATION).
 
         /// <summary>
@@ -589,21 +585,7 @@ namespace Xilium.CefGlue
         /// </summary>
         READ_IF_READY_NOT_IMPLEMENTED = -174,
 
-        /// <summary>
-        /// This error is emitted if TLS 1.3 is enabled, connecting with it failed, but
-        /// retrying at a downgraded maximum version succeeded. This could mean:
-        ///
-        /// 1. This is a transient network error that will be resolved when the user
-        ///    reloads.
-        ///
-        /// 2. The user is behind a buggy network middlebox, firewall, or proxy which is
-        ///    interfering with TLS 1.3.
-        ///
-        /// 3. The server is buggy and does not implement TLS version negotiation
-        ///    correctly. TLS 1.3 was tweaked to avoid a common server bug here, so this
-        ///    is unlikely.
-        /// </summary>
-        SSL_VERSION_INTERFERENCE = -175,
+        // Error -175 was removed (SSL_VERSION_INTERFERENCE).
 
         /// <summary>
         /// No socket buffer space is available.

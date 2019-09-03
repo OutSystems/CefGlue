@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -42,6 +42,13 @@
         /// the "framework-dir-path" command-line switch.
         /// </summary>
         public string FrameworkDirPath { get; set; }
+
+        /// <summary>
+        /// The path to the main bundle on macOS. If this value is empty then it
+        /// defaults to the top-level app bundle. Also configurable using
+        /// the "main-bundle-path" command-line switch.
+        /// </summary>
+        public string MainBundlePath { get; set; }
 
         /// <summary>
         /// Set to <c>true</c> to have the browser process message loop run in a separate
@@ -287,6 +294,7 @@
             ptr->no_sandbox = NoSandbox ? 1 : 0;
             cef_string_t.Copy(BrowserSubprocessPath, &ptr->browser_subprocess_path);
             cef_string_t.Copy(FrameworkDirPath, &ptr->framework_dir_path);
+            cef_string_t.Copy(MainBundlePath, &ptr->main_bundle_path);
             ptr->multi_threaded_message_loop = MultiThreadedMessageLoop ? 1 : 0;
             ptr->windowless_rendering_enabled = WindowlessRenderingEnabled ? 1 : 0;
             ptr->external_message_pump = ExternalMessagePump ? 1 : 0;
@@ -319,6 +327,7 @@
         {
             libcef.string_clear(&ptr->browser_subprocess_path);
             libcef.string_clear(&ptr->framework_dir_path);
+            libcef.string_clear(&ptr->main_bundle_path);
             libcef.string_clear(&ptr->cache_path);
             libcef.string_clear(&ptr->root_cache_path);
             libcef.string_clear(&ptr->user_data_path);

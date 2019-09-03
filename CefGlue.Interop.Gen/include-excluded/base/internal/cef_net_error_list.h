@@ -4,8 +4,9 @@
 
 // This file intentionally does not have header guards, it's included
 // inside a macro to generate enum values. The following line silences a
-// presubmit warning that would otherwise be triggered by this:
+// presubmit and Tricium warning that would otherwise be triggered by this:
 // no-include-guard-because-multiply-included
+// NOLINT(build/header_guard)
 
 // This file contains the list of network errors.
 
@@ -281,8 +282,7 @@ NET_ERROR(SSL_CLIENT_AUTH_SIGNATURE_FAILED, -141)
 // which exceeds size threshold).
 NET_ERROR(MSG_TOO_BIG, -142)
 
-// A SPDY session already exists, and should be used instead of this connection.
-NET_ERROR(SPDY_SESSION_ALREADY_EXISTS, -143)
+// Error -143 was removed (SPDY_SESSION_ALREADY_EXISTS)
 
 // Error -144 was removed (LIMIT_VIOLATION).
 
@@ -395,19 +395,7 @@ NET_ERROR(WS_UPGRADE, -173)
 // visible, because the normal Read() method is used as a fallback.
 NET_ERROR(READ_IF_READY_NOT_IMPLEMENTED, -174)
 
-// This error is emitted if TLS 1.3 is enabled, connecting with it failed, but
-// retrying at a downgraded maximum version succeeded. This could mean:
-//
-// 1. This is a transient network error that will be resolved when the user
-//    reloads.
-//
-// 2. The user is behind a buggy network middlebox, firewall, or proxy which is
-//    interfering with TLS 1.3.
-//
-// 3. The server is buggy and does not implement TLS version negotiation
-//    correctly. TLS 1.3 was tweaked to avoid a common server bug here, so this
-//    is unlikely.
-NET_ERROR(SSL_VERSION_INTERFERENCE, -175)
+// Error -175 was removed (SSL_VERSION_INTERFERENCE).
 
 // No socket buffer space is available.
 NET_ERROR(NO_BUFFER_SPACE, -176)
