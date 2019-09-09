@@ -1,19 +1,15 @@
+using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Concurrent;
-using Xilium.CefGlue.Common.RendererProcessCommunication;
 using Xilium.CefGlue.Common.Events;
+using Xilium.CefGlue.Common.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
     internal class NativeObjectRegistry
     {
-        private readonly CefBrowser _browser;
-        private readonly ConcurrentDictionary<string, NativeObject> _registeredObjects = new ConcurrentDictionary<string, NativeObject>();
-
-        public NativeObjectRegistry(CefBrowser browser)
-        {
-            _browser = browser;
-        }
+        private CefBrowser _browser;
+        private readonly Dictionary<string, NativeObject> _registeredObjects = new Dictionary<string, NativeObject>();
+        private readonly object _registrationSyncRoot = new object();
 
         /// <summary>
         /// 
@@ -30,23 +26,54 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
             var objectMembers = NativeObjectAnalyser.AnalyseObjectMembers(obj);
 
-            _registeredObjects.TryAdd(name, new NativeObject(obj, objectMembers));
+            var nativeObj = new NativeObject(name, obj, objectMembers);
 
-            var message = new Messages.NativeObjectRegistrationRequest()
+            lock (_registrationSyncRoot)
             {
-                ObjectName = name,
-                MethodsNames = objectMembers.Keys.ToArray()
-            };
+                if (_registeredObjects.ContainsKey(name))
+                {
+                    // check gain, might have been registered meanwhile
+                    return false;
+                }
 
-            _browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
+                _registeredObjects.Add(name, nativeObj);
+                
+                if (_browser != null)
+                {
+                    SendRegistrationMessage(nativeObj);
+                }
 
-            return true;
+                return true;
+            }
+        }
+
+        public void SetBrowser(CefBrowser browser)
+        {
+            lock (_registrationSyncRoot)
+            {
+                _browser = browser;
+                foreach (var obj in _registeredObjects.Values)
+                {
+                    SendRegistrationMessage(obj);
+                }
+            }
         }
 
         public NativeObject Get(string name)
         {
             _registeredObjects.TryGetValue(name, out var obj);
             return obj;
+        }
+
+        private void SendRegistrationMessage(NativeObject obj)
+        {
+            var message = new Messages.NativeObjectRegistrationRequest()
+            {
+                ObjectName = obj.Name,
+                MethodsNames = obj.MethodsNames.ToArray()
+            };
+
+            _browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
         }
     }
 }

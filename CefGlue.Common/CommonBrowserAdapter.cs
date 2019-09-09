@@ -28,8 +28,9 @@ namespace Xilium.CefGlue.Common
         private CefBrowserHost _browserHost;
         private CommonCefClient _cefClient;
         private JavascriptExecutionEngine _javascriptExecutionEngine;
-        private NativeObjectRegistry _objectRegistry;
         private NativeObjectMethodDispatcher _objectMethodDispatcher;
+
+        private readonly NativeObjectRegistry _objectRegistry = new NativeObjectRegistry();
 
         public CommonBrowserAdapter(object eventsEmitter, string name, IControl control, IPopup popup, ILogger logger)
         {
@@ -504,7 +505,7 @@ namespace Xilium.CefGlue.Common
             _javascriptExecutionEngine.ContextCreated += OnJavascriptExecutionEngineContextCreated;
             _javascriptExecutionEngine.ContextReleased += OnJavascriptExecutionEngineContextReleased;
 
-            _objectRegistry = new NativeObjectRegistry(browser);
+            _objectRegistry.SetBrowser(browser);
             _objectMethodDispatcher = new NativeObjectMethodDispatcher(_cefClient.Dispatcher, _objectRegistry);
 
             _browser = browser;

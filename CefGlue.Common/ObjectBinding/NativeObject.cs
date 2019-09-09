@@ -9,12 +9,19 @@ namespace Xilium.CefGlue.Common.ObjectBinding
     {
         private readonly IDictionary<string, MethodInfo> _methods;
 
-        public NativeObject(object target, IDictionary<string, MethodInfo> methods, JavascriptObjectMethodCallHandler methodHandler = null)
+        public NativeObject(string name, object target, IDictionary<string, MethodInfo> methods, JavascriptObjectMethodCallHandler methodHandler = null)
         {
+            Name = name;
             Target = target;
             _methods = methods;
             MethodHandler = methodHandler;
         }
+
+        public string Name { get; }
+
+        public IEnumerable<string> MethodsNames => _methods.Keys;
+
+        public JavascriptObjectMethodCallHandler MethodHandler { get; }
 
         public object Target { get; }
 
@@ -23,7 +30,5 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             _methods.TryGetValue(javascriptMethodName, out var nativeMethod);
             return nativeMethod;
         }
-
-        public JavascriptObjectMethodCallHandler MethodHandler { get; }
     }
 }
