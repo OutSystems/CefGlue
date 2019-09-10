@@ -28,6 +28,7 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
         protected override void OnContextCreated(CefBrowser browser, CefFrame frame, CefV8Context context)
         {
             base.OnContextCreated(browser, frame, context);
+            _javascriptToNativeDispatcher.HandleContextCreated(context, frame.IsMain);
 
             var message = new Messages.JsContextCreated();
             message.FrameId = frame.Name;
@@ -36,7 +37,7 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
 
         protected override void OnContextReleased(CefBrowser browser, CefFrame frame, CefV8Context context)
         {
-            _javascriptToNativeDispatcher.HandleContextReleased(context);
+            _javascriptToNativeDispatcher.HandleContextReleased(context, frame.IsMain);
             base.OnContextReleased(browser, frame, context);
 
             var message = new Messages.JsContextReleased();

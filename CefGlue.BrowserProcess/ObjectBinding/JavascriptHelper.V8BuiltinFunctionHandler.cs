@@ -1,15 +1,16 @@
-using System;
 using System.Threading.Tasks;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
     partial class JavascriptHelper
     {
+        internal delegate Task<bool> ObjectBoundQueryDelegate(string objectName);
+
         private class V8BuiltinFunctionHandler : CefV8Handler
         {
-            private readonly Func<string, Task<bool>> _handleObjectBoundQuery;
+            private readonly ObjectBoundQueryDelegate _handleObjectBoundQuery;
 
-            public V8BuiltinFunctionHandler(Func<string, Task<bool>> handleObjectBoundQuery)
+            public V8BuiltinFunctionHandler(ObjectBoundQueryDelegate handleObjectBoundQuery)
             {
                 _handleObjectBoundQuery = handleObjectBoundQuery;
             }
@@ -18,6 +19,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 returnValue = null;
                 exception = null;
+
 
                 switch (name)
                 {

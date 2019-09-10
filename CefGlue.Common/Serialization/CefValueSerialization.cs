@@ -180,7 +180,7 @@ namespace Xilium.CefGlue.Common.Serialization
                     return value.GetInt();
 
                 case CefValueType.String:
-                    return value.GetString();
+                    return value.GetString() ?? ""; // default to "", because cef converts "" to null, and when null it will fall on the Null case
 
                 case CefValueType.Null:
                     return null;

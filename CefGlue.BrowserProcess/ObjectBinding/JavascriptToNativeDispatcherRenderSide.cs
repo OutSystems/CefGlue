@@ -11,17 +11,16 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
     {
         private static volatile int lastCallId;
 
+        private readonly ConcurrentBag<ObjectRegistrationInfo> _registeredObjects = new ConcurrentBag<ObjectRegistrationInfo>();
         private readonly ConcurrentDictionary<int, PromiseHolder> _pendingCalls = new ConcurrentDictionary<int, PromiseHolder>();
         private readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _pendingBoundQueryTasks = new ConcurrentDictionary<string, TaskCompletionSource<bool>>();
-
-        private readonly JavascriptHelper _javascriptHelper = new JavascriptHelper();
         
         public JavascriptToNativeDispatcherRenderSide(MessageDispatcher dispatcher)
         {
             dispatcher.RegisterMessageHandler(Messages.NativeObjectRegistrationRequest.Name, HandleNativeObjectRegistration);
             dispatcher.RegisterMessageHandler(Messages.NativeObjectCallResult.Name, HandleNativeObjectCallResult);
 
-            _javascriptHelper.Register(HandleJavascriptHelperObjectBoundQuery);
+            JavascriptHelper.Register(HandleJavascriptHelperObjectBoundQuery);
         }
 
         private Task<bool> HandleJavascriptHelperObjectBoundQuery(string objectName)
@@ -34,41 +33,18 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             var browser = args.Browser;
             var context = browser.GetMainFrame().V8Context;
 
-            if (context.Enter())
+            var message = Messages.NativeObjectRegistrationRequest.FromCefMessage(args.Message);
+            var objectInfo = new ObjectRegistrationInfo(message.ObjectName, message.MethodsNames);
+
+            _registeredObjects.Add(objectInfo);
+
+            var objectCreated = CreateNativeObject(objectInfo, context);
+
+            if (objectCreated)
             {
-                try
-                {
-                    var message = Messages.NativeObjectRegistrationRequest.FromCefMessage(args.Message);
-
-                    var global = context.GetGlobal();
-                    var handler = new V8FunctionHandler(message.ObjectName, HandleNativeObjectCall);
-                    var attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontEnum | CefV8PropertyAttribute.DontDelete;
-
-                    using (var v8Obj = CefV8Value.CreateObject())
-                    {
-                        foreach (var methodName in message.MethodsNames)
-                        {
-                            using (var v8Function = CefV8Value.CreateFunction(methodName, handler))
-                            {
-                                v8Obj.SetValue(methodName, v8Function, attributes);
-                            }
-                        }
-
-                        global.SetValue(message.ObjectName, v8Obj);
-                    }
-
-                    // notify that the object has been registered, any pending promises on the object will be resolved
-                    var taskSource = _pendingBoundQueryTasks.GetOrAdd(message.ObjectName, _ => new TaskCompletionSource<bool>());
-                    taskSource.TrySetResult(true);
-                }
-                finally
-                {
-                    context.Exit();
-                }
-            }
-            else
-            {
-                // TODO
+                // notify that the object has been registered, any pending promises on the object will be resolved
+                var taskSource = _pendingBoundQueryTasks.GetOrAdd(objectInfo.Name, _ => new TaskCompletionSource<bool>());
+                taskSource.TrySetResult(true);
             }
         }
 
@@ -111,14 +87,70 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             }
         }
 
-        public void HandleContextReleased(CefV8Context context)
+        public void HandleContextCreated(CefV8Context context, bool isMain)
         {
-            foreach (var promiseHolderEntry in _pendingCalls.ToArray())
+            if (isMain)
             {
-                if (promiseHolderEntry.Value.Context == context)
+                foreach (var obj in _registeredObjects)
                 {
-                    _pendingCalls.TryRemove(promiseHolderEntry.Key, out var dummy);
+                    CreateNativeObject(obj, context);
                 }
+            }
+        }
+
+        public void HandleContextReleased(CefV8Context context, bool isMain)
+        {
+            if (isMain)
+            {
+                _pendingBoundQueryTasks.Clear();
+                _pendingCalls.Clear();
+            }
+            else
+            {
+                foreach (var promiseHolderEntry in _pendingCalls.ToArray())
+                {
+                    if (promiseHolderEntry.Value.Context == context)
+                    {
+                        _pendingCalls.TryRemove(promiseHolderEntry.Key, out var dummy);
+                    }
+                }
+            }
+        }
+
+        private bool CreateNativeObject(ObjectRegistrationInfo objectInfo, CefV8Context context)
+        {
+            if (context.Enter())
+            {
+                try
+                {
+                    var global = context.GetGlobal();
+                    var handler = new V8FunctionHandler(objectInfo.Name, HandleNativeObjectCall);
+                    var attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontEnum | CefV8PropertyAttribute.DontDelete;
+
+                    using (var v8Obj = CefV8Value.CreateObject())
+                    {
+                        foreach (var methodName in objectInfo.MethodsNames)
+                        {
+                            using (var v8Function = CefV8Value.CreateFunction(methodName, handler))
+                            {
+                                v8Obj.SetValue(methodName, v8Function, attributes);
+                            }
+                        }
+
+                        global.SetValue(objectInfo.Name, v8Obj);
+                    }
+
+                    return true;
+                }
+                finally
+                {
+                    context.Exit();
+                }
+            }
+            else
+            {
+                // TODO
+                return false;
             }
         }
     }

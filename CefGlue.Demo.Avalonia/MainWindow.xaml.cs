@@ -26,7 +26,8 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
             browser = new AvaloniaCefBrowser();
             browser.Address = "https://jsfiddle.net/1Lz8odhs/";
-            
+            browser.RegisterJavascriptObject(new BindingTestClass(), "boundBeforeLoadObject");
+
             browserWrapper.Child = browser;
         }
 

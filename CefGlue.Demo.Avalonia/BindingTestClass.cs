@@ -59,5 +59,10 @@ namespace Xilium.CefGlue.Demo.Avalonia
         {
             return new InnerObject { Name = "This is an object", Value = 5 };
         }
+
+        public string[] GetObjectWithParamArray(int anIntParam, params string[] paramWithParamArray)
+        {
+            return paramWithParamArray;
+        }
     }
 }

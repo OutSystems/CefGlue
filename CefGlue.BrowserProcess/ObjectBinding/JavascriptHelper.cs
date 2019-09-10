@@ -1,9 +1,6 @@
-using System;
-using System.Threading.Tasks;
-
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
-    internal partial class JavascriptHelper
+    internal static partial class JavascriptHelper
     {
         private const string GlobalObjectName = "cefglue";
         private const string PromiseFactoryFunctionName = "createPromise";
@@ -30,7 +27,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             "        }" +
             "    };";
 
-        public void Register(Func<string, Task<bool>> handleObjectBoundQuery)
+        public static void Register(ObjectBoundQueryDelegate handleObjectBoundQuery)
         {
             // TODO global name
             CefRuntime.RegisterExtension("cefglue", CefGlueGlobal, new V8BuiltinFunctionHandler(handleObjectBoundQuery));

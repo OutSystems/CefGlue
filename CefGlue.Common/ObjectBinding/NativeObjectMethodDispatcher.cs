@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -70,13 +71,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
         private object ExecuteMethod(object targetObj, MethodInfo method, object[] args, JavascriptObjectMethodCallHandler methodHandler)
         {
-            var parameters = method.GetParameters();
-            if (args.Length != parameters.Length)
-            {
-                throw new ArgumentException($"Number of arguments provided does not match the number of {method.Name} method parameters.");
-            }
-
-            var convertedArgs = parameters.Select((p, i) => JavascriptToNativeTypeConverter.ConvertToNative(args[i], p.ParameterType)).ToArray();
+            var convertedArgs = ConvertArguments(method, args);
 
             if (methodHandler != null)
             {
@@ -85,6 +80,42 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
             // TODO improve call perf
             return method.Invoke(targetObj, convertedArgs);
+        }
+
+        private static object[] ConvertArguments(MethodInfo method, object[] args)
+        {
+            var parameters = method.GetParameters();
+            var mandatoryParams = parameters.TakeWhile(p => !IsParamArray(p)).ToArray();
+
+            if (args.Length < mandatoryParams.Length)
+            {
+                throw new ArgumentException($"Number of arguments provided does not match the number of {method.Name} method required parameters.");
+            }
+
+            var argIndex = 0;
+            var convertedArgs = new List<object>(mandatoryParams.Length + 1);
+            
+            for (; argIndex < mandatoryParams.Length; argIndex++)
+            {
+                convertedArgs.Add(JavascriptToNativeTypeConverter.ConvertToNative(args[argIndex], mandatoryParams[argIndex].ParameterType));
+            }
+
+            var optionalParam = parameters.Skip(mandatoryParams.Length).FirstOrDefault();
+            if (optionalParam != null)
+            {
+                var optionalArgs = args.Skip(argIndex).ToArray();
+                if (optionalArgs.Any())
+                {
+                    convertedArgs.Add(JavascriptToNativeTypeConverter.ConvertToNative(optionalArgs, optionalParam.ParameterType));
+                }
+            }
+
+            return convertedArgs.ToArray();
+        }
+
+        private static bool IsParamArray(ParameterInfo paramInfo)
+        {
+            return paramInfo.GetCustomAttribute(typeof(ParamArrayAttribute), false) != null;
         }
     }
 }
