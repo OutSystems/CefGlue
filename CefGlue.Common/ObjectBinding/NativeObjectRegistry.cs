@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xilium.CefGlue.Common.Events;
@@ -44,6 +45,24 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 }
 
                 return true;
+            }
+        }
+
+        public void Unregister(string name)
+        {
+            lock (_registrationSyncRoot)
+            {
+                _registeredObjects.Remove(name);
+
+                if (_browser != null)
+                {
+                    var message = new Messages.NativeObjectUnregistrationRequest()
+                    {
+                        ObjectName = name,
+                    };
+
+                    _browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
+                }
             }
         }
 

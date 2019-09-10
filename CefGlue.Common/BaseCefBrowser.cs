@@ -315,11 +315,20 @@ namespace Xilium.CefGlue.Common
         /// Registers a Javascript object in this browser instance.
         /// </summary>
         /// <param name="targetObject">The object to be made accessible to Javascript</param>
-        /// <param name="methodHandler">Optional handler to be executed before the target object method is called. You may use this for instance to log calls.</param>
         /// <param name="name">The name of the object. (e.g. "potatoes", if you want the object to be accessible as window.potatoes).</param>
+        /// <param name="methodHandler">Optional handler to be executed before the target object method is called. You may use this for instance to log calls.</param>
         public void RegisterJavascriptObject(object targetObject, string name, JavascriptObjectMethodCallHandler methodHandler = null)
         {
             _adapter.RegisterJavascriptObject(targetObject, name);
+        }
+
+        /// <summary>
+        /// Unregisters a Javascript object in this browser instance.
+        /// </summary>
+        /// <param name="name">The name of the object used to register.</param>
+        public void UnregisterJavascriptObject(string name)
+        {
+            _adapter.UnregisterJavascriptObject(name);
         }
 
         /// <summary>

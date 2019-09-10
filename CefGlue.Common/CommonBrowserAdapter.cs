@@ -402,6 +402,11 @@ namespace Xilium.CefGlue.Common
             _objectRegistry.Register(targetObject, name);
         }
 
+        public void UnregisterJavascriptObject(string name)
+        {
+            _objectRegistry.Unregister(name);
+        }
+
         public bool IsJavascriptObjectRegistered(string name)
         {
             return _objectRegistry.Get(name) != null;

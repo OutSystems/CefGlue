@@ -5,6 +5,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         private const string GlobalObjectName = "cefglue";
         private const string PromiseFactoryFunctionName = "createPromise";
         private const string BindNativeFunctionName = "Bind";
+        private const string UnbindNativeFunctionName = "Unbind";
 
         private static readonly string CefGlueGlobal =
             "var " + GlobalObjectName + ";" +
@@ -24,13 +25,17 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             "            if (window.hasOwnProperty(objName))" + // quick check
             "                return Promise.resolve(true);" +
             "            return " + BindNativeFunctionName + "(objName);" +
+            "        }," +
+            "        deleteObjectBound: function(objName) {" +
+            "            native function " + UnbindNativeFunctionName + "();" +
+            "            " + UnbindNativeFunctionName + "(objName);" +
             "        }" +
             "    };";
 
-        public static void Register(ObjectBoundQueryDelegate handleObjectBoundQuery)
+        public static void Register(INativeObjectRegistry nativeObjectRegistry)
         {
             // TODO global name
-            CefRuntime.RegisterExtension("cefglue", CefGlueGlobal, new V8BuiltinFunctionHandler(handleObjectBoundQuery));
+            CefRuntime.RegisterExtension("cefglue", CefGlueGlobal, new V8BuiltinFunctionHandler(nativeObjectRegistry));
         }
 
         public static PromiseHolder CreatePromise()

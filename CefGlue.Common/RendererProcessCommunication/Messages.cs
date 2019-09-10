@@ -110,6 +110,30 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             }
         }
 
+        public struct NativeObjectUnregistrationRequest
+        {
+            public const string Name = nameof(NativeObjectUnregistrationRequest);
+
+            public string ObjectName;
+
+            public CefProcessMessage ToCefProcessMessage()
+            {
+                var message = CefProcessMessage.Create(Name);
+                var arguments = message.Arguments;
+                arguments.SetString(0, ObjectName);
+                return message;
+            }
+
+            public static NativeObjectRegistrationRequest FromCefMessage(CefProcessMessage message)
+            {
+                var arguments = message.Arguments;
+                return new NativeObjectRegistrationRequest()
+                {
+                    ObjectName = arguments.GetString(0),
+                };
+            }
+        }
+
         public struct NativeObjectCallRequest
         {
             public const string Name = nameof(NativeObjectCallRequest);

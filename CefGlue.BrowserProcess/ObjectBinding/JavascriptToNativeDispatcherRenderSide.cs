@@ -7,25 +7,21 @@ using Xilium.CefGlue.Common.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
-    internal class JavascriptToNativeDispatcherRenderSide
+    internal class JavascriptToNativeDispatcherRenderSide : INativeObjectRegistry
     {
         private static volatile int lastCallId;
 
-        private readonly ConcurrentBag<ObjectRegistrationInfo> _registeredObjects = new ConcurrentBag<ObjectRegistrationInfo>();
+        private readonly ConcurrentDictionary<string, ObjectRegistrationInfo> _registeredObjects = new ConcurrentDictionary<string, ObjectRegistrationInfo>();
         private readonly ConcurrentDictionary<int, PromiseHolder> _pendingCalls = new ConcurrentDictionary<int, PromiseHolder>();
         private readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _pendingBoundQueryTasks = new ConcurrentDictionary<string, TaskCompletionSource<bool>>();
         
         public JavascriptToNativeDispatcherRenderSide(MessageDispatcher dispatcher)
         {
             dispatcher.RegisterMessageHandler(Messages.NativeObjectRegistrationRequest.Name, HandleNativeObjectRegistration);
+            dispatcher.RegisterMessageHandler(Messages.NativeObjectUnregistrationRequest.Name, HandleNativeObjectUnregistration);
             dispatcher.RegisterMessageHandler(Messages.NativeObjectCallResult.Name, HandleNativeObjectCallResult);
 
-            JavascriptHelper.Register(HandleJavascriptHelperObjectBoundQuery);
-        }
-
-        private Task<bool> HandleJavascriptHelperObjectBoundQuery(string objectName)
-        {
-            return _pendingBoundQueryTasks.GetOrAdd(objectName, _ => new TaskCompletionSource<bool>()).Task;
+            JavascriptHelper.Register(this);
         }
 
         private void HandleNativeObjectRegistration(MessageReceivedEventArgs args)
@@ -36,16 +32,27 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             var message = Messages.NativeObjectRegistrationRequest.FromCefMessage(args.Message);
             var objectInfo = new ObjectRegistrationInfo(message.ObjectName, message.MethodsNames);
 
-            _registeredObjects.Add(objectInfo);
-
-            var objectCreated = CreateNativeObject(objectInfo, context);
-
-            if (objectCreated)
+            if (_registeredObjects.TryAdd(objectInfo.Name, objectInfo))
             {
-                // notify that the object has been registered, any pending promises on the object will be resolved
-                var taskSource = _pendingBoundQueryTasks.GetOrAdd(objectInfo.Name, _ => new TaskCompletionSource<bool>());
-                taskSource.TrySetResult(true);
+                var objectCreated = CreateNativeObject(objectInfo, context);
+
+                if (objectCreated)
+                {
+                    // notify that the object has been registered, any pending promises on the object will be resolved
+                    var taskSource = _pendingBoundQueryTasks.GetOrAdd(objectInfo.Name, _ => new TaskCompletionSource<bool>());
+                    taskSource.TrySetResult(true);
+                }
             }
+        }
+
+        private void HandleNativeObjectUnregistration(MessageReceivedEventArgs args)
+        {
+            var browser = args.Browser;
+            var context = browser.GetMainFrame().V8Context;
+
+            var message = Messages.NativeObjectUnregistrationRequest.FromCefMessage(args.Message);
+
+            DeleteNativeObject(message.ObjectName, context);
         }
 
         private PromiseHolder HandleNativeObjectCall(Messages.NativeObjectCallRequest message)
@@ -91,7 +98,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         {
             if (isMain)
             {
-                foreach (var obj in _registeredObjects)
+                foreach (var obj in _registeredObjects.Values)
                 {
                     CreateNativeObject(obj, context);
                 }
@@ -152,6 +159,45 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                 // TODO
                 return false;
             }
+        }
+
+
+        private void DeleteNativeObject(string objName, CefV8Context context)
+        {
+            if (_registeredObjects.TryRemove(objName, out var objectInfo))
+            {
+                DeleteNativeObject(objectInfo, context);
+            }
+        }
+
+        private void DeleteNativeObject(ObjectRegistrationInfo objectInfo, CefV8Context context)
+        {
+            if (context.Enter())
+            {
+                try
+                {
+                    var global = context.GetGlobal();
+                    global.DeleteValue(objectInfo.Name);
+                }
+                finally
+                {
+                    context.Exit();
+                }
+            }
+            else
+            {
+                // TODO
+            }
+        }
+
+        Task<bool> INativeObjectRegistry.Bind(string objName)
+        {
+            return _pendingBoundQueryTasks.GetOrAdd(objName, _ => new TaskCompletionSource<bool>()).Task;
+        }
+
+        void INativeObjectRegistry.Unbind(string objName)
+        {
+            DeleteNativeObject(objName, CefV8Context.GetCurrentContext());
         }
     }
 }
