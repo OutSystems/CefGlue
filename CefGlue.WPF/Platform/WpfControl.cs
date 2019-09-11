@@ -97,12 +97,15 @@ namespace Xilium.CefGlue.WPF.Platform
 
         public override Point PointToScreen(Point point)
         {
-            return _control.Dispatcher.Invoke(() => {
-                var screenCoordinates = _control.PointToScreen(new WpfPoint(point.X, point.Y));
-
+            return _control.Dispatcher.Invoke(() =>
+            {
                 var result = new Point(0, 0);
-                result.X = (int)screenCoordinates.X;
-                result.Y = (int)screenCoordinates.Y;
+                if (PresentationSource.FromVisual(_control) != null)
+                {
+                    var screenCoordinates = _control.PointToScreen(new WpfPoint(point.X, point.Y));
+                    result.X = (int)screenCoordinates.X;
+                    result.Y = (int)screenCoordinates.Y;
+                }
                 return result;
             });
         }
