@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Common.Serialization
 {

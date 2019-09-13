@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace Xilium.CefGlue.Common.ObjectBinding
+namespace Xilium.CefGlue.Common.Helpers
 {
     internal static class JavascriptToNativeTypeConverter
     {
@@ -25,6 +25,12 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             if (obj == null)
             {
                 return null;
+            }
+
+            if (expectedType == typeof(double) && obj is int)
+            {
+                // javascript numbers sometimes can lose the decimal part becoming integers, prevent that
+                return Convert.ToDouble(obj);
             }
 
             var objType = obj.GetType();

@@ -96,14 +96,9 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             }
 
             var result = messageReceiveCompletionSource.Task.Result;
+            var typedResult = JavascriptToNativeTypeConverter.ConvertToNative(result, typeof(T));
 
-            if (typeof(T) == typeof(double) && result is int)
-            {
-                // javascript numbers sometimes can lose the decimal part becoming integers, prevent that
-                return (T) (object) Convert.ToDouble(result);
-            }
-
-            return (T)result;
+            return (T)typedResult;
         }
     }
 }

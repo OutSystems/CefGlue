@@ -1,6 +1,6 @@
 using System;
 
-namespace Xilium.CefGlue.Common.ObjectBinding
+namespace Xilium.CefGlue.Common.Helpers
 {
     internal class MemberInfo
     {
