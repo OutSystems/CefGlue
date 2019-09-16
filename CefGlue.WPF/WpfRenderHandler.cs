@@ -15,7 +15,8 @@ namespace Xilium.CefGlue.WPF
     internal class WpfRenderHandler : BuiltInRenderHandler
     {
         private WriteableBitmap _bitmap;
-        
+        private bool _disposed;
+
         public WpfRenderHandler(Image image, ILogger logger) : base(logger)
         {
             Image = image;
@@ -25,14 +26,21 @@ namespace Xilium.CefGlue.WPF
 
         public override void Dispose()
         {
+            _bitmap = null;
+            _disposed = true;
         }
 
-        public bool AllowsTransparency { get; set; }
+        public bool AllowsTransparency { get; set; } = true;
 
         protected override void InnerPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
         {
             Image.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
             {
+                if (_disposed)
+                {
+                    return;
+                }
+
                 // Actual browser size changed check.
                 if (_sizeChanged && (width != Width || height != Height))
                 {
@@ -83,21 +91,21 @@ namespace Xilium.CefGlue.WPF
                 }
 
                 // If the window has been resized, make sure we never try to render too much
-                int adjustedWidth = (int)dirtyRect.Width;
+                var adjustedWidth = dirtyRect.Width;
                 //if (dirtyRect.X + dirtyRect.Width > (int) bitmap.Width)
                 //{
                 //    adjustedWidth = (int) bitmap.Width - (int) dirtyRect.X;
                 //}
 
-                int adjustedHeight = (int)dirtyRect.Height;
+                var adjustedHeight = dirtyRect.Height;
                 //if (dirtyRect.Y + dirtyRect.Height > (int) bitmap.Height)
                 //{
                 //    adjustedHeight = (int) bitmap.Height - (int) dirtyRect.Y;
                 //}
 
                 // Update the dirty region
-                Int32Rect sourceRect = new Int32Rect((int)dirtyRect.X, (int)dirtyRect.Y, adjustedWidth, adjustedHeight);
-                _bitmap.WritePixels(sourceRect, sourceBuffer, sourceBufferSize, stride, (int)dirtyRect.X, (int)dirtyRect.Y);
+                var sourceRect = new Int32Rect(dirtyRect.X, dirtyRect.Y, adjustedWidth, adjustedHeight);
+                _bitmap.WritePixels(sourceRect, sourceBuffer, sourceBufferSize, stride, dirtyRect.X, dirtyRect.Y);
 
                 // 			int adjustedWidth = browserWidth;
                 // 			if (browserWidth > (int)bitmap.Width)
