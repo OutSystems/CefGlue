@@ -1,5 +1,7 @@
+using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Threading;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 
@@ -29,13 +31,15 @@ namespace Xilium.CefGlue.WPF.Platform
 
         public void MoveAndResize(int x, int y, int width, int height)
         {
-            _popup.Dispatcher.Invoke(() =>
-            {
-                _popup.HorizontalOffset = x;
-                _popup.VerticalOffset = y;
-                _popup.Width = width;
-                _popup.Height = height;
-            });
+            _popup.Dispatcher.BeginInvoke(
+                DispatcherPriority.Normal, 
+                new Action(() =>
+                {
+                    _popup.HorizontalOffset = x;
+                    _popup.VerticalOffset = y;
+                    _popup.Width = width;
+                    _popup.Height = height;
+                }));
         }
 
         public void Open()
@@ -50,7 +54,12 @@ namespace Xilium.CefGlue.WPF.Platform
 
         private void SetIsOpen(bool isOpen)
         {
-            _popup.Dispatcher.Invoke(() => _popup.IsOpen = isOpen);
+            _popup.Dispatcher.BeginInvoke(
+                DispatcherPriority.Normal,
+                new Action(() =>
+                {
+                    _popup.IsOpen = isOpen;
+                }));
         }
     }
 }

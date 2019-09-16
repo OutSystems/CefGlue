@@ -31,7 +31,7 @@ namespace Xilium.CefGlue.WPF
 
         protected override void InnerPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
         {
-            Image.Dispatcher.Invoke(DispatcherPriority.Render, new Action(delegate
+            Image.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
             {
                 // Actual browser size changed check.
                 if (_sizeChanged && (width != Width || height != Height))

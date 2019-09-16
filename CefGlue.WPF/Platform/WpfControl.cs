@@ -112,11 +112,13 @@ namespace Xilium.CefGlue.WPF.Platform
 
         public override void SetCursor(IntPtr cursorHandle)
         {
-            _control.Dispatcher.Invoke(() =>
-            {
-                var cursor = CursorInteropHelper.Create(new SafeFileHandle(cursorHandle, false));
-                _control.Cursor = cursor;
-            });
+            _control.Dispatcher.BeginInvoke(
+                DispatcherPriority.Normal,
+                new Action(() =>
+                {
+                    var cursor = CursorInteropHelper.Create(new SafeFileHandle(cursorHandle, false));
+                    _control.Cursor = cursor;
+                }));
         }
 
         public override void SetTooltip(string text)
@@ -134,23 +136,22 @@ namespace Xilium.CefGlue.WPF.Platform
 
         private void UpdateTooltip(string text)
         {
-            _control.Dispatcher.Invoke(
+            _control.Dispatcher.BeginInvoke(
                 DispatcherPriority.Render,
-                new Action(
-                    () =>
+                new Action(() =>
+                {
+                    if (string.IsNullOrEmpty(text))
                     {
-                        if (string.IsNullOrEmpty(text))
-                        {
-                            _tooltip.IsOpen = false;
-                        }
-                        else
-                        {
-                            _tooltip.Placement = PlacementMode.Mouse;
-                            _tooltip.Content = text;
-                            _tooltip.IsOpen = true;
-                            _tooltip.Visibility = Visibility.Visible;
-                        }
-                    }));
+                        _tooltip.IsOpen = false;
+                    }
+                    else
+                    {
+                        _tooltip.Placement = PlacementMode.Mouse;
+                        _tooltip.Content = text;
+                        _tooltip.IsOpen = true;
+                        _tooltip.Visibility = Visibility.Visible;
+                    }
+                }));
 
             _tooltipTimer.Stop();
         }
