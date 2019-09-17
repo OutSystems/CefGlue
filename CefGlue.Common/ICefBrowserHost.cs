@@ -7,6 +7,7 @@ namespace Xilium.CefGlue.Common
     {
         void GetViewRect(out CefRectangle rect);
         void GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY);
+        void GetScreenInfo(CefScreenInfo screenInfo);
 
         void HandlePopupShow(bool show);
         void HandlePopupSizeChange(CefRectangle rect);

@@ -17,6 +17,8 @@ namespace Xilium.CefGlue.Common.Platform
         event Action<CefMouseEvent> MouseMoved;
         event Action<CefMouseEvent, int, int> MouseWheelChanged;
         event UIControl.TextInputEventHandler TextInput;
+        event Action<float> ScreenInfoChanged;
+        event Action<bool> VisibilityChanged;
 
         void Focus();
         IntPtr? GetHostWindowHandle();

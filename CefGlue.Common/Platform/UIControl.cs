@@ -99,5 +99,19 @@ namespace Xilium.CefGlue.Common.Platform
             handled = false;
             TextInput?.Invoke(text, out handled);
         }
+
+        public event Action<float> ScreenInfoChanged;
+
+        protected void TriggerScreenInfoChanged(float deviceScaleFactor)
+        {
+            ScreenInfoChanged?.Invoke(deviceScaleFactor);
+        }
+
+        public event Action<bool> VisibilityChanged;
+
+        protected void TriggerVisibilityChanged(bool isVisible)
+        {
+            VisibilityChanged?.Invoke(isVisible);
+        }
     }
 }

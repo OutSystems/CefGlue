@@ -66,6 +66,10 @@ namespace Xilium.CefGlue.WPF.Platform
                 arg.Handled = handled;
             };
 
+            _control.IsVisibleChanged += delegate { TriggerVisibilityChanged(_control.IsVisible); };
+
+            PresentationSource.AddSourceChangedHandler(_control, OnPresentationSourceChanged);
+
             _tooltip = new ToolTip();
             _tooltip.StaysOpen = true;
             _tooltip.Visibility = Visibility.Collapsed;
@@ -162,8 +166,47 @@ namespace Xilium.CefGlue.WPF.Platform
             _tooltip.Placement = PlacementMode.Absolute;
         }
 
+        private void OnPresentationSourceChanged(object sender, SourceChangedEventArgs e)
+        {
+            if (e.OldSource?.RootVisual is Window oldWindow)
+            {
+                oldWindow.StateChanged -= OnHostWindowStateChanged;
+            }
+
+            var source = e.NewSource;
+
+            if (source != null)
+            {
+                var matrix = source.CompositionTarget.TransformToDevice;
+                TriggerScreenInfoChanged((float) matrix.M11);
+
+                if (source.RootVisual is Window newWindow)
+                {
+                    newWindow.StateChanged += OnHostWindowStateChanged;
+                }
+            }
+        }
+
+        private void OnHostWindowStateChanged(object sender, EventArgs e)
+        {
+            var window = (Window)sender;
+
+            switch (window.WindowState)
+            {
+                case WindowState.Normal:
+                case WindowState.Maximized:
+                    TriggerVisibilityChanged(_control.IsVisible);
+                    break;
+
+                case WindowState.Minimized:
+                    TriggerVisibilityChanged(false);
+                    break;
+            }
+        }
+
         public void Dispose()
         {
+            PresentationSource.RemoveSourceChangedHandler(_control, OnPresentationSourceChanged);
             _tooltipTimer.Stop();
         }
     }

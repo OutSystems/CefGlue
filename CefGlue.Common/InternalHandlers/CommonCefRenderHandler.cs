@@ -42,7 +42,8 @@ namespace Xilium.CefGlue.Common.InternalHandlers
 
         protected override bool GetScreenInfo(CefBrowser browser, CefScreenInfo screenInfo)
         {
-            return false;
+            _owner.GetScreenInfo(screenInfo);
+            return true;
         }
 
         protected override void OnPopupShow(CefBrowser browser, bool show)

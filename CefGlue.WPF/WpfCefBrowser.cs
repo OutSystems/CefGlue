@@ -16,7 +16,8 @@ namespace Xilium.CefGlue.WPF
     {
         private IDisposable[] _disposables;
 
-        public WpfCefBrowser() {
+        public WpfCefBrowser()
+        {
             KeyboardNavigation.SetAcceptsReturn(this, true);
         }
 
@@ -54,14 +55,16 @@ namespace Xilium.CefGlue.WPF
             {
                 disposable.Dispose();
             }
+            
             base.Dispose(disposing);
         }
 
         #endregion
 
-        protected override Size ArrangeOverride(Size arrangeBounds) {
+        protected override Size ArrangeOverride(Size arrangeBounds)
+        {
             var size = base.ArrangeOverride(arrangeBounds);
-            CreateOrUpdateBrowser((int) size.Width, (int) size.Height);
+            CreateOrUpdateBrowser((int)size.Width, (int)size.Height);
             return size;
         }
 
@@ -78,7 +81,7 @@ namespace Xilium.CefGlue.WPF
                 VerticalAlignment = VerticalAlignment.Top,
             };
 
-            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
 
             return image;
         }

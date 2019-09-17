@@ -41,6 +41,9 @@ namespace Xilium.CefGlue.Common
             _logger = logger;
 
             _startUrl = "about:blank";
+
+            control.ScreenInfoChanged += HandleScreenInfoChanged;
+            control.VisibilityChanged += HandleVisibilityChanged;
         }
 
         public void Dispose()
@@ -337,6 +340,30 @@ namespace Xilium.CefGlue.Common
             handled = false;
         }
 
+        private void HandleVisibilityChanged(bool isVisible)
+        {
+            WithErrorHandling(nameof(HandleVisibilityChanged), () =>
+            {
+                if (_browserHost != null)
+                {
+                    _browserHost.WasHidden(!isVisible);
+                }
+            });
+        }
+
+        private void HandleScreenInfoChanged(float deviceScaleFactor)
+        {
+            WithErrorHandling(nameof(HandleScreenInfoChanged), () =>
+            {
+                BuiltInRenderHandler.DeviceScaleFactor = deviceScaleFactor;
+
+                if (_browserHost != null)
+                {
+                    _browserHost.NotifyScreenInfoChanged();
+                }
+            });
+        }
+
         public void CreateOrUpdateBrowser(int newWidth, int newHeight)
         {
             _logger.Debug("BrowserResize. Old H{0}xW{1}; New H{2}xW{3}.", RenderedWidth, RenderedHeight, newHeight, newWidth);
@@ -466,6 +493,11 @@ namespace Xilium.CefGlue.Common
             var point = _control.PointToScreen(new Point(viewX, viewY));
             screenX = point.X;
             screenY = point.Y;
+        }
+
+        void ICefBrowserHost.GetScreenInfo(CefScreenInfo screenInfo)
+        {
+            screenInfo.DeviceScaleFactor = BuiltInRenderHandler.DeviceScaleFactor;
         }
 
         void ICefBrowserHost.HandlePopupShow(bool show)

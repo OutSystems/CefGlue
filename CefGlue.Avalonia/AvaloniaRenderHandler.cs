@@ -16,6 +16,7 @@ namespace Xilium.CefGlue.Avalonia
     internal class AvaloniaRenderHandler : BuiltInRenderHandler
     {
         private WriteableBitmap _bitmap;
+        private bool _disposed;
 
         public AvaloniaRenderHandler(Image image, ILogger logger) : base(logger)
         {
@@ -28,6 +29,11 @@ namespace Xilium.CefGlue.Avalonia
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
+                if (_disposed)
+                {
+                    return;
+                }
+
                 // Actual browser size changed check.
                 if (_sizeChanged && (width != Width || height != Height))
                     return;
@@ -38,7 +44,7 @@ namespace Xilium.CefGlue.Avalonia
                     {
                         // TODO handle transparency
                         _bitmap?.Dispose();
-                        _bitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(96, 96), PixelFormat.Bgra8888);
+                        _bitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(Dpi, Dpi), PixelFormat.Bgra8888);
                         Image.Source = _bitmap;
 
                         _sizeChanged = false;
@@ -85,6 +91,7 @@ namespace Xilium.CefGlue.Avalonia
         {
             _bitmap?.Dispose();
             _bitmap = null;
+            _disposed = true;
         }
     }
 }

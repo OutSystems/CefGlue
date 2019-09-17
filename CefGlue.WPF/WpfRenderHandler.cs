@@ -51,7 +51,7 @@ namespace Xilium.CefGlue.WPF
                 {
                     if (_sizeChanged)
                     {
-                        _bitmap = new WriteableBitmap(Width, Height, 96, 96, AllowsTransparency ? PixelFormats.Bgra32 : PixelFormats.Bgr32, null);
+                        _bitmap = new WriteableBitmap(Width, Height, Dpi, Dpi, AllowsTransparency ? PixelFormats.Bgra32 : PixelFormats.Bgr32, null);
                         Image.Source = _bitmap;
 
                         _sizeChanged = false;

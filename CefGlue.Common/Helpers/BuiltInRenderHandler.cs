@@ -8,6 +8,8 @@ namespace Xilium.CefGlue.Common.Helpers
     /// </summary>
     internal abstract class BuiltInRenderHandler : IDisposable
     {
+        private const int DefaultDpi = 96;
+
         protected readonly ILogger _logger;
 
         protected bool _sizeChanged;
@@ -22,6 +24,10 @@ namespace Xilium.CefGlue.Common.Helpers
         public int Width => _width;
 
         public int Height => _height;
+
+        public float DeviceScaleFactor { get; set; } = 1;
+
+        protected float Dpi => DeviceScaleFactor * DefaultDpi;
 
         public event Action<Exception> ExceptionOcurred;
 
@@ -39,10 +45,7 @@ namespace Xilium.CefGlue.Common.Helpers
 
         protected abstract void InnerPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects);
 
-        protected void HandleException(Exception e)
-        {
-            ExceptionOcurred?.Invoke(e);
-        }
+        protected void HandleException(Exception e) => ExceptionOcurred?.Invoke(e);
 
         public void Resize(int width, int height)
         {
