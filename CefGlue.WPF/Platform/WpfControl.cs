@@ -23,6 +23,8 @@ namespace Xilium.CefGlue.WPF.Platform
         private ToolTip _tooltip;
         private DispatcherTimer _tooltipTimer;
 
+        private Point browserScreenLocation;
+
         public WpfControl(FrameworkElement control, BuiltInRenderHandler renderHandler) : base(renderHandler)
         {
             _control = control;
@@ -101,17 +103,11 @@ namespace Xilium.CefGlue.WPF.Platform
 
         public override Point PointToScreen(Point point)
         {
-            return _control.Dispatcher.Invoke(() =>
-            {
-                var result = new Point(0, 0);
-                if (PresentationSource.FromVisual(_control) != null)
-                {
-                    var screenCoordinates = _control.PointToScreen(new WpfPoint(point.X, point.Y));
-                    result.X = (int)screenCoordinates.X;
-                    result.Y = (int)screenCoordinates.Y;
-                }
-                return result;
-            });
+            // calculate the point based on the browser stored location, 
+            // since PointToScreen needs to be executed on the dispatcher thread
+            // but calling Invoke at this stage can lead to dead locks
+            var deviceScaleFactor = RenderHandler.DeviceScaleFactor;
+            return new Point((int) (browserScreenLocation.X + point.X * deviceScaleFactor), (int) (browserScreenLocation.Y + point.Y * deviceScaleFactor));
         }
 
         public override void SetCursor(IntPtr cursorHandle)
@@ -171,20 +167,29 @@ namespace Xilium.CefGlue.WPF.Platform
             if (e.OldSource?.RootVisual is Window oldWindow)
             {
                 oldWindow.StateChanged -= OnHostWindowStateChanged;
+                oldWindow.LocationChanged -= OnHostWindowLocationChanged;
             }
 
             var source = e.NewSource;
 
             if (source != null)
             {
+                browserScreenLocation = GetBrowserScreenLocation();
+
                 var matrix = source.CompositionTarget.TransformToDevice;
                 TriggerScreenInfoChanged((float) matrix.M11);
 
                 if (source.RootVisual is Window newWindow)
                 {
                     newWindow.StateChanged += OnHostWindowStateChanged;
+                    newWindow.LocationChanged += OnHostWindowLocationChanged;
                 }
             }
+        }
+
+        private void OnHostWindowLocationChanged(object sender, EventArgs e)
+        {
+            browserScreenLocation = GetBrowserScreenLocation();
         }
 
         private void OnHostWindowStateChanged(object sender, EventArgs e)
@@ -202,6 +207,16 @@ namespace Xilium.CefGlue.WPF.Platform
                     TriggerVisibilityChanged(false);
                     break;
             }
+        }
+
+        private Point GetBrowserScreenLocation()
+        {
+            if (PresentationSource.FromVisual(_control) != null)
+            {
+                var wpfPoint = _control.PointToScreen(new WpfPoint());
+                return new Point((int) wpfPoint.X, (int) wpfPoint.Y);
+            }
+            return new Point(0, 0);
         }
 
         public void Dispose()

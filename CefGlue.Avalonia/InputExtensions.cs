@@ -13,7 +13,7 @@ namespace Xilium.CefGlue.Avalonia
         /// <returns></returns>
         public static CefMouseEvent AsCefMouseEvent(this PointerEventArgs eventArgs, IVisual mousePositionReferential)
         {
-            var cursorPos = eventArgs.GetPosition(mousePositionReferential);
+            var cursorPos = mousePositionReferential.IsAttachedToVisualTree ? eventArgs.GetPosition(mousePositionReferential) : new global::Avalonia.Point(0,0);
 
             return new CefMouseEvent((int) cursorPos.X, (int) cursorPos.Y, eventArgs.InputModifiers.AsCefMouseModifiers());
         }

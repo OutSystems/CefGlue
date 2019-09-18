@@ -21,6 +21,9 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         private readonly Control _control;
 
+        private IDisposable _windowStateChangedObservable;
+        private bool _isVisible;
+
         public AvaloniaControl(Control control, BuiltInRenderHandler renderHandler) : base(renderHandler)
         {
             _control = control;
@@ -63,6 +66,50 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 TriggerTextInput(arg.Text, out handled);
                 arg.Handled = handled;
             };
+
+            _isVisible = _control.IsEffectivelyVisible;
+            _control.GetPropertyChangedObservable(Control.TransformedBoundsProperty).Subscribe(OnTransformedBoundsChanged);
+            _control.AttachedToVisualTree += OnAttachedToVisualTree;
+            _control.DetachedFromVisualTree += OnDetachedFromVisualTree;
+        }
+
+        private void OnTransformedBoundsChanged(AvaloniaPropertyChangedEventArgs e)
+        {
+            // the only way we can be notified of the control visibility changes is through the transformed bounds property changes
+            var isVisible = _control.IsEffectivelyVisible;
+            if (isVisible != _isVisible)
+            {
+                _isVisible = isVisible;
+                TriggerVisibilityChanged(isVisible);
+            }
+        }
+
+        private void OnDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        {
+            _windowStateChangedObservable?.Dispose();
+        }
+
+        private void OnAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        {
+            if (e.Root is Window newWindow)
+            {
+                _windowStateChangedObservable = newWindow.GetPropertyChangedObservable(Window.WindowStateProperty).Subscribe(OnHostWindowStateChanged);
+            }
+        }
+
+        private void OnHostWindowStateChanged(AvaloniaPropertyChangedEventArgs e)
+        {
+            switch ((WindowState)e.NewValue)
+            {
+                case WindowState.Normal:
+                case WindowState.Maximized:
+                    TriggerVisibilityChanged(_control.IsEffectivelyVisible);
+                    break;
+
+                case WindowState.Minimized:
+                    TriggerVisibilityChanged(false);
+                    break;
+            }
         }
 
         protected virtual IVisual MousePositionReferential => _control;
