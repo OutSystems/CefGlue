@@ -87,6 +87,7 @@ namespace Xilium.CefGlue.Common
 
         public event JavascriptContextLifetimeEventHandler JavascriptContextCreated;
         public event JavascriptContextLifetimeEventHandler JavascriptContextReleased;
+        public event JavascriptUncaughtExceptionEventHandler JavascriptUncaughtException;
 
         public string Address { get => _browser?.GetMainFrame().Url ?? _startUrl; set => NavigateTo(value); }
 
@@ -541,6 +542,7 @@ namespace Xilium.CefGlue.Common
             _javascriptExecutionEngine = new JavascriptExecutionEngine(browser, _cefClient.Dispatcher);
             _javascriptExecutionEngine.ContextCreated += OnJavascriptExecutionEngineContextCreated;
             _javascriptExecutionEngine.ContextReleased += OnJavascriptExecutionEngineContextReleased;
+            _javascriptExecutionEngine.UncaughtException += OnJavascriptExecutionEngineUncaughtException;
 
             _objectRegistry.SetBrowser(browser);
             _objectMethodDispatcher = new NativeObjectMethodDispatcher(_cefClient.Dispatcher, _objectRegistry);
@@ -567,6 +569,11 @@ namespace Xilium.CefGlue.Common
         private void OnJavascriptExecutionEngineContextReleased(CefFrame frame)
         {
             JavascriptContextReleased?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
+        }
+
+        private void OnJavascriptExecutionEngineUncaughtException(JavascriptUncaughtExceptionEventArgs args)
+        {
+            JavascriptUncaughtException?.Invoke(_eventsEmitter, args);
         }
 
         bool ICefBrowserHost.HandleTooltip(CefBrowser browser, string text)

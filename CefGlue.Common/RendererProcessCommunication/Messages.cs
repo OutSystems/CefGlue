@@ -90,7 +90,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                 arguments.SetString(0, ObjectName);
 
                 var methods = CefListValue.Create();
-                for(var i = 0; i < MethodsNames.Length; i++)
+                for (var i = 0; i < MethodsNames.Length; i++)
                 {
                     methods.SetString(i, MethodsNames[i]);
                 }
@@ -247,6 +247,78 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                 return new JsContextReleased()
                 {
                     FrameId = arguments.GetString(0),
+                };
+            }
+        }
+
+        public struct JsUncaughtException
+        {
+            public const string Name = nameof(JsUncaughtException);
+
+            public string FrameId;
+            public string Message;
+            public JsStackFrame[] StackFrames;
+
+            public CefProcessMessage ToCefProcessMessage()
+            {
+                var message = CefProcessMessage.Create(Name);
+                var arguments = message.Arguments;
+                arguments.SetString(0, FrameId);
+                arguments.SetString(1, Message);
+
+                var frames = CefListValue.Create();
+                for (var i = 0; i < StackFrames.Length; i++)
+                {
+                    frames.SetList(i, StackFrames[i].ToCefValue());
+                }
+
+                arguments.SetList(2, frames);
+                return message;
+            }
+
+            public static JsUncaughtException FromCefMessage(CefProcessMessage message)
+            {
+                var arguments = message.Arguments;
+                var cefFrames = arguments.GetList(2);
+                var frames = new JsStackFrame[cefFrames.Count];
+                for (var i = 0; i < cefFrames.Count; i++)
+                {
+                    frames[i] = JsStackFrame.FromCefValue(cefFrames.GetList(i));
+                }
+                return new JsUncaughtException()
+                {
+                    FrameId = arguments.GetString(0),
+                    Message = arguments.GetString(1),
+                    StackFrames = frames
+                };
+            }
+        }
+
+        public struct JsStackFrame
+        {
+            public int Column;
+            public string FunctionName;
+            public int LineNumber;
+            public string ScriptNameOrSourceUrl;
+
+            internal CefListValue ToCefValue()
+            {
+                var result = CefListValue.Create();
+                result.SetString(0, FunctionName);
+                result.SetString(1, ScriptNameOrSourceUrl);
+                result.SetInt(2, LineNumber);
+                result.SetInt(3, Column);
+                return result;
+            }
+
+            internal static JsStackFrame FromCefValue(CefListValue frame)
+            {
+                return new JsStackFrame()
+                {
+                    FunctionName = frame.GetString(0),
+                    ScriptNameOrSourceUrl = frame.GetString(1),
+                    LineNumber = frame.GetInt(2),
+                    Column = frame.GetInt(3)
                 };
             }
         }

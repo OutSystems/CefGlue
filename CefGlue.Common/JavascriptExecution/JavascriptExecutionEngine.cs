@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
@@ -22,12 +23,14 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             dispatcher.RegisterMessageHandler(Messages.JsEvaluationResult.Name, HandleScriptEvaluationResultMessage);
             dispatcher.RegisterMessageHandler(Messages.JsContextCreated.Name, HandleContextCreatedMessage);
             dispatcher.RegisterMessageHandler(Messages.JsContextReleased.Name, HandleContextReleasedMessage);
+            dispatcher.RegisterMessageHandler(Messages.JsUncaughtException.Name, HandleUncaughtExceptionMessage);
         }
 
         public bool IsMainFrameContextInitialized { get; private set; }
 
         public event Action<CefFrame> ContextCreated;
         public event Action<CefFrame> ContextReleased;
+        public event Action<JavascriptUncaughtExceptionEventArgs> UncaughtException;
 
         private void HandleScriptEvaluationResultMessage(MessageReceivedEventArgs args)
         {
@@ -64,6 +67,13 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 IsMainFrameContextInitialized = false;
             }
             ContextReleased?.Invoke(_browser.GetFrame(message.FrameId ?? ""));
+        }
+
+        private void HandleUncaughtExceptionMessage(MessageReceivedEventArgs args)
+        {
+            var message = Messages.JsUncaughtException.FromCefMessage(args.Message);
+            var stackFrames = message.StackFrames.Select(f => new JavascriptStackFrame(f.FunctionName, f.ScriptNameOrSourceUrl, f.Column, f.LineNumber));
+            UncaughtException?.Invoke(new JavascriptUncaughtExceptionEventArgs(_browser.GetFrame(message.FrameId ?? ""), message.Message, stackFrames.ToArray()));
         }
 
         public async Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame)

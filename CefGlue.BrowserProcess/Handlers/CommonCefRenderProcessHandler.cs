@@ -1,3 +1,4 @@
+using System.Linq;
 using Xilium.CefGlue.BrowserProcess.JavascriptExecution;
 using Xilium.CefGlue.BrowserProcess.ObjectBinding;
 using Xilium.CefGlue.Common.Helpers;
@@ -47,7 +48,26 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
 
         protected override void OnUncaughtException(CefBrowser browser, CefFrame frame, CefV8Context context, CefV8Exception exception, CefV8StackTrace stackTrace)
         {
-            // TODO
+            base.OnContextReleased(browser, frame, context);
+
+            var frames = new Messages.JsStackFrame[stackTrace.FrameCount];
+            for (var i = 0; i < stackTrace.FrameCount; i++)
+            {
+                var stackFrame = stackTrace.GetFrame(i);
+                frames[i] = new Messages.JsStackFrame()
+                {
+                    FunctionName = stackFrame.FunctionName,
+                    ScriptNameOrSourceUrl = stackFrame.ScriptNameOrSourceUrl,
+                    LineNumber = stackFrame.LineNumber,
+                    Column = stackFrame.Column
+                };
+            }
+            var message = new Messages.JsUncaughtException();
+            message.FrameId = frame.Name;
+            message.Message = exception.Message;
+            message.StackFrames = frames;
+            browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
+
             base.OnUncaughtException(browser, frame, context, exception, stackTrace);
         }
     }

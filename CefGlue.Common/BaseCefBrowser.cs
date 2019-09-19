@@ -98,9 +98,14 @@ namespace Xilium.CefGlue.Common
         public event JavascriptContextLifetimeEventHandler JavascriptContextCreated { add => _adapter.JavascriptContextCreated += value; remove => _adapter.JavascriptContextCreated -= value; }
 
         /// <summary>
-        /// Event fired when the javascript context of the specified frame is destroyed .
+        /// Event fired when the javascript context of the specified frame is destroyed.
         /// </summary>
         public event JavascriptContextLifetimeEventHandler JavascriptContextReleased { add => _adapter.JavascriptContextReleased += value; remove => _adapter.JavascriptContextReleased -= value; }
+
+        /// <summary>
+        /// Event fired when a javascript uncaugh exception is thrown.
+        /// </summary>
+        public event JavascriptUncaughtExceptionEventHandler JavascriptUncaughException { add => _adapter.JavascriptUncaughtException += value; remove => _adapter.JavascriptUncaughtException -= value; }
 
         /// <summary>
         /// Return the handler for context menus. If no handler is provided the default implementation will be used.

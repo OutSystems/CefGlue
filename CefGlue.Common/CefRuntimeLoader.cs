@@ -17,6 +17,7 @@ namespace Xilium.CefGlue.Common
             }
 
             settings.WindowlessRenderingEnabled = true;
+            settings.UncaughtExceptionStackSize = 100; // for uncaught exception event work properly
 
             switch (CefRuntime.Platform)
             {
