@@ -30,7 +30,7 @@ namespace Xilium.CefGlue.BrowserProcess.JavascriptExecution
                     {
                         TaskId = message.TaskId,
                         Success = success,
-                        Exception = success ? null : BuildExceptionString(exception)
+                        Exception = success ? null : exception.Message
                     };
 
                     var cefResponseMessage = response.ToCefProcessMessage();
@@ -51,18 +51,6 @@ namespace Xilium.CefGlue.BrowserProcess.JavascriptExecution
             {
                 // TODO
             }
-        }
-
-        private static string BuildExceptionString(CefV8Exception exception)
-        {
-            // TODO improve exception: shall we send all data in an object?
-            var result = exception.Message + Environment.NewLine;
-            if (!string.IsNullOrEmpty(exception.ScriptResourceName))
-            {
-                result += exception.ScriptResourceName;
-            }
-            result += ":" + exception.LineNumber + ":" + exception.StartColumn;
-            return result;
         }
     }
 }
