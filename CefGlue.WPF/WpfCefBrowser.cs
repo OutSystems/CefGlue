@@ -40,26 +40,10 @@ namespace Xilium.CefGlue.WPF
             var popupRenderHandler = new WpfRenderHandler(popupImage, _logger);
             var popupAdapter = new WpfPopup(popup, popupRenderHandler);
 
-            _disposables = new IDisposable[] { controlAdapter, popupAdapter };
-
             var adapter = new CommonBrowserAdapter(this, nameof(WpfCefBrowser), controlAdapter, popupAdapter, _logger);
             adapter.AllowsTransparency = true;
             return adapter;
         }
-
-        #region Disposable
-
-        protected override void Dispose(bool disposing)
-        {
-            foreach (var disposable in _disposables)
-            {
-                disposable.Dispose();
-            }
-            
-            base.Dispose(disposing);
-        }
-
-        #endregion
 
         protected override Size ArrangeOverride(Size arrangeBounds)
         {

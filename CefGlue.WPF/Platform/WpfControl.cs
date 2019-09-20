@@ -16,7 +16,7 @@ namespace Xilium.CefGlue.WPF.Platform
     /// <summary>
     /// The WPF control wrapper.
     /// </summary>
-    internal class WpfControl : UIControl, IDisposable
+    internal class WpfControl : UIControl
     {
         private readonly FrameworkElement _control;
 
@@ -37,6 +37,8 @@ namespace Xilium.CefGlue.WPF.Platform
             _control.MouseDown += (sender, arg) => TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.ChangedButton.AsCefMouseButtonType(), arg.ClickCount);
             _control.MouseUp += (sender, arg) => TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.ChangedButton.AsCefMouseButtonType());
             _control.MouseWheel += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), 0, (int)arg.Delta);
+            _control.Loaded += OnLoaded;
+            _control.Unloaded += OnUnloaded;
 
             _control.KeyDown += (sender, arg) =>
             {
@@ -70,8 +72,6 @@ namespace Xilium.CefGlue.WPF.Platform
 
             _control.IsVisibleChanged += delegate { TriggerVisibilityChanged(_control.IsVisible); };
 
-            PresentationSource.AddSourceChangedHandler(_control, OnPresentationSourceChanged);
-
             _tooltip = new ToolTip();
             _tooltip.StaysOpen = true;
             _tooltip.Visibility = Visibility.Collapsed;
@@ -79,6 +79,48 @@ namespace Xilium.CefGlue.WPF.Platform
 
             _tooltipTimer = new DispatcherTimer();
             _tooltipTimer.Interval = TimeSpan.FromSeconds(0.5);
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            PresentationSource.AddSourceChangedHandler(_control, OnPresentationSourceChanged);
+            var source = PresentationSource.FromVisual(_control);
+            UpdatePresentationSource(source, source); // same parameters passed on purpose, to make sure the events don't get registered more than once to the same source
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            PresentationSource.RemoveSourceChangedHandler(_control, OnPresentationSourceChanged);
+            _tooltip.IsOpen = false;
+            _tooltipTimer.Stop();
+        }
+
+        private void OnPresentationSourceChanged(object sender, SourceChangedEventArgs e)
+        {
+            UpdatePresentationSource(e.OldSource, e.NewSource);
+        }
+
+        private void UpdatePresentationSource(PresentationSource oldSource, PresentationSource newSource)
+        {
+            if (oldSource?.RootVisual is Window oldWindow)
+            {
+                oldWindow.StateChanged -= OnHostWindowStateChanged;
+                oldWindow.LocationChanged -= OnHostWindowLocationChanged;
+            }
+
+            if (newSource != null)
+            {
+                browserScreenLocation = GetBrowserScreenLocation();
+
+                var matrix = newSource.CompositionTarget.TransformToDevice;
+                TriggerScreenInfoChanged((float)matrix.M11);
+
+                if (newSource.RootVisual is Window window)
+                {
+                    window.StateChanged += OnHostWindowStateChanged;
+                    window.LocationChanged += OnHostWindowLocationChanged;
+                }
+            }
         }
 
         protected virtual IInputElement MousePositionReferential => _control;
@@ -162,31 +204,6 @@ namespace Xilium.CefGlue.WPF.Platform
             _tooltip.Placement = PlacementMode.Absolute;
         }
 
-        private void OnPresentationSourceChanged(object sender, SourceChangedEventArgs e)
-        {
-            if (e.OldSource?.RootVisual is Window oldWindow)
-            {
-                oldWindow.StateChanged -= OnHostWindowStateChanged;
-                oldWindow.LocationChanged -= OnHostWindowLocationChanged;
-            }
-
-            var source = e.NewSource;
-
-            if (source != null)
-            {
-                browserScreenLocation = GetBrowserScreenLocation();
-
-                var matrix = source.CompositionTarget.TransformToDevice;
-                TriggerScreenInfoChanged((float) matrix.M11);
-
-                if (source.RootVisual is Window newWindow)
-                {
-                    newWindow.StateChanged += OnHostWindowStateChanged;
-                    newWindow.LocationChanged += OnHostWindowLocationChanged;
-                }
-            }
-        }
-
         private void OnHostWindowLocationChanged(object sender, EventArgs e)
         {
             browserScreenLocation = GetBrowserScreenLocation();
@@ -217,12 +234,6 @@ namespace Xilium.CefGlue.WPF.Platform
                 return new Point((int) wpfPoint.X, (int) wpfPoint.Y);
             }
             return new Point(0, 0);
-        }
-
-        public void Dispose()
-        {
-            PresentationSource.RemoveSourceChangedHandler(_control, OnPresentationSourceChanged);
-            _tooltipTimer.Stop();
         }
     }
 }
