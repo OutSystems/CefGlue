@@ -373,16 +373,18 @@ namespace Xilium.CefGlue.Common
             {
                 if (!_browserCreated)
                 {
-                    AttachEventHandlers(_control);
-                    AttachEventHandlers(_popup);
-
-                    // Create the bitmap that holds the rendered website bitmap
-                    OnBrowserSizeChanged(newWidth, newHeight);
-
                     // Find the window that's hosting us
                     var hParentWnd = _control.GetHostWindowHandle();
                     if (hParentWnd != null)
                     {
+                        _browserCreated = true;
+
+                        AttachEventHandlers(_control);
+                        AttachEventHandlers(_popup);
+
+                        // Create the bitmap that holds the rendered website bitmap
+                        OnBrowserSizeChanged(newWidth, newHeight);
+
                         var windowInfo = CefWindowInfo.Create();
                         windowInfo.SetAsWindowless(hParentWnd.Value, AllowsTransparency);
 
@@ -390,8 +392,6 @@ namespace Xilium.CefGlue.Common
 
                         // This is the first time the window is being rendered, so create it.
                         CefBrowserHost.CreateBrowser(windowInfo, _cefClient, Settings, string.IsNullOrEmpty(Address) ? "about:blank" : Address);
-                        
-                        _browserCreated = true;
                     }
                 }
                 else
