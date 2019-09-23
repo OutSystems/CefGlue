@@ -33,8 +33,16 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
             _control.PointerMoved += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent(MousePositionReferential));
             _control.PointerLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
-            _control.PointerPressed += (sender, arg) => TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.MouseButton.AsCefMouseButtonType(), arg.ClickCount);
-            _control.PointerReleased += (sender, arg) => TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.MouseButton.AsCefMouseButtonType());
+            _control.PointerPressed += (sender, arg) =>
+            {
+                arg.Device.Capture(_control);
+                TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.MouseButton.AsCefMouseButtonType(), arg.ClickCount);
+            };
+            _control.PointerReleased += (sender, arg) =>
+            {
+                arg.Device.Capture(null);
+                TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.MouseButton.AsCefMouseButtonType());
+            };
             _control.PointerWheelChanged += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), (int)arg.Delta.X * MouseWheelDelta, (int)arg.Delta.Y * MouseWheelDelta);
 
             _control.KeyDown += (sender, arg) =>

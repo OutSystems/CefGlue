@@ -341,6 +341,56 @@ namespace Xilium.CefGlue.Common
             handled = false;
         }
 
+        private void HandleDragEnter(CefMouseEvent mouseEvent, CefDragData dragData, CefDragOperationsMask effects)
+        {
+            WithErrorHandling(nameof(HandleDragEnter), () =>
+            {
+                if (_browserHost != null)
+                {
+                    _browserHost.DragTargetDragEnter(dragData, mouseEvent, effects);
+                    _browserHost.DragTargetDragOver(mouseEvent, effects);
+                }
+            });
+        }
+
+        private void HandleDragOver(CefMouseEvent mouseEvent, CefDragOperationsMask effects)
+        {
+            WithErrorHandling(nameof(HandleDragOver), () =>
+            {
+                if (_browserHost != null)
+                {
+                    _browserHost.DragTargetDragOver(mouseEvent, effects);
+                }
+            });
+
+            // TODO
+            //e.Effects = currentDragDropEffects;
+            //e.Handled = true;
+        }
+
+        private void HandleDragLeave()
+        {
+            WithErrorHandling(nameof(HandleDragLeave), () =>
+            {
+                if (_browserHost != null)
+                {
+                    _browserHost.DragTargetDragLeave();
+                }
+            });
+        }
+
+        private void HandleDrop(CefMouseEvent mouseEvent, CefDragOperationsMask effects)
+        {
+            WithErrorHandling(nameof(HandleDrop), () =>
+            {
+                if (_browserHost != null)
+                {
+                    _browserHost.DragTargetDragOver(mouseEvent, effects);
+                    _browserHost.DragTargetDrop(mouseEvent);
+                }
+            });
+        }
+
         private void HandleVisibilityChanged(bool isVisible)
         {
             WithErrorHandling(nameof(HandleVisibilityChanged), () =>
@@ -455,6 +505,11 @@ namespace Xilium.CefGlue.Common
             control.KeyUp += HandleKeyPress;
 
             control.TextInput += HandleTextInput;
+
+            control.DragEnter += HandleDragEnter;
+            control.DragOver += HandleDragOver;
+            control.DragLeave += HandleDragLeave;
+            control.Drop += HandleDrop;
         }
 
         protected int RenderedWidth => BuiltInRenderHandler.Width;

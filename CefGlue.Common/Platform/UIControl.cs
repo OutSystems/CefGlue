@@ -100,6 +100,34 @@ namespace Xilium.CefGlue.Common.Platform
             TextInput?.Invoke(text, out handled);
         }
 
+        public event Action<CefMouseEvent, CefDragData, CefDragOperationsMask> DragEnter;
+
+        protected void TriggerDragEnter(CefMouseEvent mouseEvent, CefDragData dragData, CefDragOperationsMask effects)
+        {
+            DragEnter?.Invoke(mouseEvent, dragData, effects);
+        }
+
+        public event Action<CefMouseEvent, CefDragOperationsMask> DragOver;
+
+        protected void TriggerDragOver(CefMouseEvent mouseEvent, CefDragOperationsMask effects)
+        {
+            DragOver?.Invoke(mouseEvent, effects);
+        }
+
+        public event Action DragLeave;
+
+        protected void TriggerDragLeave()
+        {
+            DragLeave?.Invoke();
+        }
+
+        public event Action<CefMouseEvent, CefDragOperationsMask> Drop;
+
+        protected void TriggerDrop(CefMouseEvent mouseEvent, CefDragOperationsMask effects)
+        {
+            Drop?.Invoke(mouseEvent, effects);
+        }
+
         public event Action<float> ScreenInfoChanged;
 
         protected void TriggerScreenInfoChanged(float deviceScaleFactor)

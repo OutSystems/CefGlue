@@ -34,9 +34,23 @@ namespace Xilium.CefGlue.WPF.Platform
 
             _control.MouseMove += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent(MousePositionReferential));
             _control.MouseLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
-            _control.MouseDown += (sender, arg) => TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.ChangedButton.AsCefMouseButtonType(), arg.ClickCount);
-            _control.MouseUp += (sender, arg) => TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.ChangedButton.AsCefMouseButtonType());
+            _control.MouseDown += (sender, arg) =>
+            {
+                Mouse.Capture(_control); // allow captuing mouse mouse when outside the webview (eg: grabbing scrollbar)
+                TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.ChangedButton.AsCefMouseButtonType(), arg.ClickCount);
+            };
+            _control.MouseUp += (sender, arg) =>
+            {
+                Mouse.Capture(null);
+                TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.ChangedButton.AsCefMouseButtonType());
+            };
             _control.MouseWheel += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), 0, (int)arg.Delta);
+
+            _control.DragEnter += (sender, arg) => TriggerDragEnter(arg.AsCefMouseEvent(MousePositionReferential), arg.GetDragData(), arg.AllowedEffects.AsCefDragOperationsMask());
+            _control.DragOver += (sender, arg) => TriggerDragOver(arg.AsCefMouseEvent(MousePositionReferential), arg.AllowedEffects.AsCefDragOperationsMask());
+            _control.DragLeave += (sender, arg) => TriggerDragLeave();
+            _control.Drop += (sender, arg) => TriggerDrop(arg.AsCefMouseEvent(MousePositionReferential), arg.AllowedEffects.AsCefDragOperationsMask());
+
             _control.Loaded += OnLoaded;
             _control.Unloaded += OnUnloaded;
 
