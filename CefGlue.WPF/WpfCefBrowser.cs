@@ -14,8 +14,6 @@ namespace Xilium.CefGlue.WPF
     /// </summary>
     public class WpfCefBrowser : BaseCefBrowser
     {
-        private IDisposable[] _disposables;
-
         public WpfCefBrowser()
         {
             KeyboardNavigation.SetAcceptsReturn(this, true);

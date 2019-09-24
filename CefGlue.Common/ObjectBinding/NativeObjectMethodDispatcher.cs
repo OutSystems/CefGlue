@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers;
@@ -10,9 +11,12 @@ using Xilium.CefGlue.Common.Serialization;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
-    internal class NativeObjectMethodDispatcher
+    internal class NativeObjectMethodDispatcher : IDisposable
     {
+        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private readonly NativeObjectRegistry _objectRegistry;
+
+        private readonly CountdownEvent _pendingTasks = new CountdownEvent(1);
 
         public NativeObjectMethodDispatcher(MessageDispatcher dispatcher, NativeObjectRegistry objectRegistry)
         {
@@ -42,9 +46,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                         var nativeMethod = targetObj.GetNativeMethod(message.MemberName);
                         if (nativeMethod != null)
                         {
-                            var result = ExecuteMethod(targetObj.Target, nativeMethod, arguments, targetObj.MethodHandler);
-
-                            resultMessage.Result = CefValueSerialization.Serialize(result);
+                            resultMessage.Result = ExecuteMethod(targetObj.Target, nativeMethod, arguments, targetObj.MethodHandler);
                             resultMessage.Success = true;
                         }
                         else
@@ -64,9 +66,26 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                     resultMessage.Success = false;
                     resultMessage.Exception = e.Message;
                 }
-                
-                args.Browser.SendProcessMessage(CefProcessId.Renderer, resultMessage.ToCefProcessMessage());
-            });
+
+                if (!_cancellationTokenSource.IsCancellationRequested)
+                {
+                    try
+                    {
+                        _pendingTasks.AddCount();
+                        if (!_cancellationTokenSource.IsCancellationRequested)
+                        {
+                            using (var cefMessage = resultMessage.ToCefProcessMessage())
+                            {
+                                args.Browser.SendProcessMessage(CefProcessId.Renderer, cefMessage);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        _pendingTasks.Signal();
+                    }
+                }
+            }, _cancellationTokenSource.Token);
         }
 
         private object ExecuteMethod(object targetObj, MethodInfo method, object[] args, JavascriptObjectMethodCallHandler methodHandler)
@@ -116,6 +135,14 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         private static bool IsParamArray(ParameterInfo paramInfo)
         {
             return paramInfo.GetCustomAttribute(typeof(ParamArrayAttribute), false) != null;
+        }
+
+        public void Dispose()
+        {
+            _cancellationTokenSource.Cancel();
+            _pendingTasks.Signal(); // remove the dummy task
+            _pendingTasks.Wait();
+            _cancellationTokenSource.Dispose();
         }
     }
 }

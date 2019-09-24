@@ -40,7 +40,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             {
                 if (message.Success)
                 {
-                    pendingTask.SetResult(CefValueSerialization.DeserializeCefValue(message.Result));
+                    pendingTask.SetResult(message.Result);
                 }
                 else
                 {

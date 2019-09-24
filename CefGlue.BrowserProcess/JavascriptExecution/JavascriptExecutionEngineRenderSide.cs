@@ -1,5 +1,3 @@
-using System;
-using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
 
@@ -33,14 +31,10 @@ namespace Xilium.CefGlue.BrowserProcess.JavascriptExecution
                         Exception = success ? null : exception.Message
                     };
 
-                    var cefResponseMessage = response.ToCefProcessMessage();
-
-                    if (success)
+                    using (var cefResponseMessage = response.ToCefProcessMessageWithResult(value))
                     {
-                        V8ValueSerialization.SerializeV8Object(value, cefResponseMessage.Arguments, 2);
+                        browser.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
                     }
-
-                    browser.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
                 }
                 finally
                 {

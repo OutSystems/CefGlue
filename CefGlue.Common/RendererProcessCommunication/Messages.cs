@@ -46,18 +46,22 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
 
             public int TaskId;
             public bool Success;
-            public CefValue Result;
             public string Exception;
+            public object Result { get; private set; }
 
-            public CefProcessMessage ToCefProcessMessage()
+            public CefProcessMessage ToCefProcessMessageWithResult(CefV8Value result)
             {
                 var message = CefProcessMessage.Create(Name);
                 var arguments = message.Arguments;
                 arguments.SetInt(0, TaskId);
                 arguments.SetBool(1, Success);
-                if (Result != null)
+                if (result != null)
                 {
-                    arguments.SetValue(2, Result);
+                    V8ValueSerialization.SerializeV8Object(result, new CefListWrapper(arguments, 2));
+                }
+                else
+                {
+                    arguments.SetNull(2);
                 }
                 arguments.SetString(3, Exception);
                 return message;
@@ -70,7 +74,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                 {
                     TaskId = arguments.GetInt(0),
                     Success = arguments.GetBool(1),
-                    Result = arguments.GetValue(2),
+                    Result = CefValueSerialization.DeserializeCefValue(arguments.GetValue(2)),
                     Exception = arguments.GetString(3)
                 };
             }
@@ -173,19 +177,19 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
 
             public int CallId;
             public bool Success;
-            public CefValue Result;
+            public object Result;
             public string Exception;
+
+            public CefValue CefResult => (CefValue)Result;
 
             public CefProcessMessage ToCefProcessMessage()
             {
                 var message = CefProcessMessage.Create(Name);
+
                 var arguments = message.Arguments;
                 arguments.SetInt(0, CallId);
                 arguments.SetBool(1, Success);
-                if (Result != null)
-                {
-                    arguments.SetValue(2, Result);
-                }
+                CefValueSerialization.Serialize(Result, new CefListWrapper(arguments, 2));
                 arguments.SetString(3, Exception);
                 return message;
             }

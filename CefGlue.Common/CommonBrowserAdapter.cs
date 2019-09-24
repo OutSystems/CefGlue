@@ -584,6 +584,11 @@ namespace Xilium.CefGlue.Common
             OnBrowserCreated(browser);
         }
 
+        void ICefBrowserHost.HandleBrowserDestroyed(CefBrowser browser)
+        {
+            _objectMethodDispatcher?.Dispose();
+        }
+
         protected virtual void OnBrowserCreated(CefBrowser browser)
         {
             int width = 0, height = 0;

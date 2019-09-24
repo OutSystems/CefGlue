@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Common.Serialization
 {
@@ -15,18 +14,17 @@ namespace Xilium.CefGlue.Common.Serialization
             Binary
         }
 
-        public static CefValue Serialize(object value)
+        public static void Serialize(object value, CefValueWrapper cefValue)
         {
-            return Serialize(value, new Stack<object>());
+            Serialize(value, new Stack<object>(), cefValue);
         }
 
-        private static CefValue Serialize(object value, Stack<object> visitedObjects)
+        private static void Serialize(object value, Stack<object> visitedObjects, CefValueWrapper cefValue)
         {
             if (value == null)
             {
-                var nullCefValue = CefValue.Create();
-                nullCefValue.SetNull();
-                return nullCefValue;
+                cefValue.SetNull();
+                return;
             }
 
             var typeCode = Type.GetTypeCode(value.GetType());
@@ -40,14 +38,12 @@ namespace Xilium.CefGlue.Common.Serialization
 
                 visitedObjects.Push(value);
 
-                var result = SerializeComplexObject(value, visitedObjects);
+                SerializeComplexObject(value, visitedObjects, cefValue);
 
                 visitedObjects.Pop();
 
-                return result;
+                return;
             }
-
-            var cefValue = CefValue.Create();
 
             switch (typeCode)
             {
@@ -97,14 +93,10 @@ namespace Xilium.CefGlue.Common.Serialization
                     cefValue.SetString((string)value);
                     break;
             }
-
-            return cefValue;
         }
 
-        private static CefValue SerializeComplexObject(object value, Stack<object> visitedObjects)
+        private static void SerializeComplexObject(object value, Stack<object> visitedObjects, CefValueWrapper cefValue)
         {
-            var cefValue = CefValue.Create();
-
             if (value is IDictionary dictionary)
             {
                 var cefDictionary = CefDictionaryValue.Create();
@@ -112,21 +104,23 @@ namespace Xilium.CefGlue.Common.Serialization
                 foreach (var key in dictionary.Keys)
                 {
                     var keyText = key.ToString();
-                    cefDictionary.SetValue(keyText, Serialize(dictionary[key], visitedObjects));
+                    Serialize(dictionary[key], visitedObjects, new CefDictionaryWrapper(cefDictionary, keyText));
                 }
 
                 cefValue.SetDictionary(cefDictionary);
             }
             else if (value is IEnumerable enumerable)
             {
-                var list = CefListValue.Create();
                 var i = 0;
+                var cefList = CefListValue.Create();
+                
                 foreach (var item in enumerable)
                 {
-                    list.SetValue(i++, Serialize(item, visitedObjects));
+                    Serialize(item, visitedObjects, new CefListWrapper(cefList, i));
+                    i++;
                 }
 
-                cefValue.SetList(list);
+                cefValue.SetList(cefList);
             }
             else
             {
@@ -137,18 +131,16 @@ namespace Xilium.CefGlue.Common.Serialization
 
                 foreach (var field in fields)
                 {
-                    cefDictionary.SetValue(field.Name, Serialize(field.GetValue(value), visitedObjects));
+                    Serialize(field.GetValue(value), visitedObjects, new CefDictionaryWrapper(cefDictionary, field.Name));
                 }
 
                 foreach (var property in properties)
                 {
-                    cefDictionary.SetValue(property.Name, Serialize(property.GetValue(value), visitedObjects));
+                    Serialize(property.GetValue(value), visitedObjects, new CefDictionaryWrapper(cefDictionary, property.Name));
                 }
 
                 cefValue.SetDictionary(cefDictionary);
             }
-
-            return cefValue;
         }
 
         public static object DeserializeCefValue(CefValue value)

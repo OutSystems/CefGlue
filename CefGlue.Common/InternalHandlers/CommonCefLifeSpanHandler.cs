@@ -30,6 +30,7 @@ namespace Xilium.CefGlue.Common.InternalHandlers
         protected override void OnBeforeClose(CefBrowser browser)
         {
             _owner.LifeSpanHandler?.HandleBeforeClose(browser);
+            _owner.HandleBrowserDestroyed(browser);
         }
 
         protected override bool OnBeforePopup(CefBrowser browser, CefFrame frame, string targetUrl, string targetFrameName, CefWindowOpenDisposition targetDisposition, bool userGesture, CefPopupFeatures popupFeatures, CefWindowInfo windowInfo, ref CefClient client, CefBrowserSettings settings, ref bool noJavascriptAccess)
