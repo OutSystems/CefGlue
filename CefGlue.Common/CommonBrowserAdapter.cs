@@ -7,6 +7,7 @@ using Xilium.CefGlue.Common.Helpers.Logger;
 using Xilium.CefGlue.Common.JavascriptExecution;
 using Xilium.CefGlue.Common.ObjectBinding;
 using Xilium.CefGlue.Common.Platform;
+using Xilium.CefGlue.Common.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common
 {
@@ -88,6 +89,8 @@ namespace Xilium.CefGlue.Common
         public event JavascriptContextLifetimeEventHandler JavascriptContextCreated;
         public event JavascriptContextLifetimeEventHandler JavascriptContextReleased;
         public event JavascriptUncaughtExceptionEventHandler JavascriptUncaughtException;
+
+        public event RenderProcessUnhandledExceptionEventHandler RenderProcessUnhandledException;
 
         public string Address { get => _browser?.GetMainFrame().Url ?? _startUrl; set => NavigateTo(value); }
 
@@ -439,6 +442,7 @@ namespace Xilium.CefGlue.Common
                         windowInfo.SetAsWindowless(hParentWnd.Value, AllowsTransparency);
 
                         _cefClient = new CommonCefClient(this, _logger);
+                        _cefClient.Dispatcher.RegisterMessageHandler(Messages.UnhandledException.Name, OnBrowserProcessUnhandledException);
 
                         // This is the first time the window is being rendered, so create it.
                         CefBrowserHost.CreateBrowser(windowInfo, _cefClient, Settings, string.IsNullOrEmpty(Address) ? "about:blank" : Address);
@@ -734,6 +738,16 @@ namespace Xilium.CefGlue.Common
             {
                 _logger.ErrorException($"{_name} : Caught exception in {scopeName}()", ex);
             }
+        }
+
+        private void OnBrowserProcessUnhandledException(MessageReceivedEventArgs e)
+        {
+            var exceptionDetails = Messages.UnhandledException.FromCefMessage(e.Message);
+            _logger.Error("Browser process unhandled exception", "Type: " + exceptionDetails.ExceptionType, "Message: " + exceptionDetails.Message, "StackTrace: " +  exceptionDetails.StackTrace);
+
+            RenderProcessUnhandledException?.Invoke(
+                _eventsEmitter, 
+                new RenderProcessUnhandledExceptionEventArgs(exceptionDetails.ExceptionType, exceptionDetails.Message, exceptionDetails.StackTrace));
         }
     }
 }

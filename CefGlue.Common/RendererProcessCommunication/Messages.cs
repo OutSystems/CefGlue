@@ -1,3 +1,4 @@
+using System;
 using Xilium.CefGlue.Common.Serialization;
 
 namespace Xilium.CefGlue.Common.RendererProcessCommunication
@@ -323,6 +324,36 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                     ScriptNameOrSourceUrl = frame.GetString(1),
                     LineNumber = frame.GetInt(2),
                     Column = frame.GetInt(3)
+                };
+            }
+        }
+
+        public struct UnhandledException
+        {
+            public const string Name = nameof(UnhandledException);
+
+            public string ExceptionType;
+            public string Message;
+            public string StackTrace;
+
+            public CefProcessMessage ToCefProcessMessage()
+            {
+                var message = CefProcessMessage.Create(Name);
+                var arguments = message.Arguments;
+                arguments.SetString(0, ExceptionType);
+                arguments.SetString(1, Message);
+                arguments.SetString(2, StackTrace);
+                return message;
+            }
+
+            public static UnhandledException FromCefMessage(CefProcessMessage message)
+            {
+                var arguments = message.Arguments;
+                return new UnhandledException()
+                {
+                    ExceptionType = arguments.GetString(0),
+                    Message = arguments.GetString(1),
+                    StackTrace = arguments.GetString(2),
                 };
             }
         }
