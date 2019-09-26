@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
-using Xilium.CefGlue.Common.Serialization;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
@@ -66,8 +66,11 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             }
 
             var browser = CefV8Context.GetCurrentContext().GetBrowser();
-            browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
-            
+            using (var cefMessage = message.ToCefProcessMessage())
+            {
+                browser.SendProcessMessage(CefProcessId.Browser, cefMessage);
+            }
+
             return promiseHolder;
         }
 
@@ -80,7 +83,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                 {
                     if (message.Success)
                     {
-                        resolve(V8ValueSerialization.SerializeCefValue(message.CefResult));
+                        resolve(V8ValueSerialization.SerializeCefValue(message.Result));
                     }
                     else
                     {

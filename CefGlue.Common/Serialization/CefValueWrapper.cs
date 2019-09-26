@@ -10,6 +10,16 @@ namespace Xilium.CefGlue.Common.Serialization
         public abstract void SetBinary(CefBinaryValue value);
         public abstract void SetList(CefListValue value);
         public abstract void SetDictionary(CefDictionaryValue value);
+
+        public abstract bool GetBool();
+        public abstract int GetInt();
+        public abstract double GetDouble();
+        public abstract string GetString();
+        public abstract CefBinaryValue GetBinary();
+        public abstract CefListValue GetList();
+        public abstract CefDictionaryValue GetDictionary();
+
+        public abstract CefValueType GetValueType();
     }
 
     internal abstract class CefValueWrapper<TIndex, TCefContainerUnderlyingType> : CefValueWrapper

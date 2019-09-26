@@ -143,37 +143,37 @@ namespace Xilium.CefGlue.Common.Serialization
             }
         }
 
-        public static object DeserializeCefValue(CefValue value)
+        public static object DeserializeCefValue(CefValueWrapper cefValue)
         {
-            switch (value.GetValueType())
+            switch (cefValue.GetValueType())
             {
                 case CefValueType.Binary:
-                    return FromCefBinary(value.GetBinary(), out var kind);
+                    return FromCefBinary(cefValue.GetBinary(), out var kind);
 
                 case CefValueType.Bool:
-                    return value.GetBool();
+                    return cefValue.GetBool();
 
                 case CefValueType.Dictionary:
                     IDictionary<string, object> dictionary = new ExpandoObject();
-                    var v8Dictionary = value.GetDictionary();
-                    var keys = v8Dictionary.GetKeys();
+                    var cefDictionary = cefValue.GetDictionary();
+                    var keys = cefDictionary.GetKeys();
                     foreach (var key in keys)
                     {
-                        dictionary[key] = DeserializeCefValue(v8Dictionary.GetValue(key));
+                        dictionary[key] = DeserializeCefValue(new CefDictionaryWrapper(cefDictionary, key));
                     }
                     return dictionary;
 
                 case CefValueType.Double:
-                    return value.GetDouble();
+                    return cefValue.GetDouble();
 
                 case CefValueType.List:
-                    return DeserializeCefList<object>(value.GetList());
+                    return DeserializeCefList<object>(cefValue.GetList());
 
                 case CefValueType.Int:
-                    return value.GetInt();
+                    return cefValue.GetInt();
 
                 case CefValueType.String:
-                    return value.GetString() ?? ""; // default to "", because cef converts "" to null, and when null it will fall on the Null case
+                    return cefValue.GetString() ?? ""; // default to "", because cef converts "" to null, and when null it will fall on the Null case
 
                 case CefValueType.Null:
                     return null;
@@ -187,7 +187,7 @@ namespace Xilium.CefGlue.Common.Serialization
             var array = new ListElementType[cefList.Count];
             for (var i = 0; i < cefList.Count; i++)
             {
-                array[i] = (ListElementType)DeserializeCefValue(cefList.GetValue(i));
+                array[i] = (ListElementType)DeserializeCefValue(new CefListWrapper(cefList, i));
             }
             return array;
         }

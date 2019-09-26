@@ -1,8 +1,10 @@
-using System;
 using Xilium.CefGlue.Common.Serialization;
 
 namespace Xilium.CefGlue.Common.RendererProcessCommunication
 {
+    internal delegate void NativeToCefValueSerializer(object nativeObject, CefValueWrapper serializedCefValueWrapper);
+    internal delegate void V8ToCefValueSerializer(CefV8Value nativeObject, CefValueWrapper serializedCefValueWrapper);
+
     internal static class Messages
     {
         public struct JsEvaluationRequest
@@ -47,23 +49,16 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
 
             public int TaskId;
             public bool Success;
+            public CefValueHolder Result;
             public string Exception;
-            public object Result { get; private set; }
 
-            public CefProcessMessage ToCefProcessMessageWithResult(CefV8Value result)
+            public CefProcessMessage ToCefProcessMessage()
             {
                 var message = CefProcessMessage.Create(Name);
                 var arguments = message.Arguments;
                 arguments.SetInt(0, TaskId);
                 arguments.SetBool(1, Success);
-                if (result != null)
-                {
-                    V8ValueSerialization.SerializeV8Object(result, new CefListWrapper(arguments, 2));
-                }
-                else
-                {
-                    arguments.SetNull(2);
-                }
+                Result?.CopyTo(arguments, 2);
                 arguments.SetString(3, Exception);
                 return message;
             }
@@ -75,7 +70,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                 {
                     TaskId = arguments.GetInt(0),
                     Success = arguments.GetBool(1),
-                    Result = CefValueSerialization.DeserializeCefValue(arguments.GetValue(2)),
+                    Result = new CefValueHolder(arguments, 2, isReadOnly: true),
                     Exception = arguments.GetString(3)
                 };
             }
@@ -178,10 +173,8 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
 
             public int CallId;
             public bool Success;
-            public object Result;
+            public CefValueHolder Result;
             public string Exception;
-
-            public CefValue CefResult => (CefValue)Result;
 
             public CefProcessMessage ToCefProcessMessage()
             {
@@ -190,7 +183,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                 var arguments = message.Arguments;
                 arguments.SetInt(0, CallId);
                 arguments.SetBool(1, Success);
-                CefValueSerialization.Serialize(Result, new CefListWrapper(arguments, 2));
+                Result?.CopyTo(arguments, 2);
                 arguments.SetString(3, Exception);
                 return message;
             }
@@ -198,11 +191,10 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             public static NativeObjectCallResult FromCefMessage(CefProcessMessage message)
             {
                 var arguments = message.Arguments;
-                return new NativeObjectCallResult()
-                {
+                return new NativeObjectCallResult() {
                     CallId = arguments.GetInt(0),
                     Success = arguments.GetBool(1),
-                    Result = arguments.GetValue(2),
+                    Result = new CefValueHolder(arguments, 2, isReadOnly: true),
                     Exception = arguments.GetString(3)
                 };
             }

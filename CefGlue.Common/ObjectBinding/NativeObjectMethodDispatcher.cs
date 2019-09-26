@@ -35,7 +35,8 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 var resultMessage = new Messages.NativeObjectCallResult()
                 {
-                    CallId = message.CallId
+                    CallId = message.CallId,
+                    Result = new CefValueHolder(),
                 };
 
                 try
@@ -46,7 +47,8 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                         var nativeMethod = targetObj.GetNativeMethod(message.MemberName);
                         if (nativeMethod != null)
                         {
-                            resultMessage.Result = ExecuteMethod(targetObj.Target, nativeMethod, arguments, targetObj.MethodHandler);
+                            var result = ExecuteMethod(targetObj.Target, nativeMethod, arguments, targetObj.MethodHandler);
+                            CefValueSerialization.Serialize(result, resultMessage.Result);
                             resultMessage.Success = true;
                         }
                         else

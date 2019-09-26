@@ -580,17 +580,27 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandleCursorChange(IntPtr cursorHandle)
         {
-            _control.SetCursor(cursorHandle);
+            WithErrorHandling((nameof(ICefBrowserHost.HandleCursorChange)), () =>
+            {
+                _control.SetCursor(cursorHandle);
+            });
         }
 
         void ICefBrowserHost.HandleBrowserCreated(CefBrowser browser)
         {
-            OnBrowserCreated(browser);
+            WithErrorHandling((nameof(ICefBrowserHost.HandleBrowserDestroyed)), () =>
+            {
+                OnBrowserCreated(browser);
+            });
         }
 
         void ICefBrowserHost.HandleBrowserDestroyed(CefBrowser browser)
         {
-            _objectMethodDispatcher?.Dispose();
+            WithErrorHandling((nameof(ICefBrowserHost.HandleBrowserDestroyed)), () =>
+            {
+                _objectMethodDispatcher?.Dispose();
+                _objectMethodDispatcher = null;
+            });
         }
 
         protected virtual void OnBrowserCreated(CefBrowser browser)
@@ -642,13 +652,16 @@ namespace Xilium.CefGlue.Common
 
         bool ICefBrowserHost.HandleTooltip(CefBrowser browser, string text)
         {
-            if (_tooltip == text)
+            WithErrorHandling((nameof(ICefBrowserHost.HandleTooltip)), () =>
             {
-                return true;
-            }
+                if (_tooltip == text)
+                {
+                    return;
+                }
 
-            _tooltip = text;
-            _control.SetTooltip(text);
+                _tooltip = text;
+                _control.SetTooltip(text);
+            });
 
             return true;
         }
@@ -736,7 +749,8 @@ namespace Xilium.CefGlue.Common
             }
             catch (Exception ex)
             {
-                _logger.ErrorException($"{_name} : Caught exception in {scopeName}()", ex);
+                // TODO _logger.ErrorException($"{_name} : Caught exception in {scopeName}()", ex);
+                throw;
             }
         }
 

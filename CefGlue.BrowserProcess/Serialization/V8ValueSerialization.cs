@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Xilium.CefGlue.Common.Serialization;
 
-namespace Xilium.CefGlue.Common.Serialization
+namespace Xilium.CefGlue.BrowserProcess.Serialization
 {
     internal static class V8ValueSerialization
     {
@@ -107,12 +108,12 @@ namespace Xilium.CefGlue.Common.Serialization
             visitedObjects.Pop();
         }
 
-        public static CefV8Value SerializeCefValue(CefValue value)
+        public static CefV8Value SerializeCefValue(CefValueWrapper cefValue)
         {
-            switch (value.GetValueType())
+            switch (cefValue.GetValueType())
             {
                 case CefValueType.Binary:
-                    var nativeValue = CefValueSerialization.FromCefBinary(value.GetBinary(), out var kind);
+                    var nativeValue = CefValueSerialization.FromCefBinary(cefValue.GetBinary(), out var kind);
                     switch(kind)
                     {
                         case CefValueSerialization.BinaryMagicBytes.Binary:
@@ -127,34 +128,34 @@ namespace Xilium.CefGlue.Common.Serialization
                     }
 
                 case CefValueType.Bool:
-                    return CefV8Value.CreateBool(value.GetBool());
+                    return CefV8Value.CreateBool(cefValue.GetBool());
 
                 case CefValueType.Dictionary:
-                    var dictionary = value.GetDictionary();
+                    var dictionary = cefValue.GetDictionary();
                     var v8Dictionary = CefV8Value.CreateObject();
                     foreach (var key in dictionary.GetKeys())
                     {
-                        v8Dictionary.SetValue(key, SerializeCefValue(dictionary.GetValue(key)));
+                        v8Dictionary.SetValue(key, SerializeCefValue(new CefDictionaryWrapper(dictionary, key)));
                     }
                     return v8Dictionary;
 
                 case CefValueType.Double:
-                    return CefV8Value.CreateDouble(value.GetDouble());
+                    return CefV8Value.CreateDouble(cefValue.GetDouble());
 
                 case CefValueType.List:
-                    var list = value.GetList();
+                    var list = cefValue.GetList();
                     var v8List = CefV8Value.CreateArray(list.Count);
                     for (var i = 0; i < list.Count; i++)
                     {
-                        v8List.SetValue(i, SerializeCefValue(list.GetValue(i)));
+                        v8List.SetValue(i, SerializeCefValue(new CefListWrapper(list, i)));
                     }
                     return v8List;
 
                 case CefValueType.Int:
-                    return CefV8Value.CreateInt(value.GetInt());
+                    return CefV8Value.CreateInt(cefValue.GetInt());
 
                 case CefValueType.String:
-                    return CefV8Value.CreateString(value.GetString());
+                    return CefV8Value.CreateString(cefValue.GetString());
 
                 case CefValueType.Null:
                     return CefV8Value.CreateNull();

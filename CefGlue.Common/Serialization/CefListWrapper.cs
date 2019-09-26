@@ -45,5 +45,47 @@ namespace Xilium.CefGlue.Common.Serialization
         {
             _container.SetDictionary(_index, value);
         }
+
+        public override bool GetBool()
+        {
+            return _container.GetBool(_index);
+        }
+
+        public override int GetInt()
+        {
+            return _container.GetInt(_index);
+        }
+
+        public override double GetDouble()
+        {
+            return _container.GetDouble(_index);
+        }
+
+        public override string GetString()
+        {
+            return _container.GetString(_index);
+        }
+
+        public override CefBinaryValue GetBinary()
+        {
+            return _container.GetBinary(_index);
+        }
+
+        public override CefListValue GetList()
+        {
+            return _container.GetList(_index);
+        }
+
+        public override CefDictionaryValue GetDictionary()
+        {
+            return _container.GetDictionary(_index);
+        }
+
+        public override CefValueType GetValueType()
+        {
+            return _container.GetValueType(_index);
+        }
+
+        public int Count => _container.Count;
     }
 }

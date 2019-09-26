@@ -42,9 +42,14 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
                 base.OnContextCreated(browser, frame, context);
                 _javascriptToNativeDispatcher.HandleContextCreated(context, frame.IsMain);
 
-                var message = new Messages.JsContextCreated();
-                message.FrameId = frame.Name;
-                browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
+                var message = new Messages.JsContextCreated()
+                {
+                    FrameId = frame.Name
+                };
+                using (var cefMessage = message.ToCefProcessMessage())
+                {
+                    browser.SendProcessMessage(CefProcessId.Browser, cefMessage);
+                }
             });
         }
 
@@ -55,9 +60,14 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
                 _javascriptToNativeDispatcher.HandleContextReleased(context, frame.IsMain);
                 base.OnContextReleased(browser, frame, context);
 
-                var message = new Messages.JsContextReleased();
-                message.FrameId = frame.Name;
-                browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
+                var message = new Messages.JsContextReleased()
+                {
+                    FrameId = frame.Name
+                };
+                using (var cefMessage = message.ToCefProcessMessage())
+                {
+                    browser.SendProcessMessage(CefProcessId.Browser, cefMessage);
+                }
             });
         }
 
@@ -78,11 +88,16 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
                     };
                 }
 
-                var message = new Messages.JsUncaughtException();
-                message.FrameId = frame.Name;
-                message.Message = exception.Message;
-                message.StackFrames = frames;
-                browser.SendProcessMessage(CefProcessId.Browser, message.ToCefProcessMessage());
+                var message = new Messages.JsUncaughtException()
+                {
+                    FrameId = frame.Name,
+                    Message = exception.Message,
+                    StackFrames = frames
+                };
+                using (var cefMessage = message.ToCefProcessMessage())
+                {
+                    browser.SendProcessMessage(CefProcessId.Browser, cefMessage);
+                }
 
                 base.OnUncaughtException(browser, frame, context, exception, stackTrace);
             });

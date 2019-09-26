@@ -40,7 +40,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             {
                 if (message.Success)
                 {
-                    pendingTask.SetResult(message.Result);
+                    pendingTask.SetResult(CefValueSerialization.DeserializeCefValue(message.Result));
                 }
                 else
                 {
@@ -94,7 +94,10 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
             try
             {
-                _browser.SendProcessMessage(CefProcessId.Renderer, message.ToCefProcessMessage());
+                using (var cefMessage = message.ToCefProcessMessage())
+                {
+                    _browser.SendProcessMessage(CefProcessId.Renderer, cefMessage);
+                }
 
                 // TODO should we add any timeout param and remove the task after that ?
                 await messageReceiveCompletionSource.Task;

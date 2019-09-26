@@ -1,5 +1,7 @@
+using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Serialization;
 
 namespace Xilium.CefGlue.BrowserProcess.JavascriptExecution
 {
@@ -28,10 +30,13 @@ namespace Xilium.CefGlue.BrowserProcess.JavascriptExecution
                     {
                         TaskId = message.TaskId,
                         Success = success,
-                        Exception = success ? null : exception.Message
+                        Exception = success ? null : exception.Message,
+                        Result = new CefValueHolder()
                     };
 
-                    using (var cefResponseMessage = response.ToCefProcessMessageWithResult(value))
+                    V8ValueSerialization.SerializeV8Object(value, response.Result);
+
+                    using (var cefResponseMessage = response.ToCefProcessMessage())
                     {
                         browser.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
                     }
