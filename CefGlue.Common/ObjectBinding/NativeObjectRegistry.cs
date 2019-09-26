@@ -27,7 +27,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
             var objectMembers = NativeObjectAnalyser.AnalyseObjectMembers(obj);
 
-            var nativeObj = new NativeObject(name, obj, objectMembers);
+            var nativeObj = new NativeObject(name, obj, objectMembers, methodHandler);
 
             lock (_registrationSyncRoot)
             {

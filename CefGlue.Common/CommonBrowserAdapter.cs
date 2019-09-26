@@ -481,7 +481,7 @@ namespace Xilium.CefGlue.Common
 
         public void RegisterJavascriptObject(object targetObject, string name, JavascriptObjectMethodCallHandler methodHandler = null)
         {
-            _objectRegistry.Register(targetObject, name);
+            _objectRegistry.Register(targetObject, name, methodHandler);
         }
 
         public void UnregisterJavascriptObject(string name)

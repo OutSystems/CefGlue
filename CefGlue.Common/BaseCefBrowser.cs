@@ -329,7 +329,7 @@ namespace Xilium.CefGlue.Common
         /// <param name="methodHandler">Optional handler to be executed before the target object method is called. You may use this for instance to log calls.</param>
         public void RegisterJavascriptObject(object targetObject, string name, JavascriptObjectMethodCallHandler methodHandler = null)
         {
-            _adapter.RegisterJavascriptObject(targetObject, name);
+            _adapter.RegisterJavascriptObject(targetObject, name, methodHandler);
         }
 
         /// <summary>
