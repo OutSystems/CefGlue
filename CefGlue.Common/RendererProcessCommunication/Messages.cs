@@ -2,9 +2,6 @@ using Xilium.CefGlue.Common.Serialization;
 
 namespace Xilium.CefGlue.Common.RendererProcessCommunication
 {
-    internal delegate void NativeToCefValueSerializer(object nativeObject, CefValueWrapper serializedCefValueWrapper);
-    internal delegate void V8ToCefValueSerializer(CefV8Value nativeObject, CefValueWrapper serializedCefValueWrapper);
-
     internal static class Messages
     {
         public struct JsEvaluationRequest
