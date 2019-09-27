@@ -155,11 +155,13 @@ namespace Xilium.CefGlue.Common.Serialization
 
                 case CefValueType.Dictionary:
                     IDictionary<string, object> dictionary = new ExpandoObject();
-                    var cefDictionary = cefValue.GetDictionary();
-                    var keys = cefDictionary.GetKeys();
-                    foreach (var key in keys)
+                    using (var cefDictionary = cefValue.GetDictionary())
                     {
-                        dictionary[key] = DeserializeCefValue(new CefDictionaryWrapper(cefDictionary, key));
+                        var keys = cefDictionary.GetKeys();
+                        foreach (var key in keys)
+                        {
+                            dictionary[key] = DeserializeCefValue(new CefDictionaryWrapper(cefDictionary, key));
+                        }
                     }
                     return dictionary;
 
@@ -167,7 +169,10 @@ namespace Xilium.CefGlue.Common.Serialization
                     return cefValue.GetDouble();
 
                 case CefValueType.List:
-                    return DeserializeCefList<object>(cefValue.GetList());
+                    using (var cefList = cefValue.GetList())
+                    {
+                        return DeserializeCefList<object>(cefList);
+                    }
 
                 case CefValueType.Int:
                     return cefValue.GetInt();

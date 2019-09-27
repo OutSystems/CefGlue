@@ -1,6 +1,7 @@
 using System;
 using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Serialization;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
@@ -17,19 +18,27 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         protected override bool Execute(string name, CefV8Value obj, CefV8Value[] arguments, out CefV8Value returnValue, out string exception)
         {
-            var argsCopy = V8ValueSerialization.SerializeV8Object(arguments); // create a copy of the args to pass to the browser process
-            var message = new Messages.NativeObjectCallRequest()
+            using (var cefArgs = CefListValue.Create())
             {
-                ObjectName = _objectName,
-                MemberName = name,
-                Arguments = argsCopy
-            };
+                // create a copy of the args to pass to the browser process
+                for (var i = 0; i < arguments.Length; i++)
+                {
+                    V8ValueSerialization.SerializeV8Object(arguments[i], new CefListWrapper(cefArgs, i));
+                }
 
-            var promiseHolder = _functionCallHandler(message);
+                var message = new Messages.NativeObjectCallRequest()
+                {
+                    ObjectName = _objectName,
+                    MemberName = name,
+                    Arguments = cefArgs
+                };
 
-            returnValue = promiseHolder.Promise;
-            exception = null;
-            return true;
+                var promiseHolder = _functionCallHandler(message);
+
+                returnValue = promiseHolder.Promise;
+                exception = null;
+                return true;
+            }
         }
     }
 }

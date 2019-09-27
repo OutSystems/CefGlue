@@ -1,3 +1,4 @@
+using System;
 using Xilium.CefGlue.Common.Serialization;
 
 namespace Xilium.CefGlue.Common.RendererProcessCommunication
@@ -99,11 +100,14 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             public static NativeObjectRegistrationRequest FromCefMessage(CefProcessMessage message)
             {
                 var arguments = message.Arguments;
-                return new NativeObjectRegistrationRequest()
+                using (var methodsNames = arguments.GetList(1))
                 {
-                    ObjectName = arguments.GetString(0),
-                    MethodsNames = CefValueSerialization.DeserializeCefList<string>(arguments.GetList(1))
-                };
+                    return new NativeObjectRegistrationRequest()
+                    {
+                        ObjectName = arguments.GetString(0),
+                        MethodsNames = CefValueSerialization.DeserializeCefList<string>(methodsNames)
+                    };
+                }
             }
         }
 
@@ -131,7 +135,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             }
         }
 
-        public struct NativeObjectCallRequest
+        public struct NativeObjectCallRequest : IDisposable
         {
             public const string Name = nameof(NativeObjectCallRequest);
 
@@ -161,6 +165,11 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                     MemberName = arguments.GetString(2),
                     Arguments = arguments.GetList(3)
                 };
+            }
+
+            public void Dispose()
+            {
+                Arguments?.Dispose();
             }
         }
 
@@ -273,18 +282,23 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             public static JsUncaughtException FromCefMessage(CefProcessMessage message)
             {
                 var arguments = message.Arguments;
-                var cefFrames = arguments.GetList(2);
-                var frames = new JsStackFrame[cefFrames.Count];
-                for (var i = 0; i < cefFrames.Count; i++)
+                using (var cefFrames = arguments.GetList(2))
                 {
-                    frames[i] = JsStackFrame.FromCefValue(cefFrames.GetList(i));
+                    var frames = new JsStackFrame[cefFrames.Count];
+                    for (var i = 0; i < cefFrames.Count; i++)
+                    {
+                        using (var cefFrame = cefFrames.GetList(i)) 
+                        {
+                            frames[i] = JsStackFrame.FromCefValue(cefFrame);
+                        }
+                    }
+                    return new JsUncaughtException()
+                    {
+                        FrameId = arguments.GetString(0),
+                        Message = arguments.GetString(1),
+                        StackFrames = frames
+                    };
                 }
-                return new JsUncaughtException()
-                {
-                    FrameId = arguments.GetString(0),
-                    Message = arguments.GetString(1),
-                    StackFrames = frames
-                };
             }
         }
 
