@@ -135,7 +135,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                 {
                     var global = context.GetGlobal();
                     var handler = new V8FunctionHandler(objectInfo.Name, HandleNativeObjectCall);
-                    var attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontEnum | CefV8PropertyAttribute.DontDelete;
+                    var attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontDelete;
 
                     using (var v8Obj = CefV8Value.CreateObject())
                     {

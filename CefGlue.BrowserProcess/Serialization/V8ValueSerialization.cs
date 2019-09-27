@@ -82,7 +82,7 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                     var cefDictionary = CefDictionaryValue.Create();
                     foreach (var key in keys)
                     {
-                        if (obj.HasValue(key) && !key.StartsWith("__"))
+                        if (obj.HasValue(key))
                         {
                             SerializeV8Object(obj.GetValue(key), new CefDictionaryWrapper(cefDictionary, key), visitedObjects);
                         }
