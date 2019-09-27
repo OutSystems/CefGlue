@@ -21,8 +21,6 @@ namespace Xilium.CefGlue.Common.Platform
 
         public abstract void Focus();
 
-        public abstract bool IsFocused { get; }
-
         public abstract void SetCursor(IntPtr cursorHandle);
 
         public abstract void SetTooltip(string text);

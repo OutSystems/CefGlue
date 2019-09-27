@@ -5,8 +5,6 @@ namespace Xilium.CefGlue.Common.Platform
 {
     internal interface IControl
     {
-        bool IsFocused { get; }
-
         event Action GotFocus;
         event Action LostFocus;
 

@@ -119,15 +119,13 @@ namespace Xilium.CefGlue.Common
 
         public bool IsInitialized => _browser != null;
 
-        //public bool IsJavascriptEngineInitialized => 
-
         public bool IsLoading => _browser?.IsLoading ?? false;
 
         public string Title => _title;
 
         public double ZoomLevel
         {
-            get => _browserHost.GetZoomLevel();
+            get => _browserHost?.GetZoomLevel() ?? 0;
             set => _browserHost.SetZoomLevel(value);
         }
 
@@ -623,7 +621,6 @@ namespace Xilium.CefGlue.Common
 
             _browser = browser;
             _browserHost = browser.GetHost();
-            _browserHost.SetFocus(_control.IsFocused);
             _startUrl = null;
 
             width = RenderedWidth;
@@ -747,7 +744,7 @@ namespace Xilium.CefGlue.Common
             {
                 action();
             }
-            catch (Exception ex)
+            catch // (Exception ex)
             {
                 // TODO _logger.ErrorException($"{_name} : Caught exception in {scopeName}()", ex);
                 throw;

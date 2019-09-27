@@ -139,8 +139,6 @@ namespace Xilium.CefGlue.WPF.Platform
 
         protected virtual IInputElement MousePositionReferential => _control;
 
-        public override bool IsFocused => _control.Dispatcher.Invoke(() => _control.IsFocused);
-
         public override void Focus()
         {
             _control.Focus();
