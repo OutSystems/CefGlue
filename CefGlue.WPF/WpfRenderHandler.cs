@@ -1,4 +1,6 @@
 using System;
+using System.IO.MemoryMappedFiles;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -14,8 +16,15 @@ namespace Xilium.CefGlue.WPF
     /// </summary>
     internal class WpfRenderHandler : BuiltInRenderHandler
     {
+        [DllImport("Kernel32.dll", EntryPoint = "RtlMoveMemory")]
+        private static extern void CopyMemory(IntPtr destination, IntPtr source, int length);
+
+        private readonly object _renderLock = new object();
+
         private WriteableBitmap _bitmap;
-        private bool _disposed;
+
+        private MemoryMappedFile _mappedFile;
+        private MemoryMappedViewAccessor _viewAccessor;
 
         public WpfRenderHandler(Image image, ILogger logger) : base(logger)
         {
@@ -26,101 +35,109 @@ namespace Xilium.CefGlue.WPF
 
         public override void Dispose()
         {
+            ReleaseMemoryMap();
             _bitmap = null;
-            _disposed = true;
+            GC.SuppressFinalize(this);
         }
 
         public bool AllowsTransparency { get; set; } = true;
 
-        protected override void InnerPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
+        private void ReleaseMemoryMap()
         {
-            Image.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
+            lock (_renderLock)
             {
-                if (_disposed)
-                {
-                    return;
-                }
-
-                // Actual browser size changed check.
-                if (_sizeChanged && (width != Width || height != Height))
-                {
-                    return;
-                }
-
-                try
-                {
-                    if (_sizeChanged)
-                    {
-                        _bitmap = new WriteableBitmap(Width, Height, Dpi, Dpi, AllowsTransparency ? PixelFormats.Bgra32 : PixelFormats.Bgr32, null);
-                        Image.Source = _bitmap;
-
-                        _sizeChanged = false;
-                    }
-
-                    if (_bitmap != null)
-                    {
-                        InnerPaint(width, height, dirtyRects, buffer);
-                    }
-                }
-                catch (Exception e)
-                {
-                    HandleException(e);
-                }
-            }));
+                _viewAccessor?.Dispose();
+                _viewAccessor = null;
+                _mappedFile?.Dispose();
+                _mappedFile = null;
+            }
         }
 
-        private void InnerPaint(int browserWidth, int browserHeight, CefRectangle[] dirtyRects, IntPtr sourceBuffer)
+        protected override void InnerPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
         {
-            int stride = browserWidth * 4;
-            int sourceBufferSize = stride * browserHeight;
+            lock(_renderLock)
+            {
+                var pixelFormat = AllowsTransparency ? PixelFormats.Bgra32 : PixelFormats.Bgr32;
+                var pixels = width * height;
+                var bytesPerPixel = (pixelFormat.BitsPerPixel / 8);
+                var byteCount = pixels * bytesPerPixel;
 
-            _logger.Debug("DoRenderBrowser() Bitmap H{0}xW{1}, Browser H{2}xW{3}", _bitmap.Height, _bitmap.Width, browserHeight, browserWidth);
+                if (_viewAccessor == null || _viewAccessor.Capacity < byteCount)
+                {
+                    ReleaseMemoryMap();
+
+                    // needs new buffer or buffer size must increase
+                    _mappedFile = MemoryMappedFile.CreateNew(null, byteCount, MemoryMappedFileAccess.ReadWrite);
+                    _viewAccessor = _mappedFile.CreateViewAccessor();
+                }
+
+                var sourceBuffer = _viewAccessor.SafeMemoryMappedViewHandle;
+
+                // copy pixels to our buffer, which we will then use to update the wpf bitmap (on the UI thread)
+                CopyMemory(sourceBuffer.DangerousGetHandle(), buffer, byteCount);
+
+                Image.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
+                {
+                    lock (_renderLock)
+                    {
+                        // quick size check - actual browser size changed?
+                        if (width != Width || height != Height)
+                        {
+                            return;
+                        }
+
+                        if (sourceBuffer.IsInvalid || sourceBuffer.IsClosed)
+                        {
+                            // buffer is not valid anymore, bail-out
+                            return;
+                        }
+
+                        try
+                        {
+                            if (_bitmap == null || _bitmap.PixelWidth != width || _bitmap.PixelHeight != height)
+                            {
+                                _bitmap = new WriteableBitmap(width, height, Dpi, Dpi, pixelFormat, null);
+                                Image.Source = _bitmap;
+                            }
+
+                            InnerPaint(width, height, bytesPerPixel, dirtyRects, sourceBuffer.DangerousGetHandle());
+                        }
+                        catch (Exception e)
+                        {
+                            HandleException(e);
+                        }
+                    }
+                }));
+            }
+        }
+
+        private void InnerPaint(int browserWidth, int browserHeight, int bytesPerPixel, CefRectangle[] dirtyRects, IntPtr sourceBuffer)
+        {
+            int stride = browserWidth * bytesPerPixel;
+            int sourceBufferSize = stride * browserHeight;
 
             if (browserWidth == 0 || browserHeight == 0)
             {
                 return;
             }
 
-            foreach (CefRectangle dirtyRect in dirtyRects)
-            {
-                _logger.Debug(string.Format("Dirty rect [{0},{1},{2},{3}]", dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height));
+            _bitmap.Lock();
 
+            foreach (var dirtyRect in dirtyRects)
+            {
+   
                 if (dirtyRect.Width == 0 || dirtyRect.Height == 0)
                 {
                     continue;
                 }
-
-                // If the window has been resized, make sure we never try to render too much
-                var adjustedWidth = dirtyRect.Width;
-                //if (dirtyRect.X + dirtyRect.Width > (int) bitmap.Width)
-                //{
-                //    adjustedWidth = (int) bitmap.Width - (int) dirtyRect.X;
-                //}
-
-                var adjustedHeight = dirtyRect.Height;
-                //if (dirtyRect.Y + dirtyRect.Height > (int) bitmap.Height)
-                //{
-                //    adjustedHeight = (int) bitmap.Height - (int) dirtyRect.Y;
-                //}
-
+                
                 // Update the dirty region
-                var sourceRect = new Int32Rect(dirtyRect.X, dirtyRect.Y, adjustedWidth, adjustedHeight);
+                var sourceRect = new Int32Rect(dirtyRect.X, dirtyRect.Y, dirtyRect.Width, dirtyRect.Height);
                 _bitmap.WritePixels(sourceRect, sourceBuffer, sourceBufferSize, stride, dirtyRect.X, dirtyRect.Y);
 
-                // 			int adjustedWidth = browserWidth;
-                // 			if (browserWidth > (int)bitmap.Width)
-                // 				adjustedWidth = (int)bitmap.Width;
-                // 
-                // 			int adjustedHeight = browserHeight;
-                // 			if (browserHeight > (int)bitmap.Height)
-                // 				adjustedHeight = (int)bitmap.Height;
-                // 
-                // 			int sourceBufferSize = browserWidth * browserHeight * 4;
-                // 			int stride = browserWidth * 4;
-                // 
-                // 			Int32Rect sourceRect = new Int32Rect(0, 0, adjustedWidth, adjustedHeight);
-                // 			bitmap.WritePixels(sourceRect, sourceBuffer, sourceBufferSize, stride, 0, 0);
             }
+
+            _bitmap.Unlock();
         }
     }
 }

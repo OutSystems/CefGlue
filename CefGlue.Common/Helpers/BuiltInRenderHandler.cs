@@ -12,7 +12,6 @@ namespace Xilium.CefGlue.Common.Helpers
 
         protected readonly ILogger _logger;
 
-        protected bool _sizeChanged;
         private int _width;
         private int _height;
 
@@ -37,8 +36,10 @@ namespace Xilium.CefGlue.Common.Helpers
         {
             // When browser size changed - we just skip frame updating.
             // This is dirty precheck to do not do Invoke whenever is possible.
-            if (_sizeChanged && (width != Width || height != Height))
+            if (width != Width || height != Height)
+            {
                 return;
+            }
 
             InnerPaint(buffer, width, height, dirtyRects);
         }
@@ -49,16 +50,8 @@ namespace Xilium.CefGlue.Common.Helpers
 
         public void Resize(int width, int height)
         {
-            if (_width != width)
-            {
-                _width = width;
-                _sizeChanged = true;
-            }
-            if (_height != height)
-            {
-                _height = height;
-                _sizeChanged = true;
-            }
+            _width = width;
+            _height = height;
         }
     }
 }

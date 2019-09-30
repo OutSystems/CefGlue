@@ -27,6 +27,8 @@ namespace Xilium.CefGlue.Avalonia
 
         protected override void InnerPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
         {
+            // TODO handle cases where buffer might be freed
+
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 if (_disposed)
@@ -35,27 +37,23 @@ namespace Xilium.CefGlue.Avalonia
                 }
 
                 // Actual browser size changed check.
-                if (_sizeChanged && (width != Width || height != Height))
+                if (width != Width || height != Height)
+                {
                     return;
+                }
 
                 try
                 {
-                    if (_sizeChanged)
+                    if (_bitmap == null || _bitmap.PixelSize.Width != width || _bitmap.PixelSize.Height != height)
                     {
                         // TODO handle transparency
                         _bitmap?.Dispose();
                         _bitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(Dpi, Dpi), PixelFormat.Bgra8888);
                         Image.Source = _bitmap;
-
-                        _sizeChanged = false;
                     }
 
-                    if (_bitmap != null)
-                    {
-                        InternalPaint(buffer, width, height, dirtyRects);
-
-                        Image.InvalidateVisual();
-                    }
+                    InternalPaint(buffer, width, height, dirtyRects);
+                    Image.InvalidateVisual();
                 }
                 catch (Exception e)
                 {
