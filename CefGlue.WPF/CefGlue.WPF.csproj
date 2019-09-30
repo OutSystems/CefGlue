@@ -26,6 +26,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -102,10 +103,9 @@
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj">
-      <Project>{F8F4D0B8-5777-41A1-AB3C-0E324E61FAF9}</Project>
+      <Project>{f8f4d0b8-5777-41a1-ab3c-0e324e61faf9}</Project>
       <Name>CefGlue.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\CefGlue\CefGlue.csproj">
