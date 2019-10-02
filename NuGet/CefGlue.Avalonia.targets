@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <CefGlueTargetDir Condition=" '$(CefGlueTargetDir)' == '' "></CefGlueTargetDir>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <CefGlueAvaloniaBinaries Include="$(MSBuildThisFileDirectory)..\lib\472\**\*.*" />
+        <None Include="@(CefGlueAvaloniaBinaries)">
+            <Link>$(CefGlueTargetDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+</Project>

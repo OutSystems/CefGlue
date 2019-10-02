@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <ItemGroup>
+        <Reference Include="CefGlue.WPF">
+            <HintPath>$(MSBuildThisFileDirectory)..\lib\net472\Xilium.CefGlue.WPF.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+</Project>

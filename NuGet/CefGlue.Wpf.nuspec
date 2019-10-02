@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>CefGlue.Wpf</id>
+    <version>$version$</version>
+    <title>CefGlue.Wpf</title>
+    <authors>Xilium CefGlue Team</authors>
+    <owners>Xilium CefGlue Team</owners>
+    <projectUrl>https://gitlab.com/xiliumhq/chromiumembedded/cefglue</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Xilium.CefGlue is a .NET/Mono binding for The Chromium Embedded Framework (CEF).</description>
+    <releaseNotes></releaseNotes>
+    <tags>cef, chromium, chrome browser, cefglue</tags>
+    <dependencies>
+      <dependency id="CefGlue.Common" version="[$version$]" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\CefGlue.WPF\bin\Release\Xilium.CefGlue.WPF.dll" target="lib\net40"/>
+    <file src="..\CefGlue.WPF\bin\Release\Xilium.CefGlue.WPF.pdb" target="lib\net40"/>
+    <file src="..\CefGlue.WPF\bin\Release\Xilium.CefGlue.WPF.xml" target="lib\net40"/>
+
+    <file src="CefGlue.Wpf.props" target="build" />
+    <file src="CefGlue.Wpf.targets" target="build" />
+  </files>
+</package>
+

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Target Name="FrameworkVersionCheck" BeforeTargets="ResolveAssemblyReferences" Condition=" '$(TargetFramework)' == 'net472' ">
+    <Error Text="CefGlue requires .Net 4.7.2 or higher" />
+  </Target>
+
+  <ItemGroup>
+    <CefGlueCommonBinaries Include="$(MSBuildThisFileDirectory)..\lib\net472\*.*" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <CefGlueTargetDir Condition=" '$(CefGlueTargetDir)' == '' "></CefGlueTargetDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="@(CefRedist64)">
+      <Link>$(CefGlueTargetDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="@(CefGlueCommonBinaries)">
+      <Link>$(CefGlueTargetDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+    <Target Name="AfterBuild">
+        <ItemGroup>
+            <SubProcessFiles Include="$(MSBuildThisFileDirectory)..\lib\net472\CefGlue.BrowserSubprocess.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(SubProcessFiles)" DestinationFolder="$(TargetDir)" />
+    </Target>
+  
+    <Target Name="CefGlueCopyLibs64" BeforeTargets="AfterBuild" Condition="'$(Platform)' == 'x64'">
+        <Message Importance="high" Text="Copying cef.redist x64 files" />
+        <Copy SourceFiles="@(CefRedist64)" DestinationFiles="@(CefRedist64->'$(TargetDir)\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    </Target>  
+
+</Project>
