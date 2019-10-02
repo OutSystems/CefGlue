@@ -16,8 +16,8 @@ namespace Xilium.CefGlue.BrowserProcess.JavascriptExecution
         {
             var message = Messages.JsEvaluationRequest.FromCefMessage(args.Message);
 
-            var browser = args.Browser;
-            var context = browser.GetFrame(message.FrameId ?? "")?.V8Context;
+            var frame = args.Frame;
+            var context = frame.V8Context;
 
             if (context != null && context.Enter())
             {
@@ -41,7 +41,7 @@ namespace Xilium.CefGlue.BrowserProcess.JavascriptExecution
 
                     using (var cefResponseMessage = response.ToCefProcessMessage())
                     {
-                        browser.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
+                        frame.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
                     }
                 }
                 finally

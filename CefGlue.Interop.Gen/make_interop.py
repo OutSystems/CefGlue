@@ -738,7 +738,7 @@ def append_xmldoc(result, lines):
     return
 
 
-def make_version_cs(content):
+def make_version_cs(content, api_hash_content):
     result = []
 
     result.append('public const string CEF_VERSION = %s;' % __get_version_constant(content, "CEF_VERSION"))
@@ -753,11 +753,11 @@ def make_version_cs(content):
     result.append('public const int CHROME_VERSION_PATCH = %s;' % __get_version_constant(content, "CHROME_VERSION_PATCH"))
     result.append("");
 
-    result.append('public const string CEF_API_HASH_UNIVERSAL = %s;' % __get_version_constant(content, "CEF_API_HASH_UNIVERSAL"))
+    result.append('public const string CEF_API_HASH_UNIVERSAL = %s;' % __get_version_constant(api_hash_content, "CEF_API_HASH_UNIVERSAL"))
     result.append("");
-    result.append('public const string CEF_API_HASH_PLATFORM_WIN = %s;' % __get_version_constant(content, "CEF_API_HASH_PLATFORM", "WIN"))
-    result.append('public const string CEF_API_HASH_PLATFORM_MACOSX = %s;' % __get_version_constant(content, "CEF_API_HASH_PLATFORM", "MACOSX"))
-    result.append('public const string CEF_API_HASH_PLATFORM_LINUX = %s;' % __get_version_constant(content, "CEF_API_HASH_PLATFORM", "LINUX"))
+    result.append('public const string CEF_API_HASH_PLATFORM_WIN = %s;' % __get_version_constant(api_hash_content, "CEF_API_HASH_PLATFORM", "WIN"))
+    result.append('public const string CEF_API_HASH_PLATFORM_MACOSX = %s;' % __get_version_constant(api_hash_content, "CEF_API_HASH_PLATFORM", "MACOSX"))
+    result.append('public const string CEF_API_HASH_PLATFORM_LINUX = %s;' % __get_version_constant(api_hash_content, "CEF_API_HASH_PLATFORM", "LINUX"))
 
     body = []
     body.append('using System;')
@@ -836,8 +836,8 @@ def write_interop(header, filepath, backup, schema_name, cppheaderdir):
             tmplpath = schema.proxy_tmpl_path
         writect += update_file('./' + tmplpath, schema.cpp2csname(cls.get_name()) + ".tmpl.g.cs", content, backup)
 
-    # process cef_version_h
-    content = make_version_cs(read_file(cppheaderdir + '/' + 'cef_version.h'))
+    # process cef_version.h and cef_api_hash.h
+    content = make_version_cs(read_file(cppheaderdir + '/' + 'cef_version.h'), read_file(cppheaderdir + '/' + 'cef_api_hash.h'),)
     writect += update_file(filepath + '/' + schema.libcef_path, schema.libcef_version_filename, content, backup)
 
     return writect

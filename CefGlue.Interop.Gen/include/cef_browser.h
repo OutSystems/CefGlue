@@ -44,7 +44,6 @@
 #include "include/cef_frame.h"
 #include "include/cef_image.h"
 #include "include/cef_navigation_entry.h"
-#include "include/cef_process_message.h"
 #include "include/cef_request_context.h"
 
 class CefBrowserHost;
@@ -181,14 +180,6 @@ class CefBrowser : public virtual CefBaseRefCounted {
   ///
   /*--cef()--*/
   virtual void GetFrameNames(std::vector<CefString>& names) = 0;
-
-  ///
-  // Send a message to the specified |target_process|. Returns true if the
-  // message was sent successfully.
-  ///
-  /*--cef()--*/
-  virtual bool SendProcessMessage(CefProcessId target_process,
-                                  CefRefPtr<CefProcessMessage> message) = 0;
 };
 
 ///
@@ -286,29 +277,37 @@ class CefBrowserHost : public virtual CefBaseRefCounted {
   // |windowInfo|. All values will be copied internally and the actual window
   // will be created on the UI thread. If |request_context| is empty the
   // global request context will be used. This method can be called on any
-  // browser process thread and will not block.
+  // browser process thread and will not block. The optional |extra_info|
+  // parameter provides an opportunity to specify extra information specific
+  // to the created browser that will be passed to
+  // CefRenderProcessHandler::OnBrowserCreated() in the render process.
   ///
   /*--cef(optional_param=client,optional_param=url,
-          optional_param=request_context)--*/
+          optional_param=request_context,optional_param=extra_info)--*/
   static bool CreateBrowser(const CefWindowInfo& windowInfo,
                             CefRefPtr<CefClient> client,
                             const CefString& url,
                             const CefBrowserSettings& settings,
+                            CefRefPtr<CefDictionaryValue> extra_info,
                             CefRefPtr<CefRequestContext> request_context);
 
   ///
   // Create a new browser window using the window parameters specified by
   // |windowInfo|. If |request_context| is empty the global request context
   // will be used. This method can only be called on the browser process UI
-  // thread.
+  // thread. The optional |extra_info| parameter provides an opportunity to
+  // specify extra information specific to the created browser that will be
+  // passed to CefRenderProcessHandler::OnBrowserCreated() in the render
+  // process.
   ///
   /*--cef(optional_param=client,optional_param=url,
-          optional_param=request_context)--*/
+          optional_param=request_context,optional_param=extra_info)--*/
   static CefRefPtr<CefBrowser> CreateBrowserSync(
       const CefWindowInfo& windowInfo,
       CefRefPtr<CefClient> client,
       const CefString& url,
       const CefBrowserSettings& settings,
+      CefRefPtr<CefDictionaryValue> extra_info,
       CefRefPtr<CefRequestContext> request_context);
 
   ///
@@ -639,6 +638,12 @@ class CefBrowserHost : public virtual CefBaseRefCounted {
                                    int deltaY) = 0;
 
   ///
+  // Send a touch event to the browser for a windowless browser.
+  ///
+  /*--cef()--*/
+  virtual void SendTouchEvent(const CefTouchEvent& event) = 0;
+
+  ///
   // Send a focus event to the browser.
   ///
   /*--cef()--*/
@@ -865,6 +870,19 @@ class CefBrowserHost : public virtual CefBaseRefCounted {
   ///
   /*--cef()--*/
   virtual bool IsBackgroundHost() = 0;
+
+  ///
+  //  Set whether the browser's audio is muted.
+  ///
+  /*--cef()--*/
+  virtual void SetAudioMuted(bool mute) = 0;
+
+  ///
+  // Returns true if the browser's audio is muted.  This method can only be
+  // called on the UI thread.
+  ///
+  /*--cef()--*/
+  virtual bool IsAudioMuted() = 0;
 };
 
 #endif  // CEF_INCLUDE_CEF_BROWSER_H_

@@ -65,10 +65,10 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                 throw new InvalidOperationException("Call id already exists");
             }
 
-            var browser = CefV8Context.GetCurrentContext().GetBrowser();
+            var frame = CefV8Context.GetCurrentContext().GetFrame();
             using (var cefMessage = message.ToCefProcessMessage())
             {
-                browser.SendProcessMessage(CefProcessId.Browser, cefMessage);
+                frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
             }
 
             return promiseHolder;

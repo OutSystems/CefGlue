@@ -1,11 +1,18 @@
-using System;
-
 namespace Xilium.CefGlue.Common.Helpers
 {
     internal class MessageReceivedEventArgs
     {
-        public CefBrowser Browser { get; set; }
-        public CefProcessId ProcessId { get; set; }
-        public CefProcessMessage Message { get; set; }
+        public MessageReceivedEventArgs(CefBrowser browser, CefFrame frame, CefProcessId processId, CefProcessMessage message)
+        {
+            Browser = browser;
+            Frame = frame;
+            ProcessId = processId;
+            Message = message;
+        }
+
+        public CefBrowser Browser { get; }
+        public CefFrame Frame { get; }
+        public CefProcessId ProcessId { get; }
+        public CefProcessMessage Message { get; }
     }
 }

@@ -52,7 +52,7 @@
 // will be called on the render process main thread (TID_RENDERER) unless
 // otherwise indicated.
 ///
-/*--cef(source=client)--*/
+/*--cef(source=client,no_debugct_check)--*/
 class CefRenderProcessHandler : public virtual CefBaseRefCounted {
  public:
   typedef cef_navigation_type_t NavigationType;
@@ -75,10 +75,13 @@ class CefRenderProcessHandler : public virtual CefBaseRefCounted {
   ///
   // Called after a browser has been created. When browsing cross-origin a new
   // browser will be created before the old browser with the same identifier is
-  // destroyed.
+  // destroyed. |extra_info| is a read-only value originating from
+  // CefBrowserHost::CreateBrowser(), CefBrowserHost::CreateBrowserSync(),
+  // CefLifeSpanHandler::OnBeforePopup() or CefBrowserView::CreateBrowserView().
   ///
   /*--cef()--*/
-  virtual void OnBrowserCreated(CefRefPtr<CefBrowser> browser) {}
+  virtual void OnBrowserCreated(CefRefPtr<CefBrowser> browser,
+                                CefRefPtr<CefDictionaryValue> extra_info) {}
 
   ///
   // Called before a browser is destroyed.
@@ -145,6 +148,7 @@ class CefRenderProcessHandler : public virtual CefBaseRefCounted {
   ///
   /*--cef()--*/
   virtual bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
+                                        CefRefPtr<CefFrame> frame,
                                         CefProcessId source_process,
                                         CefRefPtr<CefProcessMessage> message) {
     return false;

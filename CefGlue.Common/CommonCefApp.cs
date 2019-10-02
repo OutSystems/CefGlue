@@ -36,7 +36,7 @@ namespace Xilium.CefGlue.Common
             {
                 foreach (var scheme in _customSchemes)
                 {
-                    registrar.AddCustomScheme(scheme.SchemeName, scheme.IsStandard, scheme.IsLocal, scheme.IsDisplayIsolated, scheme.IsSecure, scheme.IsCorsEnabled, scheme.IsCSPBypassing);
+                    registrar.AddCustomScheme(scheme.SchemeName, scheme.Options);
                 }
             }
         }

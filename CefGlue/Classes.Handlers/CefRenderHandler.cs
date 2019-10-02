@@ -390,5 +390,22 @@
         /// the character range.
         /// </summary>
         protected virtual void OnTextSelectionChanged(CefBrowser browser, string selectedText, CefRange selectedRange) { }
+
+
+        private void on_virtual_keyboard_requested(cef_render_handler_t* self, cef_browser_t* browser, CefTextInputMode input_mode)
+        {
+            CheckSelf(self);
+
+            var mBrowser = CefBrowser.FromNative(browser);
+            OnVirtualKeyboardRequested(mBrowser, input_mode);
+        }
+
+        /// <summary>
+        /// Called when an on-screen keyboard should be shown or hidden for the
+        /// specified |browser|. |input_mode| specifies what kind of keyboard
+        /// should be opened. If |input_mode| is CEF_TEXT_INPUT_MODE_NONE, any
+        /// existing keyboard for this browser should be hidden.
+        /// </summary>
+        protected virtual void OnVirtualKeyboardRequested(CefBrowser browser, CefTextInputMode inputMode) { }
     }
 }

@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
     <AssemblyName>Xilium.CefGlue</AssemblyName>
-    <Version>72.0.3626.81</Version>
+    <Version>75.1.0.0</Version>
     <Company>Xilium</Company>
     <Authors>Xilium</Authors>
     <PackageProjectUrl>https://gitlab.com/xiliumhq/chromiumembedded/cefglue</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.com/xiliumhq/chromiumembedded/cefglue</RepositoryUrl>
-    <Description>Xilium.CefGlue is a .NET/Mono binding for the popular Chromium Embedded Framework (CEF).</Description>
+    <Description>Xilium.CefGlue is a .NET/Mono binding for The Chromium Embedded Framework (CEF) by Marshall A. Greenblatt.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -24,12 +24,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Wrapper\**" />
+    <EmbeddedResource Remove="Wrapper\**" />
+    <None Remove="Wrapper\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Interop\Base\cef_string_t.disabled.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Interop\Base\cef_string_t.disabled.cs" />
-    <None Include="Wrapper\MessageRouter\ReadMe.txt" />
   </ItemGroup>
 
   <ItemGroup>

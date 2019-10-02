@@ -13,17 +13,15 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             public string Script;
             public string Url;
             public int Line;
-            public string FrameId;
 
             public CefProcessMessage ToCefProcessMessage()
             {
                 var message = CefProcessMessage.Create(Name);
                 var arguments = message.Arguments;
                 arguments.SetInt(0, TaskId);
-                arguments.SetString(1, FrameId);
-                arguments.SetString(2, Script);
-                arguments.SetString(3, Url);
-                arguments.SetInt(4, Line);
+                arguments.SetString(1, Script);
+                arguments.SetString(2, Url);
+                arguments.SetInt(3, Line);
                 return message;
             }
 
@@ -33,10 +31,9 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                 return new JsEvaluationRequest()
                 {
                     TaskId = arguments.GetInt(0),
-                    FrameId = arguments.GetString(1),
-                    Script = arguments.GetString(2),
-                    Url = arguments.GetString(3),
-                    Line = arguments.GetInt(4)
+                    Script = arguments.GetString(1),
+                    Url = arguments.GetString(2),
+                    Line = arguments.GetInt(3)
                 };
             }
         }

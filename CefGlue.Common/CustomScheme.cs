@@ -8,18 +8,6 @@ namespace Xilium.CefGlue.Common
         private const string CommandLineSchemesSeparator = ";";
         private const string CommandLinePropertiesSeparator = "|";
 
-        [Flags]
-        private enum SchemeProperties
-        {
-            None = 0,
-            Standard = 1,
-            Local = 2,
-            DisplayIsolated = 4,
-            Secure = 8,
-            CorsEnabled = 16,
-            CSPBypassing = 32
-        }
-
         /// <summary>
         /// Gets or sets schema Name e.g. custom
         /// </summary>
@@ -100,6 +88,11 @@ namespace Xilium.CefGlue.Common
         public bool IsCSPBypassing { get; set; }
 
         /// <summary>
+        /// If ture the scheme can perform Fetch API requests. 
+        /// </summary>
+        public bool IsFetchEnabled { get; set; }
+
+        /// <summary>
         /// Factory class that creates <see cref="CefResourceHandler"/> instances
         /// for handling current scheme requests.
         /// </summary>
@@ -116,36 +109,49 @@ namespace Xilium.CefGlue.Common
             IsSecure = true;
             IsCorsEnabled = true;
             IsCSPBypassing = false;
+            IsFetchEnabled = true;
+        }
+
+        public CefSchemeOptions Options
+        {
+            get
+            {
+                var options = CefSchemeOptions.None;
+                if (IsStandard)
+                {
+                    options |= CefSchemeOptions.Standard;
+                }
+                if (IsLocal)
+                {
+                    options |= CefSchemeOptions.Local;
+                }
+                if (IsSecure)
+                {
+                    options |= CefSchemeOptions.Secure;
+                }
+                if (IsDisplayIsolated)
+                {
+                    options |= CefSchemeOptions.DisplayIsolated;
+                }
+                if (IsCorsEnabled)
+                {
+                    options |= CefSchemeOptions.CorsEnabled;
+                }
+                if (IsCSPBypassing)
+                {
+                    options |= CefSchemeOptions.CspBypassing;
+                }
+                if (IsFetchEnabled)
+                {
+                    options |= CefSchemeOptions.FetchEnabled;
+                }
+                return options;
+            }
         }
 
         private string SerializeToCommandLineValue()
         {
-            var properties = SchemeProperties.None;
-            if (IsStandard)
-            {
-                properties |= SchemeProperties.Standard;
-            }
-            if (IsLocal)
-            {
-                properties |= SchemeProperties.Local;
-            }
-            if (IsSecure)
-            {
-                properties |= SchemeProperties.Secure;
-            }
-            if (IsDisplayIsolated)
-            {
-                properties |= SchemeProperties.DisplayIsolated;
-            }
-            if (IsCorsEnabled)
-            {
-                properties |= SchemeProperties.CorsEnabled;
-            }
-            if (IsCSPBypassing)
-            {
-                properties |= SchemeProperties.CSPBypassing;
-            }
-            return SchemeName + CommandLinePropertiesSeparator + DomainName + CommandLinePropertiesSeparator + ((int) properties).ToString();
+            return SchemeName + CommandLinePropertiesSeparator + DomainName + CommandLinePropertiesSeparator + ((int)Options).ToString();
         }
 
         private static CustomScheme DeserializeFromCommandLineValue(string value)
@@ -156,18 +162,19 @@ namespace Xilium.CefGlue.Common
                 return null;
             }
 
-            Enum.TryParse<SchemeProperties>(tokens[2], out var properties);
+            Enum.TryParse<CefSchemeOptions>(tokens[2], out var properties);
 
             return new CustomScheme()
             {
                 SchemeName = tokens[0],
                 DomainName = tokens[1],
-                IsStandard = properties.HasFlag(SchemeProperties.Standard),
-                IsLocal = properties.HasFlag(SchemeProperties.Local),
-                IsDisplayIsolated = properties.HasFlag(SchemeProperties.DisplayIsolated),
-                IsSecure = properties.HasFlag(SchemeProperties.Secure),
-                IsCorsEnabled = properties.HasFlag(SchemeProperties.CorsEnabled),
-                IsCSPBypassing = properties.HasFlag(SchemeProperties.CSPBypassing)
+                IsStandard = properties.HasFlag(CefSchemeOptions.Standard),
+                IsLocal = properties.HasFlag(CefSchemeOptions.Local),
+                IsDisplayIsolated = properties.HasFlag(CefSchemeOptions.DisplayIsolated),
+                IsSecure = properties.HasFlag(CefSchemeOptions.Secure),
+                IsCorsEnabled = properties.HasFlag(CefSchemeOptions.CorsEnabled),
+                IsCSPBypassing = properties.HasFlag(CefSchemeOptions.CspBypassing),
+                IsFetchEnabled = properties.HasFlag(CefSchemeOptions.FetchEnabled)
             };
         }
 

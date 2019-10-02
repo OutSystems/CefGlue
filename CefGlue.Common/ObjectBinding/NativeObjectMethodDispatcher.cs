@@ -79,7 +79,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                             {
                                 using (var cefMessage = resultMessage.ToCefProcessMessage())
                                 {
-                                    args.Browser.SendProcessMessage(CefProcessId.Renderer, cefMessage);
+                                    args.Frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
                                 }
                             }
                         }

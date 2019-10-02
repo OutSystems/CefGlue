@@ -82,7 +82,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             var message = new Messages.JsEvaluationRequest()
             {
                 TaskId = taskId,
-                FrameId = frame.Name,
                 Script = script,
                 Url = url,
                 Line = line
@@ -96,7 +95,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             {
                 using (var cefMessage = message.ToCefProcessMessage())
                 {
-                    _browser.SendProcessMessage(CefProcessId.Renderer, cefMessage);
+                    frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
                 }
 
                 // TODO should we add any timeout param and remove the task after that ?

@@ -26,13 +26,13 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
             _javascriptToNativeDispatcher = new JavascriptToNativeDispatcherRenderSide(_messageDispatcher);
         }
 
-        protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
+        protected override bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {
             WithErrorHandling(() =>
             {
-                _messageDispatcher.DispatchMessage(browser, sourceProcess, message);
-            });
-            return base.OnProcessMessageReceived(browser, sourceProcess, message);
+                _messageDispatcher.DispatchMessage(browser, frame, sourceProcess, message);
+            }, frame);
+            return base.OnProcessMessageReceived(browser, frame, sourceProcess, message);
         }
 
         protected override void OnContextCreated(CefBrowser browser, CefFrame frame, CefV8Context context)
@@ -48,9 +48,9 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
                 };
                 using (var cefMessage = message.ToCefProcessMessage())
                 {
-                    browser.SendProcessMessage(CefProcessId.Browser, cefMessage);
+                    frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
                 }
-            });
+            }, frame);
         }
 
         protected override void OnContextReleased(CefBrowser browser, CefFrame frame, CefV8Context context)
@@ -66,9 +66,9 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
                 };
                 using (var cefMessage = message.ToCefProcessMessage())
                 {
-                    browser.SendProcessMessage(CefProcessId.Browser, cefMessage);
+                    frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
                 }
-            });
+            }, frame);
         }
 
         protected override void OnUncaughtException(CefBrowser browser, CefFrame frame, CefV8Context context, CefV8Exception exception, CefV8StackTrace stackTrace)
@@ -96,25 +96,26 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
                 };
                 using (var cefMessage = message.ToCefProcessMessage())
                 {
-                    browser.SendProcessMessage(CefProcessId.Browser, cefMessage);
+                    frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
                 }
 
                 base.OnUncaughtException(browser, frame, context, exception, stackTrace);
-            });
+            }, frame);
         }
 
-        protected override void OnBrowserCreated(CefBrowser browser)
+
+        protected override void OnBrowserCreated(CefBrowser browser, CefDictionaryValue extraInfo)
         {
             _browser = browser;
-            base.OnBrowserCreated(browser);
+            base.OnBrowserCreated(browser, extraInfo);
         }
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            WithErrorHandling(() => throw (Exception) e.ExceptionObject);
+            WithErrorHandling(() => throw (Exception) e.ExceptionObject, _browser?.GetMainFrame());
         }
 
-        private void WithErrorHandling(Action action)
+        private void WithErrorHandling(Action action, CefFrame frame)
         {
             try
             {
@@ -124,7 +125,7 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
             {
                 try
                 {
-                    if (_browser != null)
+                    if (frame != null)
                     {
                         var exceptionMessage = new Messages.UnhandledException()
                         {
@@ -134,7 +135,7 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
                         };
                         using (var message = exceptionMessage.ToCefProcessMessage())
                         {
-                            _browser.SendProcessMessage(CefProcessId.Browser, message);
+                            frame.SendProcessMessage(CefProcessId.Browser, message);
                         }
                     }
                     else

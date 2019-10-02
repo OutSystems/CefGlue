@@ -1,10 +1,10 @@
-﻿namespace Xilium.CefGlue.Demo
+namespace Xilium.CefGlue.Demo
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
     using Xilium.CefGlue;
-    using Xilium.CefGlue.Wrapper;
+    //using Xilium.CefGlue.Wrapper;
 
     class DemoRenderProcessHandler : CefRenderProcessHandler
     {
@@ -12,14 +12,14 @@
 
         public DemoRenderProcessHandler()
         {
-            MessageRouter = new CefMessageRouterRendererSide(new CefMessageRouterConfig());
+            //MessageRouter = new CefMessageRouterRendererSide(new CefMessageRouterConfig());
         }
 
-        internal CefMessageRouterRendererSide MessageRouter { get; private set; }
+        //internal CefMessageRouterRendererSide MessageRouter { get; private set; }
 
         protected override void OnContextCreated(CefBrowser browser, CefFrame frame, CefV8Context context)
         {
-            MessageRouter.OnContextCreated(browser, frame, context);
+            //MessageRouter.OnContextCreated(browser, frame, context);
 
             // MessageRouter.OnContextCreated doesn't capture CefV8Context immediately,
             // so we able to release it immediately in this call.
@@ -29,13 +29,13 @@
         protected override void OnContextReleased(CefBrowser browser, CefFrame frame, CefV8Context context)
         {
             // MessageRouter.OnContextReleased releases captured CefV8Context (if have).
-            MessageRouter.OnContextReleased(browser, frame, context);
+            //MessageRouter.OnContextReleased(browser, frame, context);
 
             // Release CefV8Context.
             context.Dispose();
         }
 
-        protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
+        protected override bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {
             if (DumpProcessMessages)
             {
@@ -60,18 +60,18 @@
                 }
             }
 
-            var handled = MessageRouter.OnProcessMessageReceived(browser, sourceProcess, message);
-            if (handled) return true;
+            //var handled = MessageRouter.OnProcessMessageReceived(browser, sourceProcess, message);
+            //if (handled) return true;
 
             if (message.Name == "myMessage2") return true;
 
             var message2 = CefProcessMessage.Create("myMessage2");
-            var success = browser.SendProcessMessage(CefProcessId.Renderer, message2);
-            Console.WriteLine("Sending myMessage2 to renderer process = {0}", success);
+            frame.SendProcessMessage(CefProcessId.Renderer, message2);
+            Console.WriteLine("Sending myMessage2 to renderer process = {0}");
 
             var message3 = CefProcessMessage.Create("myMessage3");
-            var success2 = browser.SendProcessMessage(CefProcessId.Browser, message3);
-            Console.WriteLine("Sending myMessage3 to browser process = {0}", success);
+            frame.SendProcessMessage(CefProcessId.Browser, message3);
+            Console.WriteLine("Sending myMessage3 to browser process = {0}");
 
             return false;
         }

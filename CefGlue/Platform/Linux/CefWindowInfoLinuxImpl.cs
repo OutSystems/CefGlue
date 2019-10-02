@@ -51,8 +51,8 @@
 
         public override string Name
         {
-            get { return default(string); }
-            set { }
+            get { ThrowIfDisposed(); return cef_string_t.ToString(&_self->window_name); }
+            set { ThrowIfDisposed(); cef_string_t.Copy(value, &_self->window_name); }
         }
 
         public override int X

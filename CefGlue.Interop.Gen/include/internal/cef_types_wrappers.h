@@ -481,6 +481,25 @@ struct CefMouseEventTraits {
 ///
 typedef CefStructBase<CefMouseEventTraits> CefMouseEvent;
 
+struct CefTouchEventTraits {
+  typedef cef_touch_event_t struct_type;
+
+  static inline void init(struct_type* s) {}
+
+  static inline void clear(struct_type* s) {}
+
+  static inline void set(const struct_type* src,
+                         struct_type* target,
+                         bool copy) {
+    *target = *src;
+  }
+};
+
+///
+// Class representing a touch event.
+///
+typedef CefStructBase<CefTouchEventTraits> CefTouchEvent;
+
 struct CefPopupFeaturesTraits {
   typedef cef_popup_features_t struct_type;
 
@@ -534,6 +553,7 @@ struct CefSettingsTraits {
     cef_string_clear(&s->resources_dir_path);
     cef_string_clear(&s->locales_dir_path);
     cef_string_clear(&s->accept_language_list);
+    cef_string_clear(&s->application_client_id_for_file_scanning);
   }
 
   static inline void set(const struct_type* src,
@@ -584,6 +604,9 @@ struct CefSettingsTraits {
     cef_string_set(src->accept_language_list.str,
                    src->accept_language_list.length,
                    &target->accept_language_list, copy);
+    cef_string_set(src->application_client_id_for_file_scanning.str,
+                   src->application_client_id_for_file_scanning.length,
+                   &target->application_client_id_for_file_scanning, copy);
   }
 };
 

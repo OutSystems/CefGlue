@@ -81,6 +81,8 @@ c2cs_types = {
     'cef_draggable_region_t': 'cef_draggable_region_t',
     'cef_pdf_print_settings_t': 'cef_pdf_print_settings_t',
     'cef_composition_underline_t': 'cef_composition_underline_t',
+    'cef_touch_event_t': 'cef_touch_event_t',
+    
 
     # platform dependend structs
     'cef_main_args_t': 'cef_main_args_t',
@@ -94,6 +96,8 @@ c2cs_types = {
     'cef_cursor_type_t': 'CefCursorType',
 
 	'cef_range_t': 'cef_range_t',
+    'cef_channel_layout_t': 'CefChannelLayout',
+    'cef_text_input_mode_t': 'CefTextInputMode',
     }
 
 c2cs_platform_retval = {

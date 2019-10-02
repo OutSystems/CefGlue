@@ -13,6 +13,7 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_client_t
     {
         internal cef_base_ref_counted_t _base;
+        internal IntPtr _get_audio_handler;
         internal IntPtr _get_context_menu_handler;
         internal IntPtr _get_dialog_handler;
         internal IntPtr _get_display_handler;
@@ -51,6 +52,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate int has_at_least_one_ref_delegate(cef_client_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate cef_audio_handler_t* get_audio_handler_delegate(cef_client_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -134,7 +141,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate int on_process_message_received_delegate(cef_client_t* self, cef_browser_t* browser, CefProcessId source_process, cef_process_message_t* message);
+        internal delegate int on_process_message_received_delegate(cef_client_t* self, cef_browser_t* browser, cef_frame_t* frame, CefProcessId source_process, cef_process_message_t* message);
         
         private static int _sizeof;
         

@@ -7,16 +7,11 @@ namespace Xilium.CefGlue.Common.Helpers
     {
         private readonly Dictionary<string, Action<MessageReceivedEventArgs>> _messageHandlers = new Dictionary<string, Action<MessageReceivedEventArgs>>();
 
-        public void DispatchMessage(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
+        public void DispatchMessage(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {
             if (_messageHandlers.TryGetValue(message.Name, out var existingHandler))
             {
-                existingHandler(new MessageReceivedEventArgs()
-                {
-                    Browser = browser,
-                    ProcessId = sourceProcess,
-                    Message = message
-                });
+                existingHandler(new MessageReceivedEventArgs(browser, frame, sourceProcess, message));
             }
         }
 

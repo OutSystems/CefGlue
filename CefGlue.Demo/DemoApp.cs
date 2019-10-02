@@ -1,15 +1,15 @@
-﻿namespace Xilium.CefGlue.Demo
+namespace Xilium.CefGlue.Demo
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
     using System.Diagnostics;
-    using Xilium.CefGlue.Wrapper;
+    //using Xilium.CefGlue.Wrapper;
     using System.Threading;
 
     public abstract class DemoApp : IDisposable
     {
-        public static CefMessageRouterBrowserSide BrowserMessageRouter { get; private set; }
+        //public static CefMessageRouterBrowserSide BrowserMessageRouter { get; private set; }
 
         private const string DumpRequestDomain = "dump-request.demoapp.cefglue.xilium.local";
 
@@ -180,7 +180,7 @@
                 arguments.SetDouble(2, 12345.6789);
                 arguments.SetBool(3, true);
 
-                browser.SendProcessMessage(CefProcessId.Renderer, message);
+                browser.GetMainFrame().SendProcessMessage(CefProcessId.Renderer, message);
             }
         }
 
@@ -251,60 +251,60 @@
             }
 
             // window.cefQuery({ request: 'my_request', onSuccess: function(response) { console.log(response); }, onFailure: function(err,msg) { console.log(err, msg); } });
-            DemoApp.BrowserMessageRouter = new CefMessageRouterBrowserSide(new CefMessageRouterConfig());
-            DemoApp.BrowserMessageRouter.AddHandler(new DemoMessageRouterHandler());
+            //DemoApp.BrowserMessageRouter = new CefMessageRouterBrowserSide(new CefMessageRouterConfig());
+            //DemoApp.BrowserMessageRouter.AddHandler(new DemoMessageRouterHandler());
         }
 
-        private class DemoMessageRouterHandler : CefMessageRouterBrowserSide.Handler
-        {
-            public override bool OnQuery(CefBrowser browser, CefFrame frame, long queryId, string request, bool persistent, CefMessageRouterBrowserSide.Callback callback)
-            {
-                if (request == "wait5")
-                {
-                    new Thread(() =>
-                    {
-                        Thread.Sleep(5000);
-                        callback.Success("success! responded after 5 sec timeout."); // TODO: at this place crash can occurs, if application closed
-                    }).Start();
-                    return true;
-                }
+        //private class DemoMessageRouterHandler : CefMessageRouterBrowserSide.Handler
+        //{
+        //    public override bool OnQuery(CefBrowser browser, CefFrame frame, long queryId, string request, bool persistent, CefMessageRouterBrowserSide.Callback callback)
+        //    {
+        //        if (request == "wait5")
+        //        {
+        //            new Thread(() =>
+        //            {
+        //                Thread.Sleep(5000);
+        //                callback.Success("success! responded after 5 sec timeout."); // TODO: at this place crash can occurs, if application closed
+        //            }).Start();
+        //            return true;
+        //        }
 
-                if (request == "wait5f")
-                {
-                    new Thread(() =>
-                    {
-                        Thread.Sleep(5000);
-                        callback.Failure(12345, "success! responded after 5 sec timeout. responded as failure.");
-                    }).Start();
-                    return true;
-                }
+        //        if (request == "wait5f")
+        //        {
+        //            new Thread(() =>
+        //            {
+        //                Thread.Sleep(5000);
+        //                callback.Failure(12345, "success! responded after 5 sec timeout. responded as failure.");
+        //            }).Start();
+        //            return true;
+        //        }
 
-                if (request == "wait30")
-                {
-                    new Thread(() =>
-                    {
-                        Thread.Sleep(30000);
-                        callback.Success("success! responded after 30 sec timeout.");
-                    }).Start();
-                    return true;
-                }
+        //        if (request == "wait30")
+        //        {
+        //            new Thread(() =>
+        //            {
+        //                Thread.Sleep(30000);
+        //                callback.Success("success! responded after 30 sec timeout.");
+        //            }).Start();
+        //            return true;
+        //        }
 
-                if (request == "noanswer")
-                {
-                    return true;
-                }
+        //        if (request == "noanswer")
+        //        {
+        //            return true;
+        //        }
 
-                var chars = request.ToCharArray();
-                Array.Reverse(chars);
-                var response = new string(chars);
-                callback.Success(response);
-                return true;
-            }
+        //        var chars = request.ToCharArray();
+        //        Array.Reverse(chars);
+        //        var response = new string(chars);
+        //        callback.Success(response);
+        //        return true;
+        //    }
 
-            public override void OnQueryCanceled(CefBrowser browser, CefFrame frame, long queryId)
-            {
-            }
-        }
+        //    public override void OnQueryCanceled(CefBrowser browser, CefFrame frame, long queryId)
+        //    {
+        //    }
+        //}
 
         public static void PostTask(CefThreadId threadId, Action action)
         {

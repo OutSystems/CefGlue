@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue.Demo.Browser
+namespace Xilium.CefGlue.Demo.Browser
 {
     using System;
     using System.Collections.Generic;
@@ -29,7 +29,7 @@
 
         protected override void OnBeforeClose(CefBrowser browser)
         {
-            DemoApp.BrowserMessageRouter.OnBeforeClose(browser);
+            //DemoApp.BrowserMessageRouter.OnBeforeClose(browser);
         }
     }
 }

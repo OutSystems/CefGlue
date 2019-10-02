@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xilium.CefGlue.Common.Events;
@@ -63,7 +62,8 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
                     using (var cefMessage = message.ToCefProcessMessage())
                     {
-                        _browser.SendProcessMessage(CefProcessId.Browser, cefMessage);
+                        // TODO target main frame?
+                        _browser.GetMainFrame().SendProcessMessage(CefProcessId.Browser, cefMessage);
                     }
                 }
             }
@@ -97,7 +97,8 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
             using (var cefMessage = message.ToCefProcessMessage())
             {
-                _browser.SendProcessMessage(CefProcessId.Browser, cefMessage);
+                // TODO target main frame?
+                _browser.GetMainFrame().SendProcessMessage(CefProcessId.Browser, cefMessage);
             }
         }
     }

@@ -1,6 +1,5 @@
 using System.Collections.Specialized;
 using System.IO;
-using System.Text;
 
 namespace Xilium.CefGlue.Common.Handlers
 {
@@ -47,16 +46,6 @@ namespace Xilium.CefGlue.Common.Handlers
             Response = null;
         }
 
-        protected override bool CanGetCookie(CefCookie cookie)
-        {
-            return true;   
-        }
-
-        protected override bool CanSetCookie(CefCookie cookie)
-        {
-            return true;
-        }
-
         protected override void GetResponseHeaders(CefResponse response, out long responseLength, out string redirectUrl)
         {
             redirectUrl = null;
@@ -93,13 +82,44 @@ namespace Xilium.CefGlue.Common.Handlers
             }
         }
 
-        protected override bool ProcessRequest(CefRequest request, CefCallback callback)
+        protected override bool Open(CefRequest request, out bool handleRequest, CefCallback callback)
         {
-            callback.Continue();
+            var fashion = ProcessRequestAsync(request, callback);
+            switch (fashion)
+            {
+                case RequestHandlingFashion.Continue:
+                    handleRequest = true;
+                    return true;
+
+                case RequestHandlingFashion.ContinueAsync:
+                    handleRequest = false;
+                    return true;
+
+                default:
+                    handleRequest = true;
+                    return false;
+            }
+        }
+
+        protected virtual RequestHandlingFashion ProcessRequestAsync(CefRequest request, CefCallback callback)
+        {
+            return RequestHandlingFashion.Continue;
+        }
+
+        protected override bool Skip(long bytesToSkip, out long bytesSkipped, CefResourceSkipCallback callback)
+        {
+            if (Response == null || !Response.CanSeek)
+            {
+                bytesSkipped = - 2; // ERR_FAILED
+                return false;
+            }
+
+            bytesSkipped = bytesToSkip;
+            Response.Seek(bytesToSkip, SeekOrigin.Current);
             return true;
         }
 
-        protected override bool ReadResponse(Stream response, int bytesToRead, out int bytesRead, CefCallback callback)
+        protected override bool Read(Stream response, int bytesToRead, out int bytesRead, CefResourceReadCallback callback)
         {
             callback.Dispose();
 
