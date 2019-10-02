@@ -34,7 +34,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue.Demo.WPF", "CefGlue.Demo.WPF\CefGlue.Demo.WPF.csproj", "{8E758128-CA79-4533-963E-91A1BF0558FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue.BrowserProcess", "CefGlue.BrowserProcess\CefGlue.BrowserProcess.csproj", "{1E60FB67-049E-4877-92A9-D5480F81A324}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.BrowserProcess", "CefGlue.BrowserProcess\CefGlue.BrowserProcess.csproj", "{1E60FB67-049E-4877-92A9-D5480F81A324}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{953C06E5-DABF-4958-8640-62147CD1DFAD}"
+	ProjectSection(SolutionItems) = preProject
+		NuGet\CefGlue.Avalonia.nuspec = NuGet\CefGlue.Avalonia.nuspec
+		NuGet\CefGlue.Avalonia.props = NuGet\CefGlue.Avalonia.props
+		NuGet\CefGlue.Avalonia.targets = NuGet\CefGlue.Avalonia.targets
+		NuGet\CefGlue.Common.nuspec = NuGet\CefGlue.Common.nuspec
+		NuGet\CefGlue.Common.props = NuGet\CefGlue.Common.props
+		NuGet\CefGlue.Common.targets = NuGet\CefGlue.Common.targets
+		NuGet\CefGlue.Wpf.nuspec = NuGet\CefGlue.Wpf.nuspec
+		NuGet\CefGlue.Wpf.props = NuGet\CefGlue.Wpf.props
+		NuGet\CefGlue.Wpf.targets = NuGet\CefGlue.Wpf.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -159,6 +172,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{953C06E5-DABF-4958-8640-62147CD1DFAD} = {654422AE-4104-44E8-85CF-575CBDF23CD1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2F9E15B4-B4D0-4E9F-8AB0-F1421CBF063A}

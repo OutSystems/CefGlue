@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <ItemGroup>
+        <Reference Include="CefGlue">
+            <HintPath>$(MSBuildThisFileDirectory)..\lib\net472\Xilium.CefGlue.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="CefGlue.Common">
+            <HintPath>$(MSBuildThisFileDirectory)..\lib\net472\Xilium.CefGlue.Common.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <None Include="@(CefGlueCommonBinaries)">
+            <Link>$(CefGlueTargetDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+</Project>

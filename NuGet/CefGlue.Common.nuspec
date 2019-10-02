@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>CefGlue.Common</id>
+    <version>$version$</version>
+    <title>CefGlue.Common</title>
+    <authors>Xilium CefGlue Team</authors>
+    <owners>Xilium CefGlue Team</owners>
+    <projectUrl>https://gitlab.com/xiliumhq/chromiumembedded/cefglue</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Xilium.CefGlue is a .NET/Mono binding for The Chromium Embedded Framework (CEF).</description>
+    <releaseNotes></releaseNotes>
+    <tags>cef, chromium, chrome browser, cefglue</tags>
+    <dependencies>
+      <dependency id="cef.redist.x64" version="[$RedistVersion$]" />
+      <dependency id="NLog" version="4.6.2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- Common CefGlue stuff (shared between both Avalonia and WPF) -->
+
+    <file src="..\CefGlue.Common\bin\Release\net472\Xilium.CefGlue.dll" target="lib\net472"/>
+    <file src="..\CefGlue.Common\bin\Release\net472\Xilium.CefGlue.pdb" target="lib\net472"/>
+
+    <file src="..\CefGlue.Common\bin\Release\net472\Xilium.CefGlue.Common.dll" target="lib\net472"/>
+    <file src="..\CefGlue.Common\bin\Release\net472\Xilium.CefGlue.Common.pdb" target="lib\net472"/>
+
+    <file src="..\CefGlue.BrowserProcess\bin\Release\net472\Xilium.CefGlue.BrowserProcess.exe" target="lib\net472"/>
+    <file src="..\CefGlue.BrowserProcess\bin\Release\net472\Xilium.CefGlue.BrowserProcess.exe.config" target="lib\net472"/>
+    <file src="..\CefGlue.BrowserProcess\bin\Release\net472\Xilium.CefGlue.BrowserProcess.pdb" target="lib\net472"/>
+
+    <file src="..\CefGlue.Common\bin\Release\netstandard2.0\Xilium.CefGlue.dll" target="lib\netcoreapp2.2"/>
+    <file src="..\CefGlue.Common\bin\Release\netstandard2.0\Xilium.CefGlue.pdb" target="lib\netcoreapp2.2"/>
+
+    <file src="..\CefGlue.Common\bin\Release\netstandard2.0\Xilium.CefGlue.Common.dll" target="lib\netcoreapp2.2"/>
+    <file src="..\CefGlue.Common\bin\Release\netstandard2.0\Xilium.CefGlue.Common.pdb" target="lib\netcoreapp2.2"/>
+
+    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp2.2\Xilium.CefGlue.BrowserProcess.dll" target="lib\netcoreapp2.2"/>
+    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp2.2\Xilium.CefGlue.BrowserProcess.pdb" target="lib\netcoreapp2.2"/>
+
+    <file src="CefGlue.Common.props" target="build" />
+    <file src="CefGlue.Common.targets" target="build" />
+  </files>
+</package>
+
