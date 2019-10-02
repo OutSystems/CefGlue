@@ -31,6 +31,8 @@ namespace Xilium.CefGlue.Common
         private JavascriptExecutionEngine _javascriptExecutionEngine;
         private NativeObjectMethodDispatcher _objectMethodDispatcher;
 
+        private Func<CefRectangle> getViewRectOverride;
+
         private readonly NativeObjectRegistry _objectRegistry = new NativeObjectRegistry();
 
         public CommonBrowserAdapter(object eventsEmitter, string name, IControl control, IPopup popup, ILogger logger)
@@ -399,6 +401,16 @@ namespace Xilium.CefGlue.Common
                 if (_browserHost != null)
                 {
                     _browserHost.WasHidden(!isVisible);
+                    // workaround cef OSR bug (https://bitbucket.org/chromiumembedded/cef/issues/2483/osr-invalidate-does-not-generate-frame)
+                    // we notify browser of a resize and return height+1px on next GetViewRect call
+                    // then restore the original size back again
+                    getViewRectOverride = () =>
+                    {
+                        getViewRectOverride = null;
+                        _browserHost?.WasResized();
+                        return new CefRectangle(0, 0, BuiltInRenderHandler?.Width ?? 1, (BuiltInRenderHandler?.Height + 1) ?? 1);
+                    };
+                    _browserHost.WasResized();
                 }
             });
         }
@@ -531,14 +543,14 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.GetViewRect(out CefRectangle rect)
         {
-            GetViewRect(out rect);
+            rect = GetViewRect();
         }
 
-        protected virtual void GetViewRect(out CefRectangle rect)
+        protected virtual CefRectangle GetViewRect()
         {
             // The simulated screen and view rectangle are the same. This is necessary
             // for popup menus to be located and sized inside the view.
-            rect = new CefRectangle(0, 0, RenderedWidth, RenderedHeight);
+            return getViewRectOverride?.Invoke() ?? new CefRectangle(0, 0, RenderedWidth, RenderedHeight);
         }
 
         void ICefBrowserHost.GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY)
