@@ -611,7 +611,7 @@ namespace Xilium.CefGlue.Common
                 return;
             }
             
-            _javascriptExecutionEngine = new JavascriptExecutionEngine(browser, _cefClient.Dispatcher);
+            _javascriptExecutionEngine = new JavascriptExecutionEngine(_cefClient.Dispatcher);
             _javascriptExecutionEngine.ContextCreated += OnJavascriptExecutionEngineContextCreated;
             _javascriptExecutionEngine.ContextReleased += OnJavascriptExecutionEngineContextReleased;
             _javascriptExecutionEngine.UncaughtException += OnJavascriptExecutionEngineUncaughtException;

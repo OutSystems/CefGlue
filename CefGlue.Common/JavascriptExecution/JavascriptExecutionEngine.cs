@@ -13,13 +13,10 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
     {
         private static volatile int lastTaskId;
 
-        private readonly CefBrowser _browser;
         private readonly ConcurrentDictionary<int, TaskCompletionSource<object>> _pendingTasks = new ConcurrentDictionary<int, TaskCompletionSource<object>>();
 
-        public JavascriptExecutionEngine(CefBrowser browser, MessageDispatcher dispatcher)
+        public JavascriptExecutionEngine(MessageDispatcher dispatcher)
         {
-            _browser = browser;
-
             dispatcher.RegisterMessageHandler(Messages.JsEvaluationResult.Name, HandleScriptEvaluationResultMessage);
             dispatcher.RegisterMessageHandler(Messages.JsContextCreated.Name, HandleContextCreatedMessage);
             dispatcher.RegisterMessageHandler(Messages.JsContextReleased.Name, HandleContextReleasedMessage);
@@ -52,28 +49,28 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
         private void HandleContextCreatedMessage(MessageReceivedEventArgs args)
         {
             var message = Messages.JsContextCreated.FromCefMessage(args.Message);
-            if (message.FrameId == null)
+            if (args.Frame.IsMain)
             {
                 IsMainFrameContextInitialized = true;
             }
-            ContextCreated?.Invoke(_browser.GetFrame(message.FrameId ?? ""));
+            ContextCreated?.Invoke(args.Frame);
         }
 
         private void HandleContextReleasedMessage(MessageReceivedEventArgs args)
         {
             var message = Messages.JsContextReleased.FromCefMessage(args.Message);
-            if (message.FrameId == null)
+            if (args.Frame.IsMain)
             {
                 IsMainFrameContextInitialized = false;
             }
-            ContextReleased?.Invoke(_browser.GetFrame(message.FrameId ?? ""));
+            ContextReleased?.Invoke(args.Frame);
         }
 
         private void HandleUncaughtExceptionMessage(MessageReceivedEventArgs args)
         {
             var message = Messages.JsUncaughtException.FromCefMessage(args.Message);
             var stackFrames = message.StackFrames.Select(f => new JavascriptStackFrame(f.FunctionName, f.ScriptNameOrSourceUrl, f.Column, f.LineNumber));
-            UncaughtException?.Invoke(new JavascriptUncaughtExceptionEventArgs(_browser.GetFrame(message.FrameId ?? ""), message.Message, stackFrames.ToArray()));
+            UncaughtException?.Invoke(new JavascriptUncaughtExceptionEventArgs(args.Frame, message.Message, stackFrames.ToArray()));
         }
 
         public async Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame)

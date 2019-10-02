@@ -207,23 +207,14 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
         {
             public const string Name = nameof(JsContextCreated);
 
-            public string FrameId;
-
             public CefProcessMessage ToCefProcessMessage()
             {
-                var message = CefProcessMessage.Create(Name);
-                var arguments = message.Arguments;
-                arguments.SetString(0, FrameId);
-                return message;
+                return CefProcessMessage.Create(Name);
             }
 
             public static JsContextCreated FromCefMessage(CefProcessMessage message)
             {
-                var arguments = message.Arguments;
-                return new JsContextCreated()
-                {
-                    FrameId = arguments.GetString(0),
-                };
+                return new JsContextCreated();
             }
         }
 
@@ -231,23 +222,14 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
         {
             public const string Name = nameof(JsContextReleased);
 
-            public string FrameId;
-
             public CefProcessMessage ToCefProcessMessage()
             {
-                var message = CefProcessMessage.Create(Name);
-                var arguments = message.Arguments;
-                arguments.SetString(0, FrameId);
-                return message;
+                return CefProcessMessage.Create(Name);
             }
 
             public static JsContextReleased FromCefMessage(CefProcessMessage message)
             {
-                var arguments = message.Arguments;
-                return new JsContextReleased()
-                {
-                    FrameId = arguments.GetString(0),
-                };
+                return new JsContextReleased();
             }
         }
 
@@ -255,7 +237,6 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
         {
             public const string Name = nameof(JsUncaughtException);
 
-            public string FrameId;
             public string Message;
             public JsStackFrame[] StackFrames;
 
@@ -263,8 +244,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             {
                 var message = CefProcessMessage.Create(Name);
                 var arguments = message.Arguments;
-                arguments.SetString(0, FrameId);
-                arguments.SetString(1, Message);
+                arguments.SetString(0, Message);
 
                 var frames = CefListValue.Create();
                 for (var i = 0; i < StackFrames.Length; i++)
@@ -272,14 +252,14 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                     frames.SetList(i, StackFrames[i].ToCefValue());
                 }
 
-                arguments.SetList(2, frames);
+                arguments.SetList(1, frames);
                 return message;
             }
 
             public static JsUncaughtException FromCefMessage(CefProcessMessage message)
             {
                 var arguments = message.Arguments;
-                using (var cefFrames = arguments.GetList(2))
+                using (var cefFrames = arguments.GetList(1))
                 {
                     var frames = new JsStackFrame[cefFrames.Count];
                     for (var i = 0; i < cefFrames.Count; i++)
@@ -291,8 +271,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                     }
                     return new JsUncaughtException()
                     {
-                        FrameId = arguments.GetString(0),
-                        Message = arguments.GetString(1),
+                        Message = arguments.GetString(0),
                         StackFrames = frames
                     };
                 }

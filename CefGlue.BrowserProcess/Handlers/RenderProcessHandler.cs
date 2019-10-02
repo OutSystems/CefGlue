@@ -42,10 +42,7 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
                 base.OnContextCreated(browser, frame, context);
                 _javascriptToNativeDispatcher.HandleContextCreated(context, frame.IsMain);
 
-                var message = new Messages.JsContextCreated()
-                {
-                    FrameId = frame.Name
-                };
+                var message = new Messages.JsContextCreated();
                 using (var cefMessage = message.ToCefProcessMessage())
                 {
                     frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
@@ -60,10 +57,7 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
                 _javascriptToNativeDispatcher.HandleContextReleased(context, frame.IsMain);
                 base.OnContextReleased(browser, frame, context);
 
-                var message = new Messages.JsContextReleased()
-                {
-                    FrameId = frame.Name
-                };
+                var message = new Messages.JsContextReleased();
                 using (var cefMessage = message.ToCefProcessMessage())
                 {
                     frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
@@ -90,7 +84,6 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
 
                 var message = new Messages.JsUncaughtException()
                 {
-                    FrameId = frame.Name,
                     Message = exception.Message,
                     StackFrames = frames
                 };
