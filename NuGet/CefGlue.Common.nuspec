@@ -35,13 +35,8 @@
     <file src="..\CefGlue.Common\bin\Release\netstandard2.0\Xilium.CefGlue.Common.dll" target="lib\netcoreapp2.2"/>
     <file src="..\CefGlue.Common\bin\Release\netstandard2.0\Xilium.CefGlue.Common.pdb" target="lib\netcoreapp2.2"/>
 
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp2.2\win-x64\Xilium.CefGlue.BrowserProcess.exe" target="lib\netcoreapp2.2\win-x64"/>
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp2.2\win-x64\Xilium.CefGlue.BrowserProcess.exe.config" target="lib\netcoreapp2.2\win-x64"/>
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp2.2\win-x64\Xilium.CefGlue.BrowserProcess.pdb" target="lib\netcoreapp2.2\win-x64"/>
-
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp2.2\osx-x64\Xilium.CefGlue.BrowserProcess.BrowserProcess" target="lib\netcoreapp2.2\osx-x64"/>
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp2.2\osx-x64\Xilium.CefGlue.BrowserProcess.dll" target="lib\netcoreapp2.2\osx-x64"/>
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp2.2\osx-x64\Xilium.CefGlue.BrowserProcess.pdb" target="lib\netcoreapp2.2\osx-x64"/>
+    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp2.2\Xilium.CefGlue.BrowserProcess.dll" target="lib\netcoreapp2.2"/>
+    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp2.2\Xilium.CefGlue.BrowserProcess.pdb" target="lib\netcoreapp2.2"/>
 
     <file src="CefGlue.Common.props" target="build" />
     <file src="CefGlue.Common.targets" target="build" />
