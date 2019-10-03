@@ -49,24 +49,33 @@ namespace Xilium.CefGlue.Common
             control.VisibilityChanged += HandleVisibilityChanged;
         }
 
+        ~CommonBrowserAdapter()
+        {
+            Dispose(false);
+        }
+
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         public void Dispose(bool disposing)
         {
-            // TODO: What's the right way of disposing the browser instance?
-            if (_browserHost != null)
+            var browserHost = _browserHost;
+            if (browserHost != null)
             {
-                _browserHost.CloseBrowser();
+                if (disposing)
+                {
+                    browserHost.CloseBrowser();
+                }
+                browserHost.Dispose();
                 _browserHost = null;
             }
 
-            if (_browser != null)
+            var browser = _browser;
+            if (browser != null)
             {
-                _browser.Dispose();
+                browser.Dispose();
                 _browser = null;
             }
 
@@ -74,6 +83,7 @@ namespace Xilium.CefGlue.Common
             {
                 BuiltInRenderHandler?.Dispose();
                 PopupRenderHandler?.Dispose();
+                GC.SuppressFinalize(this);
             }
         }
 
