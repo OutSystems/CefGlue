@@ -92,7 +92,7 @@ namespace Xilium.CefGlue.Common
         public event JavascriptContextLifetimeEventHandler JavascriptContextReleased;
         public event JavascriptUncaughtExceptionEventHandler JavascriptUncaughtException;
 
-        public event RenderProcessUnhandledExceptionEventHandler RenderProcessUnhandledException;
+        public event AsyncUnhandledExceptionEventHandler UnhandledException;
 
         public string Address { get => _browser?.GetMainFrame().Url ?? _startUrl; set => NavigateTo(value); }
 
@@ -560,7 +560,11 @@ namespace Xilium.CefGlue.Common
 
         protected void GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY)
         {
-            var point = _control.PointToScreen(new Point(viewX, viewY));
+            var point = new Point(0, 0);
+            WithErrorHandling(nameof(GetScreenPoint), () =>
+            {
+                point = _control.PointToScreen(new Point(viewX, viewY));
+            });
             screenX = point.X;
             screenY = point.Y;
         }
@@ -572,20 +576,26 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandlePopupShow(bool show)
         {
-            if (show)
+            WithErrorHandling(nameof(ICefBrowserHost.HandlePopupShow), () =>
             {
-                _popup.Open();
-            }
-            else
-            {
-                _popup.Close();
-            }
+                if (show)
+                {
+                    _popup.Open();
+                }
+                else
+                {
+                    _popup.Close();
+                }
+            });
         }
 
         void ICefBrowserHost.HandlePopupSizeChange(CefRectangle rect)
         {
-            _popup.RenderHandler.Resize(rect.Width, rect.Height);
-            _popup.MoveAndResize(rect.X, rect.Y, rect.Width, rect.Height);
+            WithErrorHandling(nameof(ICefBrowserHost.HandlePopupSizeChange), () =>
+            {
+                _popup.RenderHandler.Resize(rect.Width, rect.Height);
+                _popup.MoveAndResize(rect.X, rect.Y, rect.Width, rect.Height);
+            });
         }
 
         void ICefBrowserHost.HandleCursorChange(IntPtr cursorHandle)
@@ -622,26 +632,31 @@ namespace Xilium.CefGlue.Common
                 // Make sure we don't initialize ourselves more than once. That seems to break things.
                 return;
             }
-            
-            _javascriptExecutionEngine = new JavascriptExecutionEngine(_cefClient.Dispatcher);
-            _javascriptExecutionEngine.ContextCreated += OnJavascriptExecutionEngineContextCreated;
-            _javascriptExecutionEngine.ContextReleased += OnJavascriptExecutionEngineContextReleased;
-            _javascriptExecutionEngine.UncaughtException += OnJavascriptExecutionEngineUncaughtException;
 
-            _objectRegistry.SetBrowser(browser);
-            _objectMethodDispatcher = new NativeObjectMethodDispatcher(_cefClient.Dispatcher, _objectRegistry);
+            WithErrorHandling((nameof(OnBrowserCreated)), () =>
+            {
+                _javascriptExecutionEngine = new JavascriptExecutionEngine(_cefClient.Dispatcher);
+                _javascriptExecutionEngine.ContextCreated += OnJavascriptExecutionEngineContextCreated;
+                _javascriptExecutionEngine.ContextReleased += OnJavascriptExecutionEngineContextReleased;
+                _javascriptExecutionEngine.UncaughtException += OnJavascriptExecutionEngineUncaughtException;
 
-            _browser = browser;
-            _browserHost = browser.GetHost();
-            _startUrl = null;
+                _objectRegistry.SetBrowser(browser);
+                _objectMethodDispatcher = new NativeObjectMethodDispatcher(_cefClient.Dispatcher, _objectRegistry);
 
-            width = RenderedWidth;
-            height = RenderedHeight;
+                _browser = browser;
+                _browserHost = browser.GetHost();
+                _startUrl = null;
 
-            if (width > 0 && height > 0)
-                _browserHost.WasResized();
+                width = RenderedWidth;
+                height = RenderedHeight;
 
-            Initialized?.Invoke();
+                if (width > 0 && height > 0)
+                {
+                    _browserHost.WasResized();
+                }
+
+                Initialized?.Invoke();
+            });
         }
 
         private void OnJavascriptExecutionEngineContextCreated(CefFrame frame)
@@ -735,7 +750,13 @@ namespace Xilium.CefGlue.Common
                 renderHandler = BuiltInRenderHandler;
             }
 
-            renderHandler?.Paint(buffer, width, height, dirtyRects);
+            const string ScopeName = nameof(ICefBrowserHost.HandleViewPaint);
+
+            WithErrorHandling(ScopeName, () =>
+            {
+                renderHandler?.Paint(buffer, width, height, dirtyRects)
+                              .ContinueWith(t => HandleException(ScopeName, t.Exception), TaskContinuationOptions.OnlyOnFaulted);
+            });
         }
 
         #endregion
@@ -750,17 +771,27 @@ namespace Xilium.CefGlue.Common
             _browserHost.SendKeyEvent(keyEvent);
         }
 
+        void ICefBrowserHost.HandleException(Exception exception)
+        {
+            HandleException("Unknown", exception);
+        }
+
         protected void WithErrorHandling(string scopeName, Action action)
         {
             try
             {
                 action();
             }
-            catch // (Exception ex)
+            catch (Exception ex)
             {
-                // TODO _logger.ErrorException($"{_name} : Caught exception in {scopeName}()", ex);
-                throw;
+                HandleException(scopeName, ex);
             }
+        }
+
+        private void HandleException(string scopeName, Exception exception)
+        {
+            _logger.ErrorException($"{_name} : Caught exception in {scopeName}()", exception);
+            UnhandledException?.Invoke(_eventsEmitter, new AsyncUnhandledExceptionEventArgs(exception));
         }
 
         private void OnBrowserProcessUnhandledException(MessageReceivedEventArgs e)
@@ -768,9 +799,9 @@ namespace Xilium.CefGlue.Common
             var exceptionDetails = Messages.UnhandledException.FromCefMessage(e.Message);
             _logger.Error("Browser process unhandled exception", "Type: " + exceptionDetails.ExceptionType, "Message: " + exceptionDetails.Message, "StackTrace: " +  exceptionDetails.StackTrace);
 
-            RenderProcessUnhandledException?.Invoke(
+            UnhandledException?.Invoke(
                 _eventsEmitter, 
-                new RenderProcessUnhandledExceptionEventArgs(exceptionDetails.ExceptionType, exceptionDetails.Message, exceptionDetails.StackTrace));
+                new AsyncUnhandledExceptionEventArgs(new RenderProcessUnhandledException(exceptionDetails.ExceptionType, exceptionDetails.Message, exceptionDetails.StackTrace)));
         }
     }
 }

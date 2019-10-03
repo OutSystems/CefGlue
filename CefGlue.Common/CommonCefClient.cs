@@ -96,8 +96,16 @@ namespace Xilium.CefGlue.Common
 
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {
-            _messageDispatcher.DispatchMessage(browser, frame, sourceProcess, message);
-            return base.OnProcessMessageReceived(browser, frame, sourceProcess, message);
+            try
+            {
+                _messageDispatcher.DispatchMessage(browser, frame, sourceProcess, message);
+                return base.OnProcessMessageReceived(browser, frame, sourceProcess, message);
+            }
+            catch (Exception e)
+            {
+                _owner.HandleException(e);
+                return false;
+            }
         }
 
         public MessageDispatcher Dispatcher => _messageDispatcher;

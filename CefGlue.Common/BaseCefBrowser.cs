@@ -108,9 +108,9 @@ namespace Xilium.CefGlue.Common
         public event JavascriptUncaughtExceptionEventHandler JavascriptUncaughException { add => _adapter.JavascriptUncaughtException += value; remove => _adapter.JavascriptUncaughtException -= value; }
 
         /// <summary>
-        /// Event fired when an exception is unhandled on the the render process.
+        /// Event fired when an internal browser exception is unhandled.
         /// </summary>
-        public event RenderProcessUnhandledExceptionEventHandler RenderProcessUnhandledException { add => _adapter.RenderProcessUnhandledException += value; remove => _adapter.RenderProcessUnhandledException -= value; }
+        public event AsyncUnhandledExceptionEventHandler UnhandledException { add => _adapter.UnhandledException += value; remove => _adapter.UnhandledException -= value; }
         
         /// <summary>
         /// Return the handler for context menus. If no handler is provided the default implementation will be used.

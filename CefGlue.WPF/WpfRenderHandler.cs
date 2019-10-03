@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -43,9 +44,9 @@ namespace Xilium.CefGlue.WPF
             return () => _bitmap.Unlock();
         }
 
-        protected override void ExecuteInUIThread(Action action)
+        protected override Task ExecuteInUIThread(Action action)
         {
-            Image.Dispatcher.BeginInvoke(DispatcherPriority.Render, action);
+            return Image.Dispatcher.InvokeAsync(action, DispatcherPriority.Render).Task;
         }
 
         protected override int RenderedHeight =>  _bitmap?.PixelHeight ?? 0;

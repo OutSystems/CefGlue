@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
@@ -37,9 +38,9 @@ namespace Xilium.CefGlue.Avalonia
 
         protected override int RenderedWidth => _bitmap?.PixelSize.Width ?? 0;
 
-        protected override void ExecuteInUIThread(Action action)
+        protected override Task ExecuteInUIThread(Action action)
         {
-            Dispatcher.UIThread.InvokeAsync(action);
+            return Dispatcher.UIThread.InvokeAsync(action);
         }
 
         protected override void CreateBitmap(int width, int height)

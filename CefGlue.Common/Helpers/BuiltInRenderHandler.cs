@@ -1,5 +1,6 @@
 using System;
 using System.IO.MemoryMappedFiles;
+using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.Common.Helpers
@@ -40,8 +41,6 @@ namespace Xilium.CefGlue.Common.Helpers
 
         protected float Dpi => DeviceScaleFactor * DefaultDpi;
 
-        public event Action<Exception> ExceptionOcurred;
-
         private void ReleaseMemoryMap()
         {
             lock (_renderLock)
@@ -53,8 +52,6 @@ namespace Xilium.CefGlue.Common.Helpers
             }
         }
 
-        protected void HandleException(Exception e) => ExceptionOcurred?.Invoke(e);
-
         protected abstract int BytesPerPixel { get; }
 
         protected abstract int RenderedWidth { get; }
@@ -62,7 +59,7 @@ namespace Xilium.CefGlue.Common.Helpers
 
         protected abstract void CreateBitmap(int width, int height);
 
-        protected abstract void ExecuteInUIThread(Action action);
+        protected abstract Task ExecuteInUIThread(Action action);
 
         protected abstract void UpdateBitmap(IntPtr sourceBuffer, int sourceBufferSize, int stride, CefRectangle updateRegion);
 
@@ -70,13 +67,13 @@ namespace Xilium.CefGlue.Common.Helpers
 
         protected abstract Action BeginBitmapUpdate();
 
-        public void Paint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
+        public Task Paint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
         {
             // When browser size changed - we just skip frame updating.
             // This is dirty precheck to do not do Invoke whenever is possible.
             if (width != Width || height != Height)
             {
-                return;
+                return Task.CompletedTask;
             }
 
             lock (_renderLock)
@@ -102,7 +99,7 @@ namespace Xilium.CefGlue.Common.Helpers
                     Buffer.MemoryCopy(buffer.ToPointer(), imageBuffer.DangerousGetHandle().ToPointer(), (long)imageBuffer.ByteLength, byteCount);
                 }
 
-                ExecuteInUIThread(() =>
+                return ExecuteInUIThread(() =>
                 {
                     lock (_renderLock)
                     {
@@ -118,19 +115,12 @@ namespace Xilium.CefGlue.Common.Helpers
                             return;
                         }
 
-                        try
+                        if (RenderedWidth != width || RenderedHeight != height)
                         {
-                            if (RenderedWidth != width || RenderedHeight != height)
-                            {
-                                CreateBitmap(width, height);
-                            }
+                            CreateBitmap(width, height);
+                        }
 
-                            InnerPaint(width, height, bytesPerPixel, dirtyRects, imageBuffer.DangerousGetHandle());
-                        }
-                        catch (Exception e)
-                        {
-                            HandleException(e);
-                        }
+                        InnerPaint(width, height, bytesPerPixel, dirtyRects, imageBuffer.DangerousGetHandle());
                     }
                 });
             }
