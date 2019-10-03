@@ -32,63 +32,68 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 var arguments = CefValueSerialization.DeserializeCefList<object>(message.Arguments);
 
-                Task.Run(() =>
+                if (_cancellationTokenSource.IsCancellationRequested)
                 {
-                    var resultMessage = new Messages.NativeObjectCallResult()
-                    {
-                        CallId = message.CallId,
-                        Result = new CefValueHolder(),
-                    };
+                    return;
+                }
 
-                    try
+                try
+                {
+                    _pendingTasks.AddCount();
+                    if (_cancellationTokenSource.IsCancellationRequested)
                     {
-                        var targetObj = _objectRegistry.Get(message.ObjectName);
-                        if (targetObj != null)
+                        return;
+                    }
+
+                    Task.Run(() =>
+                    {
+                        var resultMessage = new Messages.NativeObjectCallResult()
                         {
-                            var nativeMethod = targetObj.GetNativeMethod(message.MemberName);
-                            if (nativeMethod != null)
+                            CallId = message.CallId,
+                            Result = new CefValueHolder(),
+                        };
+
+                        try
+                        {
+                            var targetObj = _objectRegistry.Get(message.ObjectName);
+                            if (targetObj != null)
                             {
-                                var result = ExecuteMethod(targetObj.Target, nativeMethod, arguments, targetObj.MethodHandler);
-                                CefValueSerialization.Serialize(result, resultMessage.Result);
-                                resultMessage.Success = true;
+                                var nativeMethod = targetObj.GetNativeMethod(message.MemberName);
+                                if (nativeMethod != null)
+                                {
+                                    var result = ExecuteMethod(targetObj.Target, nativeMethod, arguments, targetObj.MethodHandler);
+                                    CefValueSerialization.Serialize(result, resultMessage.Result);
+                                    resultMessage.Success = true;
+                                }
+                                else
+                                {
+                                    resultMessage.Success = false;
+                                    resultMessage.Exception = $"Object does not have a {message.ObjectName} method.";
+                                }
                             }
                             else
                             {
                                 resultMessage.Success = false;
-                                resultMessage.Exception = $"Object does not have a {message.ObjectName} method.";
+                                resultMessage.Exception = $"Object named {message.ObjectName} was not found. Make sure it was registered before.";
                             }
                         }
-                        else
+                        catch (Exception e)
                         {
                             resultMessage.Success = false;
-                            resultMessage.Exception = $"Object named {message.ObjectName} was not found. Make sure it was registered before.";
+                            resultMessage.Exception = e.Message;
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        resultMessage.Success = false;
-                        resultMessage.Exception = e.Message;
-                    }
 
-                    if (!_cancellationTokenSource.IsCancellationRequested)
-                    {
-                        try
+                        using (var cefMessage = resultMessage.ToCefProcessMessage())
                         {
-                            _pendingTasks.AddCount();
-                            if (!_cancellationTokenSource.IsCancellationRequested)
-                            {
-                                using (var cefMessage = resultMessage.ToCefProcessMessage())
-                                {
-                                    args.Frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
-                                }
-                            }
+                            args.Frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
                         }
-                        finally
-                        {
-                            _pendingTasks.Signal();
-                        }
-                    }
-                }, _cancellationTokenSource.Token);
+
+                    }, _cancellationTokenSource.Token);
+                }
+                finally
+                {
+                    _pendingTasks.Signal();
+                }
             }
         }
 
