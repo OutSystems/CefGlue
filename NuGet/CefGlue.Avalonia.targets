@@ -2,7 +2,6 @@
     <ItemGroup>
         <CefGlueAvaloniaBinaries Include="$(MSBuildThisFileDirectory)..\lib\net472\**\*.*" />
         <None Include="@(CefGlueAvaloniaBinaries)">
-            <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>

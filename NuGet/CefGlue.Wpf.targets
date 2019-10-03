@@ -2,7 +2,6 @@
     <ItemGroup>
         <CefGlueWpfBinaries Include="$(MSBuildThisFileDirectory)..\lib\net472\**\*.*" />
         <None Include="@(CefGlueWpfBinaries)">
-            <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>

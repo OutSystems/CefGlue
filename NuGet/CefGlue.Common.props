@@ -9,7 +9,6 @@
             <Private>False</Private>
         </Reference>
         <None Include="@(CefGlueCommonBinaries)">
-            <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
