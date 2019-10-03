@@ -22,8 +22,12 @@ namespace Xilium.CefGlue.Common
             switch (CefRuntime.Platform)
             {
                 case CefRuntimePlatform.Windows:
-                    var path = new Uri(Assembly.GetEntryAssembly().CodeBase).LocalPath;
+                    var path = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
                     path = Path.Combine(Path.GetDirectoryName(path), "Xilium.CefGlue.BrowserProcess.exe");
+                    if (!File.Exists(path))
+                    {
+                        throw new FileNotFoundException($"Unable to find \"${path}\"");
+                    }
                     settings.BrowserSubprocessPath = path;
                     settings.MultiThreadedMessageLoop = true;
                     break;
