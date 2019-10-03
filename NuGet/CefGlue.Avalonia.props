@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+<Project>
     <ItemGroup>
-        <Reference Include="CefGlue.Avalonia">
+        <Reference Include="Xilium.CefGlue.Avalonia">
             <HintPath>$(MSBuildThisFileDirectory)..\lib\net472\Xilium.CefGlue.Avalonia.dll</HintPath>
             <Private>False</Private>
         </Reference>

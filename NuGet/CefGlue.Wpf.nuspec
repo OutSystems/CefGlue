@@ -12,7 +12,7 @@
     <releaseNotes></releaseNotes>
     <tags>cef, chromium, chrome browser, cefglue</tags>
     <dependencies>
-      <dependency id="CefGlue.Common" version="[$version$]" />
+      <dependency id="CefGlue.Common" version="$version$" />
     </dependencies>
   </metadata>
   <files>
