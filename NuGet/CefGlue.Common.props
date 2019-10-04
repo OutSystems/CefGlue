@@ -9,6 +9,7 @@
             <Private>False</Private>
         </Reference>
         <None Include="@(CefGlueCommonBinaries)">
+            <Visible>false</Visible>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>

@@ -2,9 +2,11 @@
     <ItemGroup>
         <CefGlueCommonBinaries Include="$(MSBuildThisFileDirectory)..\lib\net472\**\*.*" />
         <None Include="@(CefRedist64)">
+            <Visible>false</Visible>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Include="@(CefGlueCommonBinaries)">
+            <Visible>false</Visible>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>

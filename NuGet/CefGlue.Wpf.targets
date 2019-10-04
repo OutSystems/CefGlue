@@ -2,6 +2,7 @@
     <ItemGroup>
         <CefGlueWpfBinaries Include="$(MSBuildThisFileDirectory)..\lib\net472\**\*.*" />
         <None Include="@(CefGlueWpfBinaries)">
+            <Visible>false</Visible>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
