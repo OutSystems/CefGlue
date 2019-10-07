@@ -7,13 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\CefGlue.Common\BaseCefBrowser.cs" Link="Helpers\BaseCefBrowser.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="cef.redist.x64" Version="75.1.14" />
     <PackageReference Include="nunit" Version="3.11.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CefGlue.BrowserProcess\CefGlue.BrowserProcess.csproj" />
     <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj" />
   </ItemGroup>
 
+  <Import Project="$(ProjectDir)..\Nuget\CefGlue.Common.targets" />
 </Project>
