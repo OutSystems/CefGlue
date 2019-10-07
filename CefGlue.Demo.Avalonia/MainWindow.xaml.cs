@@ -25,7 +25,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             var browserWrapper = this.FindControl<Decorator>("browserWrapper");
 
             browser = new AvaloniaCefBrowser();
-            browser.Address = "https://jsfiddle.net/1Lz8odhs/";
+            browser.Address = "https://www.google.com";
             browser.RegisterJavascriptObject(new BindingTestClass(), "boundBeforeLoadObject");
 
             browserWrapper.Child = browser;

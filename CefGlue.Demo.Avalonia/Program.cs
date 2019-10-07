@@ -10,7 +10,6 @@ namespace Xilium.CefGlue.Demo.Avalonia
             AppBuilder.Configure<App>()
                       .UsePlatformDetect()
                       .UseSkia()
-                      .ConfigureCefGlue(args)
                       .Start<MainWindow>();
             return 0;
         }

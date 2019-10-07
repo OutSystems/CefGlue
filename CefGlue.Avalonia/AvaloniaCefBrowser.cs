@@ -11,6 +11,13 @@ namespace Xilium.CefGlue.Avalonia
     /// </summary>
     public class AvaloniaCefBrowser : BaseCefBrowser
     {
+        static AvaloniaCefBrowser()
+        {
+            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX) { 
+                CefRuntimeLoader.RegisterBrowserProcessHandler(new AvaloniaBrowserProcessHandler());
+            }
+        }
+
         internal override CommonBrowserAdapter CreateAdapter()
         {
             var image = CreateImage();

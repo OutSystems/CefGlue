@@ -7,7 +7,18 @@ namespace Xilium.CefGlue.Common
 {
     public static class CefRuntimeLoader
     {
-        public static void Initialize(string[] args, CefSettings settings = null, CustomScheme[] customSchemes = null, BrowserProcessHandler browserProcessHandler = null)
+        private static BrowserProcessHandler browserProcessHandler;
+
+        internal static void RegisterBrowserProcessHandler(BrowserProcessHandler browserProcessHandler)
+        {
+            if (CefRuntime.IsInitialized)
+            {
+                throw new InvalidOperationException("Cannot register BrowserProcessHandler after cef runtime is initialized");
+            }
+            CefRuntimeLoader.browserProcessHandler = browserProcessHandler;
+        }
+
+        public static void Initialize(CefSettings settings = null, CustomScheme[] customSchemes = null)
         {
             CefRuntime.Load();
 
@@ -40,7 +51,7 @@ namespace Xilium.CefGlue.Common
 
             AppDomain.CurrentDomain.ProcessExit += delegate { CefRuntime.Shutdown(); };
 
-            CefRuntime.Initialize(new CefMainArgs(args), settings, new CommonCefApp(customSchemes, browserProcessHandler), IntPtr.Zero);
+            CefRuntime.Initialize(new CefMainArgs(new string[0]), settings, new CommonCefApp(customSchemes, browserProcessHandler), IntPtr.Zero);
 
             if (customSchemes != null)
             {

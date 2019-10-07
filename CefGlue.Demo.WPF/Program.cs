@@ -9,8 +9,6 @@ namespace Xilium.CefGlue.Demo.WPF
         [STAThread]
         private static int Main(string[] args)
         {
-            CefRuntimeLoader.Initialize(args);
-
             var app = new Xilium.CefGlue.Demo.WPF.App();
             app.InitializeComponent();
             app.Run();

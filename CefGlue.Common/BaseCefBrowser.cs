@@ -19,6 +19,11 @@ namespace Xilium.CefGlue.Common
 
         public BaseCefBrowser()
         {
+            if (!CefRuntimeLoader.IsInitialized)
+            {
+                CefRuntimeLoader.Initialize();
+            }
+
             _logger = new Logger(nameof(BaseCefBrowser));
             _adapter = CreateAdapter();
         }
