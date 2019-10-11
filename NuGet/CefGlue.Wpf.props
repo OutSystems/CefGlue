@@ -1,7 +1,7 @@
 <Project>
     <ItemGroup>
         <Reference Include="Xilium.CefGlue.WPF">
-            <HintPath>$(MSBuildThisFileDirectory)..\lib\net472\Xilium.CefGlue.WPF.dll</HintPath>
+            <HintPath>$(MSBuildThisFileDirectory)..\lib\net472\x64\Xilium.CefGlue.WPF.dll</HintPath>
             <Private>False</Private>
         </Reference>
     </ItemGroup>

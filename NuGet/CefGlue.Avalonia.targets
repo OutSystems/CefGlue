@@ -1,6 +1,6 @@
 <Project>
     <ItemGroup>
-        <CefGlueAvaloniaBinaries Include="$(MSBuildThisFileDirectory)..\lib\net472\**\*.*" />
+        <CefGlueAvaloniaBinaries Include="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\**\*.*" />
         <None Include="@(CefGlueAvaloniaBinaries)">
             <Visible>false</Visible>
             <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>

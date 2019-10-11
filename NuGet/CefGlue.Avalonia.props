@@ -1,7 +1,7 @@
 <Project>
     <ItemGroup>
         <Reference Include="Xilium.CefGlue.Avalonia">
-            <HintPath>$(MSBuildThisFileDirectory)..\lib\net472\Xilium.CefGlue.Avalonia.dll</HintPath>
+            <HintPath>$(MSBuildThisFileDirectory)..\lib\netstandard2.0\x64\Xilium.CefGlue.Avalonia.dll</HintPath>
             <Private>False</Private>
         </Reference>
     </ItemGroup>

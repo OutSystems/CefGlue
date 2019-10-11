@@ -3,7 +3,7 @@
         <CefGlueCommonBinaries Include="$(MSBuildThisFileDirectory)..\lib\net472\**\*.*" />
         <None Include="@(CefRedist64)">
             <Visible>false</Visible>
-            <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <Link>$(OutputDirectory)\x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Include="@(CefGlueCommonBinaries)">

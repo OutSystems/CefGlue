@@ -16,9 +16,9 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\CefGlue.WPF\bin\Release\Xilium.CefGlue.WPF.dll" target="lib\net40"/>
-    <file src="..\CefGlue.WPF\bin\Release\Xilium.CefGlue.WPF.pdb" target="lib\net40"/>
-    <file src="..\CefGlue.WPF\bin\Release\Xilium.CefGlue.WPF.xml" target="lib\net40"/>
+    <file src="..\CefGlue.WPF\bin\Release\Xilium.CefGlue.WPF.dll" target="lib\net472\x64"/>
+    <file src="..\CefGlue.WPF\bin\Release\Xilium.CefGlue.WPF.pdb" target="lib\net472\x64"/>
+    <file src="..\CefGlue.WPF\bin\Release\Xilium.CefGlue.WPF.xml" target="lib\net472\x64"/>
 
     <file src="CefGlue.Wpf.props" target="build" />
     <file src="CefGlue.Wpf.targets" target="build" />
