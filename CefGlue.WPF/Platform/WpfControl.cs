@@ -127,7 +127,7 @@ namespace Xilium.CefGlue.WPF.Platform
                 browserScreenLocation = GetBrowserScreenLocation();
 
                 var matrix = newSource.CompositionTarget.TransformToDevice;
-                // TODO not working ok with values > 1 TriggerScreenInfoChanged((float)matrix.M11);
+                TriggerScreenInfoChanged((float)matrix.M11);
 
                 if (newSource.RootVisual is Window window)
                 {

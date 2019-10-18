@@ -429,12 +429,11 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleScreenInfoChanged), () =>
             {
-                BuiltInRenderHandler.DeviceScaleFactor = deviceScaleFactor;
-
-                if (_browserHost != null)
-                {
-                    _browserHost.NotifyScreenInfoChanged();
+                if (BuiltInRenderHandler != null) {
+                    BuiltInRenderHandler.DeviceScaleFactor = deviceScaleFactor;
                 }
+
+                _browserHost?.NotifyScreenInfoChanged();
             });
         }
 
