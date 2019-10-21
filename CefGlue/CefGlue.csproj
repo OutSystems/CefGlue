@@ -52,7 +52,6 @@
     <Compile Include="CefRuntimePlatform.cs" />
     <Compile Include="Classes.g\CefAccessibilityHandler.g.cs" />
     <Compile Include="Classes.g\CefApp.g.cs" />
-    <Compile Include="Classes.g\CefAudioHandler.g.cs" />
     <Compile Include="Classes.g\CefAuthCallback.g.cs" />
     <Compile Include="Classes.g\CefBeforeDownloadCallback.g.cs" />
     <Compile Include="Classes.g\CefBinaryValue.g.cs" />
@@ -349,7 +348,6 @@
     <Compile Include="Interop\Base\cef_string_t.cs" />
     <Compile Include="Interop\Classes.g\cef_accessibility_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_app_t.g.cs" />
-    <Compile Include="Interop\Classes.g\cef_audio_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_auth_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_before_download_callback_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_binary_value_t.g.cs" />

@@ -461,11 +461,7 @@ namespace Xilium.CefGlue
         /// </summary>
         CLIENT_AUTH_CERT_TYPE_UNSUPPORTED = -151,
 
-        /// <summary>
-        /// Server requested one type of cert, then requested a different type while the
-        /// first was still being generated.
-        /// </summary>
-        ORIGIN_BOUND_CERT_GENERATION_TYPE_MISMATCH = -152,
+        // Error -152 was removed (ORIGIN_BOUND_CERT_GENERATION_TYPE_MISMATCH)
 
         /// <summary>
         /// An SSL peer sent us a fatal decrypt_error alert. This typically occurs when
@@ -900,9 +896,9 @@ namespace Xilium.CefGlue
         NO_SUPPORTED_PROXIES = -336,
 
         /// <summary>
-        /// There is a SPDY protocol error.
+        /// There is an HTTP/2 protocol error.
         /// </summary>
-        SPDY_PROTOCOL_ERROR = -337,
+        HTTP2_PROTOCOL_ERROR = -337,
 
         /// <summary>
         /// Credentials could not be established during HTTP Authentication.
@@ -952,10 +948,10 @@ namespace Xilium.CefGlue
         RESPONSE_HEADERS_MULTIPLE_CONTENT_LENGTH = -346,
 
         /// <summary>
-        /// SPDY Headers have been received, but not all of them - status or version
+        /// HTTP/2 headers have been received, but not all of them - status or version
         /// headers are missing, so we're expecting additional frames to complete them.
         /// </summary>
-        INCOMPLETE_SPDY_HEADERS = -347,
+        INCOMPLETE_HTTP2_HEADERS = -347,
 
         /// <summary>
         /// No PAC URL configuration could be retrieved from DHCP. This can indicate
@@ -981,12 +977,12 @@ namespace Xilium.CefGlue
         /// been processed yet, or a RST_STREAM frame with error code REFUSED_STREAM.
         /// Client MAY retry (on a different connection).  See RFC7540 Section 8.1.4.
         /// </summary>
-        SPDY_SERVER_REFUSED_STREAM = -351,
+        HTTP2_SERVER_REFUSED_STREAM = -351,
 
         /// <summary>
-        /// SPDY server didn't respond to the PING message.
+        /// HTTP/2 server didn't respond to the PING message.
         /// </summary>
-        SPDY_PING_FAILED = -352,
+        HTTP2_PING_FAILED = -352,
 
         // Obsolete.  Kept here to avoid reuse, as the old error can still appear on
         // histograms.
@@ -1025,24 +1021,24 @@ namespace Xilium.CefGlue
         // REQUEST_FOR_SECURE_RESOURCE_OVER_INSECURE_QUIC = -359,
 
         /// <summary>
-        /// Transport security is inadequate for the SPDY version.
+        /// Transport security is inadequate for the HTTP/2 version.
         /// </summary>
-        SPDY_INADEQUATE_TRANSPORT_SECURITY = -360,
+        HTTP2_INADEQUATE_TRANSPORT_SECURITY = -360,
 
         /// <summary>
-        /// The peer violated SPDY flow control.
+        /// The peer violated HTTP/2 flow control.
         /// </summary>
-        SPDY_FLOW_CONTROL_ERROR = -361,
+        HTTP2_FLOW_CONTROL_ERROR = -361,
 
         /// <summary>
-        /// The peer sent an improperly sized SPDY frame.
+        /// The peer sent an improperly sized HTTP/2 frame.
         /// </summary>
-        SPDY_FRAME_SIZE_ERROR = -362,
+        HTTP2_FRAME_SIZE_ERROR = -362,
 
         /// <summary>
-        /// Decoding or encoding of compressed SPDY headers failed.
+        /// Decoding or encoding of compressed HTTP/2 headers failed.
         /// </summary>
-        SPDY_COMPRESSION_ERROR = -363,
+        HTTP2_COMPRESSION_ERROR = -363,
 
         /// <summary>
         /// Proxy Auth Requested without a valid Client Socket Handle.
@@ -1085,18 +1081,18 @@ namespace Xilium.CefGlue
         /// be handled internally by HTTP/2 code, and should not make it above the
         /// SpdyStream layer.
         /// </summary>
-        SPDY_RST_STREAM_NO_ERROR_RECEIVED = -372,
+        HTTP2_RST_STREAM_NO_ERROR_RECEIVED = -372,
 
         /// <summary>
         /// The pushed stream claimed by the request is no longer available.
         /// </summary>
-        SPDY_PUSHED_STREAM_NOT_AVAILABLE = -373,
+        HTTP2_PUSHED_STREAM_NOT_AVAILABLE = -373,
 
         /// <summary>
         /// A pushed stream was claimed and later reset by the server. When this happens,
         /// the request should be retried.
         /// </summary>
-        SPDY_CLAIMED_PUSHED_STREAM_RESET_BY_SERVER = -374,
+        HTTP2_CLAIMED_PUSHED_STREAM_RESET_BY_SERVER = -374,
 
         /// <summary>
         /// An HTTP transaction was retried too many times due for authentication or
@@ -1109,18 +1105,18 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Received an HTTP/2 frame on a closed stream.
         /// </summary>
-        SPDY_STREAM_CLOSED = -376,
+        HTTP2_STREAM_CLOSED = -376,
 
         /// <summary>
         /// Client is refusing an HTTP/2 stream.
         /// </summary>
-        SPDY_CLIENT_REFUSED_STREAM = -377,
+        HTTP2_CLIENT_REFUSED_STREAM = -377,
 
         /// <summary>
         /// A pushed HTTP/2 stream was claimed by a request based on matching URL and
         /// request headers, but the pushed response headers do not match the request.
         /// </summary>
-        SPDY_PUSHED_RESPONSE_DOES_NOT_MATCH = -378,
+        HTTP2_PUSHED_RESPONSE_DOES_NOT_MATCH = -378,
 
         /// <summary>
         /// The cache does not have the requested entry.

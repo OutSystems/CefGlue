@@ -1,4 +1,8 @@
-﻿namespace Xilium.CefGlue
+﻿//
+// Feature removed since CEF 77.
+//
+/*
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -72,3 +76,4 @@
         protected abstract void OnAudioStreamStopped(CefBrowser browser, int audioStreamId);
     }
 }
+*/

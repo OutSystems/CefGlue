@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -8,20 +8,23 @@
 
     public abstract unsafe partial class CefClient
     {
-        private cef_audio_handler_t* get_audio_handler(cef_client_t* self)
-        {
-            CheckSelf(self);
-            var result = GetAudioHandler();
-            return result != null ? result.ToNative() : null;
-        }
-
-        /// <summary>
-        /// Return the handler for audio rendering events.
-        /// </summary>
-        protected virtual CefAudioHandler GetAudioHandler()
-        {
-            return null;
-        }
+        //
+        // Feature removed since CEF 77.
+        //
+        //private cef_audio_handler_t* get_audio_handler(cef_client_t* self)
+        //{
+        //    CheckSelf(self);
+        //    var result = GetAudioHandler();
+        //    return result != null ? result.ToNative() : null;
+        //}
+        //
+        ///// <summary>
+        ///// Return the handler for audio rendering events.
+        ///// </summary>
+        //protected virtual CefAudioHandler GetAudioHandler()
+        //{
+        //    return null;
+        //}
 
 
         private cef_context_menu_handler_t* get_context_menu_handler(cef_client_t* self)
