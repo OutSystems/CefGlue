@@ -131,6 +131,10 @@ class CefFrame : public virtual CefBaseRefCounted {
 
   ///
   // Load the request represented by the |request| object.
+  //
+  // WARNING: This method will fail with "bad IPC message" reason
+  // INVALID_INITIATOR_ORIGIN (213) unless you first navigate to the
+  // request origin using some other mechanism (LoadURL, link click, etc).
   ///
   /*--cef()--*/
   virtual void LoadRequest(CefRefPtr<CefRequest> request) = 0;
@@ -140,15 +144,6 @@ class CefFrame : public virtual CefBaseRefCounted {
   ///
   /*--cef()--*/
   virtual void LoadURL(const CefString& url) = 0;
-
-  ///
-  // Load the contents of |string_val| with the specified dummy |url|. |url|
-  // should have a standard scheme (for example, http scheme) or behaviors like
-  // link clicks and web security restrictions may not behave as expected.
-  ///
-  /*--cef()--*/
-  virtual void LoadString(const CefString& string_val,
-                          const CefString& url) = 0;
 
   ///
   // Execute a string of JavaScript code in this frame. The |script_url|
