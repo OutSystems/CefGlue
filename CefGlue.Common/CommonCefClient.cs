@@ -11,6 +11,7 @@ namespace Xilium.CefGlue.Common
         private readonly CommonCefDisplayHandler _displayHandler;
         private readonly CommonCefRenderHandler _renderHandler;
         private readonly CommonCefLoadHandler _loadHandler;
+        private readonly CommonCefContextMenuHandler _contextMenuHandler;
         private readonly ICefBrowserHost _owner;
 
         private readonly MessageDispatcher _messageDispatcher = new MessageDispatcher();
@@ -27,11 +28,12 @@ namespace Xilium.CefGlue.Common
             _displayHandler = new CommonCefDisplayHandler(owner);
             _renderHandler = new CommonCefRenderHandler(owner, logger);
             _loadHandler = new CommonCefLoadHandler(owner);
+            _contextMenuHandler = new CommonCefContextMenuHandler(owner);
         }
 
         protected override CefContextMenuHandler GetContextMenuHandler()
         {
-            return _owner.ContextMenuHandler;
+            return _contextMenuHandler;
         }
 
         protected override CefDialogHandler GetDialogHandler()

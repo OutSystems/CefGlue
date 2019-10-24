@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -36,13 +37,19 @@ namespace Xilium.CefGlue.WPF.Platform
             _control.MouseLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
             _control.MouseDown += (sender, arg) =>
             {
-                Mouse.Capture(_control); // allow captuing mouse mouse when outside the webview (eg: grabbing scrollbar)
                 TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.ChangedButton.AsCefMouseButtonType(), arg.ClickCount);
+                if (arg.ChangedButton == MouseButton.Left)
+                {
+                    Mouse.Capture(_control); // allow capturing mouse mouse when outside the webview (eg: grabbing scrollbar)
+                }
             };
             _control.MouseUp += (sender, arg) =>
             {
-                Mouse.Capture(null);
                 TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.ChangedButton.AsCefMouseButtonType());
+                if (arg.ChangedButton == MouseButton.Left)
+                {
+                    Mouse.Capture(null);
+                }
             };
             _control.MouseWheel += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), 0, (int)arg.Delta);
 
@@ -186,6 +193,60 @@ namespace Xilium.CefGlue.WPF.Platform
                 _tooltipTimer.Tick += (sender, args) => UpdateTooltip(text);
                 _tooltipTimer.Start();
             }
+        }
+
+        public override void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback)
+        {
+            _control.Dispatcher.BeginInvoke(
+                DispatcherPriority.Input,
+                new Action(() =>
+                {
+                    var menu = new ContextMenu();
+
+                    foreach (var menuEntry in menuEntries)
+                    {
+                        if (menuEntry.IsSeparator)
+                        {
+                            menu.Items.Add(new Separator());
+                        }
+                        else
+                        {
+                            var menuItem = new MenuItem()
+                            {
+                                Header = menuEntry.Label.Replace("&", "_"),
+                                IsEnabled = menuEntry.IsEnabled,
+                                IsChecked = menuEntry.IsChecked ?? false,
+                                IsCheckable = menuEntry.IsChecked != null,
+                            };
+                            var commandId = menuEntry.CommandId;
+                            menuItem.Click += delegate { callback.Continue(commandId, CefEventFlags.None); };
+                            menu.Items.Add(menuItem);
+                        }
+                    }
+
+                    menu.Closed += delegate {
+                        callback.Cancel();
+                        _control.ContextMenu = null;
+                    };
+
+                    _control.ContextMenu = menu;
+                    menu.HorizontalOffset = x;
+                    menu.VerticalOffset = y;
+                    menu.Placement = PlacementMode.Relative;
+                    menu.PlacementTarget = _control;
+                    menu.IsOpen = true;
+                }
+            ));
+        }
+
+        public override void CloseContextMenu()
+        {
+            _control.Dispatcher.BeginInvoke(
+                DispatcherPriority.Input,
+                new Action(() =>
+                {
+                    _control.ContextMenu = null;
+                }));
         }
 
         private void UpdateTooltip(string text)

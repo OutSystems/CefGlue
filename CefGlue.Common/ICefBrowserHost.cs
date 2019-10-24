@@ -1,5 +1,6 @@
 using System;
 using Xilium.CefGlue.Common.Handlers;
+using Xilium.CefGlue.Common.Platform;
 
 namespace Xilium.CefGlue.Common
 {
@@ -30,6 +31,9 @@ namespace Xilium.CefGlue.Common
         void HandleLoadEnd(CefBrowser browser, CefFrame frame, int httpStatusCode);
         void HandleLoadError(CefBrowser browser, CefFrame frame, CefErrorCode errorCode, string errorText, string failedUrl);
         void HandleLoadingStateChange(CefBrowser browser, bool isLoading, bool canGoBack, bool canGoForward);
+
+        void HandleOpenContextMenu(CefContextMenuParams parameters, CefMenuModel model, CefRunContextMenuCallback callback);
+        void HandleCloseContextMenu();
 
         void HandleException(Exception exception);
 

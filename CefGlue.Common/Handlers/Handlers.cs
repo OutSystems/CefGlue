@@ -28,7 +28,28 @@ namespace Xilium.CefGlue.Common.Handlers
         }
     }
 
-    public class ContextMenuHandler : CefContextMenuHandler { }
+    public class ContextMenuHandler : CefContextMenuHandler {
+
+        internal void HandleBeforeContextMenu(CefBrowser browser, CefFrame frame, CefContextMenuParams state, CefMenuModel model)
+        {
+            OnBeforeContextMenu(browser, frame, state, model);
+        }
+
+        internal bool HandleContextMenuCommand(CefBrowser browser, CefFrame frame, CefContextMenuParams state, int commandId, CefEventFlags eventFlags)
+        {
+            return OnContextMenuCommand(browser, frame, state, commandId, eventFlags);
+        }
+
+        internal void HandleContextMenuDismissed(CefBrowser browser, CefFrame frame)
+        {
+            OnContextMenuDismissed(browser, frame);
+        }
+
+        internal bool HandleRunContextMenu(CefBrowser browser, CefFrame frame, CefContextMenuParams parameters, CefMenuModel model, CefRunContextMenuCallback callback)
+        {
+            return RunContextMenu(browser, frame, parameters, model, callback);
+        }
+    }
 
     public class DialogHandler : CefDialogHandler { }
 

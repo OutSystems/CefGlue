@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -35,13 +37,19 @@ namespace Xilium.CefGlue.Avalonia.Platform
             _control.PointerLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
             _control.PointerPressed += (sender, arg) =>
             {
-                arg.Device.Capture(_control);
                 TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.MouseButton.AsCefMouseButtonType(), arg.ClickCount);
+                if (arg.MouseButton == MouseButton.Left)
+                {
+                    arg.Device.Capture(_control);
+                }
             };
             _control.PointerReleased += (sender, arg) =>
             {
-                arg.Device.Capture(null);
                 TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.MouseButton.AsCefMouseButtonType());
+                if (arg.MouseButton == MouseButton.Left)
+                {
+                    arg.Device.Capture(null);
+                }
             };
             _control.PointerWheelChanged += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), (int)arg.Delta.X * MouseWheelDelta, (int)arg.Delta.Y * MouseWheelDelta);
 
@@ -172,6 +180,58 @@ namespace Xilium.CefGlue.Avalonia.Platform
         public override void Focus()
         {
             _control.Focus();
+        }
+
+        public override void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback)
+        {
+            Dispatcher.UIThread.Post(
+                () =>
+                {
+                    var menu = new ContextMenu();
+                    var menuItems = new List<TemplatedControl>();
+                    menu.Items = menuItems;
+
+                    foreach (var menuEntry in menuEntries)
+                    {
+                        if (menuEntry.IsSeparator)
+                        {
+                            menuItems.Add(new Separator());
+                        }
+                        else
+                        {
+                            var menuItem = new MenuItem()
+                            {
+                                Header = menuEntry.Label.Replace("&", "_"),
+                                IsEnabled = menuEntry.IsEnabled,
+                                // TODO
+                                //IsChecked = menuEntry.IsChecked ?? false,
+                                //IsCheckable = menuEntry.IsChecked != null,
+                            };
+                            var commandId = menuEntry.CommandId;
+                            menuItem.Click += delegate { callback.Continue(commandId, CefEventFlags.None); };
+                            menuItems.Add(menuItem);
+                        }
+                    }
+
+                    //menu.MenuClosed += delegate {
+                    //    callback.Cancel();
+                    //    _control.ContextMenu = null;
+                    //};
+
+                    _control.ContextMenu = menu;
+                    //menu.Open(_control);
+                },
+                DispatcherPriority.Input);
+        }
+
+        public override void CloseContextMenu()
+        {
+            //Dispatcher.UIThread.Post(
+            //   () =>
+            //   {
+            //        _control.ContextMenu = null;
+            //   },
+            //   DispatcherPriority.Input);
         }
     }
 }

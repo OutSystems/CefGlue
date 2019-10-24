@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Handlers;
@@ -767,6 +768,16 @@ namespace Xilium.CefGlue.Common
                 renderHandler?.Paint(buffer, width, height, dirtyRects)
                               .ContinueWith(t => HandleException(ScopeName, t.Exception), TaskContinuationOptions.OnlyOnFaulted);
             });
+        }
+
+        void ICefBrowserHost.HandleOpenContextMenu(CefContextMenuParams parameters, CefMenuModel model, CefRunContextMenuCallback callback)
+        {
+            _control.OpenContextMenu(MenuEntry.FromCefModel(model), parameters.X, parameters.Y, callback);
+        }
+
+        void ICefBrowserHost.HandleCloseContextMenu()
+        {
+            _control.CloseContextMenu();
         }
 
         #endregion

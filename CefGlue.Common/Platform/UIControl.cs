@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Common.Platform
@@ -24,6 +25,9 @@ namespace Xilium.CefGlue.Common.Platform
         public abstract void SetCursor(IntPtr cursorHandle);
 
         public abstract void SetTooltip(string text);
+
+        public abstract void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback);
+        public abstract void CloseContextMenu();
 
         public event Action GotFocus;
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Common.Platform
@@ -31,6 +32,9 @@ namespace Xilium.CefGlue.Common.Platform
         Point PointToScreen(Point point);
         void SetCursor(IntPtr cursorHandle);
         void SetTooltip(string text);
+
+        void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback);
+        void CloseContextMenu();
 
         BuiltInRenderHandler RenderHandler { get; }
     }
