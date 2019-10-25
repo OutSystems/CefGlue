@@ -1,8 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xilium.CefGlue;
 using Xilium.CefGlue.Common.Helpers;
-using Xilium.CefGlue.Common.Helpers.Logger;
 using Xilium.CefGlue.Common.Platform;
 
 namespace CefGlue.Tests.Helpers
@@ -67,6 +67,16 @@ namespace CefGlue.Tests.Helpers
         }
 
         public override void SetTooltip(string text)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void CloseContextMenu()
         {
             throw new NotImplementedException();
         }
