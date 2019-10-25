@@ -37,6 +37,10 @@ namespace Xilium.CefGlue.Common.Helpers
 
         public int Height => _height;
 
+        public int ScaledWidth => (int)(DeviceScaleFactor * _width);
+
+        public int ScaledHeight => (int)(DeviceScaleFactor * _height);
+
         public float DeviceScaleFactor { get; set; } = 1;
 
         protected float Dpi => DeviceScaleFactor * DefaultDpi;
@@ -71,7 +75,7 @@ namespace Xilium.CefGlue.Common.Helpers
         {
             // When browser size changed - we just skip frame updating.
             // This is dirty precheck to do not do Invoke whenever is possible.
-            if (width != Width || height != Height)
+            if (width != ScaledWidth || height != ScaledHeight)
             {
                 return Task.CompletedTask;
             }
@@ -104,7 +108,7 @@ namespace Xilium.CefGlue.Common.Helpers
                     lock (_renderLock)
                     {
                         // quick size check - actual browser size changed?
-                        if (width != Width || height != Height)
+                        if (width != ScaledWidth || height != ScaledHeight)
                         {
                             return;
                         }
