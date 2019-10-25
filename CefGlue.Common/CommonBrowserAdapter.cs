@@ -25,6 +25,7 @@ namespace Xilium.CefGlue.Common
         private string _startUrl;
         private string _title;
         private string _tooltip;
+        private bool _isVisible = true;
 
         private CefBrowser _browser;
         private CefBrowserHost _browserHost;
@@ -407,10 +408,16 @@ namespace Xilium.CefGlue.Common
 
         private void HandleVisibilityChanged(bool isVisible)
         {
+            if (isVisible == _isVisible)
+            {
+                // visiblity didn't change at all
+                return;
+            }
             WithErrorHandling(nameof(HandleVisibilityChanged), () =>
             {
                 if (_browserHost != null)
                 {
+                    _isVisible = isVisible;
                     _browserHost.WasHidden(!isVisible);
                     // workaround cef OSR bug (https://bitbucket.org/chromiumembedded/cef/issues/2483/osr-invalidate-does-not-generate-frame)
                     // we notify browser of a resize and return height+1px on next GetViewRect call
