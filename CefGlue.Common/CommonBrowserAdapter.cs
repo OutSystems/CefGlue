@@ -447,27 +447,25 @@ namespace Xilium.CefGlue.Common
             {
                 if (!_browserCreated)
                 {
+                    _browserCreated = true;
+
+                    AttachEventHandlers(_control);
+                    AttachEventHandlers(_popup);
+
+                    // Create the bitmap that holds the rendered website bitmap
+                    OnBrowserSizeChanged(newWidth, newHeight);
+
                     // Find the window that's hosting us
                     var hParentWnd = _control.GetHostWindowHandle();
-                    if (hParentWnd != null)
-                    {
-                        _browserCreated = true;
 
-                        AttachEventHandlers(_control);
-                        AttachEventHandlers(_popup);
+                    var windowInfo = CefWindowInfo.Create();
+                    windowInfo.SetAsWindowless(hParentWnd != null ? hParentWnd.Value : IntPtr.Zero, AllowsTransparency);
 
-                        // Create the bitmap that holds the rendered website bitmap
-                        OnBrowserSizeChanged(newWidth, newHeight);
+                    _cefClient = new CommonCefClient(this, _logger);
+                    _cefClient.Dispatcher.RegisterMessageHandler(Messages.UnhandledException.Name, OnBrowserProcessUnhandledException);
 
-                        var windowInfo = CefWindowInfo.Create();
-                        windowInfo.SetAsWindowless(hParentWnd.Value, AllowsTransparency);
-
-                        _cefClient = new CommonCefClient(this, _logger);
-                        _cefClient.Dispatcher.RegisterMessageHandler(Messages.UnhandledException.Name, OnBrowserProcessUnhandledException);
-
-                        // This is the first time the window is being rendered, so create it.
-                        CefBrowserHost.CreateBrowser(windowInfo, _cefClient, Settings, string.IsNullOrEmpty(Address) ? "about:blank" : Address);
-                    }
+                    // This is the first time the window is being rendered, so create it.
+                    CefBrowserHost.CreateBrowser(windowInfo, _cefClient, Settings, string.IsNullOrEmpty(Address) ? "about:blank" : Address);
                 }
                 else
                 {
