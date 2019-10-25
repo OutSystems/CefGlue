@@ -213,23 +213,24 @@ namespace Xilium.CefGlue.Avalonia.Platform
                         }
                     }
 
-                    //menu.MenuClosed += delegate {
-                    //    callback.Cancel();
-                    //    _control.ContextMenu = null;
-                    //};
+                    menu.MenuClosed += delegate
+                    {
+                        callback.Cancel();
+                        _control.ContextMenu = null;
+                    };
 
                     _control.ContextMenu = menu;
-                    //menu.Open(_control);
                 },
                 DispatcherPriority.Input);
         }
 
         public override void CloseContextMenu()
         {
+            // TODO this is being raised when it shouldn't
             //Dispatcher.UIThread.Post(
             //   () =>
             //   {
-            //        _control.ContextMenu = null;
+            //       _control.ContextMenu = null;
             //   },
             //   DispatcherPriority.Input);
         }

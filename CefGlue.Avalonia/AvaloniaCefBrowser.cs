@@ -21,6 +21,7 @@ namespace Xilium.CefGlue.Avalonia
         internal override CommonBrowserAdapter CreateAdapter()
         {
             var image = CreateImage();
+            LogicalChildren.Add(image);
             VisualChildren.Add(image);
 
             var popupImage = CreateImage();
