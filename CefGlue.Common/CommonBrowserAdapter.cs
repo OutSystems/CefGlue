@@ -152,7 +152,7 @@ namespace Xilium.CefGlue.Common
 
             if (_browser != null)
                 _browser.GetMainFrame().LoadUrl(url);
-            else
+            else if (!string.IsNullOrEmpty(url))
                 _startUrl = url;
         }
 
@@ -471,7 +471,7 @@ namespace Xilium.CefGlue.Common
                     _cefClient.Dispatcher.RegisterMessageHandler(Messages.UnhandledException.Name, OnBrowserProcessUnhandledException);
 
                     // This is the first time the window is being rendered, so create it.
-                    CefBrowserHost.CreateBrowser(windowInfo, _cefClient, Settings, string.IsNullOrEmpty(Address) ? "about:blank" : Address);
+                    CefBrowserHost.CreateBrowser(windowInfo, _cefClient, Settings, _startUrl);
                 }
                 else
                 {
