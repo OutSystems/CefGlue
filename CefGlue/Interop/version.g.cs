@@ -9,15 +9,15 @@ namespace Xilium.CefGlue.Interop
     
     internal static unsafe partial class libcef
     {
-        public const string CEF_VERSION = "78.2.6+g2878d1f+chromium-78.0.3904.63";
+        public const string CEF_VERSION = "78.2.14+g9633d3e+chromium-78.0.3904.87";
         public const int CEF_VERSION_MAJOR = 78;
-        public const int CEF_COMMIT_NUMBER = 2072;
-        public const string CEF_COMMIT_HASH = "2878d1fa373e2bd945d2b08d8782d741fa871c2b";
+        public const int CEF_COMMIT_NUMBER = 2080;
+        public const string CEF_COMMIT_HASH = "9633d3ecaef9a33a236dcea0a4fc23136d1ccf8b";
         
         public const int CHROME_VERSION_MAJOR = 78;
         public const int CHROME_VERSION_MINOR = 0;
         public const int CHROME_VERSION_BUILD = 3904;
-        public const int CHROME_VERSION_PATCH = 63;
+        public const int CHROME_VERSION_PATCH = 87;
         
         public const string CEF_API_HASH_UNIVERSAL = "2b148bd47ce42d97377baaa92039bf1bb04d631e";
         
