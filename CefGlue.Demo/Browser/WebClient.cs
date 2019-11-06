@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue.Demo.Browser
+﻿namespace Xilium.CefGlue.Demo.Browser
 {
     using System;
     using System.Collections.Generic;

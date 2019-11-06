@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue.WindowsForms
+﻿namespace Xilium.CefGlue.WindowsForms
 {
     sealed class CefWebRequestHandler : CefRequestHandler
     {

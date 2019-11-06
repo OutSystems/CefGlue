@@ -1,4 +1,4 @@
-//
+﻿//
 // This file manually written from cef/include/base/internal/cef_net_error_list.h.
 // C API name: cef_errorcode_t.
 //
