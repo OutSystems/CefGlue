@@ -14,6 +14,8 @@ namespace Xilium.CefGlue.Common
 {
     internal class CommonBrowserAdapter : ICefBrowserHost, IDisposable
     {
+        private const string DefaultUrl = "about:blank";
+
         private readonly object _eventsEmitter;
         private readonly string _name;
         private readonly ILogger _logger;
@@ -22,7 +24,7 @@ namespace Xilium.CefGlue.Common
 
         private bool _browserCreated;
 
-        private string _startUrl;
+        private string _initialUrl = DefaultUrl;
         private string _title;
         private string _tooltip;
         private bool _isVisible = true;
@@ -44,8 +46,6 @@ namespace Xilium.CefGlue.Common
             _control = control;
             _popup = popup;
             _logger = logger;
-
-            _startUrl = "about:blank";
 
             control.ScreenInfoChanged += HandleScreenInfoChanged;
             control.VisibilityChanged += HandleVisibilityChanged;
@@ -106,7 +106,7 @@ namespace Xilium.CefGlue.Common
 
         public event AsyncUnhandledExceptionEventHandler UnhandledException;
 
-        public string Address { get => _browser?.GetMainFrame().Url ?? _startUrl; set => NavigateTo(value); }
+        public string Address { get => _browser?.GetMainFrame().Url ?? _initialUrl; set => NavigateTo(value); }
 
         public bool AllowsTransparency { get; set; } = false;
 
@@ -150,10 +150,36 @@ namespace Xilium.CefGlue.Common
             // Remove leading whitespace from the URL
             url = url.TrimStart();
 
-            if (_browser != null)
-                _browser.GetMainFrame().LoadUrl(url);
-            else if (!string.IsNullOrEmpty(url))
-                _startUrl = url;
+            /// to play safe, load url must be called after <see cref="OnBrowserCreated(CefBrowser)"/> which runs on CefThreadId.UI, 
+            /// otherwise the navigation will be aborted
+            CefRuntime.PostTask(CefThreadId.UI, new ActionTask(() =>
+            {
+                if (_browser != null)
+                {
+                    _browser?.GetMainFrame()?.LoadUrl(url);
+                }
+                else if (!string.IsNullOrEmpty(url))
+                {
+                    _initialUrl = url;
+
+                    if (_browserCreated)
+                    {
+                        // browser was already created, but not completely initialized, we have to queue url load
+                        void OnBrowserInitialized()
+                        {
+                            Initialized -= OnBrowserInitialized;
+
+                            CefRuntime.PostTask(CefThreadId.UI, new ActionTask(() =>
+                            {
+                                _browser.GetMainFrame()?.LoadUrl(_initialUrl);
+                                _initialUrl = null;
+                            }));
+                        }
+
+                        Initialized += OnBrowserInitialized;
+                    }
+                }
+            }));
         }
 
         public void LoadString(string content, string url)
@@ -471,7 +497,7 @@ namespace Xilium.CefGlue.Common
                     _cefClient.Dispatcher.RegisterMessageHandler(Messages.UnhandledException.Name, OnBrowserProcessUnhandledException);
 
                     // This is the first time the window is being rendered, so create it.
-                    CefBrowserHost.CreateBrowser(windowInfo, _cefClient, Settings, _startUrl);
+                    CefBrowserHost.CreateBrowser(windowInfo, _cefClient, Settings, _initialUrl);
                 }
                 else
                 {
@@ -660,7 +686,6 @@ namespace Xilium.CefGlue.Common
 
                 _browser = browser;
                 _browserHost = browser.GetHost();
-                _startUrl = null;
 
                 width = RenderedWidth;
                 height = RenderedHeight;
