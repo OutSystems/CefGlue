@@ -10,9 +10,9 @@ echo.ERROR^^^! Unknown processor architecture.
 exit /b 1
 
 :x86
-set path=%ProgramFiles(x86)%\MSBuild\14.0\Bin;%ProgramFiles%\MSBuild\14.0\Bin;%WINDIR%\Microsoft.NET\Framework\v4.0.30319;%PATH%
+set path=%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\;%WINDIR%\Microsoft.NET\Framework\v4.0.30319;%PATH%
 goto :eof
 
 :x64
-set path=%ProgramFiles(x86)%\MSBuild\14.0\Bin;%WINDIR%\Microsoft.NET\Framework64\v4.0.30319;%PATH%
+set path=%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\;%WINDIR%\Microsoft.NET\Framework64\v4.0.30319;%PATH%
 goto :eof

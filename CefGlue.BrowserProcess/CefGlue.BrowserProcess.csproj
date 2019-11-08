@@ -5,6 +5,7 @@
     <TargetFrameworks>netcoreapp2.2;net472</TargetFrameworks>
     <AssemblyName>Xilium.CefGlue.BrowserProcess</AssemblyName>
     <RootNamespace>Xilium.CefGlue.BrowserProcess</RootNamespace>
+    <Configurations>Debug;Release;ReleaseWPF</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
