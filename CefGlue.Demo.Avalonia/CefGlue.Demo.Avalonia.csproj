@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="0.8.1" />
+    <PackageReference Include="cef.redist.x64" Version="75.1.14" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +27,9 @@
     <ProjectReference Include="..\CefGlue.BrowserProcess\CefGlue.BrowserProcess.csproj">
       <Private></Private>
     </ProjectReference>
-    <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
+    <ProjectReference Include="..\CefGlue\CefGlue.csproj" />  
   </ItemGroup>
 
+  <Import Project="$(SolutionDir)\Xilium.CefGlue.Native.props"/>
+  
 </Project>
