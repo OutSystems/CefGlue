@@ -30,4 +30,8 @@
 # IDE: Xamarin Studio (MonoDevelop)
 *.userprefs
 CefGlue.BrowserProcess/Properties/PublishProfiles/
+<<<<<<< HEAD
 NuGet/output/
+=======
+packages/
+>>>>>>> master
