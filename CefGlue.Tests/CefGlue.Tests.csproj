@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-
-    <IsPackable>false</IsPackable>
-
-    <Configurations>Debug;Release;ReleaseWPF</Configurations>
-=======
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\cef.redist.x64.75.1.14\build\cef.redist.x64.props" Condition="Exists('..\packages\cef.redist.x64.75.1.14\build\cef.redist.x64.props')" />
@@ -15,7 +5,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E09F8212-7F9F-4C4B-8502-E0DC352FC9AC}</ProjectGuid>
+    <ProjectGuid>{9542E4E1-5E89-4567-B6FA-44132F4E70BA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CefGlue.Tests</RootNamespace>
@@ -63,29 +53,18 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
->>>>>>> master
   </PropertyGroup>
-
   <ItemGroup>
-    <Compile Include="..\CefGlue.Common\BaseCefBrowser.cs" Link="Helpers\BaseCefBrowser.cs" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="cef.redist.x64" Version="75.1.14" />
-    <PackageReference Include="nunit" Version="3.11.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CefGlue.BrowserProcess\CefGlue.BrowserProcess.csproj" />
-    <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj" />
-  </ItemGroup>
-<<<<<<< HEAD
-
-  <Import Project="$(ProjectDir)..\Nuget\CefGlue.Common.targets" />
-</Project>
-=======
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
@@ -104,4 +83,3 @@
   </Target>
   -->
 </Project>
->>>>>>> master
