@@ -47,7 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{953C06E5
 		NuGet\CefGlue.Wpf.targets = NuGet\CefGlue.Wpf.targets
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Tests", "CefGlue.Tests\CefGlue.Tests.csproj", "{9542E4E1-5E89-4567-B6FA-44132F4E70BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue.Tests", "CefGlue.Tests\CefGlue.Tests.csproj", "{9542E4E1-5E89-4567-B6FA-44132F4E70BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
