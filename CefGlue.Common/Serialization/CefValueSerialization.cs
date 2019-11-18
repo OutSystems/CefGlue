@@ -27,33 +27,36 @@ namespace Xilium.CefGlue.Common.Serialization
                 return;
             }
 
-            var typeCode = Type.GetTypeCode(value.GetType());
-
-            if (typeCode == TypeCode.Object)
+            if (value is byte[] byteArr)
             {
-                if (visitedObjects.Any(o => o == value))
-                {
-                    throw new InvalidOperationException("Cycle found in result");
-                }
-
-                visitedObjects.Push(value);
-
-                SerializeComplexObject(value, visitedObjects, cefValue);
-
-                visitedObjects.Pop();
-
+                // handle binaries in a special way (otherwise it will fall on object and be serialized as a collection)
+                cefValue.SetBinary(ToCefBinary(BinaryMagicBytes.Binary, byteArr));
                 return;
             }
 
+            var typeCode = Type.GetTypeCode(value.GetType());
+
             switch (typeCode)
             {
+                case TypeCode.Object:
+                    if (visitedObjects.Any(o => o == value))
+                    {
+                        throw new InvalidOperationException("Cycle found in result");
+                    }
+
+                    visitedObjects.Push(value);
+
+                    SerializeComplexObject(value, visitedObjects, cefValue);
+
+                    visitedObjects.Pop();
+                    break;
+
                 case TypeCode.Boolean:
                     cefValue.SetBool((bool)value);
                     break;
 
                 case TypeCode.Byte:
-                    var originalBinary = ((byte[])value);
-                    cefValue.SetBinary(ToCefBinary(BinaryMagicBytes.Binary, originalBinary));
+                    cefValue.SetInt((byte)value);
                     break;
 
                 case TypeCode.Char:
