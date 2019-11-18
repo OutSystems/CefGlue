@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Xilium.CefGlue.Common.Handlers;
@@ -18,7 +19,7 @@ namespace Xilium.CefGlue.Common
             CefRuntimeLoader.browserProcessHandler = browserProcessHandler;
         }
 
-        public static void Initialize(CefSettings settings = null, CustomScheme[] customSchemes = null)
+        public static void Initialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null)
         {
             CefRuntime.Load();
 
@@ -51,7 +52,7 @@ namespace Xilium.CefGlue.Common
 
             AppDomain.CurrentDomain.ProcessExit += delegate { CefRuntime.Shutdown(); };
 
-            CefRuntime.Initialize(new CefMainArgs(new string[0]), settings, new CommonCefApp(customSchemes, browserProcessHandler), IntPtr.Zero);
+            CefRuntime.Initialize(new CefMainArgs(new string[0]), settings, new CommonCefApp(customSchemes, flags, browserProcessHandler), IntPtr.Zero);
 
             if (customSchemes != null)
             {
