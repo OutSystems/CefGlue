@@ -126,9 +126,18 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         public void HandleContextReleased(CefV8Context context, bool isMain)
         {
+            void ReleasePromiseHolder(PromiseHolder promiseHolder)
+            {
+                promiseHolder.Context.Dispose();
+                promiseHolder.Dispose();
+            }
+
             if (isMain)
             {
-                _pendingBoundQueryTasks.Clear();
+                foreach (var promiseHolder in _pendingCalls.Values)
+                {
+                    ReleasePromiseHolder(promiseHolder);
+                }
                 _pendingCalls.Clear();
             }
             else
@@ -138,6 +147,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     if (promiseHolderEntry.Value.Context.IsSame(context))
                     {
                         _pendingCalls.TryRemove(promiseHolderEntry.Key, out var dummy);
+                        ReleasePromiseHolder(promiseHolderEntry.Value);
                     }
                 }
             }

@@ -36,12 +36,12 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         private void Resolve(params CefV8Value[] args)
         {
-            using (_resolve.ExecuteFunction(null, args));
+            using (_resolve.ExecuteFunction(null, args)) { }
         }
 
         private void Reject(params CefV8Value[] args)
         {
-            using (_reject.ExecuteFunction(null, args)) ;
+            using (_reject.ExecuteFunction(null, args)) { }
         }
 
         public void Dispose()
