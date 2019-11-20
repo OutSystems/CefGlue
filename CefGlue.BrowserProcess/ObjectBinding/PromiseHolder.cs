@@ -2,7 +2,7 @@ using System;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
-    internal class PromiseHolder
+    internal class PromiseHolder : IDisposable
     {
         public delegate void ResolveHandler(params CefV8Value[] args);
         public delegate void RejectHandler(params CefV8Value[] args);
@@ -24,38 +24,31 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         public void ResolveOrReject(Action<ResolveHandler, RejectHandler> action)
         {
-            if (Context.Enter())
+            try
             {
-                try
-                {
-                    try
-                    {
-                        action(Resolve, Reject);
-                    }
-                    catch (Exception e)
-                    {
-                        Reject(CefV8Value.CreateString(e.Message));
-                    }
-                }
-                finally
-                {
-                    Context.Exit();
-                }
+                action(Resolve, Reject);
             }
-            else
+            catch (Exception e)
             {
-                // TODO
+                Reject(CefV8Value.CreateString(e.Message));
             }
         }
 
         private void Resolve(params CefV8Value[] args)
         {
-            _resolve.ExecuteFunction(null, args);
+            using (_resolve.ExecuteFunction(null, args));
         }
 
         private void Reject(params CefV8Value[] args)
         {
-            _reject.ExecuteFunction(null, args);
+            using (_reject.ExecuteFunction(null, args)) ;
+        }
+
+        public void Dispose()
+        {
+            _resolve.Dispose();
+            _reject.Dispose();
+            Promise.Dispose();
         }
     }
 }

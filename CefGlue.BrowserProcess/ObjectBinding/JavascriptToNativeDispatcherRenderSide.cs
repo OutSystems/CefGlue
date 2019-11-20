@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.Helpers;
@@ -26,74 +27,92 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         private void HandleNativeObjectRegistration(MessageReceivedEventArgs args)
         {
-            var browser = args.Browser;
-            var context = browser.GetMainFrame().V8Context;
-
             var message = Messages.NativeObjectRegistrationRequest.FromCefMessage(args.Message);
             var objectInfo = new ObjectRegistrationInfo(message.ObjectName, message.MethodsNames);
 
             if (_registeredObjects.TryAdd(objectInfo.Name, objectInfo))
             {
-                var objectCreated = CreateNativeObject(objectInfo, context);
-
-                if (objectCreated)
+                // register objects in the main frame
+                using (var frame = args.Browser.GetMainFrame())
+                using (var context = frame.V8Context.EnterOrFail())
                 {
-                    // notify that the object has been registered, any pending promises on the object will be resolved
-                    var taskSource = _pendingBoundQueryTasks.GetOrAdd(objectInfo.Name, _ => new TaskCompletionSource<bool>());
-                    taskSource.TrySetResult(true);
+                    var objectCreated = CreateNativeObjects(new[] { objectInfo }, context.V8Context);
+
+                    if (objectCreated)
+                    {
+                        // notify that the object has been registered, any pending promises on the object will be resolved
+                        var taskSource = _pendingBoundQueryTasks.GetOrAdd(objectInfo.Name, _ => new TaskCompletionSource<bool>());
+                        taskSource.TrySetResult(true);
+                    }
                 }
             }
         }
 
         private void HandleNativeObjectUnregistration(MessageReceivedEventArgs args)
         {
-            var browser = args.Browser;
-            var context = browser.GetMainFrame().V8Context;
-
             var message = Messages.NativeObjectUnregistrationRequest.FromCefMessage(args.Message);
 
-            DeleteNativeObject(message.ObjectName, context);
+            using (var frame = args.Browser.GetMainFrame()) // unregister objects from the main frame
+            using (var context = frame.V8Context.EnterOrFail())
+            {
+                DeleteNativeObject(message.ObjectName, context.V8Context);
+            }
         }
 
         private PromiseHolder HandleNativeObjectCall(Messages.NativeObjectCallRequest message)
         {
             message.CallId = lastCallId++;
 
-            var promiseHolder = JavascriptHelper.CreatePromise();
-            if (!_pendingCalls.TryAdd(message.CallId, promiseHolder))
+            using (var context = CefV8Context.GetCurrentContext().EnterOrFail(shallDispose: false)) // context will be released when promise is resolved
+            using (var frame = context.V8Context.GetFrame())
             {
-                throw new InvalidOperationException("Call id already exists");
-            }
+                if (frame == null)
+                {
+                    // TODO, what now?
+                    return null;
+                }
 
-            var frame = CefV8Context.GetCurrentContext().GetFrame();
-            using (var cefMessage = message.ToCefProcessMessage())
-            {
-                frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
-            }
+                var promiseHolder = context.V8Context.CreatePromise();
+                if (!_pendingCalls.TryAdd(message.CallId, promiseHolder))
+                {
+                    throw new InvalidOperationException("Call id already exists");
+                }
 
-            return promiseHolder;
+                using (var cefMessage = message.ToCefProcessMessage())
+                {
+                    frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
+                }
+
+                return promiseHolder;
+            }
         }
 
         private void HandleNativeObjectCallResult(MessageReceivedEventArgs args)
         {
             var message = Messages.NativeObjectCallResult.FromCefMessage(args.Message);
-            if(_pendingCalls.TryRemove(message.CallId, out var promiseHolder))
+            if (_pendingCalls.TryRemove(message.CallId, out var promiseHolder))
             {
-                promiseHolder.ResolveOrReject((resolve, reject) =>
+                using (promiseHolder)
+                using (var context = promiseHolder.Context.EnterOrFail())
                 {
-                    if (message.Success)
+                    promiseHolder.ResolveOrReject((resolve, reject) =>
                     {
-                        resolve(V8ValueSerialization.SerializeCefValue(message.Result));
-                    }
-                    else
-                    {
-                        reject(CefV8Value.CreateString(message.Exception));
-                    }
-                });
-            }
-            else
-            {
-                // probably the call context has gone, bail out
+                        if (message.Success)
+                        {
+                            using (var value = V8ValueSerialization.SerializeCefValue(message.Result))
+                            {
+                                resolve(value);
+                            }
+                        }
+                        else
+                        {
+                            using (var exceptionMsg = CefV8Value.CreateString(message.Exception))
+                            {
+                                reject(exceptionMsg);
+                            }
+                        }
+                    });
+                }
             }
         }
 
@@ -101,10 +120,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         {
             if (isMain)
             {
-                foreach (var obj in _registeredObjects.Values)
-                {
-                    CreateNativeObject(obj, context);
-                }
+                CreateNativeObjects(_registeredObjects.Values, context);
             }
         }
 
@@ -119,7 +135,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 foreach (var promiseHolderEntry in _pendingCalls.ToArray())
                 {
-                    if (promiseHolderEntry.Value.Context == context)
+                    if (promiseHolderEntry.Value.Context.IsSame(context))
                     {
                         _pendingCalls.TryRemove(promiseHolderEntry.Key, out var dummy);
                     }
@@ -127,27 +143,32 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             }
         }
 
-        private bool CreateNativeObject(ObjectRegistrationInfo objectInfo, CefV8Context context)
+        private bool CreateNativeObjects(IEnumerable<ObjectRegistrationInfo> objectInfos, CefV8Context context)
         {
             if (context.Enter())
             {
                 try
                 {
-                    var global = context.GetGlobal();
-                    var handler = new V8FunctionHandler(objectInfo.Name, HandleNativeObjectCall);
-                    var attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontDelete;
-
-                    using (var v8Obj = CefV8Value.CreateObject())
+                    using (var global = context.GetGlobal())
                     {
-                        foreach (var methodName in objectInfo.MethodsNames)
+                        foreach (var objectInfo in objectInfos)
                         {
-                            using (var v8Function = CefV8Value.CreateFunction(methodName, handler))
+                            var handler = new V8FunctionHandler(objectInfo.Name, HandleNativeObjectCall);
+                            var attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontDelete;
+
+                            using (var v8Obj = CefV8Value.CreateObject())
                             {
-                                v8Obj.SetValue(methodName, v8Function, attributes);
+                                foreach (var methodName in objectInfo.MethodsNames)
+                                {
+                                    using (var v8Function = CefV8Value.CreateFunction(methodName, handler))
+                                    {
+                                        v8Obj.SetValue(methodName, v8Function, attributes);
+                                    }
+                                }
+
+                                global.SetValue(objectInfo.Name, v8Obj);
                             }
                         }
-
-                        global.SetValue(objectInfo.Name, v8Obj);
                     }
 
                     return true;
@@ -164,32 +185,14 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             }
         }
 
-
         private void DeleteNativeObject(string objName, CefV8Context context)
         {
             if (_registeredObjects.TryRemove(objName, out var objectInfo))
             {
-                DeleteNativeObject(objectInfo, context);
-            }
-        }
-
-        private void DeleteNativeObject(ObjectRegistrationInfo objectInfo, CefV8Context context)
-        {
-            if (context.Enter())
-            {
-                try
+                using (var global = context.GetGlobal())
                 {
-                    var global = context.GetGlobal();
                     global.DeleteValue(objectInfo.Name);
                 }
-                finally
-                {
-                    context.Exit();
-                }
-            }
-            else
-            {
-                // TODO
             }
         }
 
@@ -200,7 +203,10 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         void INativeObjectRegistry.Unbind(string objName)
         {
-            DeleteNativeObject(objName, CefV8Context.GetCurrentContext());
+            using (var context = CefV8Context.GetCurrentContext().EnterOrFail())
+            {
+                DeleteNativeObject(objName, context.V8Context);
+            }
         }
     }
 }

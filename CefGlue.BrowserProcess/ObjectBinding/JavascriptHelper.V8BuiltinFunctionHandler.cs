@@ -18,7 +18,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 returnValue = null;
                 exception = null;
-
+                
                 switch (name)
                 {
                     case BindNativeFunctionName:
@@ -27,25 +27,38 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                             if (valid)
                             {
                                 var objectName = arguments[0].GetStringValue();
-                                var resultingPromise = CreatePromise();
-                                var boundQueryTask = _nativeObjectRegistry.Bind(objectName);
-
-                                boundQueryTask.ContinueWith(t =>
+                                using (var context = CefV8Context.GetCurrentContext().EnterOrFail(shallDispose: false)) // context will be released when promise is resolved
                                 {
-                                    resultingPromise.ResolveOrReject((resolve, reject) =>
-                                    {
-                                        if (t.IsFaulted)
-                                        {
-                                            reject(CefV8Value.CreateString(t.Exception.Message));
-                                        }
-                                        else
-                                        {
-                                            resolve(CefV8Value.CreateBool(t.Result));
-                                        }
-                                    });
-                                }, TaskContinuationOptions.ExecuteSynchronously);
+                                    var resultingPromise = context.V8Context.CreatePromise();
+                                    returnValue = resultingPromise.Promise;
 
-                                returnValue = resultingPromise.Promise;
+                                    var boundQueryTask = _nativeObjectRegistry.Bind(objectName);
+
+                                    boundQueryTask.ContinueWith(t =>
+                                    {
+                                        using (resultingPromise)
+                                        //using (context.V8Context.EnterOrFail())
+                                        {
+                                            resultingPromise.ResolveOrReject((resolve, reject) =>
+                                            {
+                                                if (t.IsFaulted)
+                                                {
+                                                    using (var exceptionMsg = CefV8Value.CreateString(t.Exception.Message))
+                                                    {
+                                                        reject(exceptionMsg);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    using (var result = CefV8Value.CreateBool(t.Result))
+                                                    {
+                                                        resolve(result);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }, TaskContinuationOptions.ExecuteSynchronously);
+                                }
                             }
                             else
                             {

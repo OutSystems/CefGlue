@@ -35,8 +35,17 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
                 var promiseHolder = _functionCallHandler(message);
 
-                returnValue = promiseHolder.Promise;
-                exception = null;
+                if (promiseHolder != null)
+                {
+                    returnValue = promiseHolder.Promise;
+                    exception = null;
+                } 
+                else
+                {
+                    returnValue = null;
+                    exception = "Failed to create promise";
+                }
+
                 return true;
             }
         }

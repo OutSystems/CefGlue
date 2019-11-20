@@ -14,44 +14,31 @@ namespace Xilium.CefGlue.BrowserProcess.JavascriptExecution
 
         private void HandleScriptEvaluation(MessageReceivedEventArgs args)
         {
-            var message = Messages.JsEvaluationRequest.FromCefMessage(args.Message);
-
             var frame = args.Frame;
-            var context = frame.V8Context;
 
-            if (context != null && context.Enter())
+            using (var context = frame.V8Context.EnterOrFail())
             {
-                try
-                {
-                    // send script to browser
-                    var success = context.TryEval(message.Script, message.Url, message.Line, out var value, out var exception);
-                    
-                    var response = new Messages.JsEvaluationResult()
-                    {
-                        TaskId = message.TaskId,
-                        Success = success,
-                        Exception = success ? null : exception.Message,
-                        Result = new CefValueHolder()
-                    };
+                var message = Messages.JsEvaluationRequest.FromCefMessage(args.Message);
+                // send script to browser
+                var success = context.V8Context.TryEval(message.Script, message.Url, message.Line, out var value, out var exception);
 
-                    if (value != null)
-                    {
-                        V8ValueSerialization.SerializeV8Object(value, response.Result);
-                    }
-
-                    using (var cefResponseMessage = response.ToCefProcessMessage())
-                    {
-                        frame.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
-                    }
-                }
-                finally
+                var response = new Messages.JsEvaluationResult()
                 {
-                    context.Exit();
+                    TaskId = message.TaskId,
+                    Success = success,
+                    Exception = success ? null : exception.Message,
+                    Result = new CefValueHolder()
+                };
+
+                if (value != null)
+                {
+                    V8ValueSerialization.SerializeV8Object(value, response.Result);
                 }
-            }
-            else
-            {
-                // TODO
+
+                using (var cefResponseMessage = response.ToCefProcessMessage())
+                {
+                    frame.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
+                }
             }
         }
     }

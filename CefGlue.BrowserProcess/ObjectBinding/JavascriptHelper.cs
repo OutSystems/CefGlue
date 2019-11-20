@@ -38,36 +38,19 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             CefRuntime.RegisterExtension("cefglue", CefGlueGlobal, new V8BuiltinFunctionHandler(nativeObjectRegistry));
         }
 
-        public static PromiseHolder CreatePromise()
+        public static PromiseHolder CreatePromise(this CefV8Context context)
         {
-            var context = CefV8Context.GetCurrentContext();
-            if (context.Enter())
+            using (var global = context.GetGlobal())
+            using (var cefGlueGlobal = global.GetValue(GlobalObjectName)) // TODO what if cefGlueGlobal == null?
+            using (var promiseFactory = cefGlueGlobal.GetValue(PromiseFactoryFunctionName))
+            using (var promiseData = promiseFactory.ExecuteFunctionWithContext(context, null, new CefV8Value[0])) // create a promise and return the resolve and reject callbacks
             {
-                try
-                {
-                    var cefGlueGlobal = context.GetGlobal().GetValue(GlobalObjectName);
+                var promise = promiseData.GetValue("promise");
+                var resolve = promiseData.GetValue("resolve");
+                var reject = promiseData.GetValue("reject");
 
-                    // TODO what if cefGlueGlobal == null?
-
-                    var promiseFactory = cefGlueGlobal.GetValue(PromiseFactoryFunctionName);
-
-                    // create a promise and return the resolve and reject callbacks
-                    var promiseData = promiseFactory.ExecuteFunctionWithContext(context, null, new CefV8Value[0]);
-
-                    var promise = promiseData.GetValue("promise");
-                    var resolve = promiseData.GetValue("resolve");
-                    var reject = promiseData.GetValue("reject");
-
-                    return new PromiseHolder(promise, resolve, reject, context);
-                }
-                finally
-                {
-                    context.Exit();
-                }
+                return new PromiseHolder(promise, resolve, reject, context);
             }
-
-            // TODO
-            return null;
         }
     }
 }
