@@ -9,20 +9,20 @@ namespace Xilium.CefGlue.Interop
     
     internal static unsafe partial class libcef
     {
-        public const string CEF_VERSION = "78.2.14+g9633d3e+chromium-78.0.3904.87";
+        public const string CEF_VERSION = "78.3.4+ge17bba6+chromium-78.0.3904.108";
         public const int CEF_VERSION_MAJOR = 78;
-        public const int CEF_COMMIT_NUMBER = 2080;
-        public const string CEF_COMMIT_HASH = "9633d3ecaef9a33a236dcea0a4fc23136d1ccf8b";
+        public const int CEF_COMMIT_NUMBER = 2087;
+        public const string CEF_COMMIT_HASH = "e17bba6f60b4c87dbab81663ee0859a66fe1777a";
         
         public const int CHROME_VERSION_MAJOR = 78;
         public const int CHROME_VERSION_MINOR = 0;
         public const int CHROME_VERSION_BUILD = 3904;
-        public const int CHROME_VERSION_PATCH = 87;
+        public const int CHROME_VERSION_PATCH = 108;
         
-        public const string CEF_API_HASH_UNIVERSAL = "2b148bd47ce42d97377baaa92039bf1bb04d631e";
+        public const string CEF_API_HASH_UNIVERSAL = "3ad9591f7024619a1e2fd796c7ad51ae3a34abbb";
         
-        public const string CEF_API_HASH_PLATFORM_WIN = "fdc417626039e5cb7122cd531fcc82d3845354f4";
-        public const string CEF_API_HASH_PLATFORM_MACOSX = "184c18fff7d61c248062eb43092c8f6f94f051b0";
-        public const string CEF_API_HASH_PLATFORM_LINUX = "acc3cea452fa30b32d76d09282744a5dc30b9530";
+        public const string CEF_API_HASH_PLATFORM_WIN = "3b8e38ae40c1a930227c6277c39dbc24081ccec1";
+        public const string CEF_API_HASH_PLATFORM_MACOSX = "4a77f1908fabccdb01a2d3bdbede5ca09fbaa394";
+        public const string CEF_API_HASH_PLATFORM_LINUX = "434da6be7db70fd90c4265118ac47ace4073c6ae";
     }
 }
