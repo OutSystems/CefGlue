@@ -160,7 +160,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                     CallId = arguments.GetInt(0),
                     ObjectName = arguments.GetString(1),
                     MemberName = arguments.GetString(2),
-                    Arguments = arguments.GetList(3)
+                    Arguments = arguments.GetList(3) as CefListValue
                 };
             }
 
@@ -266,7 +266,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                     {
                         using (var cefFrame = cefFrames.GetList(i)) 
                         {
-                            frames[i] = JsStackFrame.FromCefValue(cefFrame);
+                            frames[i] = JsStackFrame.FromCefValue(cefFrame as CefListValue);
                         }
                     }
                     return new JsUncaughtException()

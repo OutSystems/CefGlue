@@ -102,7 +102,7 @@ namespace Xilium.CefGlue.Common.Serialization
         {
             if (value is IDictionary dictionary)
             {
-                var cefDictionary = CefDictionaryValue.Create();
+                var cefDictionary = ValueServices.CreateDictionary();
 
                 foreach (var key in dictionary.Keys)
                 {
@@ -115,7 +115,7 @@ namespace Xilium.CefGlue.Common.Serialization
             else if (value is IEnumerable enumerable)
             {
                 var i = 0;
-                var cefList = CefListValue.Create();
+                var cefList = ValueServices.CreateList();
                 
                 foreach (var item in enumerable)
                 {
@@ -130,7 +130,7 @@ namespace Xilium.CefGlue.Common.Serialization
                 var fields = value.GetType().GetFields();
                 var properties = value.GetType().GetProperties();
 
-                var cefDictionary = CefDictionaryValue.Create();
+                var cefDictionary = ValueServices.CreateDictionary();
 
                 foreach (var field in fields)
                 {
@@ -190,7 +190,7 @@ namespace Xilium.CefGlue.Common.Serialization
             return null;
         }
 
-        public static ListElementType[] DeserializeCefList<ListElementType>(CefListValue cefList)
+        public static ListElementType[] DeserializeCefList<ListElementType>(ICefListValue cefList)
         {
             var array = new ListElementType[cefList.Count];
             for (var i = 0; i < cefList.Count; i++)
@@ -200,16 +200,16 @@ namespace Xilium.CefGlue.Common.Serialization
             return array;
         }
 
-        internal static CefBinaryValue ToCefBinary(BinaryMagicBytes kind, byte[] originalBinary)
+        internal static ICefBinaryValue ToCefBinary(BinaryMagicBytes kind, byte[] originalBinary)
         {
             var binary = new byte[originalBinary.Length + 1]; // alloc space for the magic byte
             binary[0] = (byte)kind;
             originalBinary.CopyTo(binary, 1);
 
-            return CefBinaryValue.Create(binary);
+            return ValueServices.CreateBinary(binary);
         }
 
-        internal static object FromCefBinary(CefBinaryValue value, out BinaryMagicBytes kind)
+        internal static object FromCefBinary(ICefBinaryValue value, out BinaryMagicBytes kind)
         {
             var binary = value.ToArray();
             if (binary.Length > 0)

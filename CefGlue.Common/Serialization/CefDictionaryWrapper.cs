@@ -1,8 +1,8 @@
 namespace Xilium.CefGlue.Common.Serialization
 {
-    internal class CefDictionaryWrapper : CefValueWrapper<string, CefDictionaryValue>
+    internal class CefDictionaryWrapper : CefValueWrapper<string, ICefDictionaryValue>
     {
-        public CefDictionaryWrapper(CefDictionaryValue container, string index) : base(container, index)
+        public CefDictionaryWrapper(ICefDictionaryValue container, string index) : base(container, index)
         {
         }
 
@@ -31,17 +31,17 @@ namespace Xilium.CefGlue.Common.Serialization
             _container.SetString(_index, value);
         }
 
-        public override void SetBinary(CefBinaryValue value)
+        public override void SetBinary(ICefBinaryValue value)
         {
             _container.SetBinary(_index, value);
         }
 
-        public override void SetList(CefListValue value)
+        public override void SetList(ICefListValue value)
         {
             _container.SetList(_index, value);
         }
 
-        public override void SetDictionary(CefDictionaryValue value)
+        public override void SetDictionary(ICefDictionaryValue value)
         {
             _container.SetDictionary(_index, value);
         }
@@ -66,17 +66,17 @@ namespace Xilium.CefGlue.Common.Serialization
             return _container.GetString(_index);
         }
 
-        public override CefBinaryValue GetBinary()
+        public override ICefBinaryValue GetBinary()
         {
             return _container.GetBinary(_index);
         }
 
-        public override CefListValue GetList()
+        public override ICefListValue GetList()
         {
             return _container.GetList(_index);
         }
 
-        public override CefDictionaryValue GetDictionary()
+        public override ICefDictionaryValue GetDictionary()
         {
             return _container.GetDictionary(_index);
         }

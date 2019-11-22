@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +9,7 @@
     /// <summary>
     /// Class representing a dictionary value. Can be used on any process and thread.
     /// </summary>
-    public sealed unsafe partial class CefDictionaryValue
+    public sealed unsafe partial class CefDictionaryValue : ICefDictionaryValue
     {
         /// <summary>
         /// Creates a new object that is not owned by any other object.
@@ -54,25 +54,25 @@
         /// data. If true modifications to this object will also affect |that| object
         /// and vice-versa.
         /// </summary>
-        public bool IsSame(CefDictionaryValue that)
+        public bool IsSame(ICefDictionaryValue that)
         {
-            return cef_dictionary_value_t.is_same(_self, that.ToNative()) != 0;
+            return cef_dictionary_value_t.is_same(_self, (that as CefDictionaryValue).ToNative()) != 0;
         }
 
         /// <summary>
         /// Returns true if this object and |that| object have an equivalent underlying
         /// value but are not necessarily the same object.
         /// </summary>
-        public bool IsEqual(CefDictionaryValue that)
+        public bool IsEqual(ICefDictionaryValue that)
         {
-            return cef_dictionary_value_t.is_equal(_self, that.ToNative()) != 0;
+            return cef_dictionary_value_t.is_equal(_self, (that as CefDictionaryValue).ToNative()) != 0;
         }
 
         /// <summary>
         /// Returns a writable copy of this object. If |exclude_empty_children| is true
         /// any empty dictionaries or lists will be excluded from the copy.
         /// </summary>
-        public CefDictionaryValue Copy(bool excludeEmptyChildren)
+        public ICefDictionaryValue Copy(bool excludeEmptyChildren)
         {
             return CefDictionaryValue.FromNative(
                 cef_dictionary_value_t.copy(_self, excludeEmptyChildren ? 1 : 0)
@@ -218,7 +218,7 @@
         /// Returns the value at the specified key as type binary. The returned
         /// value will reference existing data.
         /// </summary>
-        public CefBinaryValue GetBinary(string key)
+        public ICefBinaryValue GetBinary(string key)
         {
             fixed (char* key_str = key)
             {
@@ -233,7 +233,7 @@
         /// value will reference existing data and modifications to the value will
         /// modify this object.
         /// </summary>
-        public CefDictionaryValue GetDictionary(string key)
+        public ICefDictionaryValue GetDictionary(string key)
         {
             fixed (char* key_str = key)
             {
@@ -248,7 +248,7 @@
         /// will reference existing data and modifications to the value will modify
         /// this object.
         /// </summary>
-        public CefListValue GetList(string key)
+        public ICefListValue GetList(string key)
         {
             fixed (char* key_str = key)
             {
@@ -351,7 +351,7 @@
         /// Otherwise, ownership will be transferred to this object and the |value|
         /// reference will be invalidated.
         /// </summary>
-        public bool SetBinary(string key, CefBinaryValue value)
+        public bool SetBinary(string key, ICefBinaryValue value)
         {
             //FIXME: what means reference will be invalidated ?
             if (value == null) throw new ArgumentNullException("value");
@@ -359,7 +359,7 @@
             fixed (char* key_str = key)
             {
                 var n_key = new cef_string_t(key_str, key != null ? key.Length : 0);
-                return cef_dictionary_value_t.set_binary(_self, &n_key, value.ToNative()) != 0;
+                return cef_dictionary_value_t.set_binary(_self, &n_key, (value as CefBinaryValue).ToNative()) != 0;
             }
         }
 
@@ -370,14 +370,14 @@
         /// Otherwise, ownership will be transferred to this object and the |value|
         /// reference will be invalidated.
         /// </summary>
-        public bool SetDictionary(string key, CefDictionaryValue value)
+        public bool SetDictionary(string key, ICefDictionaryValue value)
         {
             if (value == null) throw new ArgumentNullException("value");
 
             fixed (char* key_str = key)
             {
                 var n_key = new cef_string_t(key_str, key != null ? key.Length : 0);
-                return cef_dictionary_value_t.set_dictionary(_self, &n_key, value.ToNative()) != 0;
+                return cef_dictionary_value_t.set_dictionary(_self, &n_key, (value as CefDictionaryValue).ToNative()) != 0;
             }
         }
 
@@ -388,14 +388,14 @@
         /// Otherwise, ownership will be transferred to this object and the |value|
         /// reference will be invalidated.
         /// </summary>
-        public bool SetList(string key, CefListValue value)
+        public bool SetList(string key, ICefListValue value)
         {
             if (value == null) throw new ArgumentNullException("value");
 
             fixed (char* key_str = key)
             {
                 var n_key = new cef_string_t(key_str, key != null ? key.Length : 0);
-                return cef_dictionary_value_t.set_list(_self, &n_key, value.ToNative()) != 0;
+                return cef_dictionary_value_t.set_list(_self, &n_key, (value as CefListValue).ToNative()) != 0;
             }
         }
     }

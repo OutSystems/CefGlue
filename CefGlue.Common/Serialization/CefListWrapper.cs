@@ -1,8 +1,8 @@
 namespace Xilium.CefGlue.Common.Serialization
 {
-    internal class CefListWrapper : CefValueWrapper<int, CefListValue>
+    internal class CefListWrapper : CefValueWrapper<int, ICefListValue>
     {
-        public CefListWrapper(CefListValue container, int index) : base(container, index)
+        public CefListWrapper(ICefListValue container, int index) : base(container, index)
         {
         }
 
@@ -31,19 +31,19 @@ namespace Xilium.CefGlue.Common.Serialization
             _container.SetString(_index, value);
         }
 
-        public override void SetBinary(CefBinaryValue value)
+        public override void SetBinary(ICefBinaryValue value)
         {
-            _container.SetBinary(_index, value);
+            _container.SetBinary(_index, value as CefBinaryValue);
         }
 
-        public override void SetList(CefListValue value)
+        public override void SetList(ICefListValue value)
         {
-            _container.SetList(_index, value);
+            _container.SetList(_index, value as CefListValue);
         }
 
-        public override void SetDictionary(CefDictionaryValue value)
+        public override void SetDictionary(ICefDictionaryValue value)
         {
-            _container.SetDictionary(_index, value);
+            _container.SetDictionary(_index, value as CefDictionaryValue);
         }
 
         public override bool GetBool()
@@ -66,17 +66,17 @@ namespace Xilium.CefGlue.Common.Serialization
             return _container.GetString(_index);
         }
 
-        public override CefBinaryValue GetBinary()
+        public override ICefBinaryValue GetBinary()
         {
             return _container.GetBinary(_index);
         }
 
-        public override CefListValue GetList()
+        public override ICefListValue GetList()
         {
             return _container.GetList(_index);
         }
 
-        public override CefDictionaryValue GetDictionary()
+        public override ICefDictionaryValue GetDictionary()
         {
             return _container.GetDictionary(_index);
         }
