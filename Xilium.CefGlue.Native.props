@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
-    <Target Name="AfterBuild">
-        <ItemGroup>
-            <SubProcessFiles Include="$(SolutionDir)\CefGlue.BrowserProcess\bin\$(Configuration)\$(TargetFrameworkVersion)\CefGlue.BrowserProcess.*" />
-        </ItemGroup>
-        <Copy SourceFiles="@(SubProcessFiles)" DestinationFolder="$(TargetDir)" />
-    </Target>
   
-  <Target Name="CefSharpCopyLibs86" BeforeTargets="AfterBuild" Condition="'$(Platform)' == 'x86'">
+  <Target Name="CefGlueCopyLibs86" BeforeTargets="AfterBuild" Condition="'$(Platform)' == 'x86'">
     <Error Message="x86 architecture is not supported"/>
   </Target>
 
-  <Target Name="CefSharpCopyLibs64" BeforeTargets="AfterBuild" Condition="'$(Platform)' == 'x64' or '$(Platform)' == 'AnyCPU'">
+  <Target Name="CefGlueCopyLibs64" BeforeTargets="AfterBuild" Condition="'$(Platform)' == 'x64' or '$(Platform)' == 'AnyCPU'">
     <Message Importance="high" Text="Copying cef.redist x64 files" />
     <Copy SourceFiles="@(CefRedist64)" DestinationFiles="@(CefRedist64->'$(TargetDir)\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>  
+
+  <Target Name="CefGlueCopyBrowserProcess" BeforeTargets="AfterBuild">
+      <ItemGroup>
+          <SubProcessFiles Include="$(SolutionDir)CefGlue.BrowserProcess\bin\$(Configuration)\$(TargetFramework)\win-x64\*" />
+      </ItemGroup>
+      <Message Importance="high" Text="Copying CefGlue.BrowserProcess files" />
+      <Copy SourceFiles="@(SubProcessFiles)" DestinationFolder="$(TargetDir)" />
+  </Target>
 </Project>
