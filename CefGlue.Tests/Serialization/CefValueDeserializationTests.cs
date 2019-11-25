@@ -372,10 +372,100 @@ namespace CefGlue.Tests.Serialization
         public void Serialize_HandlesNullObject()
         {
             Mock<CefValueWrapper> cefValue = new Mock<CefValueWrapper>();
-            var success = false;
-            cefValue.Setup(v => v.SetNull()).Callback(() => success = true);
             Serialize(null, cefValue.Object);
-            Assert.IsTrue(success);
+            cefValue.Verify(v => v.SetNull(), Times.Once());
+        }
+
+        private void AssertSerialization<T1, T2>(T1 value, Expression<Action<CefValueWrapper>> setValue, Func<T1, T2> convertType = null)
+        {
+            Mock<CefValueWrapper> cefValue = new Mock<CefValueWrapper>();
+            if(convertType == null)
+            {
+                cefValue.Setup(setValue).Callback<T2>((data) => Assert.AreEqual(value, data));
+            } else
+            {
+                cefValue.Setup(setValue).Callback<T2>((data) => Assert.AreEqual(convertType(value), data));
+            }
+            Serialize(value, cefValue.Object);
+            cefValue.Verify(setValue, Times.Once());
+        }
+
+        [Test]
+        public void Serialize_HandlesBooleans()
+        {
+            AssertSerialization<bool, bool>(true, v => v.SetBool(It.IsAny<bool>()));
+        }
+
+        [Test]
+        public void Serialize_HandlesSignedIntegers16()
+        {
+            AssertSerialization<short, int>(Int16.MaxValue, v => v.SetInt(It.IsAny<int>()));
+        }
+
+        [Test]
+        public void Serialize_HandlesSignedIntegers32()
+        {
+            AssertSerialization<int, int>(Int32.MaxValue, v => v.SetInt(It.IsAny<int>()));
+        }
+
+        [Test]
+        public void Serialize_HandlesSignedIntegers64()
+        {
+            AssertSerialization<long, double>(Int64.MaxValue, v => v.SetDouble(It.IsAny<double>()));
+        }
+
+        [Test]
+        public void Serialize_HandlesUnsignedIntegers16()
+        {
+            AssertSerialization<ushort, int>(UInt16.MinValue, v => v.SetInt(It.IsAny<int>()));
+        }
+
+        [Test]
+        public void Serialize_HandlesUnsignedIntegers32()
+        {
+            AssertSerialization<uint, int>(UInt32.MinValue, v => v.SetInt(It.IsAny<int>()));
+        }
+
+        [Test]
+        public void Serialize_HandlesUnsignedIntegers64()
+        {
+            AssertSerialization<ulong, double>(UInt64.MinValue, v => v.SetDouble(It.IsAny<double>()));
+        }
+
+        [Test]
+        public void Serialize_HandlesBytes()
+        {
+            AssertSerialization<byte, int>((byte)12, v => v.SetInt(It.IsAny<int>()));
+        }
+
+        [Test]
+        public void Serialize_HandlesStrings()
+        {
+            AssertSerialization<string,string>("this is a string", v => v.SetString(It.IsAny<string>()));
+        }
+
+        [Test]
+        public void Serialize_HandlesChars()
+        {
+            AssertSerialization<char, string>('c', v => v.SetString(It.IsAny<string>()), (char expectedValue) => expectedValue.ToString());
+        }
+
+        [Test]
+        public void Serialize_HandlesDoubles()
+        {
+            AssertSerialization<double, double>(10.5d, v => v.SetDouble(It.IsAny<double>()));
+        }
+
+        [Test]
+        public void Serialize_HandlesFloats()
+        {
+            AssertSerialization<float, double>(10.5f, v => v.SetDouble(It.IsAny<double>()));
+        }
+
+        [Test]
+        public void Serialize_HandlesDecimals()
+        {
+            AssertSerialization<decimal, double>(10.5m, v => v.SetDouble(It.IsAny<double>()));
         }
 
         [Test]
