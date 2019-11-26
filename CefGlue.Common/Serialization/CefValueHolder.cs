@@ -5,7 +5,7 @@ namespace Xilium.CefGlue.Common.Serialization
     internal class CefValueHolder : CefListWrapper
     {
         private bool _isReadOnly;
-        private Action<CefListValue, int> _setValue;
+        private Action<ICefListValue, int> _setValue;
 
         public CefValueHolder() : base(null, 0)
         {
@@ -46,21 +46,21 @@ namespace Xilium.CefGlue.Common.Serialization
             HandleValueSet();
         }
 
-        public override void SetBinary(CefBinaryValue value)
+        public override void SetBinary(ICefBinaryValue value)
         {
-            _setValue = (container, index) => container.SetBinary(index, value);
+            _setValue = (container, index) => container.SetBinary(index, value as CefBinaryValue);
             HandleValueSet();
         }
 
-        public override void SetList(CefListValue value)
+        public override void SetList(ICefListValue value)
         {
-            _setValue = (container, index) => container.SetList(index, value);
+            _setValue = (container, index) => container.SetList(index, value as CefListValue);
             HandleValueSet();
         }
 
-        public override void SetDictionary(CefDictionaryValue value)
+        public override void SetDictionary(ICefDictionaryValue value)
         {
-            _setValue = (container, index) => container.SetDictionary(index, value);
+            _setValue = (container, index) => container.SetDictionary(index, value as CefDictionaryValue);
             HandleValueSet();
         }
 
@@ -96,17 +96,17 @@ namespace Xilium.CefGlue.Common.Serialization
             return _container.GetString(_index);
         }
 
-        public override CefBinaryValue GetBinary()
+        public override ICefBinaryValue GetBinary()
         {
             return _container.GetBinary(_index);
         }
 
-        public override CefListValue GetList()
+        public override ICefListValue GetList()
         {
             return _container.GetList(_index);
         }
 
-        public override CefDictionaryValue GetDictionary()
+        public override ICefDictionaryValue GetDictionary()
         {
             return _container.GetDictionary(_index);
         }

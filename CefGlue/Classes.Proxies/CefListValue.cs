@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +9,7 @@
     /// <summary>
     /// Class representing a list value. Can be used on any process and thread.
     /// </summary>
-    public sealed unsafe partial class CefListValue
+    public sealed unsafe partial class CefListValue : ICefListValue
     {
         /// <summary>
         /// Creates a new object that is not owned by any other object.
@@ -54,24 +54,24 @@
         /// data. If true modifications to this object will also affect |that| object
         /// and vice-versa.
         /// </summary>
-        public bool IsSame(CefListValue that)
+        public bool IsSame(ICefListValue that)
         {
-            return cef_list_value_t.is_same(_self, that.ToNative()) != 0;
+            return cef_list_value_t.is_same(_self, ((CefListValue)that).ToNative()) != 0;
         }
 
         /// <summary>
         /// Returns true if this object and |that| object have an equivalent underlying
         /// value but are not necessarily the same object.
         /// </summary>
-        public bool IsEqual(CefListValue that)
+        public bool IsEqual(ICefListValue that)
         {
-            return cef_list_value_t.is_equal(_self, that.ToNative()) != 0;
+            return cef_list_value_t.is_equal(_self, ((CefListValue)that).ToNative()) != 0;
         }
 
         /// <summary>
         /// Returns a writable copy of this object.
         /// </summary>
-        public CefListValue Copy()
+        public ICefListValue Copy()
         {
             return CefListValue.FromNative(
                 cef_list_value_t.copy(_self)
@@ -170,7 +170,7 @@
         /// Returns the value at the specified index as type binary. The returned
         /// value will reference existing data.
         /// </summary>
-        public CefBinaryValue GetBinary(int index)
+        public ICefBinaryValue GetBinary(int index)
         {
             return CefBinaryValue.FromNativeOrNull(
                 cef_list_value_t.get_binary(_self, checked((UIntPtr)index))
@@ -182,7 +182,7 @@
         /// value will reference existing data and modifications to the value will
         /// modify this object.
         /// </summary>
-        public CefDictionaryValue GetDictionary(int index)
+        public ICefDictionaryValue GetDictionary(int index)
         {
             return CefDictionaryValue.FromNativeOrNull(
                 cef_list_value_t.get_dictionary(_self, checked((UIntPtr)index))
@@ -194,7 +194,7 @@
         /// value will reference existing data and modifications to the value will
         /// modify this object.
         /// </summary>
-        public CefListValue GetList(int index)
+        public ICefListValue GetList(int index)
         {
             return CefListValue.FromNativeOrNull(
                 cef_list_value_t.get_list(_self, checked((UIntPtr)index))
@@ -271,9 +271,9 @@
         /// Otherwise, ownership will be transferred to this object and the |value|
         /// reference will be invalidated.
         /// </summary>
-        public bool SetBinary(int index, CefBinaryValue value)
+        public bool SetBinary(int index, ICefBinaryValue value)
         {
-            return cef_list_value_t.set_binary(_self, checked((UIntPtr)index), value.ToNative()) != 0;
+            return cef_list_value_t.set_binary(_self, checked((UIntPtr)index), ((CefBinaryValue)value).ToNative()) != 0;
         }
 
         /// <summary>
@@ -283,9 +283,9 @@
         /// Otherwise, ownership will be transferred to this object and the |value|
         /// reference will be invalidated.
         /// </summary>
-        public bool SetDictionary(int index, CefDictionaryValue value)
+        public bool SetDictionary(int index, ICefDictionaryValue value)
         {
-            return cef_list_value_t.set_dictionary(_self, checked((UIntPtr)index), value.ToNative()) != 0;
+            return cef_list_value_t.set_dictionary(_self, checked((UIntPtr)index), ((CefDictionaryValue)value).ToNative()) != 0;
         }
 
         /// <summary>
@@ -295,9 +295,9 @@
         /// Otherwise, ownership will be transferred to this object and the |value|
         /// reference will be invalidated.
         /// </summary>
-        public bool SetList(int index, CefListValue value)
+        public bool SetList(int index, ICefListValue value)
         {
-            return cef_list_value_t.set_list(_self, checked((UIntPtr)index), value.ToNative()) != 0;
+            return cef_list_value_t.set_list(_self, checked((UIntPtr)index), ((CefListValue)value).ToNative()) != 0;
         }
     }
 }

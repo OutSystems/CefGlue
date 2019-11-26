@@ -139,7 +139,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
             public int CallId;
             public string ObjectName;
             public string MemberName;
-            public CefListValue Arguments;
+            public ICefListValue Arguments;
 
             public CefProcessMessage ToCefProcessMessage()
             {
@@ -295,7 +295,7 @@ namespace Xilium.CefGlue.Common.RendererProcessCommunication
                 return result;
             }
 
-            internal static JsStackFrame FromCefValue(CefListValue frame)
+            internal static JsStackFrame FromCefValue(ICefListValue frame)
             {
                 return new JsStackFrame()
                 {
