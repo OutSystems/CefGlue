@@ -65,7 +65,7 @@ namespace Xilium.CefGlue.Common.Serialization
 
                 case TypeCode.DateTime:
                     // datetime is serialized into a binary (cef value does not support datetime)
-                    var dateBinary = BitConverter.GetBytes(((DateTime)value).ToBinary());
+                    var dateBinary = BitConverter.GetBytes(((DateTime)value).Ticks);
                     cefValue.SetBinary(ToCefBinary(BinaryMagicBytes.DateTime, dateBinary));
                     break;
                     
@@ -73,9 +73,11 @@ namespace Xilium.CefGlue.Common.Serialization
                 case TypeCode.Decimal:
                     cefValue.SetDouble((double)(decimal)value);
                     break;
+
                 case TypeCode.Double:
                     cefValue.SetDouble((double)value);
                     break;
+
                 case TypeCode.Single:
                     cefValue.SetDouble((double)(float)value);
                     break;
@@ -87,21 +89,27 @@ namespace Xilium.CefGlue.Common.Serialization
                 case TypeCode.Int16:
                     cefValue.SetInt((int)(short)value);
                     break;
+
                 case TypeCode.Int32:
                     cefValue.SetInt((int)value);
                     break;
+
                 case TypeCode.Int64:
                     cefValue.SetDouble((double)(long)value);
                     break;
+
                 case TypeCode.UInt16:
                     cefValue.SetInt((int)(ushort)value);
                     break;
+
                 case TypeCode.UInt32:
                     cefValue.SetInt((int)(uint)value);
                     break;
+
                 case TypeCode.UInt64:
                     cefValue.SetDouble((double)(ulong)value);
                     break;
+
                 case TypeCode.SByte:
                     cefValue.SetInt((sbyte)value);
                     break;

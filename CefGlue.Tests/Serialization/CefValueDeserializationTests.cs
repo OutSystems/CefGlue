@@ -1,7 +1,6 @@
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -17,13 +16,57 @@ namespace CefGlue.Tests.Serialization
         # region DeserializeCefValue
         private void AssertDeserialization<T>(dynamic value, CefValueType valueType, Expression<Func<CefValueWrapper, T>> getValue)
         {
-            Mock<CefValueWrapper> cefValue = new Mock<CefValueWrapper>();
+            var cefValue = new Mock<CefValueWrapper>();
             cefValue.Setup(v => v.GetValueType()).Returns(valueType);
             if (getValue != null)
             {
                 cefValue.Setup(getValue).Returns(value);
             }
             Assert.AreEqual(value, CefValueSerialization.DeserializeCefValue(cefValue.Object));
+        }
+
+        private Mock<CefValueWrapper> BootstrapDictionaryWrapperMock(CefValueType valueType)
+        {
+            var cefValue = new Mock<CefValueWrapper>();
+            cefValue.Setup(v => v.GetValueType()).Returns(valueType);
+            return cefValue;
+        }
+
+        private Mock<ICefDictionaryValue> SimpleDictionaryMock<T>(Dictionary<string, T> baseDictionary, CefValueType valueType, Func<string, Expression<Func<ICefDictionaryValue, T>>> getValue)
+        {
+            var cefDictionary = new Mock<ICefDictionaryValue>();
+            cefDictionary.Setup(v => v.GetKeys()).Returns(baseDictionary.Keys.ToArray());
+            foreach (string key in baseDictionary.Keys)
+            {
+                cefDictionary.Setup(v => v.GetValueType(key)).Returns(valueType);
+                cefDictionary.Setup(getValue(key)).Returns(baseDictionary[key]);
+            }
+            return cefDictionary;
+        }
+
+        private Mock<ICefListValue> SimpleListMock<T>(List<T> baseList, CefValueType valueType, Func<int, Expression<Func<ICefListValue, T>>> getValue)
+        {
+            var cefList = new Mock<ICefListValue>();
+            cefList.Setup(v => v.Count).Returns(baseList.Count);
+            for (int i = 0; i < baseList.Count; i++)
+            {
+                cefList.Setup(v => v.GetValueType(i)).Returns(valueType);
+                cefList.Setup(getValue(i)).Returns(baseList[i]);
+            }
+            return cefList;
+        }
+
+        private IDictionary<string, object> SerializeSimpleDictionary<T>(Dictionary<string, T> baseDictionary, CefValueType valueType, Func<string,  Expression<Func<ICefDictionaryValue, T>>> getValue) {
+            var cefValue = BootstrapDictionaryWrapperMock(CefValueType.Dictionary);
+            cefValue.Setup(v => v.GetDictionary()).Returns(SimpleDictionaryMock<T>(baseDictionary, valueType, getValue).Object);
+            return (IDictionary<string, object>)CefValueSerialization.DeserializeCefValue(cefValue.Object);
+        }
+
+        private IList<object> SerializeSimpleList<T>(List<T> baseList, CefValueType valueType, Func<int, Expression<Func<ICefListValue, T>>> getValue)
+        {
+            var cefValue = BootstrapDictionaryWrapperMock(CefValueType.List);
+            cefValue.Setup(v => v.GetList()).Returns(SimpleListMock<T>(baseList, valueType, getValue).Object);
+            return (IList<object>)CefValueSerialization.DeserializeCefValue(cefValue.Object);
         }
 
         [Test]
@@ -79,8 +122,8 @@ namespace CefGlue.Tests.Serialization
         public void DeserializeCefValue_HandlesBinaries()
         {
             var returnValue = new byte[] { 100, 150, 254 };
-            Mock<CefValueWrapper> cefValue = new Mock<CefValueWrapper>();
-            Mock<ICefBinaryValue> byteArray = new Mock<ICefBinaryValue>();
+            var cefValue = new Mock<CefValueWrapper>();
+            var byteArray = new Mock<ICefBinaryValue>();
             byteArray.Setup(c => c.ToArray()).Returns((new byte[] { 1 }.Concat(returnValue)).ToArray());
             cefValue.Setup(v => v.GetValueType()).Returns(CefValueType.Binary);
             cefValue.Setup(v => v.GetBinary()).Returns(byteArray.Object);
@@ -88,7 +131,7 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
-        public void DeserializeCefValue_HandlesSimpleDictionary()
+        public void DeserializeCefValue_HandlesSimpleDictionaries()
         {
             var returnValue = new Dictionary<string, int>()
             {
@@ -96,22 +139,12 @@ namespace CefGlue.Tests.Serialization
                 { "second", 2 },
                 { "third", 3 }
             };
-            Mock<CefValueWrapper> cefValue = new Mock<CefValueWrapper>();
-            Mock<ICefDictionaryValue> cefDictionary = new Mock<ICefDictionaryValue>();
-            cefDictionary.Setup(v => v.GetKeys()).Returns(returnValue.Keys.ToArray());
-            foreach (string key in returnValue.Keys)
-            {
-                cefDictionary.Setup(v => v.GetValueType(key)).Returns(CefValueType.Int);
-                cefDictionary.Setup(v => v.GetInt(key)).Returns(returnValue[key]);
-            }
-            cefValue.Setup(v => v.GetValueType()).Returns(CefValueType.Dictionary);
-            cefValue.Setup(v => v.GetDictionary()).Returns(cefDictionary.Object);
-            var ret = (IDictionary<string, object>)CefValueSerialization.DeserializeCefValue(cefValue.Object);
-            CollectionAssert.AreEqual(returnValue, ret);
+
+            CollectionAssert.AreEqual(returnValue, SerializeSimpleDictionary<int>(returnValue, CefValueType.Int, k => v => v.GetInt(k)));
         }
 
         [Test]
-        public void DeserializeCefValue_HandlesNestedDictionary()
+        public void DeserializeCefValue_HandlesNestedDictionaries()
         {
             var returnValue = new Dictionary<string, Dictionary<string, double>>()
             {
@@ -131,30 +164,22 @@ namespace CefGlue.Tests.Serialization
                     { "third_third", 9d },
                 }}
             };
-            Mock<CefValueWrapper> cefValue = new Mock<CefValueWrapper>();
-            cefValue.Setup(v => v.GetValueType()).Returns(CefValueType.Dictionary);
+            var cefValue = BootstrapDictionaryWrapperMock(CefValueType.Dictionary);
 
-            Mock<ICefDictionaryValue> cefOuterDictionary = new Mock<ICefDictionaryValue>();
+            var cefOuterDictionary = new Mock<ICefDictionaryValue>();
             cefOuterDictionary.Setup(v => v.GetKeys()).Returns(returnValue.Keys.ToArray());
             foreach (string key in returnValue.Keys)
             {
                 cefOuterDictionary.Setup(v => v.GetValueType(key)).Returns(CefValueType.Dictionary);
-                Mock<ICefDictionaryValue> cefInnerDictionary = new Mock<ICefDictionaryValue>();
-                cefInnerDictionary.Setup(v => v.GetKeys()).Returns(returnValue[key].Keys.ToArray());
-                foreach (string innerkey in returnValue[key].Keys)
-                {
-                    cefInnerDictionary.Setup(v => v.GetValueType(innerkey)).Returns(CefValueType.Double);
-                    cefInnerDictionary.Setup(v => v.GetDouble(innerkey)).Returns(returnValue[key][innerkey]);
-                }
-                cefOuterDictionary.Setup(v => v.GetDictionary(key)).Returns(cefInnerDictionary.Object);
+                cefOuterDictionary.Setup(v => v.GetDictionary(key))
+                    .Returns(SimpleDictionaryMock<double>(returnValue[key], CefValueType.Double, k => v => v.GetDouble(k)).Object);
             }
             cefValue.Setup(v => v.GetDictionary()).Returns(cefOuterDictionary.Object);
-            var ret = (IDictionary<string, object>)CefValueSerialization.DeserializeCefValue(cefValue.Object);
-            CollectionAssert.AreEqual(returnValue, ret);
+            CollectionAssert.AreEqual(returnValue, (IDictionary<string, object>)CefValueSerialization.DeserializeCefValue(cefValue.Object));
         }
 
         [Test]
-        public void DeserializeCefValue_HandlesNestedComplexDictionary()
+        public void DeserializeCefValue_HandlesNestedComplexDictionaries()
         {
             var returnValue = new Dictionary<string, Dictionary<string, List<double>>>()
             {
@@ -174,52 +199,32 @@ namespace CefGlue.Tests.Serialization
                     { "third_third", new List<double>() { 14d, 15d, 16d } },
                 }}
             };
-            Mock<CefValueWrapper> cefValue = new Mock<CefValueWrapper>();
-            cefValue.Setup(v => v.GetValueType()).Returns(CefValueType.Dictionary);
+            var cefValue = BootstrapDictionaryWrapperMock(CefValueType.Dictionary);
 
-            Mock<ICefDictionaryValue> cefOuterDictionary = new Mock<ICefDictionaryValue>();
+            var cefOuterDictionary = new Mock<ICefDictionaryValue>();
             cefOuterDictionary.Setup(v => v.GetKeys()).Returns(returnValue.Keys.ToArray());
             foreach (string key in returnValue.Keys)
             {
                 cefOuterDictionary.Setup(v => v.GetValueType(key)).Returns(CefValueType.Dictionary);
-                Mock<ICefDictionaryValue> cefInnerDictionary = new Mock<ICefDictionaryValue>();
+                var cefInnerDictionary = new Mock<ICefDictionaryValue>();
                 cefInnerDictionary.Setup(v => v.GetKeys()).Returns(returnValue[key].Keys.ToArray());
                 foreach (string innerkey in returnValue[key].Keys)
                 {
-                    Mock<ICefListValue> cefList = new Mock<ICefListValue>();
-                    cefList.Setup(v => v.Count).Returns(returnValue[key][innerkey].Count);
-                    for (int i = 0; i < returnValue[key][innerkey].Count; i++)
-                    {
-                        cefList.Setup(v => v.GetValueType(i)).Returns(CefValueType.Double);
-                        cefList.Setup(v => v.GetDouble(i)).Returns(returnValue[key][innerkey][i]);
-                    }
                     cefInnerDictionary.Setup(v => v.GetValueType(innerkey)).Returns(CefValueType.List);
-                    cefInnerDictionary.Setup(v => v.GetList(innerkey)).Returns(cefList.Object);
+                    cefInnerDictionary.Setup(v => v.GetList(innerkey))
+                        .Returns(SimpleListMock<double>(returnValue[key][innerkey], CefValueType.Double, i => v => v.GetDouble(i)).Object);
                 }
                 cefOuterDictionary.Setup(v => v.GetDictionary(key)).Returns(cefInnerDictionary.Object);
             }
             cefValue.Setup(v => v.GetDictionary()).Returns(cefOuterDictionary.Object);
-            var ret = (IDictionary<string, object>)CefValueSerialization.DeserializeCefValue(cefValue.Object);
-            CollectionAssert.AreEqual(returnValue, ret);
+            CollectionAssert.AreEqual(returnValue, (IDictionary<string, object>)CefValueSerialization.DeserializeCefValue(cefValue.Object));
         }
 
         [Test]
-        public void DeserializeCefValue_HandlesSimpleList()
+        public void DeserializeCefValue_HandlesSimpleLists()
         {
             var returnValue = new List<int>() { 1, 2, 3 };
-            Mock<CefValueWrapper> cefValue = new Mock<CefValueWrapper>();
-            cefValue.Setup(v => v.GetValueType()).Returns(CefValueType.List);
-
-            Mock<ICefListValue> cefList = new Mock<ICefListValue>();
-            cefList.Setup(v => v.Count).Returns(returnValue.Count);
-            for(int i=0; i < returnValue.Count; i++)
-            {
-                cefList.Setup(v => v.GetValueType(i)).Returns(CefValueType.Int);
-                cefList.Setup(v => v.GetInt(i)).Returns(returnValue[i]);
-            }
-            cefValue.Setup(v => v.GetList()).Returns(cefList.Object);
-            var ret = (IList<object>)CefValueSerialization.DeserializeCefValue(cefValue.Object);
-            CollectionAssert.AreEqual(returnValue, ret);
+            CollectionAssert.AreEqual(returnValue, SerializeSimpleList<int>(returnValue, CefValueType.Int, i => v => v.GetInt(i)));
         }
 
         [Test]
@@ -232,26 +237,17 @@ namespace CefGlue.Tests.Serialization
                 new List<double>() { 9d },
             };
 
-            Mock<CefValueWrapper> cefValue = new Mock<CefValueWrapper>();
-            cefValue.Setup(v => v.GetValueType()).Returns(CefValueType.List);
+            var cefValue = BootstrapDictionaryWrapperMock(CefValueType.List);
 
-            Mock<ICefListValue> cefOuterList = new Mock<ICefListValue>();
+            var cefOuterList = new Mock<ICefListValue>();
             cefOuterList.Setup(v => v.Count).Returns(returnValue.Count);
             for (int i = 0; i < returnValue.Count; i++)
             {
                 cefOuterList.Setup(v => v.GetValueType(i)).Returns(CefValueType.List);
-                Mock<ICefListValue> cefInnerList = new Mock<ICefListValue>();
-                cefInnerList.Setup(v => v.Count).Returns(returnValue[i].Count);
-                for (int j = 0; j < returnValue[i].Count; j++)
-                {
-                    cefInnerList.Setup(v => v.GetValueType(j)).Returns(CefValueType.Double);
-                    cefInnerList.Setup(v => v.GetDouble(j)).Returns(returnValue[i][j]);
-                }
-                cefOuterList.Setup(v => v.GetList(i)).Returns(cefInnerList.Object);
+                cefOuterList.Setup(v => v.GetList(i)).Returns(SimpleListMock<double>(returnValue[i], CefValueType.Double, j => v => v.GetDouble(j)).Object);
             }
             cefValue.Setup(v => v.GetList()).Returns(cefOuterList.Object);
-            var ret = (IList<object>)CefValueSerialization.DeserializeCefValue(cefValue.Object);
-            CollectionAssert.AreEqual(returnValue, ret);
+            CollectionAssert.AreEqual(returnValue, (IList<object>)CefValueSerialization.DeserializeCefValue(cefValue.Object));
         }
 
         [Test]
@@ -290,195 +286,68 @@ namespace CefGlue.Tests.Serialization
                 },
             };
 
-            Mock<CefValueWrapper> cefValue = new Mock<CefValueWrapper>();
-            cefValue.Setup(v => v.GetValueType()).Returns(CefValueType.List);
+            var cefValue = BootstrapDictionaryWrapperMock(CefValueType.List);
 
-            Mock<ICefListValue> cefOuterList = new Mock<ICefListValue>();
+            var cefOuterList = new Mock<ICefListValue>();
             cefOuterList.Setup(v => v.Count).Returns(returnValue.Count);
             for (int i = 0; i < returnValue.Count; i++)
             {
                 cefOuterList.Setup(v => v.GetValueType(i)).Returns(CefValueType.List);
-                Mock<ICefListValue> cefInnerList = new Mock<ICefListValue>();
+                var cefInnerList = new Mock<ICefListValue>();
                 cefInnerList.Setup(v => v.Count).Returns(returnValue[i].Count);
                 for (int j = 0; j < returnValue[i].Count; j++)
                 {
-                    Mock<ICefDictionaryValue> cefDictionary = new Mock<ICefDictionaryValue>();
-                    cefDictionary.Setup(v => v.GetKeys()).Returns(returnValue[i][j].Keys.ToArray());
-                    foreach (string key in returnValue[i][j].Keys)
-                    {
-                        cefDictionary.Setup(v => v.GetValueType(key)).Returns(CefValueType.String);
-                        cefDictionary.Setup(v => v.GetString(key)).Returns(returnValue[i][j][key]);
-                    }
                     cefInnerList.Setup(v => v.GetValueType(j)).Returns(CefValueType.Dictionary);
-                    cefInnerList.Setup(v => v.GetDictionary(j)).Returns(cefDictionary.Object);
+                    cefInnerList.Setup(v => v.GetDictionary(j))
+                        .Returns(SimpleDictionaryMock<string>(returnValue[i][j], CefValueType.String, k => v => v.GetString(k)).Object);
                 }
                 cefOuterList.Setup(v => v.GetList(i)).Returns(cefInnerList.Object);
             }
             cefValue.Setup(v => v.GetList()).Returns(cefOuterList.Object);
-            var ret = (IList<object>)CefValueSerialization.DeserializeCefValue(cefValue.Object);
-            CollectionAssert.AreEqual(returnValue, ret);
+            CollectionAssert.AreEqual(returnValue, (IList<object>)CefValueSerialization.DeserializeCefValue(cefValue.Object));
         }
 
         #endregion
 
         #region FromCefBinary
         [Test]
-        public void FromCefBinary_HandlesEmptyByteArray()
+        public void FromCefBinary_HandlesEmptyByteArrays()
         {
             var returnValue = new byte[0];
-            Mock<ICefBinaryValue> byteArray = new Mock<ICefBinaryValue>();
+            var byteArray = new Mock<ICefBinaryValue>();
             byteArray.Setup(c => c.ToArray()).Returns(returnValue);
             Assert.AreEqual(returnValue, CefValueSerialization.FromCefBinary(byteArray.Object, out var kind));
             Assert.AreEqual(BinaryMagicBytes.Binary, kind);
         }
 
         [Test]
-        public void FromCefBinary_HandlesByteArray()
+        public void FromCefBinary_HandlesByteArrays()
         {
             var returnValue = new byte[] { 100, 150, 254 };
-            Mock<ICefBinaryValue> byteArray = new Mock<ICefBinaryValue>();
+            var byteArray = new Mock<ICefBinaryValue>();
             byteArray.Setup(c => c.ToArray()).Returns((new byte[] { 1 }.Concat(returnValue)).ToArray());
             Assert.AreEqual(returnValue, CefValueSerialization.FromCefBinary(byteArray.Object, out var kind));
             Assert.AreEqual(BinaryMagicBytes.Binary, kind);
         }
 
         [Test]
-        public void FromCefBinary_ThrowsExceptionOnUnknownByteType()
+        public void FromCefBinary_ThrowsExceptionOnUnknownByteTypes()
         {
             var returnValue = new byte[] { 10, 100, 150, 254 };
-            Mock<ICefBinaryValue> byteArray = new Mock<ICefBinaryValue>();
+            var byteArray = new Mock<ICefBinaryValue>();
             byteArray.Setup(c => c.ToArray()).Returns(returnValue);
             Assert.Throws<InvalidOperationException>(() => CefValueSerialization.FromCefBinary(byteArray.Object, out var kind));
         }
 
         [Test]
-        public void FromCefBinary_HandlesDateTime()
+        public void FromCefBinary_HandlesDateTimes()
         {
             var dateTime = DateTime.Now;
             var returnValue = BitConverter.GetBytes(dateTime.Ticks);
-            Mock<ICefBinaryValue> byteArray = new Mock<ICefBinaryValue>();
+            var byteArray = new Mock<ICefBinaryValue>();
             byteArray.Setup(c => c.ToArray()).Returns((new byte[] { 0 }.Concat(returnValue)).ToArray());
             Assert.AreEqual(dateTime, CefValueSerialization.FromCefBinary(byteArray.Object, out var kind));
             Assert.AreEqual(BinaryMagicBytes.DateTime, kind);
-        }
-        #endregion
-    }
-
-    [TestFixture]
-    public class SerializationTests
-    {
-        #region Serialize
-        [Test]
-        public void Serialize_HandlesNullObject()
-        {
-            Mock<CefValueWrapper> cefValue = new Mock<CefValueWrapper>();
-            Serialize(null, cefValue.Object);
-            cefValue.Verify(v => v.SetNull(), Times.Once());
-        }
-
-        private void AssertSerialization<T1, T2>(T1 value, Expression<Action<CefValueWrapper>> setValue, Func<T1, T2> convertType = null)
-        {
-            Mock<CefValueWrapper> cefValue = new Mock<CefValueWrapper>();
-            if(convertType == null)
-            {
-                cefValue.Setup(setValue).Callback<T2>((data) => Assert.AreEqual(value, data));
-            } else
-            {
-                cefValue.Setup(setValue).Callback<T2>((data) => Assert.AreEqual(convertType(value), data));
-            }
-            Serialize(value, cefValue.Object);
-            cefValue.Verify(setValue, Times.Once());
-        }
-
-        [Test]
-        public void Serialize_HandlesBooleans()
-        {
-            AssertSerialization<bool, bool>(true, v => v.SetBool(It.IsAny<bool>()));
-        }
-
-        [Test]
-        public void Serialize_HandlesSignedIntegers16()
-        {
-            AssertSerialization<short, int>(Int16.MaxValue, v => v.SetInt(It.IsAny<int>()));
-        }
-
-        [Test]
-        public void Serialize_HandlesSignedIntegers32()
-        {
-            AssertSerialization<int, int>(Int32.MaxValue, v => v.SetInt(It.IsAny<int>()));
-        }
-
-        [Test]
-        public void Serialize_HandlesSignedIntegers64()
-        {
-            AssertSerialization<long, double>(Int64.MaxValue, v => v.SetDouble(It.IsAny<double>()));
-        }
-
-        [Test]
-        public void Serialize_HandlesUnsignedIntegers16()
-        {
-            AssertSerialization<ushort, int>(UInt16.MinValue, v => v.SetInt(It.IsAny<int>()));
-        }
-
-        [Test]
-        public void Serialize_HandlesUnsignedIntegers32()
-        {
-            AssertSerialization<uint, int>(UInt32.MinValue, v => v.SetInt(It.IsAny<int>()));
-        }
-
-        [Test]
-        public void Serialize_HandlesUnsignedIntegers64()
-        {
-            AssertSerialization<ulong, double>(UInt64.MinValue, v => v.SetDouble(It.IsAny<double>()));
-        }
-
-        [Test]
-        public void Serialize_HandlesBytes()
-        {
-            AssertSerialization<byte, int>((byte)12, v => v.SetInt(It.IsAny<int>()));
-        }
-
-        [Test]
-        public void Serialize_HandlesStrings()
-        {
-            AssertSerialization<string,string>("this is a string", v => v.SetString(It.IsAny<string>()));
-        }
-
-        [Test]
-        public void Serialize_HandlesChars()
-        {
-            AssertSerialization<char, string>('c', v => v.SetString(It.IsAny<string>()), (char expectedValue) => expectedValue.ToString());
-        }
-
-        [Test]
-        public void Serialize_HandlesDoubles()
-        {
-            AssertSerialization<double, double>(10.5d, v => v.SetDouble(It.IsAny<double>()));
-        }
-
-        [Test]
-        public void Serialize_HandlesFloats()
-        {
-            AssertSerialization<float, double>(10.5f, v => v.SetDouble(It.IsAny<double>()));
-        }
-
-        [Test]
-        public void Serialize_HandlesDecimals()
-        {
-            AssertSerialization<decimal, double>(10.5m, v => v.SetDouble(It.IsAny<double>()));
-        }
-
-        [Test]
-        public void Serialize_HandlesBinaries()
-        {
-            Mock<CefValueWrapper> cefValue = new Mock<CefValueWrapper>();
-            var expectedValue = new byte[] { 100, 12, 254 };
-            Mock<IValueProxy> valueProxy = new Mock<IValueProxy>();
-            valueProxy.Setup(v => v.CreateBinary(It.IsAny<byte[]>())).Callback<byte[]>((data) => CollectionAssert.AreEqual(new byte[] { (byte)BinaryMagicBytes.Binary }.Concat(expectedValue), data));
-            ValueServices.ValueProxy = valueProxy.Object;
-            Serialize(expectedValue, cefValue.Object);
-            valueProxy.Verify(v => v.CreateBinary(It.IsAny<byte[]>()), Times.Once());
-            ValueServices.Reset();
         }
         #endregion
     }

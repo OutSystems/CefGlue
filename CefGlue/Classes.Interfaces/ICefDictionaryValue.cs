@@ -1,8 +1,9 @@
 using System;
+using Xilium.CefGlue.Interop;
 
 namespace Xilium.CefGlue
 {
-    public interface ICefDictionaryValue : IDisposable
+    public unsafe interface ICefDictionaryValue : IDisposable
     {
         int Count { get; }
         bool IsOwned { get; }
