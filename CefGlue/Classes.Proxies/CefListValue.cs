@@ -56,7 +56,7 @@ namespace Xilium.CefGlue
         /// </summary>
         public bool IsSame(ICefListValue that)
         {
-            return cef_list_value_t.is_same(_self, (that as CefListValue).ToNative()) != 0;
+            return cef_list_value_t.is_same(_self, ((CefListValue)that).ToNative()) != 0;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Xilium.CefGlue
         /// </summary>
         public bool IsEqual(ICefListValue that)
         {
-            return cef_list_value_t.is_equal(_self, (that as CefListValue).ToNative()) != 0;
+            return cef_list_value_t.is_equal(_self, ((CefListValue)that).ToNative()) != 0;
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace Xilium.CefGlue
         /// </summary>
         public bool SetBinary(int index, ICefBinaryValue value)
         {
-            return cef_list_value_t.set_binary(_self, checked((UIntPtr)index), (value as CefBinaryValue).ToNative()) != 0;
+            return cef_list_value_t.set_binary(_self, checked((UIntPtr)index), ((CefBinaryValue)value).ToNative()) != 0;
         }
 
         /// <summary>
@@ -285,7 +285,7 @@ namespace Xilium.CefGlue
         /// </summary>
         public bool SetDictionary(int index, ICefDictionaryValue value)
         {
-            return cef_list_value_t.set_dictionary(_self, checked((UIntPtr)index), (value as CefDictionaryValue).ToNative()) != 0;
+            return cef_list_value_t.set_dictionary(_self, checked((UIntPtr)index), ((CefDictionaryValue)value).ToNative()) != 0;
         }
 
         /// <summary>
@@ -297,7 +297,7 @@ namespace Xilium.CefGlue
         /// </summary>
         public bool SetList(int index, ICefListValue value)
         {
-            return cef_list_value_t.set_list(_self, checked((UIntPtr)index), (value as CefListValue).ToNative()) != 0;
+            return cef_list_value_t.set_list(_self, checked((UIntPtr)index), ((CefListValue)value).ToNative()) != 0;
         }
     }
 }

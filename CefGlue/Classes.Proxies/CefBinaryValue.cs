@@ -53,7 +53,7 @@ namespace Xilium.CefGlue
         /// </summary>
         public bool IsSame(ICefBinaryValue that)
         {
-            return cef_binary_value_t.is_same(_self, (that as CefBinaryValue).ToNative()) != 0;
+            return cef_binary_value_t.is_same(_self, ((CefBinaryValue)that).ToNative()) != 0;
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Xilium.CefGlue
         /// </summary>
         public bool IsEqual(ICefBinaryValue that)
         {
-            return cef_binary_value_t.is_equal(_self, (that as CefBinaryValue).ToNative()) != 0;
+            return cef_binary_value_t.is_equal(_self, ((CefBinaryValue)that).ToNative()) != 0;
         }
 
         /// <summary>

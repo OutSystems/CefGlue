@@ -56,7 +56,7 @@ namespace Xilium.CefGlue
         /// </summary>
         public bool IsSame(ICefDictionaryValue that)
         {
-            return cef_dictionary_value_t.is_same(_self, (that as CefDictionaryValue).ToNative()) != 0;
+            return cef_dictionary_value_t.is_same(_self, ((CefDictionaryValue)that).ToNative()) != 0;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Xilium.CefGlue
         /// </summary>
         public bool IsEqual(ICefDictionaryValue that)
         {
-            return cef_dictionary_value_t.is_equal(_self, (that as CefDictionaryValue).ToNative()) != 0;
+            return cef_dictionary_value_t.is_equal(_self, ((CefDictionaryValue)that).ToNative()) != 0;
         }
 
         /// <summary>
@@ -359,7 +359,7 @@ namespace Xilium.CefGlue
             fixed (char* key_str = key)
             {
                 var n_key = new cef_string_t(key_str, key != null ? key.Length : 0);
-                return cef_dictionary_value_t.set_binary(_self, &n_key, (value as CefBinaryValue).ToNative()) != 0;
+                return cef_dictionary_value_t.set_binary(_self, &n_key, ((CefBinaryValue)value).ToNative()) != 0;
             }
         }
 
@@ -377,7 +377,7 @@ namespace Xilium.CefGlue
             fixed (char* key_str = key)
             {
                 var n_key = new cef_string_t(key_str, key != null ? key.Length : 0);
-                return cef_dictionary_value_t.set_dictionary(_self, &n_key, (value as CefDictionaryValue).ToNative()) != 0;
+                return cef_dictionary_value_t.set_dictionary(_self, &n_key, ((CefDictionaryValue)value).ToNative()) != 0;
             }
         }
 
@@ -395,7 +395,7 @@ namespace Xilium.CefGlue
             fixed (char* key_str = key)
             {
                 var n_key = new cef_string_t(key_str, key != null ? key.Length : 0);
-                return cef_dictionary_value_t.set_list(_self, &n_key, (value as CefListValue).ToNative()) != 0;
+                return cef_dictionary_value_t.set_list(_self, &n_key, ((CefListValue)value).ToNative()) != 0;
             }
         }
     }
