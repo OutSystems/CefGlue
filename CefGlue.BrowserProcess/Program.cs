@@ -17,7 +17,9 @@ namespace Xilium.CefGlue.BrowserProcess
                 var customSchemesArg = GetArgumentValue(args, CommandLineArgs.CustomScheme);
                 var customSchemes = CustomScheme.FromCommandLineValue(customSchemesArg);
 
-                var exitCode = CefRuntime.ExecuteProcess(new CefMainArgs(args), new BrowserCefApp(customSchemes), IntPtr.Zero);
+                // first argument is the path of the executable, but its ignored for now
+                var mainArgs = new CefMainArgs(new[] { "BrowserProcess" }.Concat(args).ToArray());
+                var exitCode = CefRuntime.ExecuteProcess(mainArgs, new BrowserCefApp(customSchemes), IntPtr.Zero);
                 if (exitCode != -1)
                 {
                     Environment.Exit(exitCode);
