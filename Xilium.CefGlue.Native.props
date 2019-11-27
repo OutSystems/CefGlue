@@ -12,7 +12,7 @@
 
   <Target Name="CefGlueCopyBrowserProcess" BeforeTargets="AfterBuild">
       <ItemGroup>
-          <SubProcessFiles Include="$(SolutionDir)CefGlue.BrowserProcess\bin\$(Configuration)\$(TargetFramework)\win-x64\*" />
+          <SubProcessFiles Include="$(SolutionDir)CefGlue.BrowserProcess\bin\$(Configuration)\$(TargetFramework)\win-x64\Xilium.CefGlue.BrowserProcess.*" />
       </ItemGroup>
       <Message Importance="high" Text="Copying CefGlue.BrowserProcess files" />
       <Copy SourceFiles="@(SubProcessFiles)" DestinationFolder="$(TargetDir)" />
