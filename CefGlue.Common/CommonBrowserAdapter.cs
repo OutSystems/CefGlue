@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Handlers;
@@ -34,8 +35,10 @@ namespace Xilium.CefGlue.Common
         private CommonCefClient _cefClient;
         private JavascriptExecutionEngine _javascriptExecutionEngine;
         private NativeObjectMethodDispatcher _objectMethodDispatcher;
+        private BaseBrowserSurface _browserSurface;
 
-        private Func<CefRectangle> getViewRectOverride;
+        private BuiltInRenderHandler _controlRenderHandler;
+        private BuiltInRenderHandler _popupRenderHandler;
 
         private readonly NativeObjectRegistry _objectRegistry = new NativeObjectRegistry();
 
@@ -81,10 +84,12 @@ namespace Xilium.CefGlue.Common
                 _browser = null;
             }
 
+            _browserSurface = null;
+
             if (disposing)
             {
-                BuiltInRenderHandler?.Dispose();
-                PopupRenderHandler?.Dispose();
+                _controlRenderHandler?.Dispose();
+                _popupRenderHandler?.Dispose();
                 GC.SuppressFinalize(this);
             }
         }
@@ -126,10 +131,6 @@ namespace Xilium.CefGlue.Common
         public JSDialogHandler JSDialogHandler { get; set; }
 
         #endregion
-
-        public BuiltInRenderHandler BuiltInRenderHandler => _control.RenderHandler;
-
-        public BuiltInRenderHandler PopupRenderHandler => _popup.RenderHandler;
 
         public bool IsInitialized => _browser != null;
 
@@ -444,17 +445,14 @@ namespace Xilium.CefGlue.Common
                 if (_browserHost != null)
                 {
                     _isVisible = isVisible;
-                    _browserHost.WasHidden(!isVisible);
-                    // workaround cef OSR bug (https://bitbucket.org/chromiumembedded/cef/issues/2483/osr-invalidate-does-not-generate-frame)
-                    // we notify browser of a resize and return height+1px on next GetViewRect call
-                    // then restore the original size back again
-                    getViewRectOverride = () =>
+                    if (isVisible)
                     {
-                        getViewRectOverride = null;
-                        _browserHost?.WasResized();
-                        return new CefRectangle(0, 0, BuiltInRenderHandler?.Width ?? 1, (BuiltInRenderHandler?.Height + 1) ?? 1);
-                    };
-                    _browserHost.WasResized();
+                        _browserSurface.Show();
+                    }
+                    else
+                    {
+                        _browserSurface.Hide();
+                    }
                 }
             });
         }
@@ -463,17 +461,17 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleScreenInfoChanged), () =>
             {
-                if (BuiltInRenderHandler != null) {
-                    BuiltInRenderHandler.DeviceScaleFactor = deviceScaleFactor;
+                if (_controlRenderHandler != null) {
+                    _controlRenderHandler.DeviceScaleFactor = deviceScaleFactor;
                 }
 
                 _browserHost?.NotifyScreenInfoChanged();
             });
         }
 
-        public void CreateOrUpdateBrowser(int newWidth, int newHeight)
+        public void CreateOrUpdateBrowser(int x, int y, int newWidth, int newHeight)
         {
-            _logger.Debug("BrowserResize. Old H{0}xW{1}; New H{2}xW{3}.", RenderedWidth, RenderedHeight, newHeight, newWidth);
+            _logger.Debug("BrowserResize. H{2}xW{3}.", newHeight, newWidth);
 
             if (newWidth > 0 && newHeight > 0)
             {
@@ -484,14 +482,37 @@ namespace Xilium.CefGlue.Common
                     AttachEventHandlers(_control);
                     AttachEventHandlers(_popup);
 
-                    // Create the bitmap that holds the rendered website bitmap
-                    OnBrowserSizeChanged(newWidth, newHeight);
-
                     // Find the window that's hosting us
-                    var hParentWnd = _control.GetHostWindowHandle();
+                    var hParentWnd = _control.GetHostWindowHandle() ?? IntPtr.Zero;
 
                     var windowInfo = CefWindowInfo.Create();
-                    windowInfo.SetAsWindowless(hParentWnd != null ? hParentWnd.Value : IntPtr.Zero, AllowsTransparency);
+                    if (CefRuntimeLoader.IsOSREnabled)
+                    {
+                        _controlRenderHandler = _control.CreateRenderHandler();
+                        _popupRenderHandler = _popup.CreateRenderHandler();
+
+                        _browserSurface = new BrowserOSRSurface(_controlRenderHandler);
+                        _browserSurface.MoveAndResize(x, y, newWidth, newHeight);
+
+                        windowInfo.SetAsWindowless(hParentWnd, AllowsTransparency);
+                    }
+                    else
+                    {
+                        switch (CefRuntime.Platform)
+                        {
+                            case CefRuntimePlatform.Windows:
+                                _browserSurface = new BrowserWindowsSurface(hParentWnd);
+                                break;
+
+                            case CefRuntimePlatform.MacOSX:
+                            case CefRuntimePlatform.Linux:
+                                // TODO
+                                throw new NotSupportedException("Standard rendering mode not supported");
+                        }
+                        
+                        _browserSurface.MoveAndResize(x, y, newWidth, newHeight);
+                        windowInfo.SetAsChild(hParentWnd, new CefRectangle(x, y, newWidth, newHeight));
+                    }
 
                     _cefClient = new CommonCefClient(this, _logger);
                     _cefClient.Dispatcher.RegisterMessageHandler(Messages.UnhandledException.Name, OnBrowserProcessUnhandledException);
@@ -501,17 +522,11 @@ namespace Xilium.CefGlue.Common
                 }
                 else
                 {
-                    // Only update the bitmap if the size has changed
-                    if (RenderedWidth != newWidth || RenderedHeight != newHeight)
+                    var succeded = _browserSurface.MoveAndResize(x, y, newWidth, newHeight);
+                    if (succeded)
                     {
-                        OnBrowserSizeChanged(newWidth, newHeight);
-
                         // If the window has already been created, just resize it
-                        if (_browserHost != null)
-                        {
-                            _logger.Trace("CefBrowserHost::WasResized to {0}x{1}.", newWidth, newHeight);
-                            _browserHost.WasResized();
-                        }
+                        _logger.Trace("CefBrowserHost::WasResized to {0}x{1}.", newWidth, newHeight);
                     }
                 }
             }
@@ -567,18 +582,9 @@ namespace Xilium.CefGlue.Common
             control.Drop += HandleDrop;
         }
 
-        protected int RenderedWidth => BuiltInRenderHandler.Width;
-
-        protected int RenderedHeight => BuiltInRenderHandler.Height;
-
         public bool IsJavascriptEngineInitialized => _javascriptExecutionEngine.IsMainFrameContextInitialized;
 
         public CefBrowserSettings Settings { get; } = new CefBrowserSettings();
-
-        protected void OnBrowserSizeChanged(int newWidth, int newHeight)
-        {
-            BuiltInRenderHandler?.Resize(newWidth, newHeight);
-        }
 
         #region ICefBrowserHost
 
@@ -591,7 +597,7 @@ namespace Xilium.CefGlue.Common
         {
             // The simulated screen and view rectangle are the same. This is necessary
             // for popup menus to be located and sized inside the view.
-            return getViewRectOverride?.Invoke() ?? new CefRectangle(0, 0, RenderedWidth, RenderedHeight);
+            return _browserSurface.GetViewRect();
         }
 
         void ICefBrowserHost.GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY)
@@ -604,7 +610,7 @@ namespace Xilium.CefGlue.Common
             var point = new Point(0, 0);
             WithErrorHandling(nameof(GetScreenPoint), () =>
             {
-                point = _control.PointToScreen(new Point(viewX, viewY));
+                point = _control.PointToScreen(new Point(viewX, viewY), _controlRenderHandler.DeviceScaleFactor);
             });
             screenX = point.X;
             screenY = point.Y;
@@ -612,7 +618,7 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.GetScreenInfo(CefScreenInfo screenInfo)
         {
-            screenInfo.DeviceScaleFactor = BuiltInRenderHandler.DeviceScaleFactor;
+            screenInfo.DeviceScaleFactor = _controlRenderHandler.DeviceScaleFactor;
         }
 
         void ICefBrowserHost.HandlePopupShow(bool show)
@@ -634,7 +640,7 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(ICefBrowserHost.HandlePopupSizeChange), () =>
             {
-                _popup.RenderHandler.Resize(rect.Width, rect.Height);
+                _popupRenderHandler.Resize(rect.Width, rect.Height);
                 _popup.MoveAndResize(rect.X, rect.Y, rect.Width, rect.Height);
             });
         }
@@ -666,8 +672,6 @@ namespace Xilium.CefGlue.Common
 
         protected virtual void OnBrowserCreated(CefBrowser browser)
         {
-            int width = 0, height = 0;
-
             if (_browser != null)
             {
                 // Make sure we don't initialize ourselves more than once. That seems to break things.
@@ -686,14 +690,7 @@ namespace Xilium.CefGlue.Common
 
                 _browser = browser;
                 _browserHost = browser.GetHost();
-
-                width = RenderedWidth;
-                height = RenderedHeight;
-
-                if (width > 0 && height > 0)
-                {
-                    _browserHost.WasResized();
-                }
+                _browserSurface.SetBrowserHost(_browserHost);
 
                 Initialized?.Invoke();
             });
@@ -783,11 +780,11 @@ namespace Xilium.CefGlue.Common
             BuiltInRenderHandler renderHandler;
             if (isPopup)
             {
-                renderHandler = PopupRenderHandler;
+                renderHandler = _popupRenderHandler;
             }
             else
             {
-                renderHandler = BuiltInRenderHandler;
+                renderHandler = _controlRenderHandler;
             }
 
             const string ScopeName = nameof(ICefBrowserHost.HandleViewPaint);

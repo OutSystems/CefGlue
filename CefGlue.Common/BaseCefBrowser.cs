@@ -356,9 +356,9 @@ namespace Xilium.CefGlue.Common
             return _adapter.IsJavascriptObjectRegistered(name);
         }
 
-        protected void CreateOrUpdateBrowser(int width, int height)
+        protected void CreateOrUpdateBrowser(int x, int y, int width, int height)
         {
-            _adapter.CreateOrUpdateBrowser(width, height);
+            _adapter.CreateOrUpdateBrowser(x, y, width, height);
         }
     }
 }

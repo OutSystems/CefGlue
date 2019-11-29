@@ -12,8 +12,6 @@ namespace Xilium.CefGlue.Common.Helpers
     {
         private const int DefaultDpi = 96;
 
-        protected readonly ILogger _logger;
-
         private int _width;
         private int _height;
 
@@ -21,11 +19,6 @@ namespace Xilium.CefGlue.Common.Helpers
 
         private MemoryMappedFile _mappedFile;
         private MemoryMappedViewAccessor _viewAccessor;
-
-        protected BuiltInRenderHandler(ILogger logger)
-        {
-            _logger = logger;
-        }
 
         public virtual void Dispose()
         {

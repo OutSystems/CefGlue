@@ -4,8 +4,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 using AvaloniaPoint = Avalonia.Point;
@@ -26,24 +28,36 @@ namespace Xilium.CefGlue.Avalonia.Platform
         private IDisposable _windowStateChangedObservable;
         private bool _isVisible;
 
-        public AvaloniaControl(Control control, BuiltInRenderHandler renderHandler) : base(renderHandler)
+        private Action<Image> _setContent;
+
+        public AvaloniaControl(Control control, Action<Image> setContent)
         {
+            _setContent = setContent;
+
+            _isVisible = control.IsEffectivelyVisible;
+            control.GetPropertyChangedObservable(Control.TransformedBoundsProperty).Subscribe(OnTransformedBoundsChanged);
+            control.AttachedToVisualTree += OnAttachedToVisualTree;
+            control.DetachedFromVisualTree += OnDetachedFromVisualTree;
+
             _control = control;
+        }
 
-            _control.GotFocus += delegate { TriggerGotFocus(); };
-            _control.LostFocus += delegate { TriggerLostFocus(); };
+        private void AttachInputEvents(Control control)
+        {
+            control.GotFocus += delegate { TriggerGotFocus(); };
+            control.LostFocus += delegate { TriggerLostFocus(); };
 
-            _control.PointerMoved += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent(MousePositionReferential));
-            _control.PointerLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
-            _control.PointerPressed += (sender, arg) =>
+            control.PointerMoved += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent(MousePositionReferential));
+            control.PointerLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
+            control.PointerPressed += (sender, arg) =>
             {
                 TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.MouseButton.AsCefMouseButtonType(), arg.ClickCount);
                 if (arg.MouseButton == MouseButton.Left)
                 {
-                    arg.Device.Capture(_control);
+                    arg.Device.Capture(control);
                 }
             };
-            _control.PointerReleased += (sender, arg) =>
+            control.PointerReleased += (sender, arg) =>
             {
                 TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.MouseButton.AsCefMouseButtonType());
                 if (arg.MouseButton == MouseButton.Left)
@@ -51,9 +65,9 @@ namespace Xilium.CefGlue.Avalonia.Platform
                     arg.Device.Capture(null);
                 }
             };
-            _control.PointerWheelChanged += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), (int)arg.Delta.X * MouseWheelDelta, (int)arg.Delta.Y * MouseWheelDelta);
+            control.PointerWheelChanged += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), (int)arg.Delta.X * MouseWheelDelta, (int)arg.Delta.Y * MouseWheelDelta);
 
-            _control.KeyDown += (sender, arg) =>
+            control.KeyDown += (sender, arg) =>
             {
                 bool handled;
                 TriggerKeyDown(arg.AsCefKeyEvent(false), out handled);
@@ -69,44 +83,43 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
                 arg.Handled = handled;
             };
-            _control.KeyUp += (sender, arg) =>
+            control.KeyUp += (sender, arg) =>
             {
                 bool handled;
                 TriggerKeyUp(arg.AsCefKeyEvent(true), out handled);
                 arg.Handled = handled;
             };
 
-            _control.TextInput += (sender, arg) =>
+            control.TextInput += (sender, arg) =>
             {
                 bool handled;
                 TriggerTextInput(arg.Text, out handled);
                 arg.Handled = handled;
             };
-
-            _isVisible = _control.IsEffectivelyVisible;
-            _control.GetPropertyChangedObservable(Control.TransformedBoundsProperty).Subscribe(OnTransformedBoundsChanged);
-            _control.AttachedToVisualTree += OnAttachedToVisualTree;
-            _control.DetachedFromVisualTree += OnDetachedFromVisualTree;
         }
 
         private void OnTransformedBoundsChanged(AvaloniaPropertyChangedEventArgs e)
         {
             // the only way we can be notified of the control visibility changes is through the transformed bounds property changes
-            var isVisible = _control.IsEffectivelyVisible;
-            if (isVisible != _isVisible)
-            {
-                _isVisible = isVisible;
-                TriggerVisibilityChanged(isVisible);
-            }
+            //var isVisible = _control.IsEffectivelyVisible;
+            //if (isVisible != _isVisible)
+            //{
+            //    _isVisible = isVisible;
+            //    TriggerVisibilityChanged(isVisible);
+            //}
         }
 
         private void OnDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
         {
             _windowStateChangedObservable?.Dispose();
+            _isVisible = false;
+            TriggerVisibilityChanged(false);
         }
 
         private void OnAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
         {
+            TriggerVisibilityChanged(true);
+            _isVisible = true;
             if (e.Root is Window newWindow)
             {
                 _windowStateChangedObservable = newWindow.GetPropertyChangedObservable(Window.WindowStateProperty).Subscribe(OnHostWindowStateChanged);
@@ -130,7 +143,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         protected virtual IVisual MousePositionReferential => _control;
 
-        public override Point PointToScreen(Point point)
+        public override Point PointToScreen(Point point, float deviceScaleFactor)
         {
             var screenCoordinates = _control.PointToScreen(new AvaloniaPoint(point.X, point.Y));
 
@@ -233,6 +246,32 @@ namespace Xilium.CefGlue.Avalonia.Platform
             //       _control.ContextMenu = null;
             //   },
             //   DispatcherPriority.Input);
+        }
+
+        public override BuiltInRenderHandler CreateRenderHandler()
+        {
+            var image = CreateImage();
+
+            // use the image, otherwise some behaviors won't work as expected (eg: cursors do not change)
+            AttachInputEvents(image);
+
+            _setContent(image);
+            return new AvaloniaRenderHandler(image);
+        }
+
+        /// <summary>
+        /// Create an image that is used to render the browser frame and popups
+        /// </summary>
+        /// <returns></returns>
+        private static Image CreateImage()
+        {
+            return new Image()
+            {
+                Focusable = false,
+                Stretch = Stretch.None,
+                HorizontalAlignment = global::Avalonia.Layout.HorizontalAlignment.Left,
+                VerticalAlignment = global::Avalonia.Layout.VerticalAlignment.Top,
+            };
         }
     }
 }

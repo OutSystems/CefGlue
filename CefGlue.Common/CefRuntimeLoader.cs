@@ -28,7 +28,6 @@ namespace Xilium.CefGlue.Common
                 settings = new CefSettings();
             }
 
-            settings.WindowlessRenderingEnabled = true;
             settings.UncaughtExceptionStackSize = 100; // for uncaught exception event work properly
 
             switch (CefRuntime.Platform)
@@ -38,7 +37,7 @@ namespace Xilium.CefGlue.Common
                     path = Path.Combine(Path.GetDirectoryName(path), "Xilium.CefGlue.BrowserProcess.exe");
                     if (!File.Exists(path))
                     {
-                        throw new FileNotFoundException($"Unable to find \"${path}\"");
+                        throw new FileNotFoundException($"Unable to find \"{path}\"");
                     }
                     settings.BrowserSubprocessPath = path;
                     settings.MultiThreadedMessageLoop = true;
@@ -52,6 +51,7 @@ namespace Xilium.CefGlue.Common
 
             AppDomain.CurrentDomain.ProcessExit += delegate { CefRuntime.Shutdown(); };
 
+            IsOSREnabled = settings.WindowlessRenderingEnabled;
             CefRuntime.Initialize(new CefMainArgs(new string[0]), settings, new CommonCefApp(customSchemes, flags, browserProcessHandler), IntPtr.Zero);
 
             if (customSchemes != null)
@@ -64,5 +64,7 @@ namespace Xilium.CefGlue.Common
         }
 
         public static bool IsInitialized => CefRuntime.IsInitialized;
+
+        internal static bool IsOSREnabled { get; private set; }
     }
 }

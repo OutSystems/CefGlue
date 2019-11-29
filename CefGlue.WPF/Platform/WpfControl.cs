@@ -1,3 +1,4 @@
+using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -5,8 +6,9 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Threading;
-using Microsoft.Win32.SafeHandles;
+using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 using Point = Xilium.CefGlue.Common.Platform.Point;
@@ -26,24 +28,29 @@ namespace Xilium.CefGlue.WPF.Platform
 
         private Point browserScreenLocation;
 
-        public WpfControl(FrameworkElement control, BuiltInRenderHandler renderHandler) : base(renderHandler)
+        public WpfControl(FrameworkElement control)
         {
             _control = control;
 
-            _control.GotFocus += delegate { TriggerGotFocus(); };
-            _control.LostFocus += delegate { TriggerLostFocus(); };
+            _control.IsVisibleChanged += delegate { TriggerVisibilityChanged(_control.IsVisible); };
+        }
 
-            _control.MouseMove += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent(MousePositionReferential));
-            _control.MouseLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
-            _control.MouseDown += (sender, arg) =>
+        private void AttachInputEvents(FrameworkElement control)
+        {
+            control.GotFocus += delegate { TriggerGotFocus(); };
+            control.LostFocus += delegate { TriggerLostFocus(); };
+
+            control.MouseMove += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent(MousePositionReferential));
+            control.MouseLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
+            control.MouseDown += (sender, arg) =>
             {
                 TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.ChangedButton.AsCefMouseButtonType(), arg.ClickCount);
                 if (arg.ChangedButton == MouseButton.Left)
                 {
-                    Mouse.Capture(_control); // allow capturing mouse mouse when outside the webview (eg: grabbing scrollbar)
+                    Mouse.Capture(control); // allow capturing mouse mouse when outside the webview (eg: grabbing scrollbar)
                 }
             };
-            _control.MouseUp += (sender, arg) =>
+            control.MouseUp += (sender, arg) =>
             {
                 TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.ChangedButton.AsCefMouseButtonType());
                 if (arg.ChangedButton == MouseButton.Left)
@@ -51,17 +58,17 @@ namespace Xilium.CefGlue.WPF.Platform
                     Mouse.Capture(null);
                 }
             };
-            _control.MouseWheel += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), 0, (int)arg.Delta);
+            control.MouseWheel += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), 0, (int)arg.Delta);
 
-            _control.DragEnter += (sender, arg) => TriggerDragEnter(arg.AsCefMouseEvent(MousePositionReferential), arg.GetDragData(), arg.AllowedEffects.AsCefDragOperationsMask());
-            _control.DragOver += (sender, arg) => TriggerDragOver(arg.AsCefMouseEvent(MousePositionReferential), arg.AllowedEffects.AsCefDragOperationsMask());
-            _control.DragLeave += (sender, arg) => TriggerDragLeave();
-            _control.Drop += (sender, arg) => TriggerDrop(arg.AsCefMouseEvent(MousePositionReferential), arg.AllowedEffects.AsCefDragOperationsMask());
+            control.DragEnter += (sender, arg) => TriggerDragEnter(arg.AsCefMouseEvent(MousePositionReferential), arg.GetDragData(), arg.AllowedEffects.AsCefDragOperationsMask());
+            control.DragOver += (sender, arg) => TriggerDragOver(arg.AsCefMouseEvent(MousePositionReferential), arg.AllowedEffects.AsCefDragOperationsMask());
+            control.DragLeave += (sender, arg) => TriggerDragLeave();
+            control.Drop += (sender, arg) => TriggerDrop(arg.AsCefMouseEvent(MousePositionReferential), arg.AllowedEffects.AsCefDragOperationsMask());
 
-            _control.Loaded += OnLoaded;
-            _control.Unloaded += OnUnloaded;
+            control.Loaded += OnLoaded;
+            control.Unloaded += OnUnloaded;
 
-            _control.KeyDown += (sender, arg) =>
+            control.KeyDown += (sender, arg) =>
             {
                 bool handled;
                 TriggerKeyDown(arg.AsCefKeyEvent(false), out handled);
@@ -77,21 +84,19 @@ namespace Xilium.CefGlue.WPF.Platform
 
                 arg.Handled = handled;
             };
-            _control.KeyUp += (sender, arg) =>
+            control.KeyUp += (sender, arg) =>
             {
                 bool handled;
                 TriggerKeyUp(arg.AsCefKeyEvent(true), out handled);
                 arg.Handled = handled;
             };
 
-            _control.TextInput += (sender, arg) =>
+            control.TextInput += (sender, arg) =>
             {
                 bool handled;
                 TriggerTextInput(arg.Text, out handled);
                 arg.Handled = handled;
             };
-
-            _control.IsVisibleChanged += delegate { TriggerVisibilityChanged(_control.IsVisible); };
 
             _tooltip = new ToolTip();
             _tooltip.StaysOpen = true;
@@ -104,14 +109,16 @@ namespace Xilium.CefGlue.WPF.Platform
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            PresentationSource.AddSourceChangedHandler(_control, OnPresentationSourceChanged);
-            var source = PresentationSource.FromVisual(_control);
+            var element = (FrameworkElement)sender;
+            PresentationSource.AddSourceChangedHandler(element, OnPresentationSourceChanged);
+            var source = PresentationSource.FromVisual(element);
             UpdatePresentationSource(source, source); // same parameters passed on purpose, to make sure the events don't get registered more than once to the same source
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            PresentationSource.RemoveSourceChangedHandler(_control, OnPresentationSourceChanged);
+            var element = (FrameworkElement)sender;
+            PresentationSource.RemoveSourceChangedHandler(element, OnPresentationSourceChanged);
             _tooltip.IsOpen = false;
             _tooltipTimer.Stop();
         }
@@ -162,12 +169,11 @@ namespace Xilium.CefGlue.WPF.Platform
             return null;
         }
 
-        public override Point PointToScreen(Point point)
+        public override Point PointToScreen(Point point, float deviceScaleFactor)
         {
             // calculate the point based on the browser stored location, 
             // since PointToScreen needs to be executed on the dispatcher thread
             // but calling Invoke at this stage can lead to dead locks
-            var deviceScaleFactor = RenderHandler.DeviceScaleFactor;
             return new Point((int) (browserScreenLocation.X + point.X * deviceScaleFactor), (int) (browserScreenLocation.Y + point.Y * deviceScaleFactor));
         }
 
@@ -307,6 +313,37 @@ namespace Xilium.CefGlue.WPF.Platform
                 return new Point((int) wpfPoint.X, (int) wpfPoint.Y);
             }
             return new Point(0, 0);
+        }
+
+        public override BuiltInRenderHandler CreateRenderHandler()
+        {
+            var image = CreateImage();
+            AttachInputEvents(_control);
+            SetContent(image);
+            return new WpfRenderHandler(image);
+        }
+
+        protected virtual void SetContent(Image image)
+        {
+            ((ContentControl) _control).Content = image;
+        }
+
+        /// <summary>
+        /// Create an image that is used to render the browser frame and popups
+        /// </summary>
+        /// <returns></returns>
+        private static Image CreateImage()
+        {
+            var image = new Image()
+            {
+                Stretch = Stretch.None,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+            };
+
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+
+            return image;
         }
     }
 }

@@ -29,13 +29,13 @@ namespace Xilium.CefGlue.Common.Platform
 
         void Focus();
         IntPtr? GetHostWindowHandle();
-        Point PointToScreen(Point point);
+        Point PointToScreen(Point point, float deviceScaleFactor);
         void SetCursor(IntPtr cursorHandle);
         void SetTooltip(string text);
 
         void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback);
         void CloseContextMenu();
 
-        BuiltInRenderHandler RenderHandler { get; }
+        BuiltInRenderHandler CreateRenderHandler();
     }
 }
