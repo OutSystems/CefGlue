@@ -14,8 +14,8 @@ namespace Xilium.CefGlue.Avalonia
     {
         static AvaloniaCefBrowser()
         {
-            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX) { 
-                CefRuntimeLoader.RegisterBrowserProcessHandler(new AvaloniaBrowserProcessHandler());
+            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX && !CefRuntimeLoader.IsLoaded) { 
+                CefRuntimeLoader.Load(new AvaloniaBrowserProcessHandler());
             }
         }
 

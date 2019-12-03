@@ -8,18 +8,14 @@ namespace Xilium.CefGlue.Common
 {
     public static class CefRuntimeLoader
     {
-        private static BrowserProcessHandler browserProcessHandler;
-
-        internal static void RegisterBrowserProcessHandler(BrowserProcessHandler browserProcessHandler)
-        {
-            if (CefRuntime.IsInitialized)
-            {
-                throw new InvalidOperationException("Cannot register BrowserProcessHandler after cef runtime is initialized");
-            }
-            CefRuntimeLoader.browserProcessHandler = browserProcessHandler;
-        }
+        private static Action<BrowserProcessHandler> _delayedInitialization;
 
         public static void Initialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null)
+        {
+            _delayedInitialization = (browserProcessHandler) => InternalInitialize(settings, flags, customSchemes, browserProcessHandler);
+        }
+
+        private static void InternalInitialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null, BrowserProcessHandler browserProcessHandler = null)
         {
             CefRuntime.Load();
 
@@ -63,7 +59,20 @@ namespace Xilium.CefGlue.Common
             }
         }
 
-        public static bool IsInitialized => CefRuntime.IsInitialized;
+        internal static void Load(BrowserProcessHandler browserProcessHandler = null)
+        {
+            if (_delayedInitialization != null)
+            {
+                _delayedInitialization.Invoke(browserProcessHandler);
+                _delayedInitialization = null;
+            }
+            else
+            {
+                InternalInitialize(browserProcessHandler: browserProcessHandler);
+            }
+        } 
+
+        public static bool IsLoaded => CefRuntime.IsInitialized;
 
         internal static bool IsOSREnabled { get; private set; }
     }
