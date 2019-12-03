@@ -90,6 +90,7 @@ cp -R "Chromium Embedded Framework.framework" "$APPDIR/Frameworks/"
 
 pwd
 cp -R "../../../../../CefGlue.BrowserProcess/bin/Debug/$NETTARGET/osx-x64/publish/" "$APPDIR/MacOS"
+cp "$APPDIR/Frameworks/Chromium Embedded Framework.framework/Chromium Embedded Framework" "$APPDIR/MacOS/libcef"
 mv "$APPDIR/MacOS/Xilium.CefGlue.BrowserProcess" "$APPDIR/MacOS/$APPNAME"
 chmod +x "$APPDIR/MacOS/$APPNAME"
 
