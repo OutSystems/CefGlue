@@ -2,9 +2,10 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp2.2.8</TargetFramework>
     <AssemblyName>Xilium.CefGlue.Demo.Avalonia</AssemblyName>
     <RootNamespace>Xilium.CefGlue.Demo.Avalonia</RootNamespace>
+    <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,12 +25,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CefGlue.Avalonia\CefGlue.Avalonia.csproj" />
-    <ProjectReference Include="..\CefGlue.BrowserProcess\CefGlue.BrowserProcess.csproj">
-      <Private></Private>
-    </ProjectReference>
     <ProjectReference Include="..\CefGlue\CefGlue.csproj" />  
   </ItemGroup>
 
-  <Import Project="$(ProjectDir)..\Xilium.CefGlue.Native.props"/>
+  <Import Project="$(ProjectDir)..\Xilium.CefGlue.Native.props" />
   
 </Project>
