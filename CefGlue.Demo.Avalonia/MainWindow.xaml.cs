@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -18,6 +19,17 @@ namespace Xilium.CefGlue.Demo.Avalonia
             AvaloniaXamlLoader.Load(this);
 
             CreateNewTab();
+
+            var mainMenu = this.FindControl<Menu>("mainMenu");
+            mainMenu.AttachedToVisualTree += MenuAttached;
+        }
+
+        private void MenuAttached(object sender, VisualTreeAttachmentEventArgs e)
+        {
+            if (NativeMenu.GetIsNativeMenuExported(this) && sender is Menu mainMenu)
+            {
+                mainMenu.IsVisible = false;
+            }
         }
 
         private BrowserView ActiveBrowserView => (BrowserView) this.FindControl<TabControl>("tabControl").SelectedContent;

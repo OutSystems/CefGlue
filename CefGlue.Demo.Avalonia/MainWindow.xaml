@@ -20,7 +20,7 @@
     </NativeMenu.Menu>
     
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
+        <Menu Name="mainMenu" DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_New Tab" Click="OnNewTabMenuItemClick" />
                 <MenuItem Header="_Open Dev Tools..." Click="OnOpenDevToolsMenuItemClick"/>
