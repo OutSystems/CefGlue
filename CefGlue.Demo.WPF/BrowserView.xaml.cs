@@ -14,6 +14,13 @@ namespace Xilium.CefGlue.Demo.WPF
             //browser.RegisterJavascriptObject(new BindingTestClass(), "boundBeforeLoadObject");
         }
 
+        public event Action<string> TitleChanged;
+
+        private void OnBrowserTitleChanged(object sender, string title)
+        {
+            TitleChanged?.Invoke(title);
+        }
+
         private void OnBrowserLoadStart(object sender, LoadStartEventArgs e)
         {
             if (!e.Frame.IsMain)

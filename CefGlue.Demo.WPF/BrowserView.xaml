@@ -5,6 +5,6 @@
 
     <DockPanel LastChildFill="True">
         <TextBox x:Name="addressTextBox" DockPanel.Dock="Top" KeyDown="OnAddressTextBoxKeyDown" />
-        <wpf:WpfCefBrowser x:Name="browser" Address="http://www.google.com" LoadStart="OnBrowserLoadStart"/>
+        <wpf:WpfCefBrowser x:Name="browser" Address="http://www.google.com" LoadStart="OnBrowserLoadStart" TitleChanged="OnBrowserTitleChanged"/>
     </DockPanel>
 </UserControl>

@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,11 +19,22 @@ namespace Xilium.CefGlue.Demo.WPF
 
         private void CreateNewTab()
         {
-            tabControl.Items.Add(new TabItem()
+            var tab = new TabItem();
+            tab.Header = "New Tab";
+
+            var view = new BrowserView();
+            view.TitleChanged += title =>
             {
-                Header = "New Tab",
-                Content = new BrowserView()
-            });
+                Application.Current.Dispatcher.BeginInvoke((Action)(() =>
+                   {
+                       tab.Header = title;
+                       tab.ToolTip = title;
+                   }));
+            };
+
+            tab.Content = view;
+
+            tabControl.Items.Add(tab);
         }
 
         private void OnNewTabMenuItemClick(object sender, RoutedEventArgs e)
