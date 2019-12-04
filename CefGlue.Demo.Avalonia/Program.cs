@@ -10,7 +10,11 @@ namespace Xilium.CefGlue.Demo.Avalonia
             AppBuilder.Configure<App>()
                       .UsePlatformDetect()
                       .UseSkia()
-                      .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings() { WindowlessRenderingEnabled = true }))
+                      .With(new AvaloniaNativePlatformOptions() {
+                          UseDeferredRendering = false,
+                          UseGpu = false // fixes rendering quircks on mac OS
+                      })
+                      .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings() { WindowlessRenderingEnabled = false }))
                       .StartWithClassicDesktopLifetime(args);
                       
             return 0;
