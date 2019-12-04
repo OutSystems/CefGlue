@@ -29,6 +29,7 @@ namespace Xilium.CefGlue.Common.Platform
 
         void Focus();
         IntPtr? GetHostWindowHandle();
+        IntPtr? GetHostViewHandle();
         Point PointToScreen(Point point, float deviceScaleFactor);
         void SetCursor(IntPtr cursorHandle);
         void SetTooltip(string text);

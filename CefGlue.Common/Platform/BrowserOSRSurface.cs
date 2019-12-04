@@ -61,6 +61,6 @@ namespace Xilium.CefGlue.Common.Platform
             _browserHost.WasHidden(false);
         }
 
-        public override CefRectangle GetViewRect() => _getViewRectOverride?.Invoke() ?? _viewRect; // new CefRectangle(0, 0, RenderedWidth, RenderedHeight);
+        public override CefRectangle GetViewRect() => _getViewRectOverride?.Invoke() ?? _viewRect;
     }
 }

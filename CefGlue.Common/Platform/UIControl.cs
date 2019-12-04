@@ -15,6 +15,8 @@ namespace Xilium.CefGlue.Common.Platform
 
         public abstract IntPtr? GetHostWindowHandle();
 
+        public virtual IntPtr? GetHostViewHandle() => GetHostWindowHandle();
+
         public abstract void Focus();
 
         public abstract void SetCursor(IntPtr cursorHandle);

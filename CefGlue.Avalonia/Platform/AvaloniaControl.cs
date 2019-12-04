@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.Platform;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Xilium.CefGlue.Common;
@@ -160,8 +161,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
             var screenCoordinates = _control.PointToScreen(new AvaloniaPoint(point.X, point.Y));
 
             var result = new Point(0, 0);
-            result.X = (int) screenCoordinates.X;
-            result.Y = (int) screenCoordinates.Y;
+            result.X = screenCoordinates.X;
+            result.Y = screenCoordinates.Y;
             return result;
         }
 
@@ -170,7 +171,26 @@ namespace Xilium.CefGlue.Avalonia.Platform
             var parentWnd = _control.GetVisualRoot() as Window;
             if (parentWnd != null)
             {
-                return (IntPtr?)parentWnd.PlatformImpl.Handle.Handle;
+                if (parentWnd.PlatformImpl.Handle is IMacOSTopLevelPlatformHandle macOSHandle)
+                {
+                    return macOSHandle.GetNSWindowRetained();
+                }
+                return parentWnd.PlatformImpl.Handle.Handle;
+            }
+
+            return null;
+        }
+
+        public override IntPtr? GetHostViewHandle()
+        {
+            var parentWnd = _control.GetVisualRoot() as Window;
+            if (parentWnd != null)
+            {
+                if (parentWnd.PlatformImpl.Handle is IMacOSTopLevelPlatformHandle macOSHandle)
+                {
+                    return macOSHandle.GetNSViewRetained();
+                }
+                return parentWnd.PlatformImpl.Handle.Handle;
             }
 
             return null;

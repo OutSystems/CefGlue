@@ -482,9 +482,6 @@ namespace Xilium.CefGlue.Common
                     AttachEventHandlers(_control);
                     AttachEventHandlers(_popup);
 
-                    // Find the window that's hosting us
-                    var hParentWnd = _control.GetHostWindowHandle() ?? IntPtr.Zero;
-
                     var windowInfo = CefWindowInfo.Create();
                     if (CefRuntimeLoader.IsOSREnabled)
                     {
@@ -494,24 +491,31 @@ namespace Xilium.CefGlue.Common
                         _browserSurface = new BrowserOSRSurface(_controlRenderHandler);
                         _browserSurface.MoveAndResize(x, y, newWidth, newHeight);
 
-                        windowInfo.SetAsWindowless(hParentWnd, AllowsTransparency);
+                        // Find the window that's hosting us
+                        var windowHandle = _control.GetHostWindowHandle() ?? IntPtr.Zero;
+                        windowInfo.SetAsWindowless(windowHandle, AllowsTransparency);
                     }
                     else
                     {
+                        // Find the view that's hosting us
+                        var viewHandle = _control.GetHostViewHandle() ?? IntPtr.Zero;
                         switch (CefRuntime.Platform)
                         {
                             case CefRuntimePlatform.Windows:
-                                _browserSurface = new BrowserWindowsSurface(hParentWnd);
+                                _browserSurface = new BrowserWindowsSurface(viewHandle);
                                 break;
 
                             case CefRuntimePlatform.MacOSX:
+                                _browserSurface = new BrowserMacOSSurface();
+                                break;
+
                             case CefRuntimePlatform.Linux:
                                 // TODO
                                 throw new NotSupportedException("Standard rendering mode not supported");
                         }
                         
                         _browserSurface.MoveAndResize(x, y, newWidth, newHeight);
-                        windowInfo.SetAsChild(hParentWnd, new CefRectangle(x, y, newWidth, newHeight));
+                        windowInfo.SetAsChild(viewHandle, new CefRectangle(x, y, newWidth, newHeight));
                     }
 
                     _cefClient = new CommonCefClient(this, _logger);

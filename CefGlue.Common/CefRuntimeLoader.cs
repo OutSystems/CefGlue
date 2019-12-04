@@ -40,6 +40,7 @@ namespace Xilium.CefGlue.Common
                     break;
 
                 case CefRuntimePlatform.MacOSX:
+                    settings.NoSandbox = true;
                     settings.MultiThreadedMessageLoop = false;
                     settings.ExternalMessagePump = true;
                     break;
