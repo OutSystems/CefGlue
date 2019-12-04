@@ -24,7 +24,15 @@ namespace Xilium.CefGlue.Demo.Avalonia
             browser.Address = "https://www.google.com";
             browser.RegisterJavascriptObject(new BindingTestClass(), "boundBeforeLoadObject");
             browser.LoadStart += OnBrowserLoadStart;
+            browser.TitleChanged += OnBrowserTitleChanged;
             browserWrapper.Child = browser;
+        }
+
+        public event Action<string> TitleChanged;
+
+        private void OnBrowserTitleChanged(object sender, string title)
+        {
+            TitleChanged?.Invoke(title);
         }
 
         private void OnBrowserLoadStart(object sender, Common.Events.LoadStartEventArgs e)

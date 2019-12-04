@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using System;
 using System.Collections;
 
@@ -38,11 +39,18 @@ namespace Xilium.CefGlue.Demo.Avalonia
         {
             var tabItems = ((IList)this.FindControl<TabControl>("tabControl").Items);
 
-            tabItems.Add(new TabItem()
+            var tab = new TabItem();
+            tab.Header = "New Tab";
+
+            var view = new BrowserView();
+            view.TitleChanged += title => Dispatcher.UIThread.Post(() =>
             {
-                Header = "New Tab",
-                Content = new BrowserView()
+                tab.Header = title;
+                ToolTip.SetTip(tab, title);
             });
+
+            tab.Content = view;
+            tabItems.Add(tab);
         }
 
         private void OnNewTabNativeMenuItemClick(object sender, EventArgs e)
