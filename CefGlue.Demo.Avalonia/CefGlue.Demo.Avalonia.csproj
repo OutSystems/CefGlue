@@ -10,11 +10,15 @@
 
   <ItemGroup>
     <None Remove="App.xaml" />
+    <None Remove="BrowserView.xaml" />
     <None Remove="MainWindow.xaml" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="App.xaml" />
+    <EmbeddedResource Include="BrowserView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.xaml" />
   </ItemGroup>
 
