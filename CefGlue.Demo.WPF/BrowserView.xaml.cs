@@ -16,6 +16,10 @@ namespace Xilium.CefGlue.Demo.WPF
 
         private void OnBrowserLoadStart(object sender, LoadStartEventArgs e)
         {
+            if (!e.Frame.IsMain)
+            {
+                return;
+            }
             Application.Current.Dispatcher.BeginInvoke((Action) (() =>
             {
                 addressTextBox.Text = e.Frame.Url;

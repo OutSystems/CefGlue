@@ -29,6 +29,11 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
         private void OnBrowserLoadStart(object sender, Common.Events.LoadStartEventArgs e)
         {
+            if (!e.Frame.IsMain)
+            {
+                return;
+            }
+
             Dispatcher.UIThread.Post(() =>
             {
                 var addressTextBox = this.FindControl<TextBox>("addressTextBox");
