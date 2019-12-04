@@ -607,13 +607,14 @@ namespace Xilium.CefGlue.Common
 
         protected void GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY)
         {
-            var point = new Point(0, 0);
-            WithErrorHandling(nameof(GetScreenPoint), () =>
-            {
-                point = _control.PointToScreen(new Point(viewX, viewY), _controlRenderHandler.DeviceScaleFactor);
-            });
-            screenX = point.X;
-            screenY = point.Y;
+            // TODO
+            //var point = new Point(0, 0);
+            //WithErrorHandling(nameof(GetScreenPoint), () =>
+            //{
+            //    point = _control.PointToScreen(new Point(viewX, viewY), _controlRenderHandler.DeviceScaleFactor);
+            //});
+            //screenX = point.X;
+            //screenY = point.Y;
         }
 
         void ICefBrowserHost.GetScreenInfo(CefScreenInfo screenInfo)

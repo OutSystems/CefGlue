@@ -23,9 +23,9 @@ namespace Xilium.CefGlue.Avalonia
         /// </summary>
         /// <param name="button"></param>
         /// <returns></returns>
-        public static CefMouseButtonType AsCefMouseButtonType(this MouseButton button)
+        public static CefMouseButtonType AsCefMouseButtonType(this PointerEventArgs eventArgs)
         {
-            switch (button)
+            switch (eventArgs.GetCurrentPoint(null).Properties.PointerUpdateKind.GetMouseButton())
             {
                 case MouseButton.Middle:
                     return CefMouseButtonType.Middle;
@@ -62,7 +62,7 @@ namespace Xilium.CefGlue.Avalonia
         /// <returns></returns>
         public static CefEventFlags AsCefMouseModifiers(this InputModifiers mouseModifiers)
         {
-            CefEventFlags modifiers = new CefEventFlags();
+            var modifiers = new CefEventFlags();
 
             if (mouseModifiers == InputModifiers.LeftMouseButton)
                 modifiers |= CefEventFlags.LeftMouseButton;
@@ -83,7 +83,7 @@ namespace Xilium.CefGlue.Avalonia
         /// <returns></returns>
         public static CefEventFlags AsCefKeyboardModifiers(this InputModifiers keyboardModifiers)
         {
-            CefEventFlags modifiers = new CefEventFlags();
+            var modifiers = new CefEventFlags();
 
             if (keyboardModifiers == InputModifiers.Alt)
                 modifiers |= CefEventFlags.AltDown;

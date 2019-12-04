@@ -49,20 +49,32 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
             control.PointerMoved += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent(MousePositionReferential));
             control.PointerLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
+
+            // TODO
+            //control.DoubleTapped += (sender, arg) =>
+            //{
+            //    TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.AsCefMouseButtonType(), 2);
+            //    if (arg.MouseButton == MouseButton.Left)
+            //    {
+            //        arg.Device.Capture(control);
+            //    }
+            //};
             control.PointerPressed += (sender, arg) =>
             {
-                TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.MouseButton.AsCefMouseButtonType(), arg.ClickCount);
-                if (arg.MouseButton == MouseButton.Left)
+                var button = arg.AsCefMouseButtonType();
+                TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), button, 1);
+                if (button == CefMouseButtonType.Left)
                 {
-                    arg.Device.Capture(control);
+                    arg.Pointer.Capture(control);
                 }
             };
             control.PointerReleased += (sender, arg) =>
             {
-                TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.InitialPressMouseButton.AsCefMouseButtonType());
-                if (arg.InitialPressMouseButton == MouseButton.Left)
+                var button = arg.AsCefMouseButtonType();
+                TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), button);
+                if (button == CefMouseButtonType.Left)
                 {
-                    arg.Device.Capture(null);
+                    arg.Pointer.Capture(null);
                 }
             };
             control.PointerWheelChanged += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), (int)arg.Delta.X * MouseWheelDelta, (int)arg.Delta.Y * MouseWheelDelta);
@@ -251,10 +263,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
         public override BuiltInRenderHandler CreateRenderHandler()
         {
             var image = CreateImage();
-
-            // use the image, otherwise some behaviors won't work as expected (eg: cursors do not change)
-            AttachInputEvents(image);
-
+            AttachInputEvents(_control);
             _setContent(image);
             return new AvaloniaRenderHandler(image);
         }

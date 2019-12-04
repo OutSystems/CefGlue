@@ -11,7 +11,8 @@ namespace Xilium.CefGlue.Demo.Avalonia
                       .UsePlatformDetect()
                       .UseSkia()
                       .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings() { WindowlessRenderingEnabled = true }))
-                      .Start<MainWindow>();
+                      .StartWithClassicDesktopLifetime(args);
+                      
             return 0;
         }
     }

@@ -44,6 +44,7 @@ namespace Xilium.CefGlue.Avalonia
             {
                 LogicalChildren.Add(image);
                 VisualChildren.Add(image);
+                InvalidateArrange();
             });
 
             var popup = new ExtendedAvaloniaPopup
