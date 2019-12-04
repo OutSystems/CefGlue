@@ -9,7 +9,7 @@ using Xilium.CefGlue.Avalonia;
 
 namespace Xilium.CefGlue.Demo.Avalonia
 {
-    internal class MainWindow : Window
+    public class MainWindow : Window
     {
         private AvaloniaCefBrowser browser;
 

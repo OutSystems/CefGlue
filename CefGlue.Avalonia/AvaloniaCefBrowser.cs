@@ -31,7 +31,10 @@ namespace Xilium.CefGlue.Avalonia
             {
                 var size = Bounds.Size;
                 var position = this.TranslatePoint(new Point(), root);
-                CreateOrUpdateBrowser((int)position.X, (int)position.Y, (int)size.Width, (int)size.Height);
+                if (position != null)
+                {
+                    CreateOrUpdateBrowser((int)position.Value.X, (int)position.Value.Y, (int)size.Width, (int)size.Height);
+                }
             }
         }
 

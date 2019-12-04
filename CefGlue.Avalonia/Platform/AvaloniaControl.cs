@@ -59,8 +59,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
             };
             control.PointerReleased += (sender, arg) =>
             {
-                TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.MouseButton.AsCefMouseButtonType());
-                if (arg.MouseButton == MouseButton.Left)
+                TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), arg.InitialPressMouseButton.AsCefMouseButtonType());
+                if (arg.InitialPressMouseButton == MouseButton.Left)
                 {
                     arg.Device.Capture(null);
                 }
