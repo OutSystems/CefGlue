@@ -467,7 +467,11 @@ namespace Xilium.CefGlue.Common
                     BuiltInRenderHandler.DeviceScaleFactor = deviceScaleFactor;
                 }
 
-                _browserHost?.NotifyScreenInfoChanged();
+                // Might cause a crash due to a SurfaceSync check in chromium code.
+                //
+                // Fixed in chromium versions >= 79.0.3909.0 (https://chromium-review.googlesource.com/c/chromium/src/+/1792459)
+                //
+                //_browserHost?.NotifyScreenInfoChanged();
             });
         }
 
