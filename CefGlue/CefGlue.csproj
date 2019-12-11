@@ -9,7 +9,7 @@
     <PackageProjectUrl>https://gitlab.com/xiliumhq/chromiumembedded/cefglue</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.com/xiliumhq/chromiumembedded/cefglue</RepositoryUrl>
     <Description>Xilium.CefGlue is a .NET/Mono binding for The Chromium Embedded Framework (CEF) by Marshall A. Greenblatt.</Description>
-    <Configurations>Debug;Release;ReleaseWPF</Configurations>
+    <Configurations>Debug;Release;ReleaseWPF;ReleaseAvalonia</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,6 +25,10 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWPF|AnyCPU'">
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseAvalonia|AnyCPU'">
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 

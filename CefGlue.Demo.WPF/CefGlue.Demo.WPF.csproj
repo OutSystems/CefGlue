@@ -177,7 +177,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\cef.redist.x64.75.1.14\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.75.1.14\build\cef.redist.x64.props'))" />
   </Target>
-  <Import Project="$(SolutionDir)\Xilium.CefGlue.Native.props"/>
+  <Import Project="$(SolutionDir)\Xilium.CefGlue.Native.props" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
