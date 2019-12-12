@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AssemblyName>Xilium.CefGlue.Demo.Avalonia</AssemblyName>
     <RootNamespace>Xilium.CefGlue.Demo.Avalonia</RootNamespace>
+    <Configurations>Debug;Release;ReleaseAvalonia</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +31,6 @@
     <ProjectReference Include="..\CefGlue\CefGlue.csproj" />  
   </ItemGroup>
 
-  <Import Project="$(ProjectDir)..\Xilium.CefGlue.Native.props"/>
+  <Import Project="$(ProjectDir)..\Xilium.CefGlue.Native.props" />
   
 </Project>

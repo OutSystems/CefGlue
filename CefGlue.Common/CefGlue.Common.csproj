@@ -5,7 +5,7 @@
     <AssemblyName>Xilium.CefGlue.Common</AssemblyName>
     <RootNamespace>Xilium.CefGlue.Common</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Configurations>Debug;Release;ReleaseWPF</Configurations>
+    <Configurations>Debug;Release;ReleaseWPF;ReleaseAvalonia</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
