@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AssemblyName>Xilium.CefGlue.Demo.Avalonia</AssemblyName>
     <RootNamespace>Xilium.CefGlue.Demo.Avalonia</RootNamespace>
-    <Configurations>Debug;Release;ReleaseAvalonia</Configurations>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
