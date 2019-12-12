@@ -27,7 +27,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
         private readonly Control _control;
 
         private IDisposable _windowStateChangedObservable;
-        private bool _isVisible;
 
         private Action<Image> _setContent;
 
@@ -35,8 +34,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
         {
             _setContent = setContent;
 
-            _isVisible = control.IsEffectivelyVisible;
-            control.GetPropertyChangedObservable(Control.TransformedBoundsProperty).Subscribe(OnTransformedBoundsChanged);
             control.AttachedToVisualTree += OnAttachedToVisualTree;
             control.DetachedFromVisualTree += OnDetachedFromVisualTree;
 
@@ -51,18 +48,10 @@ namespace Xilium.CefGlue.Avalonia.Platform
             control.PointerMoved += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent(MousePositionReferential));
             control.PointerLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
 
-            // TODO
-            //control.DoubleTapped += (sender, arg) =>
-            //{
-            //    TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), arg.AsCefMouseButtonType(), 2);
-            //    if (arg.MouseButton == MouseButton.Left)
-            //    {
-            //        arg.Device.Capture(control);
-            //    }
-            //};
             control.PointerPressed += (sender, arg) =>
             {
                 var button = arg.AsCefMouseButtonType();
+                // TODO double click?
                 TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), button, 1);
                 if (button == CefMouseButtonType.Left)
                 {
@@ -111,28 +100,15 @@ namespace Xilium.CefGlue.Avalonia.Platform
             };
         }
 
-        private void OnTransformedBoundsChanged(AvaloniaPropertyChangedEventArgs e)
-        {
-            // the only way we can be notified of the control visibility changes is through the transformed bounds property changes
-            //var isVisible = _control.IsEffectivelyVisible;
-            //if (isVisible != _isVisible)
-            //{
-            //    _isVisible = isVisible;
-            //    TriggerVisibilityChanged(isVisible);
-            //}
-        }
-
         private void OnDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
         {
             _windowStateChangedObservable?.Dispose();
-            _isVisible = false;
             TriggerVisibilityChanged(false);
         }
 
         private void OnAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
         {
             TriggerVisibilityChanged(true);
-            _isVisible = true;
             if (e.Root is Window newWindow)
             {
                 _windowStateChangedObservable = newWindow.GetPropertyChangedObservable(Window.WindowStateProperty).Subscribe(OnHostWindowStateChanged);

@@ -9,7 +9,6 @@ namespace Xilium.CefGlue.Demo.Avalonia
         {
             AppBuilder.Configure<App>()
                       .UsePlatformDetect()
-                      .UseSkia()
                       .With(new AvaloniaNativePlatformOptions() {
                           UseDeferredRendering = false,
                           UseGpu = false // fixes rendering quircks on mac OS
