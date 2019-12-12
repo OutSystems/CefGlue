@@ -86,7 +86,6 @@ Global
 		{311984DF-EB92-4B01-B4AD-C7E73A13E271}.Release|x86.ActiveCfg = Release|x86
 		{311984DF-EB92-4B01-B4AD-C7E73A13E271}.Release|x86.Build.0 = Release|x86
 		{311984DF-EB92-4B01-B4AD-C7E73A13E271}.ReleaseAvalonia|Any CPU.ActiveCfg = Release|Any CPU
-		{311984DF-EB92-4B01-B4AD-C7E73A13E271}.ReleaseAvalonia|Any CPU.Build.0 = Release|Any CPU
 		{311984DF-EB92-4B01-B4AD-C7E73A13E271}.ReleaseAvalonia|x86.ActiveCfg = Release|x86
 		{311984DF-EB92-4B01-B4AD-C7E73A13E271}.ReleaseAvalonia|x86.Build.0 = Release|x86
 		{311984DF-EB92-4B01-B4AD-C7E73A13E271}.ReleaseWPF|Any CPU.ActiveCfg = Release|Any CPU
@@ -101,7 +100,6 @@ Global
 		{679AF14D-8FF5-4608-BFF8-EC1A7DED04A4}.Release|x86.ActiveCfg = Release|Any CPU
 		{679AF14D-8FF5-4608-BFF8-EC1A7DED04A4}.Release|x86.Build.0 = Release|Any CPU
 		{679AF14D-8FF5-4608-BFF8-EC1A7DED04A4}.ReleaseAvalonia|Any CPU.ActiveCfg = Release|Any CPU
-		{679AF14D-8FF5-4608-BFF8-EC1A7DED04A4}.ReleaseAvalonia|Any CPU.Build.0 = Release|Any CPU
 		{679AF14D-8FF5-4608-BFF8-EC1A7DED04A4}.ReleaseAvalonia|x86.ActiveCfg = Release|Any CPU
 		{679AF14D-8FF5-4608-BFF8-EC1A7DED04A4}.ReleaseAvalonia|x86.Build.0 = Release|Any CPU
 		{679AF14D-8FF5-4608-BFF8-EC1A7DED04A4}.ReleaseWPF|Any CPU.ActiveCfg = Release|Any CPU
@@ -116,7 +114,6 @@ Global
 		{B928A030-E818-4634-9C6B-F9224E996BD6}.Release|x86.ActiveCfg = Release|Any CPU
 		{B928A030-E818-4634-9C6B-F9224E996BD6}.Release|x86.Build.0 = Release|Any CPU
 		{B928A030-E818-4634-9C6B-F9224E996BD6}.ReleaseAvalonia|Any CPU.ActiveCfg = Release|Any CPU
-		{B928A030-E818-4634-9C6B-F9224E996BD6}.ReleaseAvalonia|Any CPU.Build.0 = Release|Any CPU
 		{B928A030-E818-4634-9C6B-F9224E996BD6}.ReleaseAvalonia|x86.ActiveCfg = Release|Any CPU
 		{B928A030-E818-4634-9C6B-F9224E996BD6}.ReleaseAvalonia|x86.Build.0 = Release|Any CPU
 		{B928A030-E818-4634-9C6B-F9224E996BD6}.ReleaseWPF|Any CPU.ActiveCfg = Release|Any CPU
@@ -131,7 +128,6 @@ Global
 		{F9025CE1-2DF4-409B-8961-A51DFAEAABDD}.Release|x86.ActiveCfg = Release|x86
 		{F9025CE1-2DF4-409B-8961-A51DFAEAABDD}.Release|x86.Build.0 = Release|x86
 		{F9025CE1-2DF4-409B-8961-A51DFAEAABDD}.ReleaseAvalonia|Any CPU.ActiveCfg = Release|Any CPU
-		{F9025CE1-2DF4-409B-8961-A51DFAEAABDD}.ReleaseAvalonia|Any CPU.Build.0 = Release|Any CPU
 		{F9025CE1-2DF4-409B-8961-A51DFAEAABDD}.ReleaseAvalonia|x86.ActiveCfg = Release|x86
 		{F9025CE1-2DF4-409B-8961-A51DFAEAABDD}.ReleaseAvalonia|x86.Build.0 = Release|x86
 		{F9025CE1-2DF4-409B-8961-A51DFAEAABDD}.ReleaseWPF|Any CPU.ActiveCfg = Release|Any CPU
@@ -146,7 +142,6 @@ Global
 		{70544727-2A93-40A8-A708-B7BB043CDCE5}.Release|x86.ActiveCfg = Release|x86
 		{70544727-2A93-40A8-A708-B7BB043CDCE5}.Release|x86.Build.0 = Release|x86
 		{70544727-2A93-40A8-A708-B7BB043CDCE5}.ReleaseAvalonia|Any CPU.ActiveCfg = Release|Any CPU
-		{70544727-2A93-40A8-A708-B7BB043CDCE5}.ReleaseAvalonia|Any CPU.Build.0 = Release|Any CPU
 		{70544727-2A93-40A8-A708-B7BB043CDCE5}.ReleaseAvalonia|x86.ActiveCfg = Release|x86
 		{70544727-2A93-40A8-A708-B7BB043CDCE5}.ReleaseAvalonia|x86.Build.0 = Release|x86
 		{70544727-2A93-40A8-A708-B7BB043CDCE5}.ReleaseWPF|Any CPU.ActiveCfg = Release|Any CPU
@@ -160,7 +155,6 @@ Global
 		{447C6790-E36E-4A54-BFAC-06C92FFF4AA3}.Release|x86.ActiveCfg = Release|Any CPU
 		{447C6790-E36E-4A54-BFAC-06C92FFF4AA3}.Release|x86.Build.0 = Release|Any CPU
 		{447C6790-E36E-4A54-BFAC-06C92FFF4AA3}.ReleaseAvalonia|Any CPU.ActiveCfg = ReleaseWPF|Any CPU
-		{447C6790-E36E-4A54-BFAC-06C92FFF4AA3}.ReleaseAvalonia|Any CPU.Build.0 = ReleaseWPF|Any CPU
 		{447C6790-E36E-4A54-BFAC-06C92FFF4AA3}.ReleaseAvalonia|x86.ActiveCfg = ReleaseWPF|x86
 		{447C6790-E36E-4A54-BFAC-06C92FFF4AA3}.ReleaseAvalonia|x86.Build.0 = ReleaseWPF|x86
 		{447C6790-E36E-4A54-BFAC-06C92FFF4AA3}.ReleaseWPF|Any CPU.ActiveCfg = Release|Any CPU
@@ -176,7 +170,6 @@ Global
 		{99D2955C-E499-4B60-8757-4F0E1B61A680}.Release|x86.ActiveCfg = Release|x86
 		{99D2955C-E499-4B60-8757-4F0E1B61A680}.Release|x86.Build.0 = Release|x86
 		{99D2955C-E499-4B60-8757-4F0E1B61A680}.ReleaseAvalonia|Any CPU.ActiveCfg = ReleaseWPF|Any CPU
-		{99D2955C-E499-4B60-8757-4F0E1B61A680}.ReleaseAvalonia|Any CPU.Build.0 = ReleaseWPF|Any CPU
 		{99D2955C-E499-4B60-8757-4F0E1B61A680}.ReleaseAvalonia|x86.ActiveCfg = ReleaseWPF|x86
 		{99D2955C-E499-4B60-8757-4F0E1B61A680}.ReleaseAvalonia|x86.Build.0 = ReleaseWPF|x86
 		{99D2955C-E499-4B60-8757-4F0E1B61A680}.ReleaseWPF|Any CPU.ActiveCfg = Release|Any CPU
@@ -238,7 +231,6 @@ Global
 		{8E758128-CA79-4533-963E-91A1BF0558FB}.Release|x86.ActiveCfg = Release|x86
 		{8E758128-CA79-4533-963E-91A1BF0558FB}.Release|x86.Build.0 = Release|x86
 		{8E758128-CA79-4533-963E-91A1BF0558FB}.ReleaseAvalonia|Any CPU.ActiveCfg = ReleaseWPF|Any CPU
-		{8E758128-CA79-4533-963E-91A1BF0558FB}.ReleaseAvalonia|Any CPU.Build.0 = ReleaseWPF|Any CPU
 		{8E758128-CA79-4533-963E-91A1BF0558FB}.ReleaseAvalonia|x86.ActiveCfg = ReleaseWPF|x86
 		{8E758128-CA79-4533-963E-91A1BF0558FB}.ReleaseAvalonia|x86.Build.0 = ReleaseWPF|x86
 		{8E758128-CA79-4533-963E-91A1BF0558FB}.ReleaseWPF|Any CPU.ActiveCfg = Release|Any CPU
