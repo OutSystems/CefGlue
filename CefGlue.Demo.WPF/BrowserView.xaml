@@ -1,0 +1,10 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Xilium.CefGlue.Demo.WPF.BrowserView"
+        xmlns:wpf="clr-namespace:Xilium.CefGlue.WPF;assembly=Xilium.CefGlue.WPF">
+
+    <DockPanel LastChildFill="True">
+        <TextBox x:Name="addressTextBox" DockPanel.Dock="Top" KeyDown="OnAddressTextBoxKeyDown" />
+        <wpf:WpfCefBrowser x:Name="browser" Address="http://www.google.com" LoadStart="OnBrowserLoadStart" TitleChanged="OnBrowserTitleChanged"/>
+    </DockPanel>
+</UserControl>

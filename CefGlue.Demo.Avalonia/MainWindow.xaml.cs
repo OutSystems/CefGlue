@@ -1,18 +1,15 @@
-using System;
-using System.Dynamic;
-using System.Linq;
-using System.Reflection;
+using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Xilium.CefGlue.Avalonia;
+using Avalonia.Threading;
+using System;
+using System.Collections;
 
 namespace Xilium.CefGlue.Demo.Avalonia
 {
-    internal class MainWindow : Window
+    public class MainWindow : Window
     {
-        private AvaloniaCefBrowser browser;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -22,66 +19,78 @@ namespace Xilium.CefGlue.Demo.Avalonia
         {
             AvaloniaXamlLoader.Load(this);
 
-            var browserWrapper = this.FindControl<Decorator>("browserWrapper");
+            CreateNewTab();
 
-            browser = new AvaloniaCefBrowser();
-            browser.Address = "https://www.google.com";
-            browser.RegisterJavascriptObject(new BindingTestClass(), "boundBeforeLoadObject");
-
-            browserWrapper.Child = browser;
+            var mainMenu = this.FindControl<Menu>("mainMenu");
+            mainMenu.AttachedToVisualTree += MenuAttached;
         }
 
-        private async void OnEvaluateJavascriptMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)
+        private void MenuAttached(object sender, VisualTreeAttachmentEventArgs e)
         {
-            Console.WriteLine(await browser.EvaluateJavaScript<string>("\"Hello World!\""));
-
-            Console.WriteLine(await browser.EvaluateJavaScript<int>("1+1"));
-
-            Console.WriteLine(await browser.EvaluateJavaScript<bool>("false"));
-
-            Console.WriteLine(await browser.EvaluateJavaScript<double>("1.5+1.5"));
-
-            Console.WriteLine(await browser.EvaluateJavaScript<double>("3+1.5"));
-
-            Console.WriteLine(await browser.EvaluateJavaScript<DateTime>("new Date()"));
-
-            Console.WriteLine(string.Join(", ", await browser.EvaluateJavaScript<object[]>("[1, 2, 3]")));
-
-            Console.WriteLine(string.Join(", ", (await browser.EvaluateJavaScript<ExpandoObject>("(function() { return { a: 'valueA', b: 1, c: true } })()")).Select(p => p.Key + ":" + p.Value)));
-        }
-
-        private void OnBindJavascriptObjectMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            const string TestObject = "dotNetObject";
-
-            var obj = new BindingTestClass();
-            browser.RegisterJavascriptObject(obj, "dotNetObject");
-
-            var methods = obj.GetType().GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public)
-                                       .Where(m => m.GetParameters().Length == 0)
-                                       .Select(m => m.Name.Substring(0, 1).ToLowerInvariant() + m.Name.Substring(1));
-
-            var script = "(function () {" +
-                "let calls = [];" +
-                //string.Join("", methods.Select(m => $"calls.push({{ name: '{m}', promise: {TestObject}.{m}() }});")) +
-                $"calls.push({{ name: 'getObjectWithParams', promise: {TestObject}.getObjectWithParams(5, 'a string', {{ Name: 'obj name', Value: 10 }}, [ 1, 2 ]) }});" +
-                "calls.forEach(c => c.promise.then(r => console.log(c.name + ': ' + JSON.stringify(r))).catch(e => console.log(e)));" +
-                "})()";
-
-            browser.ExecuteJavaScript(script);
-        }
-
-        private void OnOpenDevToolsMenuItemClick(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            browser.ShowDeveloperTools();
-        }
-
-        private void OnUrlTextBoxKeyDown(object sender, global::Avalonia.Input.KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
+            if (NativeMenu.GetIsNativeMenuExported(this) && sender is Menu mainMenu)
             {
-                browser.Address = (((TextBox)sender).Text);
+                mainMenu.IsVisible = false;
             }
+        }
+
+        private BrowserView ActiveBrowserView => (BrowserView) this.FindControl<TabControl>("tabControl").SelectedContent;
+
+        private void CreateNewTab()
+        {
+            var tabItems = ((IList)this.FindControl<TabControl>("tabControl").Items);
+
+            var tab = new TabItem();
+            tab.Header = "New Tab";
+
+            var view = new BrowserView();
+            view.TitleChanged += title => Dispatcher.UIThread.Post(() =>
+            {
+                tab.Header = title;
+                ToolTip.SetTip(tab, title);
+            });
+
+            tab.Content = view;
+            tabItems.Add(tab);
+        }
+
+        private void OnNewTabNativeMenuItemClick(object sender, EventArgs e)
+        {
+            CreateNewTab();
+        }
+
+        private void OnEvaluateJavascriptNativeMenuItemClick(object sender, EventArgs e)
+        {
+            ActiveBrowserView.EvaluateJavascript();
+        }
+
+        private void OnBindJavascriptObjectNativeMenuItemClick(object sender, EventArgs e)
+        {
+            ActiveBrowserView.BindJavascriptObject();
+        }
+
+        private void OnOpenDevToolsNativeMenuItemClick(object sender, EventArgs e)
+        {
+            ActiveBrowserView.OpenDevTools();
+        }
+
+        private void OnNewTabMenuItemClick(object sender, RoutedEventArgs e)
+        {
+            CreateNewTab();
+        }
+
+        private void OnEvaluateJavascriptMenuItemClick(object sender, RoutedEventArgs e)
+        {
+            ActiveBrowserView.EvaluateJavascript();
+        }
+
+        private void OnBindJavascriptObjectMenuItemClick(object sender, RoutedEventArgs e)
+        {
+            ActiveBrowserView.BindJavascriptObject();
+        }
+
+        private void OnOpenDevToolsMenuItemClick(object sender, RoutedEventArgs e)
+        {
+            ActiveBrowserView.OpenDevTools();
         }
     }
 }

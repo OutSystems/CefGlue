@@ -1,8 +1,8 @@
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
-using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 
 namespace Xilium.CefGlue.WPF.Platform
@@ -14,7 +14,7 @@ namespace Xilium.CefGlue.WPF.Platform
     {
         private readonly Popup _popup;
 
-        public WpfPopup(Popup popup, BuiltInRenderHandler renderHandler) : base(popup, renderHandler)
+        public WpfPopup(Popup popup) : base(popup)
         {
             _popup = popup;
         }
@@ -60,6 +60,11 @@ namespace Xilium.CefGlue.WPF.Platform
                 {
                     _popup.IsOpen = isOpen;
                 }));
+        }
+
+        protected override void SetContent(Image image)
+        {
+            _popup.Child = image;
         }
     }
 }

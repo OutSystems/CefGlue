@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
-using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 
 namespace Xilium.CefGlue.Avalonia.Platform
@@ -14,7 +13,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
     {
         private readonly ExtendedAvaloniaPopup _popup;
 
-        public AvaloniaPopup(ExtendedAvaloniaPopup popup, BuiltInRenderHandler renderHandler) : base(popup, renderHandler)
+        public AvaloniaPopup(ExtendedAvaloniaPopup popup) : base(popup, image => popup.Content = image)
         {
             _popup = popup;
         }

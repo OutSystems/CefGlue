@@ -1,5 +1,5 @@
 using Avalonia;
-using Xilium.CefGlue.Avalonia;
+using Xilium.CefGlue.Common;
 
 namespace Xilium.CefGlue.Demo.Avalonia
 {
@@ -9,8 +9,13 @@ namespace Xilium.CefGlue.Demo.Avalonia
         {
             AppBuilder.Configure<App>()
                       .UsePlatformDetect()
-                      .UseSkia()
-                      .Start<MainWindow>();
+                      .With(new AvaloniaNativePlatformOptions() {
+                          UseDeferredRendering = false,
+                          UseGpu = false // fixes rendering quircks on mac OS
+                      })
+                      .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings() { WindowlessRenderingEnabled = false }))
+                      .StartWithClassicDesktopLifetime(args);
+                      
             return 0;
         }
     }

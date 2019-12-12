@@ -24,6 +24,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Common", "CefGlue.Common\CefGlue.Common.csproj", "{F8F4D0B8-5777-41A1-AB3C-0E324E61FAF9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Demo.Avalonia", "CefGlue.Demo.Avalonia\CefGlue.Demo.Avalonia.csproj", "{A2ED7050-B778-46F7-8777-C2E2467A7A59}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1E60FB67-049E-4877-92A9-D5480F81A324} = {1E60FB67-049E-4877-92A9-D5480F81A324}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{654422AE-4104-44E8-85CF-575CBDF23CD1}"
 	ProjectSection(SolutionItems) = preProject

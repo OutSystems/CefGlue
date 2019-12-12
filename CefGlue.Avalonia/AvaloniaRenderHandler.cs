@@ -18,7 +18,7 @@ namespace Xilium.CefGlue.Avalonia
         private WriteableBitmap _bitmap;
         private IntPtr _destinationBuffer;
 
-        public AvaloniaRenderHandler(Image image, ILogger logger) : base(logger)
+        public AvaloniaRenderHandler(Image image)
         {
             Image = image;
         }

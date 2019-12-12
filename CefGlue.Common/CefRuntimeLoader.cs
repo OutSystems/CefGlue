@@ -8,18 +8,14 @@ namespace Xilium.CefGlue.Common
 {
     public static class CefRuntimeLoader
     {
-        private static BrowserProcessHandler browserProcessHandler;
-
-        internal static void RegisterBrowserProcessHandler(BrowserProcessHandler browserProcessHandler)
-        {
-            if (CefRuntime.IsInitialized)
-            {
-                throw new InvalidOperationException("Cannot register BrowserProcessHandler after cef runtime is initialized");
-            }
-            CefRuntimeLoader.browserProcessHandler = browserProcessHandler;
-        }
+        private static Action<BrowserProcessHandler> _delayedInitialization;
 
         public static void Initialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null)
+        {
+            _delayedInitialization = (browserProcessHandler) => InternalInitialize(settings, flags, customSchemes, browserProcessHandler);
+        }
+
+        private static void InternalInitialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null, BrowserProcessHandler browserProcessHandler = null)
         {
             CefRuntime.Load();
 
@@ -28,7 +24,6 @@ namespace Xilium.CefGlue.Common
                 settings = new CefSettings();
             }
 
-            settings.WindowlessRenderingEnabled = true;
             settings.UncaughtExceptionStackSize = 100; // for uncaught exception event work properly
 
             switch (CefRuntime.Platform)
@@ -38,13 +33,14 @@ namespace Xilium.CefGlue.Common
                     path = Path.Combine(Path.GetDirectoryName(path), "Xilium.CefGlue.BrowserProcess.exe");
                     if (!File.Exists(path))
                     {
-                        throw new FileNotFoundException($"Unable to find \"${path}\"");
+                        throw new FileNotFoundException($"Unable to find \"{path}\"");
                     }
                     settings.BrowserSubprocessPath = path;
                     settings.MultiThreadedMessageLoop = true;
                     break;
 
                 case CefRuntimePlatform.MacOSX:
+                    settings.NoSandbox = true;
                     settings.MultiThreadedMessageLoop = false;
                     settings.ExternalMessagePump = true;
                     break;
@@ -52,6 +48,7 @@ namespace Xilium.CefGlue.Common
 
             AppDomain.CurrentDomain.ProcessExit += delegate { CefRuntime.Shutdown(); };
 
+            IsOSREnabled = settings.WindowlessRenderingEnabled;
             CefRuntime.Initialize(new CefMainArgs(new string[0]), settings, new CommonCefApp(customSchemes, flags, browserProcessHandler), IntPtr.Zero);
 
             if (customSchemes != null)
@@ -63,6 +60,21 @@ namespace Xilium.CefGlue.Common
             }
         }
 
-        public static bool IsInitialized => CefRuntime.IsInitialized;
+        internal static void Load(BrowserProcessHandler browserProcessHandler = null)
+        {
+            if (_delayedInitialization != null)
+            {
+                _delayedInitialization.Invoke(browserProcessHandler);
+                _delayedInitialization = null;
+            }
+            else
+            {
+                InternalInitialize(browserProcessHandler: browserProcessHandler);
+            }
+        } 
+
+        public static bool IsLoaded => CefRuntime.IsInitialized;
+
+        internal static bool IsOSREnabled { get; private set; }
     }
 }

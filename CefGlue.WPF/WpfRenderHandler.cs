@@ -17,7 +17,7 @@ namespace Xilium.CefGlue.WPF
     {
         private WriteableBitmap _bitmap;
 
-        public WpfRenderHandler(Image image, ILogger logger) : base(logger)
+        public WpfRenderHandler(Image image)
         {
             Image = image;
         }

@@ -7,7 +7,7 @@ namespace CefGlue.Tests.Helpers
 
         public GenericCefBrowser()
         {
-            CreateOrUpdateBrowser(100, 100);
+            CreateOrUpdateBrowser(0, 0,100, 100);
             UnhandledException += GenericCefBrowser_UnhandledException;
         }
 

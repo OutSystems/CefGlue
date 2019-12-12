@@ -11,10 +11,6 @@ namespace CefGlue.Tests.Helpers
     {
         private class DummyRenderHandler : BuiltInRenderHandler
         {
-            public DummyRenderHandler() : base(new DummyLogger())
-            {
-            }
-
             protected override int BytesPerPixel => throw new NotImplementedException();
 
             protected override int RenderedWidth => throw new NotImplementedException();
@@ -42,10 +38,6 @@ namespace CefGlue.Tests.Helpers
             }
         }
 
-        public DummyControl() : base(new DummyRenderHandler())
-        {
-        }
-
         public override void Focus()
         {
             throw new NotImplementedException();
@@ -56,7 +48,7 @@ namespace CefGlue.Tests.Helpers
             return IntPtr.Zero;
         }
 
-        public override Point PointToScreen(Point point)
+        public override Point PointToScreen(Point point, float deviceScaleFactor)
         {
             throw new NotImplementedException();
         }
@@ -77,6 +69,11 @@ namespace CefGlue.Tests.Helpers
         }
 
         public override void CloseContextMenu()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override BuiltInRenderHandler CreateRenderHandler()
         {
             throw new NotImplementedException();
         }
