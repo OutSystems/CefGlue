@@ -39,7 +39,7 @@ EOF
     fi
 }
 
-NETTARGET="netcoreapp2.2.8"
+NETTARGET="netcoreapp3.1"
 echo "building cefglue avalonia demo"
 dotnet publish CefGlue.Demo.Avalonia.csproj -r osx-x64 -f "$NETTARGET" --self-contained
 

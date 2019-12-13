@@ -5,7 +5,7 @@
     <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>Xilium.CefGlue.BrowserProcess</AssemblyName>
     <RootNamespace>Xilium.CefGlue.BrowserProcess</RootNamespace>
-    <Configurations>Debug;Release;ReleaseWPF;ReleaseAvalonia</Configurations>
+    <Configurations>Debug;Release;ReleaseWPFAvalonia</Configurations>
     <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
