@@ -1,1 +1,1 @@
-@build.cmd /p:Configuration=ReleaseWPF %*
+@build.cmd /p:Configuration=ReleaseWPFAvalonia %*
