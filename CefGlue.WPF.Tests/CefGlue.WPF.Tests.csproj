@@ -55,8 +55,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseWPF|AnyCPU'">
-    <OutputPath>bin\ReleaseWPF\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseWPFAvalonia|AnyCPU'">
+    <OutputPath>bin\ReleaseWPFAvalonia\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -64,8 +64,8 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseWPF|x86'">
-    <OutputPath>bin\x86\ReleaseWPF\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseWPFAvalonia|x86'">
+    <OutputPath>bin\x86\ReleaseWPFAvalonia\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>

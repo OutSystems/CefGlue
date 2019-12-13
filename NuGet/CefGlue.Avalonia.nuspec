@@ -16,8 +16,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\CefGlue.Avalonia\bin\Release\netstandard2.0\Xilium.CefGlue.Avalonia.dll" target="lib\netstandard2.0\x64"/>
-    <file src="..\CefGlue.Avalonia\bin\Release\netstandard2.0\Xilium.CefGlue.Avalonia.pdb" target="lib\netstandard2.0\x64"/>
+    <file src="..\CefGlue.Avalonia\bin\ReleaseWPFAvalonia\netstandard2.0\Xilium.CefGlue.Avalonia.dll" target="lib\netstandard2.0\x64"/>
+    <file src="..\CefGlue.Avalonia\bin\ReleaseWPFAvalonia\netstandard2.0\Xilium.CefGlue.Avalonia.pdb" target="lib\netstandard2.0\x64"/>
 
     <file src="CefGlue.Avalonia.props" target="build" />
     <file src="CefGlue.Avalonia.targets" target="build" />

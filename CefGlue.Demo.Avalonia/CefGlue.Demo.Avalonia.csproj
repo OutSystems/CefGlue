@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Xilium.CefGlue.Demo.Avalonia</AssemblyName>
     <RootNamespace>Xilium.CefGlue.Demo.Avalonia</RootNamespace>
-    <Configurations>Debug;Release</Configurations>
+    <Configurations>Debug;Release;ReleaseWPFAvalonia</Configurations>
     <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
