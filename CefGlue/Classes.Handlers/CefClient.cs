@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -270,6 +270,11 @@
         protected virtual bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {
             return false;
+        }
+
+        internal cef_client_t* ToWeakNativeRef()
+        {
+            return _self;
         }
     }
 }

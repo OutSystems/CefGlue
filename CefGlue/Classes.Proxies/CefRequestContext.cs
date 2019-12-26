@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -437,6 +437,11 @@
                 var n_result = cef_request_context_t.get_extension(_self, &n_extensionId);
                 return CefExtension.FromNativeOrNull(n_result);
             }
+        }
+
+        internal cef_request_context_t* ToWeakNativeRef()
+        {
+            return _self;
         }
     }
 }
