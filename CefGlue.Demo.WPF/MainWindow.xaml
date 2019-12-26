@@ -6,6 +6,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_New Tab" Click="OnNewTabMenuItemClick" />
+                <MenuItem Header="_Close Tab" Click="OnCloseTabMenuItemClick" />
                 <MenuItem Header="_Open Dev Tools..." Click="OnOpenDevToolsMenuItemClick"/>
                 <MenuItem Header="_Evaluate Javascript" Click="OnEvaluateJavascriptMenuItemClick" />
                 <MenuItem Header="_Bind Javascript Object" Click="OnBindJavascriptObjectMenuItemClick" />

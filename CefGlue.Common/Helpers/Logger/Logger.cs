@@ -128,9 +128,9 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
             Log.Trace(exception, message);
         }
 
-        public void Trace(string message, params object[] args)
+        public void Trace(string message)
         {
-            Log.Trace(message, args);
+            Log.Trace(message);
         }
 
         public void DebugException(string message, Exception exception)
@@ -138,9 +138,9 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
             Log.Debug(exception, message);
         }
 
-        public void Debug(string message, params object[] args)
+        public void Debug(string message)
         {
-            Log.Debug(message, args);
+            Log.Debug(message);
         }
 
         public void ErrorException(string message, Exception exception)
@@ -148,9 +148,9 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
             Log.Error(exception, message);
         }
 
-        public void Error(string message, params object[] args)
+        public void Error(string message)
         {
-            Log.Error(message, args);
+            Log.Error(message);
         }
 
         public void FatalException(string message, Exception exception)
@@ -158,9 +158,9 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
             Log.Fatal(exception, message);
         }
 
-        public void Fatal(string message, params object[] args)
+        public void Fatal(string message)
         {
-            Log.Fatal(message, args);
+            Log.Fatal(message);
         }
 
         public void InfoException(string message, Exception exception)
@@ -168,9 +168,9 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
             Log.Info(exception, message);
         }
 
-        public void Info(string message, params object[] args)
+        public void Info(string message)
         {
-            Log.Info(message, args);
+            Log.Info(message);
         }
 
         public void WarnException(string message, Exception exception)
@@ -178,9 +178,9 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
             Log.Warn(exception, message);
         }
 
-        public void Warn(string message, params object[] args)
+        public void Warn(string message)
         {
-            Log.Warn(message, args);
+            Log.Warn(message);
         }
 
         public bool IsTraceEnabled

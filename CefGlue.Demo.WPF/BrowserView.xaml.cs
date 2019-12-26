@@ -6,7 +6,7 @@ using Xilium.CefGlue.Common.Events;
 
 namespace Xilium.CefGlue.Demo.WPF
 {
-    public partial class BrowserView
+    public partial class BrowserView : IDisposable
     {
         public BrowserView()
         {
@@ -84,6 +84,11 @@ namespace Xilium.CefGlue.Demo.WPF
         public void OpenDevTools()
         {
             browser.ShowDeveloperTools();
+        }
+
+        public void Dispose()
+        {
+            browser.Dispose();
         }
     }
 }

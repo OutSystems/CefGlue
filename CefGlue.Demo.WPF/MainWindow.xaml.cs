@@ -42,6 +42,16 @@ namespace Xilium.CefGlue.Demo.WPF
             CreateNewTab();
         }
 
+        private void OnCloseTabMenuItemClick(object sender, RoutedEventArgs e)
+        {
+            if (tabControl.SelectedIndex >= 0)
+            {
+                var browser = ActiveBrowserView;
+                tabControl.Items.RemoveAt(tabControl.SelectedIndex);
+                browser.Dispose();
+            }
+        }
+
         private void OnEvaluateJavascriptMenuItemClick(object sender, RoutedEventArgs e)
         {
             ActiveBrowserView.EvaluateJavascript();

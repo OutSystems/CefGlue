@@ -17,7 +17,7 @@ namespace CefGlue.Tests.Helpers
 
         public bool IsWarnEnabled => throw new NotImplementedException();
 
-        public void Debug(string message, params object[] args)
+        public void Debug(string message)
         {
         }
 
@@ -25,7 +25,7 @@ namespace CefGlue.Tests.Helpers
         {
         }
 
-        public void Error(string message, params object[] args)
+        public void Error(string message)
         {
         }
 
@@ -33,7 +33,7 @@ namespace CefGlue.Tests.Helpers
         {
         }
 
-        public void Fatal(string message, params object[] args)
+        public void Fatal(string message)
         {
         }
 
@@ -41,7 +41,7 @@ namespace CefGlue.Tests.Helpers
         {
         }
 
-        public void Info(string message, params object[] args)
+        public void Info(string message)
         {
         }
 
@@ -49,7 +49,7 @@ namespace CefGlue.Tests.Helpers
         {
         }
 
-        public void Trace(string message, params object[] args)
+        public void Trace(string message)
         {
         }
 
@@ -57,7 +57,7 @@ namespace CefGlue.Tests.Helpers
         {
         }
 
-        public void Warn(string message, params object[] args)
+        public void Warn(string message)
         {
         }
 

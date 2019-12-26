@@ -64,10 +64,10 @@ namespace Xilium.CefGlue.Common.InternalHandlers
         {
             if (_logger.IsDebugEnabled)
             {
-                _logger.Debug("Type: {0} Buffer: {1:X8} Width: {2} Height: {3}", type, buffer, width, height);
+                _logger.Debug($"Type: {type} Buffer: {buffer.ToInt64()} Width: {width} Height: {height}");
                 foreach (var rect in dirtyRects)
                 {
-                    _logger.Debug("   DirtyRect: X={0} Y={1} W={2} H={3}", rect.X, rect.Y, rect.Width, rect.Height);
+                    _logger.Debug($"   DirtyRect: X={rect.X} Y={rect.Y} W={rect.Width} H={rect.Height}");
                 }
             }
             _owner.HandleViewPaint(buffer, width, height, dirtyRects, type == CefPaintElementType.Popup);
