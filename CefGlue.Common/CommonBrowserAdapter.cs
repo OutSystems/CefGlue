@@ -568,7 +568,13 @@ namespace Xilium.CefGlue.Common
         {
             // The simulated screen and view rectangle are the same. This is necessary
             // for popup menus to be located and sized inside the view.
-            return _browserSurface?.GetViewRect() ?? default(CefRectangle);
+            var result = _browserSurface?.GetViewRect() ?? new CefRectangle(0, 0, 1, 1);
+            if (result.Width <= 0 || result.Height <= 0)
+            {
+                // NOTE: width and height must be > 0, otherwise cef will blow up
+                return new CefRectangle(result.X, result.Y, Math.Max(1, result.Width), Math.Max(1, result.Height));
+            }
+            return result;
         }
 
         void ICefBrowserHost.GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY)
