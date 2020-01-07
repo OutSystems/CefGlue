@@ -105,9 +105,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             }
 
             var result = messageReceiveCompletionSource.Task.Result;
-            var typedResult = JavascriptToNativeTypeConverter.ConvertToNative(result, typeof(T));
-
-            return (T)typedResult;
+            return JavascriptToNativeTypeConverter.ConvertToNative<T>(result);
         }
     }
 }

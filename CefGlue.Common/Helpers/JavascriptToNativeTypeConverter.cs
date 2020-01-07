@@ -15,15 +15,30 @@ namespace Xilium.CefGlue.Common.Helpers
         private static readonly IDictionary<Type, ListContructor> _typeListConstructorCache = new Dictionary<Type, ListContructor>();
 
         /// <summary>
-        /// Converts an object from javascript into 
+        /// Converts an object from javascript into a .Net type
         /// </summary>
         /// <param name="obj"></param>
-        /// <param name="expectedType"></param>
+        /// <returns></returns>
+        public static T ConvertToNative<T>(object obj)
+        {
+            return (T) ConvertToNative(obj, typeof(T));
+        }
+
+        /// <summary>
+        /// Converts an object from javascript into a .Net type
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="expectedType">Expected object type</param>
         /// <returns></returns>
         public static object ConvertToNative(object obj, Type expectedType)
         {
             if (obj == null)
             {
+                if (expectedType.IsValueType)
+                {
+                    // return type default value
+                    return Activator.CreateInstance(expectedType);
+                }
                 return null;
             }
 

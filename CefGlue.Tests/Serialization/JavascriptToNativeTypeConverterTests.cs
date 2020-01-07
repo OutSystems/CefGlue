@@ -11,32 +11,46 @@ namespace CefGlue.Tests.Serialization
             OptionB
         }
 
+        private struct TestStructure
+        {
+
+        }
+
         [Test]
         public void BasicTypes()
         {
-            Assert.AreEqual(5, JavascriptToNativeTypeConverter.ConvertToNative(5, typeof(int)));
-            Assert.AreEqual(5.1d, JavascriptToNativeTypeConverter.ConvertToNative(5.1d, typeof(double)));
+            Assert.AreEqual(5, JavascriptToNativeTypeConverter.ConvertToNative<int>(5));
+            Assert.AreEqual(5.1d, JavascriptToNativeTypeConverter.ConvertToNative<double>(5.1d));
 
-            Assert.AreEqual(false, JavascriptToNativeTypeConverter.ConvertToNative(false, typeof(bool)));
-            Assert.AreEqual(true, JavascriptToNativeTypeConverter.ConvertToNative(true, typeof(bool)));
+            Assert.AreEqual(false, JavascriptToNativeTypeConverter.ConvertToNative<bool>(false));
+            Assert.AreEqual(true, JavascriptToNativeTypeConverter.ConvertToNative<bool>(true));
 
-            Assert.AreEqual(TestEnum.OptionB, JavascriptToNativeTypeConverter.ConvertToNative(1, typeof(TestEnum)));
+            Assert.AreEqual(TestEnum.OptionB, JavascriptToNativeTypeConverter.ConvertToNative<TestEnum>(1));
 
-            Assert.AreEqual("this is a string", JavascriptToNativeTypeConverter.ConvertToNative("this is a string", typeof(string)));
-
-            Assert.AreEqual(null, JavascriptToNativeTypeConverter.ConvertToNative(null, typeof(string)));
+            Assert.AreEqual("this is a string", JavascriptToNativeTypeConverter.ConvertToNative<string>("this is a string"));
         }
 
         [Test]
         public void DoubleCastToInt()
         {
-            Assert.AreEqual(5d, JavascriptToNativeTypeConverter.ConvertToNative(5, typeof(double)));
+            Assert.AreEqual(5d, JavascriptToNativeTypeConverter.ConvertToNative<double>(5));
         }
 
         [Test]
         public void DecimalsAreNotLost()
         {
-            Assert.AreEqual(5d, JavascriptToNativeTypeConverter.ConvertToNative(5, typeof(double)));
+            Assert.AreEqual(5d, JavascriptToNativeTypeConverter.ConvertToNative<double>(5));
+        }
+
+        [Test]
+        public void NullReturnsTypeDefaultValue()
+        {
+            Assert.AreEqual(default(string), JavascriptToNativeTypeConverter.ConvertToNative<string>(null));
+            Assert.AreEqual(default(int), JavascriptToNativeTypeConverter.ConvertToNative<int>(null));
+            Assert.AreEqual(default(bool), JavascriptToNativeTypeConverter.ConvertToNative<bool>(null));
+            Assert.AreEqual(default(TestEnum), JavascriptToNativeTypeConverter.ConvertToNative<TestEnum>(null));
+            Assert.AreEqual(default(TestStructure), JavascriptToNativeTypeConverter.ConvertToNative<TestStructure>(null));
+            Assert.AreEqual(default(int[]), JavascriptToNativeTypeConverter.ConvertToNative<int[]>(null));
         }
 
         [Test]
