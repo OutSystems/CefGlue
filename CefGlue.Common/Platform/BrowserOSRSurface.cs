@@ -39,16 +39,6 @@ namespace Xilium.CefGlue.Common.Platform
             // in osr x and y are always 0
             _viewRect = new CefRectangle(0, 0, width, height);
 
-            // workaround cef OSR bug (https://bitbucket.org/chromiumembedded/cef/issues/2483/osr-invalidate-does-not-generate-frame)
-            // we notify browser of a resize and return height+1px on next GetViewRect call
-            // then restore the original size back again
-            _getViewRectOverride = () =>
-            {
-                _getViewRectOverride = null;
-                _browserHost?.WasResized();
-                return new CefRectangle(0, 0, width, height + 1);
-            };
-
             _renderHandler.Resize(width, height);
 
             _browserHost?.WasResized();
@@ -59,6 +49,21 @@ namespace Xilium.CefGlue.Common.Platform
         public override void Show()
         {
             _browserHost.WasHidden(false);
+
+            // workaround cef OSR bug (https://bitbucket.org/chromiumembedded/cef/issues/2483/osr-invalidate-does-not-generate-frame)
+            // we notify browser of a resize and return height+1px on next GetViewRect call
+            // then restore the original size back again
+            CefRuntime.PostTask(CefThreadId.UI, new ActionTask(() =>
+            {
+                _getViewRectOverride = () =>
+                {
+                    _getViewRectOverride = null;
+                    _browserHost?.WasResized();
+                    return new CefRectangle(0, 0, _viewRect.Width, _viewRect.Height + 1);
+                };
+
+                _browserHost.WasResized();
+            }));
         }
 
         public override CefRectangle GetViewRect() => _getViewRectOverride?.Invoke() ?? _viewRect;
