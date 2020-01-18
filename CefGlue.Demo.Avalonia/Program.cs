@@ -13,7 +13,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
                           UseDeferredRendering = false,
                           UseGpu = false // fixes rendering quircks on mac OS
                       })
-                      .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings() { WindowlessRenderingEnabled = false }))
+                      .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings() { WindowlessRenderingEnabled = true }))
                       .StartWithClassicDesktopLifetime(args);
                       
             return 0;
