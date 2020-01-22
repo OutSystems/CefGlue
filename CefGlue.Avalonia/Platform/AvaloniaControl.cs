@@ -48,11 +48,16 @@ namespace Xilium.CefGlue.Avalonia.Platform
             control.PointerMoved += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent(MousePositionReferential));
             control.PointerLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
 
+            //control.DoubleTapped += (sender, arg) =>
+            //{
+            //    //var button = arg.AsCefMouseButtonType();
+            //    TriggerMouseButtonPressed(this, new CefMouseEvent(), CefMouseButtonType.Left, 2);
+            //};
+
             control.PointerPressed += (sender, arg) =>
             {
                 var button = arg.AsCefMouseButtonType();
-                // TODO double click?
-                TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), button, 1);
+                TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), button, arg.ClickCount);
                 if (button == CefMouseButtonType.Left)
                 {
                     arg.Pointer.Capture(control);
