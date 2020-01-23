@@ -42,9 +42,7 @@ namespace Xilium.CefGlue.Avalonia
         {
             var controlAdapter = new AvaloniaControl(this, image =>
             {
-                LogicalChildren.Add(image);
-                VisualChildren.Add(image);
-                InvalidateArrange();
+                Content = image;
             });
 
             var popup = new ExtendedAvaloniaPopup
