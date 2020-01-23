@@ -506,7 +506,11 @@ namespace Xilium.CefGlue.Common
         public void ShowDeveloperTools()
         {
             var windowInfo = CefWindowInfo.Create();
-            windowInfo.SetAsPopup(_browserHost?.GetWindowHandle() ?? IntPtr.Zero, "DevTools");
+            if (CefRuntime.Platform != CefRuntimePlatform.MacOSX)
+            {
+                // don't know why but I can't do this on macosx
+                windowInfo.SetAsPopup(_browserHost?.GetWindowHandle() ?? IntPtr.Zero, "DevTools");
+            }
 
             _browserHost?.ShowDevTools(windowInfo, _cefClient, new CefBrowserSettings(), new CefPoint());
         }
