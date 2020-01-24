@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Common.Platform
@@ -36,6 +37,8 @@ namespace Xilium.CefGlue.Common.Platform
 
         void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback);
         void CloseContextMenu();
+
+        Task<CefDragOperationsMask> StartDragging(CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y);
 
         BuiltInRenderHandler CreateRenderHandler();
     }

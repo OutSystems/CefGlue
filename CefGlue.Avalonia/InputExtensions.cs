@@ -1,5 +1,6 @@
 using Avalonia.Input;
 using Avalonia.VisualTree;
+using System.IO;
 
 namespace Xilium.CefGlue.Avalonia
 {
@@ -74,7 +75,7 @@ namespace Xilium.CefGlue.Avalonia
         }
 
         /// <summary>
-        /// Convert keyboard modifieers into cef flags.
+        /// Convert keyboard modifiers into cef flags.
         /// </summary>
         /// <param name="keyboardModifiers"></param>
         /// <returns></returns>
@@ -92,6 +93,120 @@ namespace Xilium.CefGlue.Avalonia
                 modifiers |= CefEventFlags.ShiftDown;
 
             return modifiers;
+        }
+
+        /// <summary>
+        /// Convert keyboard modifiers into cef flags.
+        /// </summary>
+        /// <param name="keyboardModifiers"></param>
+        /// <returns></returns>
+        public static CefEventFlags AsCefKeyboardModifiers(this InputModifiers keyboardModifiers)
+        {
+            var modifiers = new CefEventFlags();
+
+            if (keyboardModifiers.HasFlag(InputModifiers.Alt))
+                modifiers |= CefEventFlags.AltDown;
+
+            if (keyboardModifiers.HasFlag(InputModifiers.Control))
+                modifiers |= CefEventFlags.ControlDown;
+
+            if (keyboardModifiers.HasFlag(InputModifiers.Shift))
+                modifiers |= CefEventFlags.ShiftDown;
+
+            return modifiers;
+        }
+
+        /// <summary>
+        /// Convert a drag event args into a cef mouse event.
+        /// </summary>
+        /// <param name="eventArgs">The drag event args</param>
+        /// <param name="mouseCoordinatesReferencial">The element used as the positioning referential</param>
+        /// <returns></returns>
+        public static CefMouseEvent AsCefMouseEvent(this DragEventArgs eventArgs, IVisual mouseCoordinatesReferencial)
+        {
+            var cursorPos = eventArgs.GetPosition(mouseCoordinatesReferencial);
+
+            return new CefMouseEvent((int)cursorPos.X, (int)cursorPos.Y, eventArgs.Modifiers.AsCefKeyboardModifiers());
+        }
+
+        /// <summary>
+        /// Converts a drag drop effects to Cef Drag Operations
+        /// </summary>
+        /// <param name="dragDropEffects">The drag drop effects.</param>
+        /// <returns></returns>
+        public static CefDragOperationsMask AsCefDragOperationsMask(this DragDropEffects dragDropEffects)
+        {
+            var operations = CefDragOperationsMask.None;
+
+            if (dragDropEffects.HasFlag(DragDropEffects.Copy))
+            {
+                operations |= CefDragOperationsMask.Copy;
+            }
+            if (dragDropEffects.HasFlag(DragDropEffects.Move))
+            {
+                operations |= CefDragOperationsMask.Move;
+            }
+            if (dragDropEffects.HasFlag(DragDropEffects.Link))
+            {
+                operations |= CefDragOperationsMask.Link;
+            }
+
+            return operations;
+        }
+
+        /// <summary>
+        /// Gets the drag effects.
+        /// </summary>
+        /// <param name="mask">The mask.</param>
+        /// <returns></returns>
+        public static DragDropEffects AsDragDropEffects(this CefDragOperationsMask mask)
+        {
+            if (mask.HasFlag(CefDragOperationsMask.Every))
+            {
+                return DragDropEffects.Copy | DragDropEffects.Move | DragDropEffects.Link;
+            }
+            if (mask.HasFlag(CefDragOperationsMask.Copy))
+            {
+                return DragDropEffects.Copy;
+            }
+            if (mask.HasFlag(CefDragOperationsMask.Move))
+            {
+                return DragDropEffects.Move;
+            }
+            if (mask.HasFlag(CefDragOperationsMask.Link))
+            {
+                return DragDropEffects.Link;
+            }
+            return DragDropEffects.None;
+        }
+
+        /// <summary>
+        /// Gets the drag data
+        /// </summary>
+        /// <param name="e">The <see cref="DragEventArgs"/> instance containing the event data.</param>
+        /// <returns></returns>
+        public static CefDragData GetDragData(this DragEventArgs e)
+        {
+            var dragData = CefDragData.Create();
+
+            // Files
+            if (e.Data.Contains(DataFormats.FileNames))
+            {
+                var files = (string[])e.Data.GetFileNames();
+                foreach (var filePath in files)
+                {
+                    var displayName = Path.GetFileName(filePath);
+                    dragData.AddFile(filePath.Replace("\\", "/"), displayName);
+                }
+            }
+
+            // Text
+            if (e.Data.Contains(DataFormats.Text))
+            {
+                dragData.SetFragmentText(e.Data.GetText());
+            }
+
+            return dragData;
         }
     }
 }
