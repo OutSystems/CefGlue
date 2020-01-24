@@ -63,15 +63,25 @@ namespace Xilium.CefGlue.Avalonia
         /// <returns></returns>
         public static CefEventFlags AsCefEventFlags(this PointerEventArgs eventArgs)
         {
-            switch (eventArgs.GetCurrentPoint(null).Properties.PointerUpdateKind.GetMouseButton())
+            var flags = CefEventFlags.None;
+            var properties = eventArgs.GetCurrentPoint(null).Properties;
+
+            if (properties.IsLeftButtonPressed)
             {
-                case MouseButton.Middle:
-                    return CefEventFlags.MiddleMouseButton;
-                case MouseButton.Right:
-                    return CefEventFlags.RightMouseButton;
-                default:
-                    return CefEventFlags.LeftMouseButton;
+                flags |= CefEventFlags.LeftMouseButton;
             }
+
+            if (properties.IsMiddleButtonPressed)
+            {
+                flags |= CefEventFlags.MiddleMouseButton;
+            }
+
+            if (properties.IsRightButtonPressed)
+            {
+                flags |= CefEventFlags.RightMouseButton;
+            }
+
+            return flags;
         }
 
         /// <summary>
@@ -84,13 +94,19 @@ namespace Xilium.CefGlue.Avalonia
             var modifiers = new CefEventFlags();
 
             if (keyboardModifiers.HasFlag(KeyModifiers.Alt))
+            {
                 modifiers |= CefEventFlags.AltDown;
+            }
 
             if (keyboardModifiers.HasFlag(KeyModifiers.Control))
+            {
                 modifiers |= CefEventFlags.ControlDown;
+            }
 
             if (keyboardModifiers.HasFlag(KeyModifiers.Shift))
+            {
                 modifiers |= CefEventFlags.ShiftDown;
+            }
 
             return modifiers;
         }
@@ -105,13 +121,19 @@ namespace Xilium.CefGlue.Avalonia
             var modifiers = new CefEventFlags();
 
             if (keyboardModifiers.HasFlag(InputModifiers.Alt))
+            {
                 modifiers |= CefEventFlags.AltDown;
+            }
 
             if (keyboardModifiers.HasFlag(InputModifiers.Control))
+            {
                 modifiers |= CefEventFlags.ControlDown;
+            }
 
             if (keyboardModifiers.HasFlag(InputModifiers.Shift))
+            {
                 modifiers |= CefEventFlags.ShiftDown;
+            }
 
             return modifiers;
         }
@@ -144,20 +166,24 @@ namespace Xilium.CefGlue.Avalonia
                 operations |= CefDragOperationsMask.Copy;
                 operationsCount++;
             }
+
             if (dragDropEffects.HasFlag(DragDropEffects.Move))
             {
                 operations |= CefDragOperationsMask.Move;
                 operationsCount++;
             }
+
             if (dragDropEffects.HasFlag(DragDropEffects.Link))
             {
                 operations |= CefDragOperationsMask.Link;
                 operationsCount++;
             }
+
             if (operationsCount == 3)
             {
                 return CefDragOperationsMask.Every;
             }
+
             return operations;
         }
 
@@ -172,18 +198,22 @@ namespace Xilium.CefGlue.Avalonia
             {
                 return DragDropEffects.Copy | DragDropEffects.Move | DragDropEffects.Link;
             }
+
             if (mask.HasFlag(CefDragOperationsMask.Copy))
             {
                 return DragDropEffects.Copy;
             }
+
             if (mask.HasFlag(CefDragOperationsMask.Move))
             {
                 return DragDropEffects.Move;
             }
+
             if (mask.HasFlag(CefDragOperationsMask.Link))
             {
                 return DragDropEffects.Link;
             }
+
             return DragDropEffects.None;
         }
 
@@ -214,29 +244,6 @@ namespace Xilium.CefGlue.Avalonia
             }
 
             return dragData;
-        }
-
-        /// <summary>
-        /// Returns the cursor for the specified drag&drop effect.
-        /// </summary>
-        /// <param name="dragDropEffects"></param>
-        /// <returns></returns>
-        public static StandardCursorType AsCursor(this DragDropEffects dragDropEffects)
-        {
-            switch (dragDropEffects)
-            {
-                case DragDropEffects.Copy:
-                    return StandardCursorType.DragCopy;
-
-                case DragDropEffects.Link:
-                    return StandardCursorType.DragLink;
-
-                case DragDropEffects.Move:
-                    return StandardCursorType.DragMove;
-
-                default:
-                    return StandardCursorType.No;
-            }
         }
     }
 }
