@@ -95,7 +95,7 @@ namespace Xilium.CefGlue.Common.InternalHandlers
 
         protected override void UpdateDragCursor(CefBrowser browser, CefDragOperationsMask operation)
         {
-            _owner.RenderHandler?.HandleUpdateDragCursor(browser, operation);
+            _owner.HandleUpdateDragCursor(browser, operation);
         }
     }
 }

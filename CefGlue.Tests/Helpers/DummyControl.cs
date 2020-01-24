@@ -82,5 +82,10 @@ namespace CefGlue.Tests.Helpers
         {
             throw new NotImplementedException();
         }
+
+        public override void UpdateDragCursor(CefDragOperationsMask allowedOps)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

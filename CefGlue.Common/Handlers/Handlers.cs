@@ -147,11 +147,6 @@ namespace Xilium.CefGlue.Common.Handlers
         {
             HandleScrollOffsetChanged(browser, x, y);
         }
-
-        internal void HandleUpdateDragCursor(CefBrowser browser, CefDragOperationsMask operation)
-        {
-            UpdateDragCursor(browser, operation);
-        }
     }
 
     public class RequestHandler : CefRequestHandler {

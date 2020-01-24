@@ -32,6 +32,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
         private Action<Image> _setContent;
 
         private WeakReference<PointerEventArgs> lastPointerEvent = new WeakReference<PointerEventArgs>(null);
+        private DragDropEffects currentDragDropEffect;
+        private Cursor previousCursor;
 
         public AvaloniaControl(Control control, Action<Image> setContent)
         {
@@ -76,6 +78,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
             void OnDragEnter(object _, DragEventArgs arg)
             {
+                previousCursor = _control.Cursor;
                 TriggerDragEnter(arg.AsCefMouseEvent(MousePositionReferential), arg.GetDragData(), arg.DragEffects.AsCefDragOperationsMask());
             }
 
@@ -87,11 +90,13 @@ namespace Xilium.CefGlue.Avalonia.Platform
             void OnDragOver(object _, DragEventArgs arg)
             {
                 TriggerDragOver(arg.AsCefMouseEvent(MousePositionReferential), arg.DragEffects.AsCefDragOperationsMask());
+                _control.Cursor = new Cursor(currentDragDropEffect.AsCursor());
             }
 
             void OnDrop(object _, DragEventArgs arg)
             {
                 TriggerDrop(arg.AsCefMouseEvent(MousePositionReferential), arg.DragEffects.AsCefDragOperationsMask());
+                _control.Cursor = previousCursor; // restore cursor
             }
 
             control.AddHandler(DragDrop.DragEnterEvent, OnDragEnter);
@@ -297,6 +302,11 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 return result.AsCefDragOperationsMask();
             }
             return CefDragOperationsMask.None;
+        }
+
+        public override void UpdateDragCursor(CefDragOperationsMask allowedOps)
+        {
+            currentDragDropEffect = allowedOps.AsDragDropEffects();
         }
 
         public override BuiltInRenderHandler CreateRenderHandler()

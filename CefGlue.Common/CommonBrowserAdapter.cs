@@ -806,9 +806,14 @@ namespace Xilium.CefGlue.Common
             });
         }
 
+        void ICefBrowserHost.HandleUpdateDragCursor(CefBrowser browser, CefDragOperationsMask operation)
+        {
+            _control.UpdateDragCursor(operation);
+        }
+
         #endregion
 
-        private void SendMouseClickEvent(CefMouseEvent mouseEvent, CefMouseButtonType mouseButton, bool isMouseUp, int clickCount)
+            private void SendMouseClickEvent(CefMouseEvent mouseEvent, CefMouseButtonType mouseButton, bool isMouseUp, int clickCount)
         {
             _browserHost?.SendMouseClickEvent(mouseEvent, mouseButton, isMouseUp, clickCount);
         }

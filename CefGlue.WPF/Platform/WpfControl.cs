@@ -278,6 +278,11 @@ namespace Xilium.CefGlue.WPF.Platform
             return result.AsCefDragOperationsMask();
         }
 
+        public override void UpdateDragCursor(CefDragOperationsMask allowedOps)
+        {
+            // do nothing
+        }
+
         private void UpdateTooltip(string text)
         {
             _control.Dispatcher.BeginInvoke(

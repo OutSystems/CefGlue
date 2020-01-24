@@ -215,5 +215,28 @@ namespace Xilium.CefGlue.Avalonia
 
             return dragData;
         }
+
+        /// <summary>
+        /// Returns the cursor for the specified drag&drop effect.
+        /// </summary>
+        /// <param name="dragDropEffects"></param>
+        /// <returns></returns>
+        public static StandardCursorType AsCursor(this DragDropEffects dragDropEffects)
+        {
+            switch (dragDropEffects)
+            {
+                case DragDropEffects.Copy:
+                    return StandardCursorType.DragCopy;
+
+                case DragDropEffects.Link:
+                    return StandardCursorType.DragLink;
+
+                case DragDropEffects.Move:
+                    return StandardCursorType.DragMove;
+
+                default:
+                    return StandardCursorType.No;
+            }
+        }
     }
 }

@@ -29,6 +29,8 @@ namespace Xilium.CefGlue.Common.Platform
 
         public abstract Task<CefDragOperationsMask> StartDragging(CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y);
 
+        public abstract void UpdateDragCursor(CefDragOperationsMask allowedOps);
+
         public event Action GotFocus;
 
         protected void TriggerGotFocus()

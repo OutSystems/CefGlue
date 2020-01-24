@@ -39,6 +39,7 @@ namespace Xilium.CefGlue.Common.Platform
         void CloseContextMenu();
 
         Task<CefDragOperationsMask> StartDragging(CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y);
+        void UpdateDragCursor(CefDragOperationsMask allowedOps);
 
         BuiltInRenderHandler CreateRenderHandler();
     }
