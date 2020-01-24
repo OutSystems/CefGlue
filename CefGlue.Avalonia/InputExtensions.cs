@@ -136,21 +136,28 @@ namespace Xilium.CefGlue.Avalonia
         /// <returns></returns>
         public static CefDragOperationsMask AsCefDragOperationsMask(this DragDropEffects dragDropEffects)
         {
+            var operationsCount = 0;
             var operations = CefDragOperationsMask.None;
 
             if (dragDropEffects.HasFlag(DragDropEffects.Copy))
             {
                 operations |= CefDragOperationsMask.Copy;
+                operationsCount++;
             }
             if (dragDropEffects.HasFlag(DragDropEffects.Move))
             {
                 operations |= CefDragOperationsMask.Move;
+                operationsCount++;
             }
             if (dragDropEffects.HasFlag(DragDropEffects.Link))
             {
                 operations |= CefDragOperationsMask.Link;
+                operationsCount++;
             }
-
+            if (operationsCount == 3)
+            {
+                return CefDragOperationsMask.Every;
+            }
             return operations;
         }
 
