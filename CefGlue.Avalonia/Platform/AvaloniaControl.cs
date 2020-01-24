@@ -291,7 +291,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             if (lastPointerEvent.TryGetTarget(out var lastPointerEventArg))
             {
                 var dataObject = new DataObject();
-                dataObject.Set(dragData.FragmentText, DataFormats.Text);
+                dataObject.Set(DataFormats.Text, dragData.FragmentText);
 
                 var result = await Dispatcher.UIThread.InvokeAsync(() => DragDrop.DoDragDrop(lastPointerEventArg, dataObject, allowedOps.AsDragDropEffects()));
                 return result.AsCefDragOperationsMask();
