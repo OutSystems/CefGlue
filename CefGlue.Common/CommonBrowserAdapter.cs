@@ -813,7 +813,7 @@ namespace Xilium.CefGlue.Common
 
         #endregion
 
-            private void SendMouseClickEvent(CefMouseEvent mouseEvent, CefMouseButtonType mouseButton, bool isMouseUp, int clickCount)
+        private void SendMouseClickEvent(CefMouseEvent mouseEvent, CefMouseButtonType mouseButton, bool isMouseUp, int clickCount)
         {
             _browserHost?.SendMouseClickEvent(mouseEvent, mouseButton, isMouseUp, clickCount);
         }
