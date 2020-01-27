@@ -1,6 +1,7 @@
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -37,6 +38,7 @@ namespace Xilium.CefGlue.WPF.Platform
 
         private void AttachInputEvents(FrameworkElement control)
         {
+            control.AllowDrop = true;
             control.GotFocus += delegate { TriggerGotFocus(); };
             control.LostFocus += delegate { TriggerLostFocus(); };
 
@@ -253,6 +255,32 @@ namespace Xilium.CefGlue.WPF.Platform
                 {
                     _control.ContextMenu = null;
                 }));
+        }
+
+        public override async Task<CefDragOperationsMask> StartDragging(CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y)
+        {
+            var dataObject = new DataObject();
+
+            dataObject.SetText(dragData.FragmentText, TextDataFormat.Text);
+            dataObject.SetText(dragData.FragmentText, TextDataFormat.UnicodeText);
+            dataObject.SetText(dragData.FragmentHtml, TextDataFormat.Html);
+
+            var result = DragDropEffects.None;
+
+            await _control.Dispatcher.BeginInvoke(
+                DispatcherPriority.Normal,
+                new Action(() =>
+                {
+                    result = DragDrop.DoDragDrop(_control, dataObject, allowedOps.AsDragDropEffects());
+                })
+            );
+
+            return result.AsCefDragOperationsMask();
+        }
+
+        public override void UpdateDragCursor(CefDragOperationsMask allowedOps)
+        {
+            // do nothing
         }
 
         private void UpdateTooltip(string text)

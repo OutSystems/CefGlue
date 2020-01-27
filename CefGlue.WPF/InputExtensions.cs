@@ -134,6 +134,32 @@ namespace Xilium.CefGlue.WPF
         }
 
         /// <summary>
+        /// Gets the drag effects.
+        /// </summary>
+        /// <param name="mask">The mask.</param>
+        /// <returns></returns>
+        public static DragDropEffects AsDragDropEffects(this CefDragOperationsMask mask)
+        {
+            if (mask.HasFlag(CefDragOperationsMask.Every))
+            {
+                return DragDropEffects.Scroll | DragDropEffects.Copy | DragDropEffects.Move | DragDropEffects.Link;
+            }
+            if (mask.HasFlag(CefDragOperationsMask.Copy))
+            {
+                return DragDropEffects.Copy;
+            }
+            if (mask.HasFlag(CefDragOperationsMask.Move))
+            {
+                return DragDropEffects.Move;
+            }
+            if (mask.HasFlag(CefDragOperationsMask.Link))
+            {
+                return DragDropEffects.Link;
+            }
+            return DragDropEffects.None;
+        }
+
+        /// <summary>
         /// Gets the drag data
         /// </summary>
         /// <param name="e">The <see cref="DragEventArgs"/> instance containing the event data.</param>

@@ -796,6 +796,21 @@ namespace Xilium.CefGlue.Common
             _control.CloseContextMenu();
         }
 
+        void ICefBrowserHost.HandleStartDragging(CefBrowser browser, CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y)
+        {
+            WithErrorHandling(nameof(ICefBrowserHost.HandleStartDragging), async () =>
+            {
+                var result = await _control.StartDragging(dragData, allowedOps, x, y);
+                _browserHost.DragSourceEndedAt(x, y, result);
+                _browserHost.DragSourceSystemDragEnded();
+            });
+        }
+
+        void ICefBrowserHost.HandleUpdateDragCursor(CefBrowser browser, CefDragOperationsMask operation)
+        {
+            _control.UpdateDragCursor(operation);
+        }
+
         #endregion
 
         private void SendMouseClickEvent(CefMouseEvent mouseEvent, CefMouseButtonType mouseButton, bool isMouseUp, int clickCount)

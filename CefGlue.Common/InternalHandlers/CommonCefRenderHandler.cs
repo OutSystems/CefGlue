@@ -89,12 +89,13 @@ namespace Xilium.CefGlue.Common.InternalHandlers
 
         protected override bool StartDragging(CefBrowser browser, CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y)
         {
-            return (_owner.RenderHandler?.HandleStartDragging(browser, dragData, allowedOps, x, y) ?? false) || base.StartDragging(browser, dragData, allowedOps, x, y);
+            _owner.HandleStartDragging(browser, dragData, allowedOps, x, y);
+            return true;
         }
 
         protected override void UpdateDragCursor(CefBrowser browser, CefDragOperationsMask operation)
         {
-            _owner.RenderHandler?.HandleUpdateDragCursor(browser, operation);
+            _owner.HandleUpdateDragCursor(browser, operation);
         }
     }
 }

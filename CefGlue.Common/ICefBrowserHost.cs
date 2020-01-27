@@ -32,6 +32,9 @@ namespace Xilium.CefGlue.Common
         void HandleLoadError(CefBrowser browser, CefFrame frame, CefErrorCode errorCode, string errorText, string failedUrl);
         void HandleLoadingStateChange(CefBrowser browser, bool isLoading, bool canGoBack, bool canGoForward);
 
+        void HandleStartDragging(CefBrowser browser, CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y);
+        void HandleUpdateDragCursor(CefBrowser browser, CefDragOperationsMask operation);
+
         void HandleOpenContextMenu(CefContextMenuParams parameters, CefMenuModel model, CefRunContextMenuCallback callback);
         void HandleCloseContextMenu();
 

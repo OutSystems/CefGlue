@@ -77,5 +77,15 @@ namespace CefGlue.Tests.Helpers
         {
             throw new NotImplementedException();
         }
+
+        public override Task<CefDragOperationsMask> StartDragging(CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void UpdateDragCursor(CefDragOperationsMask allowedOps)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

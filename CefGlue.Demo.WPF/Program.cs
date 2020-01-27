@@ -11,7 +11,7 @@ namespace Xilium.CefGlue.Demo.WPF
         {
             var settings = new CefSettings()
             {
-                WindowlessRenderingEnabled = false
+                WindowlessRenderingEnabled = true
             };
             CefRuntimeLoader.Initialize(settings);
 

@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
-using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 using AvaloniaPoint = Avalonia.Point;
@@ -30,6 +31,10 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         private Action<Image> _setContent;
 
+        private PointerPressedEventArgs lastPointerEvent;
+        private Cursor currentDragCursor;
+        private Cursor previousCursor;
+
         public AvaloniaControl(Control control, Action<Image> setContent)
         {
             _setContent = setContent;
@@ -42,20 +47,17 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         private void AttachInputEvents(Control control)
         {
+            DragDrop.SetAllowDrop(control, true);
+
             control.GotFocus += delegate { TriggerGotFocus(); };
             control.LostFocus += delegate { TriggerLostFocus(); };
 
             control.PointerMoved += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent(MousePositionReferential));
             control.PointerLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
 
-            //control.DoubleTapped += (sender, arg) =>
-            //{
-            //    //var button = arg.AsCefMouseButtonType();
-            //    TriggerMouseButtonPressed(this, new CefMouseEvent(), CefMouseButtonType.Left, 2);
-            //};
-
             control.PointerPressed += (sender, arg) =>
             {
+                lastPointerEvent = arg;
                 var button = arg.AsCefMouseButtonType();
                 TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), button, arg.ClickCount);
                 if (button == CefMouseButtonType.Left)
@@ -73,6 +75,34 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 }
             };
             control.PointerWheelChanged += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), (int)arg.Delta.X * MouseWheelDelta, (int)arg.Delta.Y * MouseWheelDelta);
+
+            void OnDragEnter(object _, DragEventArgs arg)
+            {
+                previousCursor = _control.Cursor;
+                TriggerDragEnter(arg.AsCefMouseEvent(MousePositionReferential), arg.GetDragData(), arg.DragEffects.AsCefDragOperationsMask());
+            }
+
+            void OnDragLeave(object _, RoutedEventArgs arg)
+            {
+                TriggerDragLeave();
+            }
+
+            void OnDragOver(object _, DragEventArgs arg)
+            {
+                TriggerDragOver(arg.AsCefMouseEvent(MousePositionReferential), arg.DragEffects.AsCefDragOperationsMask());
+                _control.Cursor = currentDragCursor;
+            }
+
+            void OnDrop(object _, DragEventArgs arg)
+            {
+                _control.Cursor = previousCursor; // restore cursor
+                TriggerDrop(arg.AsCefMouseEvent(MousePositionReferential), arg.DragEffects.AsCefDragOperationsMask());
+            }
+
+            control.AddHandler(DragDrop.DragEnterEvent, OnDragEnter);
+            control.AddHandler(DragDrop.DragLeaveEvent, OnDragLeave);
+            control.AddHandler(DragDrop.DragOverEvent, OnDragOver);
+            control.AddHandler(DragDrop.DropEvent, OnDrop);
 
             control.KeyDown += (sender, arg) =>
             {
@@ -107,6 +137,9 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         private void OnDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
         {
+            lastPointerEvent = null;
+            previousCursor = null;
+            currentDragCursor = null;
             _windowStateChangedObservable?.Dispose();
             TriggerVisibilityChanged(false);
         }
@@ -259,6 +292,48 @@ namespace Xilium.CefGlue.Avalonia.Platform
             //       _control.ContextMenu = null;
             //   },
             //   DispatcherPriority.Input);
+        }
+
+        public override async Task<CefDragOperationsMask> StartDragging(CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y)
+        {
+            var lastPointerEvent = this.lastPointerEvent; // story a copy, since this might be other thread
+            if (lastPointerEvent != null)
+            {
+                var dataObject = new DataObject();
+                dataObject.Set(DataFormats.Text, dragData.FragmentText);
+
+                var result = await Dispatcher.UIThread.InvokeAsync(() => DragDrop.DoDragDrop(lastPointerEvent, dataObject, allowedOps.AsDragDropEffects()));
+                this.lastPointerEvent = null;
+                previousCursor = null;
+                currentDragCursor = null;
+                return result.AsCefDragOperationsMask();
+            }
+            return CefDragOperationsMask.None;
+        }
+
+        public override void UpdateDragCursor(CefDragOperationsMask allowedOps)
+        {
+            StandardCursorType cursorType;
+            switch (allowedOps)
+            {
+                case CefDragOperationsMask.Copy:
+                    cursorType = StandardCursorType.DragCopy;
+                    break;
+
+                case CefDragOperationsMask.Link:
+                    cursorType = StandardCursorType.DragLink;
+                    break;
+
+                case CefDragOperationsMask.Move:
+                    cursorType = StandardCursorType.DragMove;
+                    break;
+
+                default:
+                    cursorType = StandardCursorType.No;
+                    break;
+            }
+
+            currentDragCursor = new Cursor(cursorType);
         }
 
         public override BuiltInRenderHandler CreateRenderHandler()
