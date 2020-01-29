@@ -26,7 +26,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
         private const int MouseWheelDelta = 100;
 
         private readonly ContentControl _control;
-        private readonly IPlatformHandle _handle;
 
         private IDisposable _windowStateChangedObservable;
 
@@ -34,10 +33,9 @@ namespace Xilium.CefGlue.Avalonia.Platform
         private Cursor currentDragCursor;
         private Cursor previousCursor;
 
-        public AvaloniaControl(ContentControl control, IPlatformHandle handle)
+        public AvaloniaControl(ContentControl control)
         {
             _control = control;
-            _handle = handle;
 
             control.AttachedToVisualTree += OnAttachedToVisualTree;
             control.DetachedFromVisualTree += OnDetachedFromVisualTree;

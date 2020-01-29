@@ -21,8 +21,6 @@ namespace Xilium.CefGlue.WPF
             LayoutUpdated += OnLayoutUpdated;
         }
 
-        protected override bool AllowsTransparency => true;
-
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
             var size = base.ArrangeOverride(arrangeBounds);

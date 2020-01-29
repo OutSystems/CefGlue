@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Platform;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Xilium.CefGlue.Common.Platform;
@@ -14,7 +13,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
     {
         private readonly ExtendedAvaloniaPopup _popup;
 
-        public AvaloniaPopup(ExtendedAvaloniaPopup popup, IPlatformHandle handle) : base(popup, handle)
+        public AvaloniaPopup(ExtendedAvaloniaPopup popup) : base(popup)
         {
             _popup = popup;
         }
@@ -25,9 +24,9 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public int Height => (int)_popup.Height;
 
-        public int OffsetX => (int)_popup.Position.X;
+        public int OffsetX => _popup.Position.X;
 
-        public int OffsetY => (int)_popup.Position.Y;
+        public int OffsetY => _popup.Position.Y;
 
         public void MoveAndResize(int x, int y, int width, int height)
         {

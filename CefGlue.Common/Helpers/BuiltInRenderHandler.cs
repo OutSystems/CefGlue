@@ -25,6 +25,8 @@ namespace Xilium.CefGlue.Common.Helpers
             GC.SuppressFinalize(this);
         }
 
+        public abstract bool AllowsTransparency { get; }
+
         public int Width => _width;
 
         public int Height => _height;

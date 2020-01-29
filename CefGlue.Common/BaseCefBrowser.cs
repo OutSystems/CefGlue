@@ -26,7 +26,7 @@ namespace Xilium.CefGlue.Common
             }
 
             _logger = new Logger(nameof(BaseCefBrowser));
-            _adapter = new CommonBrowserAdapter(this, nameof(BaseCefBrowser), _logger);
+            _adapter = CommonBrowserAdapter.CreateInstance(this, nameof(BaseCefBrowser), _logger);
         }
 
         ~BaseCefBrowser()
@@ -46,11 +46,6 @@ namespace Xilium.CefGlue.Common
         }
 
         #endregion
-
-        /// <summary>
-        /// Allows the browser background to be transparent.
-        /// </summary>
-        protected virtual bool AllowsTransparency => false;
 
         /// <summary>
         /// Creates the instance of the popup control that will host the browser popups.
@@ -373,8 +368,7 @@ namespace Xilium.CefGlue.Common
             {
                 var control = CreateControl();
                 var popup = CreatePopup();
-                _adapter.CreateBrowser(x, y, width, height, control, popup, AllowsTransparency);
-                
+                _adapter.CreateBrowser(x, y, width, height, control, popup);
             }
         }
     }

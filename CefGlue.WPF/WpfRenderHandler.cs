@@ -6,7 +6,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Xilium.CefGlue.Common.Helpers;
-using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.WPF
 {
@@ -24,7 +23,7 @@ namespace Xilium.CefGlue.WPF
 
         public Image Image { get; }
 
-        public bool AllowsTransparency { get; set; } = true;
+        public override bool AllowsTransparency => true;
 
         private PixelFormat PixelFormat => AllowsTransparency ? PixelFormats.Bgra32 : PixelFormats.Bgr32;
 

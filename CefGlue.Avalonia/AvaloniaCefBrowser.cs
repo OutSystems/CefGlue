@@ -41,7 +41,7 @@ namespace Xilium.CefGlue.Avalonia
 
         internal override Common.Platform.IControl CreateControl()
         {
-            return new AvaloniaControl(this, null);
+            return new AvaloniaControl(this);
         }
 
         internal override IPopup CreatePopup()
@@ -50,7 +50,7 @@ namespace Xilium.CefGlue.Avalonia
             {
                 PlacementTarget = this
             };
-            return new AvaloniaPopup(popup, null);
+            return new AvaloniaPopup(popup);
         }
     }
 }

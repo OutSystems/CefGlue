@@ -1,24 +1,11 @@
 using System;
 using Xilium.CefGlue.Common.Handlers;
-using Xilium.CefGlue.Common.Platform;
 
 namespace Xilium.CefGlue.Common
 {
     internal interface ICefBrowserHost
     {
-        void GetViewRect(out CefRectangle rect);
-        void GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY);
-        void GetScreenInfo(CefScreenInfo screenInfo);
-
-        void HandlePopupShow(bool show);
-        void HandlePopupSizeChange(CefRectangle rect);
-
-        void HandleViewPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects, bool isPopup);
-        
-        void HandleCursorChange(IntPtr cursorHandle);
-
         void HandleBrowserCreated(CefBrowser browser);
-
         void HandleBrowserDestroyed(CefBrowser browser);
 
         void HandleAddressChange(CefBrowser browser, CefFrame frame, string url);
@@ -31,9 +18,6 @@ namespace Xilium.CefGlue.Common
         void HandleLoadEnd(CefBrowser browser, CefFrame frame, int httpStatusCode);
         void HandleLoadError(CefBrowser browser, CefFrame frame, CefErrorCode errorCode, string errorText, string failedUrl);
         void HandleLoadingStateChange(CefBrowser browser, bool isLoading, bool canGoBack, bool canGoForward);
-
-        void HandleStartDragging(CefBrowser browser, CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y);
-        void HandleUpdateDragCursor(CefBrowser browser, CefDragOperationsMask operation);
 
         void HandleOpenContextMenu(CefContextMenuParams parameters, CefMenuModel model, CefRunContextMenuCallback callback);
         void HandleCloseContextMenu();

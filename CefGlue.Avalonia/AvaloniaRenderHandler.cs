@@ -32,6 +32,8 @@ namespace Xilium.CefGlue.Avalonia
 
         public Image Image { get; }
 
+        public override bool AllowsTransparency => false;
+
         protected override int BytesPerPixel => 4;
 
         protected override int RenderedHeight => _bitmap?.PixelSize.Height ?? 0;

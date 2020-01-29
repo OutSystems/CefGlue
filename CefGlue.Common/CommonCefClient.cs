@@ -7,26 +7,26 @@ namespace Xilium.CefGlue.Common
 {
     internal sealed class CommonCefClient : CefClient
     {
-        private readonly CommonCefLifeSpanHandler _lifeSpanHandler;
-        private readonly CommonCefDisplayHandler _displayHandler;
-        private readonly CommonCefRenderHandler _renderHandler;
-        private readonly CommonCefLoadHandler _loadHandler;
-        private readonly CommonCefContextMenuHandler _contextMenuHandler;
+        private readonly CefLifeSpanHandler _lifeSpanHandler;
+        private readonly CefDisplayHandler _displayHandler;
+        private readonly CefRenderHandler _renderHandler;
+        private readonly CefLoadHandler _loadHandler;
+        private readonly CefContextMenuHandler _contextMenuHandler;
         private readonly ICefBrowserHost _owner;
 
         private readonly MessageDispatcher _messageDispatcher = new MessageDispatcher();
 
-        public CommonCefClient(ICefBrowserHost owner, ILogger logger)
+        public CommonCefClient(ICefBrowserHost owner, CefRenderHandler renderHandler, ILogger logger)
         {
             if (owner == null)
             {
                 throw new ArgumentNullException("owner");
             }
 
-            _owner = owner; 
+            _owner = owner;
+            _renderHandler = renderHandler;
             _lifeSpanHandler = new CommonCefLifeSpanHandler(owner);
             _displayHandler = new CommonCefDisplayHandler(owner);
-            _renderHandler = new CommonCefRenderHandler(owner, logger);
             _loadHandler = new CommonCefLoadHandler(owner);
             _contextMenuHandler = new CommonCefContextMenuHandler(owner);
         }

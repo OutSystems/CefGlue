@@ -5,10 +5,10 @@ namespace Xilium.CefGlue.Common.InternalHandlers
 {
     internal sealed class CommonCefRenderHandler : CefRenderHandler
     {
-        private readonly ICefBrowserHost _owner;
+        private readonly IOffscreenCefBrowserHost _owner;
         private readonly ILogger _logger;
 
-        public CommonCefRenderHandler(ICefBrowserHost owner, ILogger logger)
+        public CommonCefRenderHandler(IOffscreenCefBrowserHost owner, ILogger logger)
         {
             if (owner == null)
             {
