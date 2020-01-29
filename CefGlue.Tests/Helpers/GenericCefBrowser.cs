@@ -1,4 +1,5 @@
 using Xilium.CefGlue.Common;
+using Xilium.CefGlue.Common.Platform;
 
 namespace CefGlue.Tests.Helpers
 {
@@ -7,7 +8,7 @@ namespace CefGlue.Tests.Helpers
 
         public GenericCefBrowser()
         {
-            CreateOrUpdateBrowser(0, 0,100, 100);
+            CreateOrUpdateBrowser(0, 0, 100, 100);
             UnhandledException += GenericCefBrowser_UnhandledException;
         }
 
@@ -16,9 +17,14 @@ namespace CefGlue.Tests.Helpers
             throw new System.NotImplementedException();
         }
 
-        internal override CommonBrowserAdapter CreateAdapter()
+        internal override IControl CreateControl()
         {
-            return new CommonBrowserAdapter(this, nameof(GenericCefBrowser), new DummyControl(), new DummyPopup(), new DummyLogger());
+            return new DummyControl();
+        }
+
+        internal override IPopup CreatePopup()
+        {
+            return new DummyPopup();
         }
     }
 }

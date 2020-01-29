@@ -18,10 +18,8 @@ namespace Xilium.CefGlue.Common
         private readonly object _eventsEmitter;
         private readonly string _name;
         private readonly ILogger _logger;
-        private readonly IControl _control;
-        private readonly IPopup _popup;
 
-        private bool _browserCreated;
+        private bool _allowsTransparency;
 
         private string _initialUrl = DefaultUrl;
         private string _title;
@@ -34,27 +32,24 @@ namespace Xilium.CefGlue.Common
         private JavascriptExecutionEngine _javascriptExecutionEngine;
         private NativeObjectMethodDispatcher _objectMethodDispatcher;
         private BaseBrowserSurface _browserSurface;
+        private IControl _control;
+        private IPopup _popup;
 
         private BuiltInRenderHandler _controlRenderHandler;
         private BuiltInRenderHandler _popupRenderHandler;
 
         private readonly NativeObjectRegistry _objectRegistry = new NativeObjectRegistry();
 
-        public CommonBrowserAdapter(object eventsEmitter, string name, IControl control, IPopup popup, ILogger logger)
+        public CommonBrowserAdapter(object eventsEmitter, string name, ILogger logger)
         {
             _eventsEmitter = eventsEmitter;
             _name = name;
-            _control = control;
-            _popup = popup;
             _logger = logger;
 
             if (_logger.IsInfoEnabled)
             {
                 _logger.Info($"Browser adapter created (Id:{GetHashCode()}");
             }
-
-            control.ScreenInfoChanged += HandleScreenInfoChanged;
-            control.VisibilityChanged += HandleVisibilityChanged;
         }
 
         ~CommonBrowserAdapter()
@@ -118,8 +113,6 @@ namespace Xilium.CefGlue.Common
 
         public string Address { get => _browser?.GetMainFrame().Url ?? _initialUrl; set => NavigateTo(value); }
 
-        public bool AllowsTransparency { get; set; } = false;
-
         #region Cef Handlers
 
         public ContextMenuHandler ContextMenuHandler { get; set; }
@@ -136,6 +129,8 @@ namespace Xilium.CefGlue.Common
         public JSDialogHandler JSDialogHandler { get; set; }
 
         #endregion
+
+        public bool IsBrowserCreated { get; private set; }
 
         public bool IsInitialized => _browser != null;
 
@@ -168,7 +163,7 @@ namespace Xilium.CefGlue.Common
                 {
                     _initialUrl = url;
 
-                    if (_browserCreated)
+                    if (IsBrowserCreated)
                     {
                         // browser was already created, but not completely initialized, we have to queue url load
                         void OnBrowserInitialized()
@@ -435,18 +430,35 @@ namespace Xilium.CefGlue.Common
             });
         }
 
-        public void CreateOrUpdateBrowser(int x, int y, int newWidth, int newHeight)
+        public void CreateBrowser(int x, int y, int newWidth, int newHeight, IControl control, IPopup popup, bool allowsTransparency)
+        {
+            _control = control;
+            _popup = popup;
+            _allowsTransparency = allowsTransparency;
+            
+            CreateOrUpdateBrowser(x, y, newWidth, newHeight);
+        }
+
+        public void UpdateBrowser(int x, int y, int newWidth, int newHeight)
+        {
+            CreateOrUpdateBrowser(x, y, newWidth, newHeight);
+        }
+
+        private void CreateOrUpdateBrowser(int x, int y, int newWidth, int newHeight)
         {
             _logger.Debug($"Browser resized {newWidth}x{newHeight}");
 
             if (newWidth > 0 && newHeight > 0)
             {
-                if (!_browserCreated)
+                if (!IsBrowserCreated)
                 {
-                    _browserCreated = true;
+                    IsBrowserCreated = true;
 
                     AttachEventHandlers(_control);
                     AttachEventHandlers(_popup);
+
+                    _control.ScreenInfoChanged += HandleScreenInfoChanged;
+                    _control.VisibilityChanged += HandleVisibilityChanged;
 
                     var windowInfo = CefWindowInfo.Create();
                     if (CefRuntimeLoader.IsOSREnabled)
@@ -459,7 +471,7 @@ namespace Xilium.CefGlue.Common
 
                         // Find the window that's hosting us
                         var windowHandle = _control.GetHostWindowHandle() ?? IntPtr.Zero;
-                        windowInfo.SetAsWindowless(windowHandle, AllowsTransparency);
+                        windowInfo.SetAsWindowless(windowHandle, _allowsTransparency);
                     }
                     else
                     {

@@ -4,8 +4,8 @@ using System;
 
 namespace Xilium.CefGlue.Common
 {
-    partial class BaseCefBrowser : ContentControl, IStyleable
+    partial class BaseCefBrowser : NativeControlHost, IStyleable
     {
-        Type IStyleable.StyleKey => typeof(ContentControl);
+        Type IStyleable.StyleKey => typeof(NativeControlHost);
     }
 }

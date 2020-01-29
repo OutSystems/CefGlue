@@ -60,47 +60,47 @@ namespace Xilium.CefGlue.Common.Platform
         public BrowserWindowsSurface(IntPtr windowHandle)
         {
             // prevent parent window from drawing over browser
-            const uint WS_CLIPCHILDREN = 0x02000000;
-            ModifyStyle(windowHandle, 0, WS_CLIPCHILDREN);
+            //const uint WS_CLIPCHILDREN = 0x02000000;
+            //ModifyStyle(windowHandle, 0, WS_CLIPCHILDREN);
         }
 
         public override void Hide()
         {
-            const int SW_HIDE = 0;
+            //const int SW_HIDE = 0;
 
-            if (_browserHost != null)
-            {
-                ShowWindow(_browserHost.GetWindowHandle(), SW_HIDE);
-            }
+            //if (_browserHost != null)
+            //{
+            //    ShowWindow(_browserHost.GetWindowHandle(), SW_HIDE);
+            //}
         }
 
         public override bool MoveAndResize(int x, int y, int width, int height)
         {
             _viewRect = new CefRectangle(x, y, width, height);
-            if (_browserHost != null)
-            {
-                MoveWindow(_browserHost.GetWindowHandle(), x, y, width, height, false);
-            }
+            //if (_browserHost != null)
+            //{
+            //    MoveWindow(_browserHost.GetWindowHandle(), x, y, width, height, false);
+            //}
 
             return true;
         }
 
         public override void Show()
         {
-            const int SW_SHOW = 5;
-            if (_browserHost != null)
-            {
-                ShowWindow(_browserHost.GetWindowHandle(), SW_SHOW);
-            }
+            //const int SW_SHOW = 5;
+            //if (_browserHost != null)
+            //{
+            //    ShowWindow(_browserHost.GetWindowHandle(), SW_SHOW);
+            //}
         }
 
         public override void SetBrowserHost(CefBrowserHost browserHost)
         {
             base.SetBrowserHost(browserHost);
-            if (_viewRect.Width > 0 && _viewRect.Height > 0)
-            {
-                MoveWindow(_browserHost.GetWindowHandle(), _viewRect.X, _viewRect.Y, _viewRect.Width, _viewRect.Height, false);
-            }
+            //if (_viewRect.Width > 0 && _viewRect.Height > 0)
+            //{
+            //    MoveWindow(_browserHost.GetWindowHandle(), _viewRect.X, _viewRect.Y, _viewRect.Width, _viewRect.Height, false);
+            //}
 
         }
 

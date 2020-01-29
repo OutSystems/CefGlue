@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Xilium.CefGlue.Common;
+using Xilium.CefGlue.Common.Platform;
 using Xilium.CefGlue.WPF.Platform;
 
 namespace Xilium.CefGlue.WPF
@@ -20,22 +21,7 @@ namespace Xilium.CefGlue.WPF
             LayoutUpdated += OnLayoutUpdated;
         }
 
-        internal override CommonBrowserAdapter CreateAdapter()
-        {
-            var controlAdapter = new WpfControl(this);
-
-            var popup = new Popup
-            {
-                PlacementTarget = this,
-                Placement = PlacementMode.Relative,
-            };
-
-            var popupAdapter = new WpfPopup(popup);
-
-            var adapter = new CommonBrowserAdapter(this, nameof(WpfCefBrowser), controlAdapter, popupAdapter, _logger);
-            adapter.AllowsTransparency = true;
-            return adapter;
-        }
+        protected override bool AllowsTransparency => true;
 
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
@@ -57,6 +43,22 @@ namespace Xilium.CefGlue.WPF
             CreateOrUpdateBrowser(RenderSize);
         }
 
+        internal override IControl CreateControl()
+        {
+            return new WpfControl(this);
+        }
+
+        internal override IPopup CreatePopup()
+        {
+            var popup = new Popup
+            {
+                PlacementTarget = this,
+                Placement = PlacementMode.Relative,
+            };
+
+            return new WpfPopup(popup);
+        }
+
         private void CreateOrUpdateBrowser(Size size)
         {
             if (IsVisible)
@@ -64,7 +66,7 @@ namespace Xilium.CefGlue.WPF
                 var root = PresentationSource.FromVisual(this)?.RootVisual;
                 if (root != null)
                 {
-                    var position = TransformToAncestor(root).Transform(new Point());
+                    var position = TransformToAncestor(root).Transform(new System.Windows.Point());
                     CreateOrUpdateBrowser((int)position.X, (int)position.Y, (int)size.Width, (int)size.Height);
                 }
             }

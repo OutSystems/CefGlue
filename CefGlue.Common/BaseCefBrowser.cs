@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Handlers;
 using Xilium.CefGlue.Common.Helpers.Logger;
+using Xilium.CefGlue.Common.Platform;
 
 namespace Xilium.CefGlue.Common
 {
@@ -25,7 +26,7 @@ namespace Xilium.CefGlue.Common
             }
 
             _logger = new Logger(nameof(BaseCefBrowser));
-            _adapter = CreateAdapter();
+            _adapter = new CommonBrowserAdapter(this, nameof(BaseCefBrowser), _logger);
         }
 
         ~BaseCefBrowser()
@@ -47,10 +48,21 @@ namespace Xilium.CefGlue.Common
         #endregion
 
         /// <summary>
-        /// Creates an instance of the browser adapter.
+        /// Allows the browser background to be transparent.
+        /// </summary>
+        protected virtual bool AllowsTransparency => false;
+
+        /// <summary>
+        /// Creates the instance of the popup control that will host the browser popups.
         /// </summary>
         /// <returns></returns>
-        internal abstract CommonBrowserAdapter CreateAdapter();
+        internal abstract IPopup CreatePopup();
+
+        /// <summary>
+        /// Creates the instance of the control that will host the browser.
+        /// </summary>
+        /// <returns></returns>
+        internal abstract IControl CreateControl();
 
         /// <summary>
         /// Event fired when the browser is initialized.
@@ -181,11 +193,6 @@ namespace Xilium.CefGlue.Common
         /// Gets or set the url.
         /// </summary>
         public string Address { get => _adapter.Address; set => _adapter.Address = value; }
-
-        /// <summary>
-        /// Allows the browser background to be transparent.
-        /// </summary>
-        public bool AllowsTransparency { get => _adapter.AllowsTransparency; set => _adapter.AllowsTransparency = value; }
 
         /// <summary>
         /// Returns true when the underlying browser has been initialized.
@@ -358,7 +365,17 @@ namespace Xilium.CefGlue.Common
 
         protected void CreateOrUpdateBrowser(int x, int y, int width, int height)
         {
-            _adapter.CreateOrUpdateBrowser(x, y, width, height);
+            if (_adapter.IsBrowserCreated)
+            {
+                _adapter.UpdateBrowser(x, y, width, height);
+            }
+            else
+            {
+                var control = CreateControl();
+                var popup = CreatePopup();
+                _adapter.CreateBrowser(x, y, width, height, control, popup, AllowsTransparency);
+                
+            }
         }
     }
 }

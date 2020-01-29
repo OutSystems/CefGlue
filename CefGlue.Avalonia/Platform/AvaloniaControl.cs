@@ -26,6 +26,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
         private const int MouseWheelDelta = 100;
 
         private readonly Control _control;
+        private readonly IPlatformHandle _handle;
 
         private IDisposable _windowStateChangedObservable;
 
@@ -35,14 +36,14 @@ namespace Xilium.CefGlue.Avalonia.Platform
         private Cursor currentDragCursor;
         private Cursor previousCursor;
 
-        public AvaloniaControl(Control control, Action<Image> setContent)
+        public AvaloniaControl(Control control, IPlatformHandle handle, Action<Image> setContent)
         {
+            _control = control;
+            _handle = handle;
             _setContent = setContent;
 
             control.AttachedToVisualTree += OnAttachedToVisualTree;
             control.DetachedFromVisualTree += OnDetachedFromVisualTree;
-
-            _control = control;
         }
 
         private void AttachInputEvents(Control control)
@@ -191,23 +192,23 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 }
                 return parentWnd.PlatformImpl.Handle.Handle;
             }
-
+            
             return null;
         }
 
         public override IntPtr? GetHostViewHandle()
         {
-            var parentWnd = _control.GetVisualRoot() as Window;
-            if (parentWnd != null)
-            {
-                if (parentWnd.PlatformImpl.Handle is IMacOSTopLevelPlatformHandle macOSHandle)
-                {
-                    return macOSHandle.GetNSViewRetained();
-                }
-                return parentWnd.PlatformImpl.Handle.Handle;
-            }
+            //var parentWnd = _control.GetVisualRoot() as Window;
+            //if (parentWnd != null)
+            //{
+            //    if (parentWnd.PlatformImpl.Handle is IMacOSTopLevelPlatformHandle macOSHandle)
+            //    {
+            //        return macOSHandle.GetNSViewRetained();
+            //    }
+            //    return parentWnd.PlatformImpl.Handle.Handle;
+            //}
 
-            return null;
+            return _handle.Handle;
         }
 
         public override void SetCursor(IntPtr cursorHandle)
