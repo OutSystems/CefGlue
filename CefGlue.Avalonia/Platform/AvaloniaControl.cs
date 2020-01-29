@@ -25,22 +25,19 @@ namespace Xilium.CefGlue.Avalonia.Platform
         // TODO avalonia: get value from OS
         private const int MouseWheelDelta = 100;
 
-        private readonly Control _control;
+        private readonly ContentControl _control;
         private readonly IPlatformHandle _handle;
 
         private IDisposable _windowStateChangedObservable;
-
-        private Action<Image> _setContent;
 
         private PointerPressedEventArgs lastPointerEvent;
         private Cursor currentDragCursor;
         private Cursor previousCursor;
 
-        public AvaloniaControl(Control control, IPlatformHandle handle, Action<Image> setContent)
+        public AvaloniaControl(ContentControl control, IPlatformHandle handle)
         {
             _control = control;
             _handle = handle;
-            _setContent = setContent;
 
             control.AttachedToVisualTree += OnAttachedToVisualTree;
             control.DetachedFromVisualTree += OnDetachedFromVisualTree;
@@ -192,23 +189,23 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 }
                 return parentWnd.PlatformImpl.Handle.Handle;
             }
-            
+
             return null;
         }
 
         public override IntPtr? GetHostViewHandle()
         {
-            //var parentWnd = _control.GetVisualRoot() as Window;
-            //if (parentWnd != null)
-            //{
-            //    if (parentWnd.PlatformImpl.Handle is IMacOSTopLevelPlatformHandle macOSHandle)
-            //    {
-            //        return macOSHandle.GetNSViewRetained();
-            //    }
-            //    return parentWnd.PlatformImpl.Handle.Handle;
-            //}
+            var parentWnd = _control.GetVisualRoot() as Window;
+            if (parentWnd != null)
+            {
+                if (parentWnd.PlatformImpl.Handle is IMacOSTopLevelPlatformHandle macOSHandle)
+                {
+                    return macOSHandle.GetNSViewRetained();
+                }
+                return parentWnd.PlatformImpl.Handle.Handle;
+            }
 
-            return _handle.Handle;
+            return null;
         }
 
         public override void SetCursor(IntPtr cursorHandle)
@@ -341,8 +338,16 @@ namespace Xilium.CefGlue.Avalonia.Platform
         {
             var image = CreateImage();
             AttachInputEvents(_control);
-            _setContent(image);
+            _control.Content = image;
             return new AvaloniaRenderHandler(image);
+        }
+
+        public override void InitializeRender(IntPtr browserHandle)
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                _control.Content = new ExtendedAvaloniaNativeControlHost(browserHandle);
+            });
         }
 
         /// <summary>

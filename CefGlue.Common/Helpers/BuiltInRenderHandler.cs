@@ -1,7 +1,6 @@
 using System;
 using System.IO.MemoryMappedFiles;
 using System.Threading.Tasks;
-using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.Common.Helpers
 {

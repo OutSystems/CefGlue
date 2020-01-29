@@ -1,7 +1,6 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Platform;
 using Avalonia.VisualTree;
 using Xilium.CefGlue.Avalonia.Platform;
 using Xilium.CefGlue.Common;
@@ -14,8 +13,6 @@ namespace Xilium.CefGlue.Avalonia
     /// </summary>
     public class AvaloniaCefBrowser : BaseCefBrowser
     {
-        private IPlatformHandle _handle;
-
         static AvaloniaCefBrowser()
         {
             if (CefRuntime.Platform == CefRuntimePlatform.MacOSX && !CefRuntimeLoader.IsLoaded) { 
@@ -44,17 +41,7 @@ namespace Xilium.CefGlue.Avalonia
 
         internal override Common.Platform.IControl CreateControl()
         {
-            if (_handle == null)
-            {
-                throw new InvalidOperationException("Handle should not be null");
-            }
-
-            return new AvaloniaControl(this, _handle, image =>
-            {
-                LogicalChildren.Add(image);
-                VisualChildren.Add(image);
-                InvalidateArrange();
-            });
+            return new AvaloniaControl(this, null);
         }
 
         internal override IPopup CreatePopup()
@@ -63,21 +50,7 @@ namespace Xilium.CefGlue.Avalonia
             {
                 PlacementTarget = this
             };
-            return new AvaloniaPopup(popup, _handle);
-        }
-
-        protected override IPlatformHandle CreateNativeControlCore(IPlatformHandle handle)
-        {
-            _handle = handle;
-            var bounds = TransformedBounds.Value.Bounds;
-            CreateOrUpdateBrowser((int) bounds.X, (int) bounds.Y, (int) bounds.Width, (int) bounds.Height);
-
-            return base.CreateNativeControlCore(handle);
-        }
-
-        protected override void DestroyNativeControlCore(IPlatformHandle control)
-        {
-            // TODO
+            return new AvaloniaPopup(popup, null);
         }
     }
 }

@@ -12,6 +12,8 @@ namespace Xilium.CefGlue.Common.Platform
 
         public abstract BuiltInRenderHandler CreateRenderHandler();
 
+        public abstract void InitializeRender(IntPtr browserHandle);
+
         public abstract Point PointToScreen(Point point, float deviceScaleFactor);
 
         public abstract IntPtr? GetHostWindowHandle();

@@ -480,7 +480,7 @@ namespace Xilium.CefGlue.Common
                         switch (CefRuntime.Platform)
                         {
                             case CefRuntimePlatform.Windows:
-                                _browserSurface = new BrowserWindowsSurface(viewHandle);
+                                _browserSurface = new BrowserWindowsSurface(viewHandle, _control);
                                 break;
 
                             case CefRuntimePlatform.MacOSX:

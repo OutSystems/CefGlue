@@ -56,9 +56,11 @@ namespace Xilium.CefGlue.Common.Platform
         }
 
         private CefRectangle _viewRect;
+        private IControl _control;
 
-        public BrowserWindowsSurface(IntPtr windowHandle)
+        public BrowserWindowsSurface(IntPtr windowHandle, IControl control)
         {
+            _control = control;
             // prevent parent window from drawing over browser
             //const uint WS_CLIPCHILDREN = 0x02000000;
             //ModifyStyle(windowHandle, 0, WS_CLIPCHILDREN);
@@ -97,6 +99,7 @@ namespace Xilium.CefGlue.Common.Platform
         public override void SetBrowserHost(CefBrowserHost browserHost)
         {
             base.SetBrowserHost(browserHost);
+            _control.InitializeRender(browserHost.GetWindowHandle());
             //if (_viewRect.Width > 0 && _viewRect.Height > 0)
             //{
             //    MoveWindow(_browserHost.GetWindowHandle(), _viewRect.X, _viewRect.Y, _viewRect.Width, _viewRect.Height, false);

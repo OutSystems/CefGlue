@@ -42,5 +42,7 @@ namespace Xilium.CefGlue.Common.Platform
         void UpdateDragCursor(CefDragOperationsMask allowedOps);
 
         BuiltInRenderHandler CreateRenderHandler();
+
+        void InitializeRender(IntPtr browserHandle);
     }
 }
