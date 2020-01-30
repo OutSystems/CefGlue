@@ -9,7 +9,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
     /// <summary>
     /// The Avalonia popup control wrapper.
     /// </summary>
-    internal class AvaloniaPopup : AvaloniaControl, IPopup
+    internal class AvaloniaPopup : AvaloniaOffScreenControlHost, IOffScreenPopupHost
     {
         private readonly ExtendedAvaloniaPopup _popup;
 

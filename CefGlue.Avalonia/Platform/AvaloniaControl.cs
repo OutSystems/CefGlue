@@ -1,182 +1,36 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
-using Avalonia.Interactivity;
-using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Xilium.CefGlue.Common.Helpers;
-using Xilium.CefGlue.Common.Platform;
-using AvaloniaPoint = Avalonia.Point;
-using Point = Xilium.CefGlue.Common.Platform.Point;
 
 namespace Xilium.CefGlue.Avalonia.Platform
 {
     /// <summary>
     /// The Avalonia control wrapper.
     /// </summary>
-    internal class AvaloniaControl : UIControl
+    internal class AvaloniaControl : Common.Platform.IControl
     {
-        // TODO avalonia: get value from OS
-        private const int MouseWheelDelta = 100;
+        protected readonly ContentControl _control;
 
-        private readonly ContentControl _control;
-
-        private IDisposable _windowStateChangedObservable;
-
-        private PointerPressedEventArgs lastPointerEvent;
-        private Cursor currentDragCursor;
-        private Cursor previousCursor;
+        public event Action<CefSize> SizeChanged;
 
         public AvaloniaControl(ContentControl control)
         {
             _control = control;
 
-            control.AttachedToVisualTree += OnAttachedToVisualTree;
-            control.DetachedFromVisualTree += OnDetachedFromVisualTree;
+            _control.LayoutUpdated += OnLayoutUpdated;
         }
 
-        private void AttachInputEvents(Control control)
+        private void OnLayoutUpdated(object sender, EventArgs e)
         {
-            DragDrop.SetAllowDrop(control, true);
-
-            control.GotFocus += delegate { TriggerGotFocus(); };
-            control.LostFocus += delegate { TriggerLostFocus(); };
-
-            control.PointerMoved += (sender, arg) => TriggerMouseMoved(arg.AsCefMouseEvent(MousePositionReferential));
-            control.PointerLeave += (sender, arg) => TriggerMouseLeave(arg.AsCefMouseEvent(MousePositionReferential));
-
-            control.PointerPressed += (sender, arg) =>
-            {
-                lastPointerEvent = arg;
-                var button = arg.AsCefMouseButtonType();
-                TriggerMouseButtonPressed(this, arg.AsCefMouseEvent(MousePositionReferential), button, arg.ClickCount);
-                if (button == CefMouseButtonType.Left)
-                {
-                    arg.Pointer.Capture(control);
-                }
-            };
-            control.PointerReleased += (sender, arg) =>
-            {
-                var button = arg.AsCefMouseButtonType();
-                TriggerMouseButtonReleased(arg.AsCefMouseEvent(MousePositionReferential), button);
-                if (button == CefMouseButtonType.Left)
-                {
-                    arg.Pointer.Capture(null);
-                }
-            };
-            control.PointerWheelChanged += (sender, arg) => TriggerMouseWheelChanged(arg.AsCefMouseEvent(MousePositionReferential), (int)arg.Delta.X * MouseWheelDelta, (int)arg.Delta.Y * MouseWheelDelta);
-
-            void OnDragEnter(object _, DragEventArgs arg)
-            {
-                previousCursor = _control.Cursor;
-                TriggerDragEnter(arg.AsCefMouseEvent(MousePositionReferential), arg.GetDragData(), arg.DragEffects.AsCefDragOperationsMask());
-            }
-
-            void OnDragLeave(object _, RoutedEventArgs arg)
-            {
-                TriggerDragLeave();
-            }
-
-            void OnDragOver(object _, DragEventArgs arg)
-            {
-                TriggerDragOver(arg.AsCefMouseEvent(MousePositionReferential), arg.DragEffects.AsCefDragOperationsMask());
-                _control.Cursor = currentDragCursor;
-            }
-
-            void OnDrop(object _, DragEventArgs arg)
-            {
-                _control.Cursor = previousCursor; // restore cursor
-                TriggerDrop(arg.AsCefMouseEvent(MousePositionReferential), arg.DragEffects.AsCefDragOperationsMask());
-            }
-
-            control.AddHandler(DragDrop.DragEnterEvent, OnDragEnter);
-            control.AddHandler(DragDrop.DragLeaveEvent, OnDragLeave);
-            control.AddHandler(DragDrop.DragOverEvent, OnDragOver);
-            control.AddHandler(DragDrop.DropEvent, OnDrop);
-
-            control.KeyDown += (sender, arg) =>
-            {
-                bool handled;
-                TriggerKeyDown(arg.AsCefKeyEvent(false), out handled);
-
-                var key = arg.Key;
-                if (key == Key.Tab  // Avoid tabbing out the web browser control
-                    || key == Key.Home || key == Key.End // Prevent keyboard navigation using home and end keys
-                    || key == Key.Up || key == Key.Down || key == Key.Left || key == Key.Right // Prevent keyboard navigation using arrows
-                )
-                {
-                    handled = true;
-                }
-
-                arg.Handled = handled;
-            };
-            control.KeyUp += (sender, arg) =>
-            {
-                bool handled;
-                TriggerKeyUp(arg.AsCefKeyEvent(true), out handled);
-                arg.Handled = handled;
-            };
-
-            control.TextInput += (sender, arg) =>
-            {
-                bool handled;
-                TriggerTextInput(arg.Text, out handled);
-                arg.Handled = handled;
-            };
+            SizeChanged?.Invoke(new CefSize((int)_control.Bounds.Width, (int)_control.Bounds.Height));
         }
 
-        private void OnDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
-        {
-            lastPointerEvent = null;
-            previousCursor = null;
-            currentDragCursor = null;
-            _windowStateChangedObservable?.Dispose();
-            TriggerVisibilityChanged(false);
-        }
-
-        private void OnAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
-        {
-            TriggerVisibilityChanged(true);
-            if (e.Root is Window newWindow)
-            {
-                _windowStateChangedObservable = newWindow.GetPropertyChangedObservable(Window.WindowStateProperty).Subscribe(OnHostWindowStateChanged);
-            }
-        }
-
-        private void OnHostWindowStateChanged(AvaloniaPropertyChangedEventArgs e)
-        {
-            switch ((WindowState)e.NewValue)
-            {
-                case WindowState.Normal:
-                case WindowState.Maximized:
-                    TriggerVisibilityChanged(_control.IsEffectivelyVisible);
-                    break;
-
-                case WindowState.Minimized:
-                    TriggerVisibilityChanged(false);
-                    break;
-            }
-        }
-
-        protected virtual IVisual MousePositionReferential => _control;
-
-        public override Point PointToScreen(Point point, float deviceScaleFactor)
-        {
-            var screenCoordinates = _control.PointToScreen(new AvaloniaPoint(point.X, point.Y));
-
-            var result = new Point(0, 0);
-            result.X = screenCoordinates.X;
-            result.Y = screenCoordinates.Y;
-            return result;
-        }
-
-        public override IntPtr? GetHostWindowHandle()
+        public virtual IntPtr? GetHostViewHandle()
         {
             var parentWnd = _control.GetVisualRoot() as Window;
             if (parentWnd != null)
@@ -191,53 +45,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             return null;
         }
 
-        public override IntPtr? GetHostViewHandle()
-        {
-            var parentWnd = _control.GetVisualRoot() as Window;
-            if (parentWnd != null)
-            {
-                if (parentWnd.PlatformImpl.Handle is IMacOSTopLevelPlatformHandle macOSHandle)
-                {
-                    return macOSHandle.GetNSViewRetained();
-                }
-                return parentWnd.PlatformImpl.Handle.Handle;
-            }
-
-            return null;
-        }
-
-        public override void SetCursor(IntPtr cursorHandle)
-        {
-            var cursor = CursorsProvider.GetCursorFromHandle(cursorHandle);
-            Dispatcher.UIThread.Post(() => _control.Cursor = cursor);
-        }
-
-        public override void SetTooltip(string text)
-        {
-            // TODO BUG: sometimes the tooltips are left hanging when the user moves the cursor over the tooltip but meanwhile
-            // the tooltip is destroyed
-            Dispatcher.UIThread.Post(
-                () =>
-                {
-                    if (string.IsNullOrEmpty(text))
-                    {
-                        ToolTip.SetIsOpen(_control, false);
-                    }
-                    else
-                    {
-                        ToolTip.SetTip(_control, text);
-                        ToolTip.SetShowDelay(_control, 0);
-                        ToolTip.SetIsOpen(_control, true);
-                    }
-                }, DispatcherPriority.Input);
-        }
-
-        public override void Focus()
-        {
-            _control.Focus();
-        }
-
-        public override void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback)
+        public void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback)
         {
             Dispatcher.UIThread.Post(
                 () =>
@@ -279,7 +87,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 DispatcherPriority.Input);
         }
 
-        public override void CloseContextMenu()
+        public void CloseContextMenu()
         {
             // TODO this is being raised when it shouldn't
             //Dispatcher.UIThread.Post(
@@ -290,57 +98,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             //   DispatcherPriority.Input);
         }
 
-        public override async Task<CefDragOperationsMask> StartDragging(CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y)
-        {
-            var lastPointerEvent = this.lastPointerEvent; // story a copy, since this might be other thread
-            if (lastPointerEvent != null)
-            {
-                var dataObject = new DataObject();
-                dataObject.Set(DataFormats.Text, dragData.FragmentText);
-
-                var result = await Dispatcher.UIThread.InvokeAsync(() => DragDrop.DoDragDrop(lastPointerEvent, dataObject, allowedOps.AsDragDropEffects()));
-                this.lastPointerEvent = null;
-                previousCursor = null;
-                currentDragCursor = null;
-                return result.AsCefDragOperationsMask();
-            }
-            return CefDragOperationsMask.None;
-        }
-
-        public override void UpdateDragCursor(CefDragOperationsMask allowedOps)
-        {
-            StandardCursorType cursorType;
-            switch (allowedOps)
-            {
-                case CefDragOperationsMask.Copy:
-                    cursorType = StandardCursorType.DragCopy;
-                    break;
-
-                case CefDragOperationsMask.Link:
-                    cursorType = StandardCursorType.DragLink;
-                    break;
-
-                case CefDragOperationsMask.Move:
-                    cursorType = StandardCursorType.DragMove;
-                    break;
-
-                default:
-                    cursorType = StandardCursorType.No;
-                    break;
-            }
-
-            currentDragCursor = new Cursor(cursorType);
-        }
-
-        public override BuiltInRenderHandler CreateRenderHandler()
-        {
-            var image = CreateImage();
-            AttachInputEvents(_control);
-            _control.Content = image;
-            return new AvaloniaRenderHandler(image);
-        }
-
-        public override void InitializeRender(IntPtr browserHandle)
+        public void InitializeRender(IntPtr browserHandle)
         {
             Dispatcher.UIThread.Post(() =>
             {
@@ -348,19 +106,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
             });
         }
 
-        /// <summary>
-        /// Create an image that is used to render the browser frame and popups
-        /// </summary>
-        /// <returns></returns>
-        private static Image CreateImage()
-        {
-            return new Image()
-            {
-                Focusable = false,
-                Stretch = Stretch.None,
-                HorizontalAlignment = global::Avalonia.Layout.HorizontalAlignment.Left,
-                VerticalAlignment = global::Avalonia.Layout.VerticalAlignment.Top,
-            };
-        }
+        public virtual void SetTooltip(string text) { }
     }
 }

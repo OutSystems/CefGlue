@@ -12,7 +12,7 @@ namespace Xilium.CefGlue.WPF
     /// <summary>
     /// The WPF builtin render 
     /// </summary>
-    internal class WpfRenderHandler : BuiltInRenderHandler
+    internal class WpfRenderHandler : OffScreenRenderSurface
     {
         private WriteableBitmap _bitmap;
 

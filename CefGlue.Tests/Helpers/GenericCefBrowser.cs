@@ -17,12 +17,12 @@ namespace CefGlue.Tests.Helpers
             throw new System.NotImplementedException();
         }
 
-        internal override IControl CreateControl()
+        internal override IControl CreateOffScreenControlHost()
         {
             return new DummyControl();
         }
 
-        internal override IPopup CreatePopup()
+        internal override IOffScreenPopupHost CreatePopupHost()
         {
             return new DummyPopup();
         }

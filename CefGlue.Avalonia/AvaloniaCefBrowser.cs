@@ -1,7 +1,3 @@
-using System;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.VisualTree;
 using Xilium.CefGlue.Avalonia.Platform;
 using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Platform;
@@ -15,27 +11,9 @@ namespace Xilium.CefGlue.Avalonia
     {
         static AvaloniaCefBrowser()
         {
-            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX && !CefRuntimeLoader.IsLoaded) { 
-                CefRuntimeLoader.Load(new AvaloniaBrowserProcessHandler());
-            }
-        }
-
-        public AvaloniaCefBrowser()
-        {
-            this.GetPropertyChangedObservable(Control.TransformedBoundsProperty).Subscribe(OnTransformedBoundsChanged);
-        }
-
-        private void OnTransformedBoundsChanged(AvaloniaPropertyChangedEventArgs e)
-        {
-            var root = this.GetVisualRoot();
-            if (root != null)
+            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX && !CefRuntimeLoader.IsLoaded)
             {
-                var size = Bounds.Size;
-                var position = this.TranslatePoint(new global::Avalonia.Point(), root);
-                if (position != null)
-                {
-                    CreateOrUpdateBrowser((int)position.Value.X, (int)position.Value.Y, (int)size.Width, (int)size.Height);
-                }
+                CefRuntimeLoader.Load(new AvaloniaBrowserProcessHandler());
             }
         }
 
@@ -44,7 +22,13 @@ namespace Xilium.CefGlue.Avalonia
             return new AvaloniaControl(this);
         }
 
-        internal override IPopup CreatePopup()
+
+        internal override IOffScreenControlHost CreateOffScreenControlHost()
+        {
+            return new AvaloniaOffScreenControlHost(this);
+        }
+
+        internal override IOffScreenPopupHost CreatePopupHost()
         {
             var popup = new ExtendedAvaloniaPopup
             {

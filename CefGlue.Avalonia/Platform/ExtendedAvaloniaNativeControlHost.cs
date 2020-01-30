@@ -17,5 +17,10 @@ namespace Xilium.CefGlue.Avalonia.Platform
         {
             return new PlatformHandle(_browserHandle, "HWND");
         }
+
+        protected override void DestroyNativeControlCore(IPlatformHandle control)
+        {
+            // do nothing
+        }
     }
 }

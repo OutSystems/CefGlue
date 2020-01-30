@@ -6,19 +6,18 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Xilium.CefGlue.Common.Helpers;
-using Xilium.CefGlue.Common.Helpers.Logger;
 
 namespace Xilium.CefGlue.Avalonia
 {
     /// <summary>
-    /// The Avalonia builtin render.
+    /// The Avalonia builtin surface.
     /// </summary>
-    internal class AvaloniaRenderHandler : BuiltInRenderHandler
+    internal class AvaloniaRenderSurface : OffScreenRenderSurface
     {
         private WriteableBitmap _bitmap;
         private IntPtr _destinationBuffer;
 
-        public AvaloniaRenderHandler(Image image)
+        public AvaloniaRenderSurface(Image image)
         {
             Image = image;
         }
@@ -30,7 +29,7 @@ namespace Xilium.CefGlue.Avalonia
             _bitmap = null;
         }
 
-        public Image Image { get; }
+        private Image Image { get; }
 
         public override bool AllowsTransparency => false;
 

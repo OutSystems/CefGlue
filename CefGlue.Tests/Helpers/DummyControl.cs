@@ -9,7 +9,7 @@ namespace CefGlue.Tests.Helpers
 {
     internal class DummyControl : UIControl
     {
-        private class DummyRenderHandler : BuiltInRenderHandler
+        private class DummyRenderHandler : OffScreenRenderSurface
         {
             protected override int BytesPerPixel => throw new NotImplementedException();
 
@@ -73,7 +73,7 @@ namespace CefGlue.Tests.Helpers
             throw new NotImplementedException();
         }
 
-        public override BuiltInRenderHandler CreateRenderHandler()
+        public override OffScreenRenderSurface CreateRenderHandler()
         {
             throw new NotImplementedException();
         }

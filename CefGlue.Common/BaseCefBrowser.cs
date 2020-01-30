@@ -26,7 +26,15 @@ namespace Xilium.CefGlue.Common
             }
 
             _logger = new Logger(nameof(BaseCefBrowser));
-            _adapter = CommonBrowserAdapter.CreateInstance(this, nameof(BaseCefBrowser), _logger);
+
+            if (CefRuntimeLoader.IsOSREnabled)
+            {
+                _adapter = new CommonOffscreenBrowserAdapter(this, nameof(BaseCefBrowser), CreateOffScreenControlHost(), CreatePopupHost(), _logger);
+            } 
+            else
+            {
+                _adapter = new CommonBrowserAdapter(this, nameof(BaseCefBrowser), CreateControl(), _logger);
+            }
         }
 
         ~BaseCefBrowser()
@@ -51,13 +59,19 @@ namespace Xilium.CefGlue.Common
         /// Creates the instance of the popup control that will host the browser popups.
         /// </summary>
         /// <returns></returns>
-        internal abstract IPopup CreatePopup();
+        internal abstract IOffScreenPopupHost CreatePopupHost();
 
         /// <summary>
         /// Creates the instance of the control that will host the browser.
         /// </summary>
         /// <returns></returns>
         internal abstract IControl CreateControl();
+
+        /// <summary>
+        /// Creates the instance of the control that will host the browser in the offscreen mode.
+        /// </summary>
+        /// <returns></returns>
+        internal abstract IOffScreenControlHost CreateOffScreenControlHost();
 
         /// <summary>
         /// Event fired when the browser is initialized.
@@ -356,20 +370,6 @@ namespace Xilium.CefGlue.Common
         public bool IsJavascriptObjectRegistered(string name)
         {
             return _adapter.IsJavascriptObjectRegistered(name);
-        }
-
-        protected void CreateOrUpdateBrowser(int x, int y, int width, int height)
-        {
-            if (_adapter.IsBrowserCreated)
-            {
-                _adapter.UpdateBrowser(x, y, width, height);
-            }
-            else
-            {
-                var control = CreateControl();
-                var popup = CreatePopup();
-                _adapter.CreateBrowser(x, y, width, height, control, popup);
-            }
         }
     }
 }

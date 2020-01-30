@@ -10,7 +10,7 @@ namespace Xilium.CefGlue.WPF.Platform
     /// <summary>
     /// The WPF popup wrapper.
     /// </summary>
-    internal class WpfPopup : WpfControl, IPopup
+    internal class WpfPopup : WpfControl, IOffScreenPopupHost
     {
         private readonly Popup _popup;
 

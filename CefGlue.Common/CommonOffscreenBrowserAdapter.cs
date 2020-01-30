@@ -11,34 +11,37 @@ namespace Xilium.CefGlue.Common
     {
         private bool _isVisible = true;
 
-        private BuiltInRenderHandler _controlRenderHandler;
-        private BuiltInRenderHandler _popupRenderHandler;
-
         private Func<CefRectangle> _getViewRectOverride;
 
-        public CommonOffscreenBrowserAdapter(object eventsEmitter, string name, ILogger logger) 
-            : base(eventsEmitter, name, logger) { }
+        public CommonOffscreenBrowserAdapter(object eventsEmitter, string name, IOffScreenControlHost control, IOffScreenPopupHost popup, ILogger logger) 
+            : base(eventsEmitter, name, control, logger) {
+
+            Popup = popup;
+        }
+
+        protected new IOffScreenControlHost Control => (IOffScreenControlHost) base.Control;
+
+        private IOffScreenPopupHost Popup { get; }
 
         protected override void InnerDispose()
         {
-            _controlRenderHandler?.Dispose();
-            _popupRenderHandler?.Dispose();
+            Control.RenderSurface.Dispose();
+            Popup.RenderSurface.Dispose();
         }
 
-        private int Width => _controlRenderHandler?.Width ?? 0;
-        private int Height => _controlRenderHandler?.Height ?? 0;
-
+        private int Width => Control.RenderSurface.Width;
+        private int Height => Control.RenderSurface.Height;
 
         private void SendMouseClickEvent(CefMouseEvent mouseEvent, CefMouseButtonType mouseButton, bool isMouseUp, int clickCount)
         {
-            _browserHost?.SendMouseClickEvent(mouseEvent, mouseButton, isMouseUp, clickCount);
+            BrowserHost?.SendMouseClickEvent(mouseEvent, mouseButton, isMouseUp, clickCount);
         }
 
         private void HandleGotFocus()
         {
             WithErrorHandling(nameof(HandleGotFocus), () =>
             {
-                _browserHost?.SendFocusEvent(true);
+                BrowserHost?.SendFocusEvent(true);
             });
         }
 
@@ -46,7 +49,7 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleLostFocus), () =>
             { 
-                _browserHost?.SendFocusEvent(false);
+                BrowserHost?.SendFocusEvent(false);
             });
         }
 
@@ -54,7 +57,7 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleMouseMove), () =>
             {
-                _browserHost?.SendMouseMoveEvent(mouseEvent, false);
+                BrowserHost?.SendMouseMoveEvent(mouseEvent, false);
             });
         }
 
@@ -62,16 +65,16 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleMouseLeave), () =>
             {
-                _browserHost?.SendMouseMoveEvent(mouseEvent, true);
+                BrowserHost?.SendMouseMoveEvent(mouseEvent, true);
             });
         }
 
-        private void HandleMouseButtonDown(IControl control, CefMouseEvent mouseEvent, CefMouseButtonType mouseButton, int clickCount)
+        private void HandleMouseButtonDown(IOffScreenControlHost control, CefMouseEvent mouseEvent, CefMouseButtonType mouseButton, int clickCount)
         {
             WithErrorHandling(nameof(HandleMouseButtonDown), () =>
             {
                 control.Focus();
-                if (_browserHost != null)
+                if (BrowserHost != null)
                 {
                     SendMouseClickEvent(mouseEvent, mouseButton, false, clickCount);
                 }
@@ -82,7 +85,7 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleMouseButtonUp), () =>
             {
-                if (_browserHost != null)
+                if (BrowserHost != null)
                 {
                     SendMouseClickEvent(mouseEvent, mouseButton, true, 1);
                 }
@@ -93,7 +96,7 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleMouseWheel), () =>
             {
-                _browserHost?.SendMouseWheelEvent(mouseEvent, deltaX, deltaY);
+                BrowserHost?.SendMouseWheelEvent(mouseEvent, deltaX, deltaY);
             });
         }
 
@@ -103,7 +106,7 @@ namespace Xilium.CefGlue.Common
 
             WithErrorHandling(nameof(HandleMouseWheel), () =>
             {
-                if (_browserHost != null)
+                if (BrowserHost != null)
                 {
                     foreach (var c in text)
                     {
@@ -114,7 +117,7 @@ namespace Xilium.CefGlue.Common
                             Character = c
                         };
 
-                        _browserHost?.SendKeyEvent(keyEvent);
+                        BrowserHost?.SendKeyEvent(keyEvent);
                     }
 
                     _handled = true;
@@ -128,10 +131,10 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleKeyPress), () =>
             {
-                if (_browserHost != null)
+                if (BrowserHost != null)
                 {
                     //_logger.Debug(string.Format("KeyDown: system key {0}, key {1}", arg.SystemKey, arg.Key));
-                    _browserHost?.SendKeyEvent(keyEvent);
+                    BrowserHost?.SendKeyEvent(keyEvent);
                 }
             });
             handled = false;
@@ -141,8 +144,8 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleDragEnter), () =>
             {
-                _browserHost?.DragTargetDragEnter(dragData, mouseEvent, effects);
-                _browserHost?.DragTargetDragOver(mouseEvent, effects);
+                BrowserHost?.DragTargetDragEnter(dragData, mouseEvent, effects);
+                BrowserHost?.DragTargetDragOver(mouseEvent, effects);
             });
         }
 
@@ -150,7 +153,7 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleDragOver), () =>
             {
-                _browserHost?.DragTargetDragOver(mouseEvent, effects);
+                BrowserHost?.DragTargetDragOver(mouseEvent, effects);
             });
 
             // TODO
@@ -162,7 +165,7 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleDragLeave), () =>
             {
-                _browserHost?.DragTargetDragLeave();
+                BrowserHost?.DragTargetDragLeave();
             });
         }
 
@@ -170,8 +173,8 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleDrop), () =>
             {
-                _browserHost?.DragTargetDragOver(mouseEvent, effects);
-                _browserHost?.DragTargetDrop(mouseEvent);
+                BrowserHost?.DragTargetDragOver(mouseEvent, effects);
+                BrowserHost?.DragTargetDrop(mouseEvent);
             });
         }
 
@@ -185,12 +188,12 @@ namespace Xilium.CefGlue.Common
 
             WithErrorHandling(nameof(HandleVisibilityChanged), () =>
             {
-                if (_browserHost != null)
+                if (BrowserHost != null)
                 {
                     _isVisible = isVisible;
                     if (isVisible)
                     {
-                        _browserHost.WasHidden(false);
+                        BrowserHost.WasHidden(false);
 
                         // workaround cef OSR bug (https://bitbucket.org/chromiumembedded/cef/issues/2483/osr-invalidate-does-not-generate-frame)
                         // we notify browser of a resize and return height+1px on next GetViewRect call
@@ -200,16 +203,16 @@ namespace Xilium.CefGlue.Common
                             _getViewRectOverride = () =>
                             {
                                 _getViewRectOverride = null;
-                                _browserHost?.WasResized();
+                                BrowserHost?.WasResized();
                                 return new CefRectangle(0, 0, Width, Height + 1);
                             };
 
-                            _browserHost.WasResized();
+                            BrowserHost.WasResized();
                         }));
                     }
                     else
                     {
-                        _browserHost.WasHidden(true);
+                        BrowserHost.WasHidden(true);
                     }
                 }
             });
@@ -219,9 +222,7 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleScreenInfoChanged), () =>
             {
-                if (_controlRenderHandler != null) {
-                    _controlRenderHandler.DeviceScaleFactor = deviceScaleFactor;
-                }
+                Control.RenderSurface.DeviceScaleFactor = deviceScaleFactor;
 
                 // Might cause a crash due to a SurfaceSync check in chromium code.
                 //
@@ -231,7 +232,19 @@ namespace Xilium.CefGlue.Common
             });
         }
 
-        protected void AttachEventHandlers(IControl control)
+        protected override void HandleControlSizeChanged(CefSize size)
+        {
+            if (IsBrowserCreated)
+            {
+                ResizeBrowser(size.Width, size.Height);
+            }
+            else
+            {
+                CreateBrowser(size.Width, size.Height);
+            }
+        }
+
+        private void AttachEventHandlers(IOffScreenControlHost control)
         {
             control.GotFocus += HandleGotFocus;
             control.LostFocus += HandleLostFocus;
@@ -258,22 +271,18 @@ namespace Xilium.CefGlue.Common
             return new CommonCefClient(this, new CommonCefRenderHandler(this, _logger), _logger);
         }
 
-        protected override void CreateBrowser(CefWindowInfo windowInfo, int x, int y, int newWidth, int newHeight)
+        protected override void SetupBrowserView(CefWindowInfo windowInfo, int width, int height, IntPtr hostViewHandle)
         {
-            AttachEventHandlers(_control);
-            AttachEventHandlers(_popup);
+            AttachEventHandlers(Control);
+            AttachEventHandlers(Popup);
 
-            _control.ScreenInfoChanged += HandleScreenInfoChanged;
-            _control.VisibilityChanged += HandleVisibilityChanged;
+            Control.ScreenInfoChanged += HandleScreenInfoChanged;
+            Control.VisibilityChanged += HandleVisibilityChanged;
 
-            _controlRenderHandler = _control.CreateRenderHandler();
-            _popupRenderHandler = _popup.CreateRenderHandler();
-
-            // TODO _browserSurface?.MoveAndResize(x, y, newWidth, newHeight);
+            Control.RenderSurface.Resize(width, height);
 
             // Find the window that's hosting us
-            var windowHandle = _control.GetHostWindowHandle() ?? IntPtr.Zero;
-            windowInfo.SetAsWindowless(windowHandle, _controlRenderHandler.AllowsTransparency);
+            windowInfo.SetAsWindowless(hostViewHandle, Control.RenderSurface.AllowsTransparency);
         }
 
         protected override void OnBrowserHostCreated(CefBrowserHost browserHost)
@@ -284,27 +293,27 @@ namespace Xilium.CefGlue.Common
             }
         }
 
-        protected override bool ResizeBrowser(int x, int y, int newWidth, int newHeight)
+        protected void ResizeBrowser(int newWidth, int newHeight)
         {
             if (Width == newWidth && Height == newHeight)
             {
-                return false;
+                return;
             }
 
-            _controlRenderHandler.Resize(newWidth, newHeight);
-            _browserHost?.WasResized();
-
-            return true;
+            Control.RenderSurface.Resize(newWidth, newHeight);
+            BrowserHost?.WasResized();
+            
+            _logger.Debug($"Browser resized {newWidth}x{newHeight}");
         }
 
-        #region ICefBrowserHost
+        #region IOffscreenCefBrowserHost
 
         void IOffscreenCefBrowserHost.GetViewRect(out CefRectangle rect)
         {
             rect = GetViewRect();
         }
 
-        protected CefRectangle GetViewRect()
+        private CefRectangle GetViewRect()
         {
             var result = _getViewRectOverride?.Invoke() ?? new CefRectangle(0, 0, Width, Height);
             // The simulated screen and view rectangle are the same. This is necessary
@@ -322,7 +331,7 @@ namespace Xilium.CefGlue.Common
             GetScreenPoint(viewX, viewY, ref screenX, ref screenY);
         }
 
-        protected void GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY)
+        private void GetScreenPoint(int viewX, int viewY, ref int screenX, ref int screenY)
         {
             // TODO
             //var point = new Point(0, 0);
@@ -336,7 +345,7 @@ namespace Xilium.CefGlue.Common
 
         void IOffscreenCefBrowserHost.GetScreenInfo(CefScreenInfo screenInfo)
         {
-            screenInfo.DeviceScaleFactor = _controlRenderHandler.DeviceScaleFactor;
+            screenInfo.DeviceScaleFactor = Control.RenderSurface.DeviceScaleFactor;
         }
 
         void IOffscreenCefBrowserHost.HandlePopupShow(bool show)
@@ -345,11 +354,11 @@ namespace Xilium.CefGlue.Common
             {
                 if (show)
                 {
-                    _popup.Open();
+                    Popup.Open();
                 }
                 else
                 {
-                    _popup.Close();
+                    Popup.Close();
                 }
             });
         }
@@ -358,8 +367,8 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(IOffscreenCefBrowserHost.HandlePopupSizeChange), () =>
             {
-                _popupRenderHandler.Resize(rect.Width, rect.Height);
-                _popup.MoveAndResize(rect.X, rect.Y, rect.Width, rect.Height);
+                Popup.RenderSurface.Resize(rect.Width, rect.Height);
+                Popup.MoveAndResize(rect.X, rect.Y, rect.Width, rect.Height);
             });
         }
 
@@ -367,27 +376,27 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling((nameof(IOffscreenCefBrowserHost.HandleCursorChange)), () =>
             {
-                _control.SetCursor(cursorHandle);
+                Control.SetCursor(cursorHandle);
             });
         }
 
         void IOffscreenCefBrowserHost.HandleViewPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects, bool isPopup)
         {
-            BuiltInRenderHandler renderHandler;
+            OffScreenRenderSurface renderHandler;
             if (isPopup)
             {
-                renderHandler = _popupRenderHandler;
+                renderHandler = Popup.RenderSurface;
             }
             else
             {
-                renderHandler = _controlRenderHandler;
+                renderHandler = Control.RenderSurface;
             }
 
             const string ScopeName = nameof(IOffscreenCefBrowserHost.HandleViewPaint);
 
             WithErrorHandling(ScopeName, () =>
             {
-                renderHandler?.Paint(buffer, width, height, dirtyRects)
+                renderHandler?.Render(buffer, width, height, dirtyRects)
                               .ContinueWith(t => HandleException(ScopeName, t.Exception), TaskContinuationOptions.OnlyOnFaulted);
             });
         }
@@ -396,15 +405,15 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(IOffscreenCefBrowserHost.HandleStartDragging), async () =>
             {
-                var result = await _control.StartDragging(dragData, allowedOps, x, y);
-                _browserHost.DragSourceEndedAt(x, y, result);
-                _browserHost.DragSourceSystemDragEnded();
+                var result = await Control.StartDrag(dragData, allowedOps, x, y);
+                BrowserHost.DragSourceEndedAt(x, y, result);
+                BrowserHost.DragSourceSystemDragEnded();
             });
         }
 
         void IOffscreenCefBrowserHost.HandleUpdateDragCursor(CefBrowser browser, CefDragOperationsMask operation)
         {
-            _control.UpdateDragCursor(operation);
+            Control.UpdateDragCursor(operation);
         }
 
         #endregion

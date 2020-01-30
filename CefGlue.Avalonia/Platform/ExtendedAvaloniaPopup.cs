@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 
 namespace Xilium.CefGlue.Avalonia.Platform
 {

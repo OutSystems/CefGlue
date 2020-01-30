@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 namespace Xilium.CefGlue.Common.Helpers
 {
     /// <summary>
-    /// Builtin render handler that supports rendering into the browser contents into and image.
+    /// Render surface that supports rendering into the browser contents into and image.
     /// </summary>
-    internal abstract class BuiltInRenderHandler : IDisposable
+    internal abstract class OffScreenRenderSurface : IDisposable
     {
         private const int DefaultDpi = 96;
 
@@ -65,7 +65,7 @@ namespace Xilium.CefGlue.Common.Helpers
 
         protected abstract Action BeginBitmapUpdate();
 
-        public Task Paint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
+        public Task Render(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects)
         {
             // When browser size changed - we just skip frame updating.
             // This is dirty precheck to do not do Invoke whenever is possible.
@@ -118,13 +118,13 @@ namespace Xilium.CefGlue.Common.Helpers
                             CreateBitmap(width, height);
                         }
 
-                        InnerPaint(width, height, bytesPerPixel, dirtyRects, imageBuffer.DangerousGetHandle());
+                        InnerRender(width, height, bytesPerPixel, dirtyRects, imageBuffer.DangerousGetHandle());
                     }
                 });
             }
         }
 
-        private void InnerPaint(int browserWidth, int browserHeight, int bytesPerPixel, CefRectangle[] dirtyRects, IntPtr sourceBuffer)
+        private void InnerRender(int browserWidth, int browserHeight, int bytesPerPixel, CefRectangle[] dirtyRects, IntPtr sourceBuffer)
         {
             int stride = browserWidth * bytesPerPixel;
             int sourceBufferSize = stride * browserHeight;

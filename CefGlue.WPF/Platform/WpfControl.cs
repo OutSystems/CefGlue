@@ -343,7 +343,7 @@ namespace Xilium.CefGlue.WPF.Platform
             return new Point(0, 0);
         }
 
-        public override BuiltInRenderHandler CreateRenderHandler()
+        public override OffScreenRenderSurface CreateRenderSurface()
         {
             var image = CreateImage();
             AttachInputEvents(_control);

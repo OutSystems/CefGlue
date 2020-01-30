@@ -41,12 +41,12 @@ namespace Xilium.CefGlue.WPF
             CreateOrUpdateBrowser(RenderSize);
         }
 
-        internal override IControl CreateControl()
+        internal override IControl CreateOffScreenControlHost()
         {
             return new WpfControl(this);
         }
 
-        internal override IPopup CreatePopup()
+        internal override IOffScreenPopupHost CreatePopupHost()
         {
             var popup = new Popup
             {
