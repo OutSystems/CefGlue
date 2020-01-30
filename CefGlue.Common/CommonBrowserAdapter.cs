@@ -68,7 +68,10 @@ namespace Xilium.CefGlue.Common
             if (browserHost != null)
             {
                 BrowserHost = null;
-                browserHost.CloseBrowser(true);
+                if (disposing)
+                {
+                    browserHost.CloseBrowser(true);
+                }
                 browserHost.Dispose();
             }
 
