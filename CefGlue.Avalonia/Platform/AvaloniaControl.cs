@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Platform;
@@ -50,7 +51,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             Dispatcher.UIThread.Post(
                 () =>
                 {
-                    var menu = new ContextMenu();
+                    var menu = new ExtendedAvaloniaContextMenu();
                     var menuItems = new List<TemplatedControl>();
                     menu.Items = menuItems;
 
@@ -83,19 +84,20 @@ namespace Xilium.CefGlue.Avalonia.Platform
                     };
 
                     _control.ContextMenu = menu;
+                    menu.Open(_control, new Point(x, y));
                 },
                 DispatcherPriority.Input);
         }
 
         public void CloseContextMenu()
         {
-            // TODO this is being raised when it shouldn't
-            //Dispatcher.UIThread.Post(
-            //   () =>
-            //   {
-            //       _control.ContextMenu = null;
-            //   },
-            //   DispatcherPriority.Input);
+            Dispatcher.UIThread.Post(
+               () =>
+               {
+                   _control.ContextMenu?.Close();
+                   _control.ContextMenu = null;
+               },
+               DispatcherPriority.Input);
         }
 
         public void InitializeRender(IntPtr browserHandle)
