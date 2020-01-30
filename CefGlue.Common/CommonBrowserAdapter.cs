@@ -286,11 +286,11 @@ namespace Xilium.CefGlue.Common
             return _objectRegistry.Get(name) != null;
         }
 
-        protected void CreateBrowser(int width, int height)
+        protected bool CreateBrowser(int width, int height)
         {
-            if (width <= 0 || height <= 0)
+            if (IsBrowserCreated || width <= 0 || height <= 0)
             {
-                return;
+                return false;
             }
 
             IsBrowserCreated = true;
@@ -305,6 +305,8 @@ namespace Xilium.CefGlue.Common
 
             // This is the first time the window is being rendered, so create it.
             CefBrowserHost.CreateBrowser(windowInfo, cefClient, Settings, _initialUrl);
+
+            return true;
         }
 
         protected virtual CommonCefClient CreateCefClient()
@@ -352,8 +354,11 @@ namespace Xilium.CefGlue.Common
 
         protected virtual void HandleControlSizeChanged(CefSize size)
         {
-            Control.SizeChanged -= HandleControlSizeChanged;
-            CreateBrowser(size.Width, size.Height);
+            var created = CreateBrowser(size.Width, size.Height);
+            if (created)
+            {
+                Control.SizeChanged -= HandleControlSizeChanged;
+            }
         }
 
         private void OnBrowserProcessUnhandledException(MessageReceivedEventArgs e)
