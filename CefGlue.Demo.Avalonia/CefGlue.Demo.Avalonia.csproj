@@ -5,8 +5,12 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Xilium.CefGlue.Demo.Avalonia</AssemblyName>
     <RootNamespace>Xilium.CefGlue.Demo.Avalonia</RootNamespace>
-    <Configurations>Debug;Release</Configurations>
+    <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
     <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_WindowlessRender|AnyCPU'">
+    <DefineConstants>WINDOWLESS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
