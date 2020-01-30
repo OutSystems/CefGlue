@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="0.9.1-cibuild0005718-beta" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.1-cibuild0005722-beta" />
     <PackageReference Include="cef.redist.x64" Version="75.1.14" />
   </ItemGroup>
 

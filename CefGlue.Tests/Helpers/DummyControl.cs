@@ -43,22 +43,22 @@ namespace CefGlue.Tests.Helpers
         }
 
         public event Action<CefSize> SizeChanged;
-        public event Action GotFocus;
-        public event Action LostFocus;
-        public event KeyEventHandler KeyDown;
-        public event KeyEventHandler KeyUp;
-        public event TextInputEventHandler TextInput;
-        public event Action<IOffScreenControlHost, CefMouseEvent, CefMouseButtonType, int> MouseButtonPressed;
-        public event Action<CefMouseEvent, CefMouseButtonType> MouseButtonReleased;
-        public event Action<CefMouseEvent> MouseLeave;
-        public event Action<CefMouseEvent> MouseMoved;
-        public event Action<CefMouseEvent, int, int> MouseWheelChanged;
-        public event Action<CefMouseEvent, CefDragData, CefDragOperationsMask> DragEnter;
-        public event Action<CefMouseEvent, CefDragOperationsMask> DragOver;
-        public event Action DragLeave;
-        public event Action<CefMouseEvent, CefDragOperationsMask> Drop;
-        public event Action<float> ScreenInfoChanged;
-        public event Action<bool> VisibilityChanged;
+        public event Action GotFocus { add { } remove { } }
+        public event Action LostFocus { add { } remove { } }
+        public event KeyEventHandler KeyDown { add { } remove { } }
+        public event KeyEventHandler KeyUp { add { } remove { } }
+        public event TextInputEventHandler TextInput { add { } remove { } }
+        public event Action<IOffScreenControlHost, CefMouseEvent, CefMouseButtonType, int> MouseButtonPressed { add { } remove { } }
+        public event Action<CefMouseEvent, CefMouseButtonType> MouseButtonReleased { add { } remove { } }
+        public event Action<CefMouseEvent> MouseLeave { add { } remove { } }
+        public event Action<CefMouseEvent> MouseMoved { add { } remove { } }
+        public event Action<CefMouseEvent, int, int> MouseWheelChanged { add { } remove { } }
+        public event Action<CefMouseEvent, CefDragData, CefDragOperationsMask> DragEnter { add { } remove { } }
+        public event Action<CefMouseEvent, CefDragOperationsMask> DragOver { add { } remove { } }
+        public event Action DragLeave { add { } remove { } }
+        public event Action<CefMouseEvent, CefDragOperationsMask> Drop { add { } remove { } }
+        public event Action<float> ScreenInfoChanged { add { } remove { } }
+        public event Action<bool> VisibilityChanged { add { } remove { } }
 
         public void Focus()
         {
