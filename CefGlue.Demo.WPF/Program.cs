@@ -1,6 +1,5 @@
 using System;
 using Xilium.CefGlue.Common;
-using Xilium.CefGlue.WPF;
 
 namespace Xilium.CefGlue.Demo.WPF
 {

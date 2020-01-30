@@ -31,7 +31,7 @@ namespace Xilium.CefGlue.Common.Platform
         event Action<bool> VisibilityChanged;
 
         void Focus();
-        Point PointToScreen(Point point, float deviceScaleFactor);
+        CefPoint PointToScreen(CefPoint point, float deviceScaleFactor);
         void SetCursor(IntPtr cursorHandle);
 
         Task<CefDragOperationsMask> StartDrag(CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y);

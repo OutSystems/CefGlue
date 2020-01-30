@@ -10,13 +10,13 @@ using Xilium.CefGlue.Common.Helpers;
 namespace Xilium.CefGlue.WPF
 {
     /// <summary>
-    /// The WPF builtin render 
+    /// The WPF builtin surface 
     /// </summary>
-    internal class WpfRenderHandler : OffScreenRenderSurface
+    internal class WpfRenderSurface : OffScreenRenderSurface
     {
         private WriteableBitmap _bitmap;
 
-        public WpfRenderHandler(Image image)
+        public WpfRenderSurface(Image image)
         {
             Image = image;
         }

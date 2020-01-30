@@ -10,8 +10,6 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
-using AvaloniaPoint = Avalonia.Point;
-using Point = Xilium.CefGlue.Common.Platform.Point;
 
 namespace Xilium.CefGlue.Avalonia.Platform
 {
@@ -215,11 +213,11 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         protected virtual IVisual MousePositionReferential => _control;
 
-        public Point PointToScreen(Point point, float deviceScaleFactor)
+        public CefPoint PointToScreen(CefPoint point, float deviceScaleFactor)
         {
-            var screenCoordinates = _control.PointToScreen(new AvaloniaPoint(point.X, point.Y));
+            var screenCoordinates = _control.PointToScreen(new Point(point.X, point.Y));
 
-            var result = new Point(0, 0);
+            var result = new CefPoint(0, 0);
             result.X = screenCoordinates.X;
             result.Y = screenCoordinates.Y;
             return result;

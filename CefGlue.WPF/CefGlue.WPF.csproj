@@ -76,6 +76,8 @@
     </Compile>
     <Compile Include="Common\BaseCefBrowser.Wpf.cs" />
     <Compile Include="InputExtensions.cs" />
+    <Compile Include="Platform\ExtendedWpfNativeControlHost.cs" />
+    <Compile Include="Platform\WpfOffScreenControlHost.cs" />
     <Compile Include="Platform\WpfPopup.cs" />
     <Compile Include="Platform\WpfControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -92,7 +94,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="WpfCefBrowser.cs" />
-    <Compile Include="WpfRenderHandler.cs" />
+    <Compile Include="WpfRenderSurface.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

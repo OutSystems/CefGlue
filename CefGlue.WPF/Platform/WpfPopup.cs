@@ -10,35 +10,34 @@ namespace Xilium.CefGlue.WPF.Platform
     /// <summary>
     /// The WPF popup wrapper.
     /// </summary>
-    internal class WpfPopup : WpfControl, IOffScreenPopupHost
+    internal class WpfPopup : WpfOffScreenControlHost, IOffScreenPopupHost
     {
-        private readonly Popup _popup;
-
         public WpfPopup(Popup popup) : base(popup)
         {
-            _popup = popup;
         }
 
-        protected override IInputElement MousePositionReferential => _popup.PlacementTarget;
+        private Popup Popup => (Popup) base._control;
 
-        public int Width => (int) _popup.Width;
+        protected override IInputElement MousePositionReferential => Popup.PlacementTarget;
 
-        public int Height => (int)_popup.Height;
+        public int Width => (int)Popup.Width;
 
-        public int OffsetX => (int)_popup.HorizontalOffset;
+        public int Height => (int)Popup.Height;
 
-        public int OffsetY => (int)_popup.VerticalOffset;
+        public int OffsetX => (int)Popup.HorizontalOffset;
+
+        public int OffsetY => (int)Popup.VerticalOffset;
 
         public void MoveAndResize(int x, int y, int width, int height)
         {
-            _popup.Dispatcher.BeginInvoke(
+            Popup.Dispatcher.BeginInvoke(
                 DispatcherPriority.Normal, 
                 new Action(() =>
                 {
-                    _popup.HorizontalOffset = x;
-                    _popup.VerticalOffset = y;
-                    _popup.Width = width;
-                    _popup.Height = height;
+                    Popup.HorizontalOffset = x;
+                    Popup.VerticalOffset = y;
+                    Popup.Width = width;
+                    Popup.Height = height;
                 }));
         }
 
@@ -54,17 +53,17 @@ namespace Xilium.CefGlue.WPF.Platform
 
         private void SetIsOpen(bool isOpen)
         {
-            _popup.Dispatcher.BeginInvoke(
+            Popup.Dispatcher.BeginInvoke(
                 DispatcherPriority.Normal,
                 new Action(() =>
                 {
-                    _popup.IsOpen = isOpen;
+                    Popup.IsOpen = isOpen;
                 }));
         }
 
         protected override void SetContent(Image image)
         {
-            _popup.Child = image;
+            Popup.Child = image;
         }
     }
 }
