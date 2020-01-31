@@ -2,6 +2,7 @@ using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.LogicalTree;
 using Avalonia.Styling;
 
@@ -25,10 +26,14 @@ namespace Xilium.CefGlue.Avalonia.Platform
             if (_position != default)
             {
                 var popup = (Popup)Parent;
-                popup.HorizontalOffset = _position.X;
-                popup.VerticalOffset = _position.Y;
-                popup.PlacementMode = PlacementMode.Left;
+                popup.Opened += OnPopupOpened;
             }
+        }
+
+        private void OnPopupOpened(object sender, EventArgs e)
+        {
+            var popup = (Popup)sender;
+            popup.Host.ConfigurePosition(popup.PlacementTarget, PlacementMode.AnchorAndGravity, _position, PopupPositioningEdge.TopLeft, PopupPositioningEdge.BottomRight);
         }
     }
 }
