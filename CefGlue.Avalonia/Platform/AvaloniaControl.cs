@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Layout;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -15,6 +16,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
     /// </summary>
     internal class AvaloniaControl : Common.Platform.IControl
     {
+        private readonly Control _contextMenuDummyTarget;
+
         protected readonly ContentControl _control;
 
         public event Action<CefSize> SizeChanged;
@@ -22,6 +25,16 @@ namespace Xilium.CefGlue.Avalonia.Platform
         public AvaloniaControl(ContentControl control)
         {
             _control = control;
+
+            _contextMenuDummyTarget = new Control();
+            _contextMenuDummyTarget.Width = 1;
+            _contextMenuDummyTarget.Height = 1;
+            _contextMenuDummyTarget.HorizontalAlignment = HorizontalAlignment.Left;
+            _contextMenuDummyTarget.VerticalAlignment = VerticalAlignment.Top;
+
+            var panel = new Panel();
+            panel.Children.Add(_contextMenuDummyTarget);
+            _control.Content = panel;
 
             _control.LayoutUpdated += OnLayoutUpdated;
         }
@@ -84,7 +97,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
                     };
 
                     _control.ContextMenu = menu;
-                    menu.Open(_control, new Point(x, y));
+                    menu.Open(_contextMenuDummyTarget, new Point(x, y));
                 },
                 DispatcherPriority.Input);
         }
@@ -104,8 +117,13 @@ namespace Xilium.CefGlue.Avalonia.Platform
         {
             Dispatcher.UIThread.Post(() =>
             {
-                _control.Content = new ExtendedAvaloniaNativeControlHost(browserHandle);
+                SetContent(new ExtendedAvaloniaNativeControlHost(browserHandle));
             });
+        }
+
+        protected void SetContent(Control content)
+        {
+            ((Panel)_control.Content).Children.Add(content); 
         }
 
         public virtual void SetTooltip(string text) { }
