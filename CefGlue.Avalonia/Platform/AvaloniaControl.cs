@@ -66,7 +66,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 {
                     var menu = new ExtendedAvaloniaContextMenu();
                     var menuItems = new List<TemplatedControl>();
-                    menu.Items = menuItems;
 
                     foreach (var menuEntry in menuEntries)
                     {
@@ -95,6 +94,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
                         callback.Cancel();
                         _control.ContextMenu = null;
                     };
+
+                    menu.Items = menuItems;
 
                     _control.ContextMenu = menu;
                     menu.Open(_contextMenuDummyTarget, new Point(x, y));
