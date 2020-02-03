@@ -286,7 +286,7 @@ namespace Xilium.CefGlue.Common
             return _objectRegistry.Get(name) != null;
         }
 
-        protected bool CreateBrowser(int width, int height)
+        public bool CreateBrowser(int width, int height, IntPtr? hostViewHandle = null)
         {
             if (IsBrowserCreated || width <= 0 || height <= 0)
             {
@@ -296,7 +296,7 @@ namespace Xilium.CefGlue.Common
             IsBrowserCreated = true;
 
             var windowInfo = CefWindowInfo.Create();
-            var hostViewHandle = Control.GetHostViewHandle();
+            hostViewHandle = hostViewHandle ?? Control.GetHostViewHandle();
             SetupBrowserView(windowInfo, width, height, hostViewHandle ?? IntPtr.Zero);
 
             var cefClient = CreateCefClient();

@@ -371,5 +371,17 @@ namespace Xilium.CefGlue.Common
         {
             return _adapter.IsJavascriptObjectRegistered(name);
         }
+
+        /// <summary>
+        /// Creates the browser (if not created yet) with the specified dimensions.
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="hostViewHandle">Handle of the window that will be hosting the browser</param>
+        /// <returns>True if browser was created, false otherwise.</returns>
+        protected bool CreateBrowser(int width, int height, IntPtr? hostViewHandle = null)
+        {
+            return _adapter.CreateBrowser(width, height, hostViewHandle);
+        }
     }
 }
