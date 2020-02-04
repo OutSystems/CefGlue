@@ -5,6 +5,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using System;
 using System.Collections;
+using Xilium.CefGlue.Common;
 
 namespace Xilium.CefGlue.Demo.Avalonia
 {
@@ -13,6 +14,10 @@ namespace Xilium.CefGlue.Demo.Avalonia
         public MainWindow()
         {
             InitializeComponent();
+
+#if WINDOWLESS
+            Title += " - OSR mode";
+#endif
         }
 
         private void InitializeComponent()

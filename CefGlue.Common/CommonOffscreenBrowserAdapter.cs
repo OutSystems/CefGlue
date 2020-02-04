@@ -224,6 +224,7 @@ namespace Xilium.CefGlue.Common
             {
                 Control.RenderSurface.DeviceScaleFactor = deviceScaleFactor;
 
+                BrowserHost?.WasResized();
                 // Might cause a crash due to a SurfaceSync check in chromium code.
                 //
                 // Fixed in chromium versions >= 79.0.3909.0 (https://chromium-review.googlesource.com/c/chromium/src/+/1792459)
