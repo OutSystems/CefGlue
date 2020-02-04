@@ -1,9 +1,6 @@
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.VisualTree;
-using System;
 using Xilium.CefGlue.Avalonia.Platform;
 using Xilium.CefGlue.Common;
+using Xilium.CefGlue.Common.Platform;
 
 namespace Xilium.CefGlue.Avalonia
 {
@@ -14,44 +11,30 @@ namespace Xilium.CefGlue.Avalonia
     {
         static AvaloniaCefBrowser()
         {
-            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX && !CefRuntimeLoader.IsLoaded) { 
+            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX && !CefRuntimeLoader.IsLoaded)
+            {
                 CefRuntimeLoader.Load(new AvaloniaBrowserProcessHandler());
             }
         }
 
-        public AvaloniaCefBrowser()
+        internal override Common.Platform.IControl CreateControl()
         {
-            this.GetPropertyChangedObservable(Control.TransformedBoundsProperty).Subscribe(OnTransformedBoundsChanged);
+            return new AvaloniaControl(this);
         }
 
-        private void OnTransformedBoundsChanged(AvaloniaPropertyChangedEventArgs e)
+
+        internal override IOffScreenControlHost CreateOffScreenControlHost()
         {
-            var root = this.GetVisualRoot();
-            if (root != null)
-            {
-                var size = Bounds.Size;
-                var position = this.TranslatePoint(new Point(), root);
-                if (position != null)
-                {
-                    CreateOrUpdateBrowser((int)position.Value.X, (int)position.Value.Y, (int)size.Width, (int)size.Height);
-                }
-            }
+            return new AvaloniaOffScreenControlHost(this);
         }
 
-        internal override CommonBrowserAdapter CreateAdapter()
+        internal override IOffScreenPopupHost CreatePopupHost()
         {
-            var controlAdapter = new AvaloniaControl(this, image =>
-            {
-                Content = image;
-            });
-
             var popup = new ExtendedAvaloniaPopup
             {
                 PlacementTarget = this
             };
-            var popupAdapter = new AvaloniaPopup(popup);
-
-            return new CommonBrowserAdapter(this, nameof(AvaloniaCefBrowser), controlAdapter, popupAdapter, _logger);
+            return new AvaloniaPopup(popup);
         }
     }
 }

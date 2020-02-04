@@ -9,11 +9,11 @@ namespace Xilium.CefGlue.Avalonia.Platform
     /// <summary>
     /// The Avalonia popup control wrapper.
     /// </summary>
-    internal class AvaloniaPopup : AvaloniaControl, IPopup
+    internal class AvaloniaPopup : AvaloniaOffScreenControlHost, IOffScreenPopupHost
     {
         private readonly ExtendedAvaloniaPopup _popup;
 
-        public AvaloniaPopup(ExtendedAvaloniaPopup popup) : base(popup, image => popup.Content = image)
+        public AvaloniaPopup(ExtendedAvaloniaPopup popup) : base(popup)
         {
             _popup = popup;
         }
@@ -24,9 +24,9 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public int Height => (int)_popup.Height;
 
-        public int OffsetX => (int)_popup.Position.X;
+        public int OffsetX => _popup.Position.X;
 
-        public int OffsetY => (int)_popup.Position.Y;
+        public int OffsetY => _popup.Position.Y;
 
         public void MoveAndResize(int x, int y, int width, int height)
         {

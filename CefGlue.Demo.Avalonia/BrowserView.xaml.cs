@@ -37,7 +37,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
         private void OnBrowserLoadStart(object sender, Common.Events.LoadStartEventArgs e)
         {
-            if (!e.Frame.IsMain)
+            if (e.Frame.Browser.IsPopup || !e.Frame.IsMain)
             {
                 return;
             }

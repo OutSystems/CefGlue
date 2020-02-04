@@ -35,3 +35,4 @@ NuGet/output/
 =======
 packages/
 >>>>>>> master
+CefGlue.Demo.Avalonia/Properties/launchSettings.json

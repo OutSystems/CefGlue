@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Handlers;
 using Xilium.CefGlue.Common.Helpers.Logger;
+using Xilium.CefGlue.Common.Platform;
 
 namespace Xilium.CefGlue.Common
 {
@@ -25,7 +26,15 @@ namespace Xilium.CefGlue.Common
             }
 
             _logger = new Logger(nameof(BaseCefBrowser));
-            _adapter = CreateAdapter();
+
+            if (CefRuntimeLoader.IsOSREnabled)
+            {
+                _adapter = new CommonOffscreenBrowserAdapter(this, nameof(BaseCefBrowser), CreateOffScreenControlHost(), CreatePopupHost(), _logger);
+            } 
+            else
+            {
+                _adapter = new CommonBrowserAdapter(this, nameof(BaseCefBrowser), CreateControl(), _logger);
+            }
         }
 
         ~BaseCefBrowser()
@@ -47,10 +56,22 @@ namespace Xilium.CefGlue.Common
         #endregion
 
         /// <summary>
-        /// Creates an instance of the browser adapter.
+        /// Creates the instance of the popup control that will host the browser popups.
         /// </summary>
         /// <returns></returns>
-        internal abstract CommonBrowserAdapter CreateAdapter();
+        internal abstract IOffScreenPopupHost CreatePopupHost();
+
+        /// <summary>
+        /// Creates the instance of the control that will host the browser.
+        /// </summary>
+        /// <returns></returns>
+        internal abstract IControl CreateControl();
+
+        /// <summary>
+        /// Creates the instance of the control that will host the browser in the offscreen mode.
+        /// </summary>
+        /// <returns></returns>
+        internal abstract IOffScreenControlHost CreateOffScreenControlHost();
 
         /// <summary>
         /// Event fired when the browser is initialized.
@@ -181,11 +202,6 @@ namespace Xilium.CefGlue.Common
         /// Gets or set the url.
         /// </summary>
         public string Address { get => _adapter.Address; set => _adapter.Address = value; }
-
-        /// <summary>
-        /// Allows the browser background to be transparent.
-        /// </summary>
-        public bool AllowsTransparency { get => _adapter.AllowsTransparency; set => _adapter.AllowsTransparency = value; }
 
         /// <summary>
         /// Returns true when the underlying browser has been initialized.
@@ -356,9 +372,16 @@ namespace Xilium.CefGlue.Common
             return _adapter.IsJavascriptObjectRegistered(name);
         }
 
-        protected void CreateOrUpdateBrowser(int x, int y, int width, int height)
+        /// <summary>
+        /// Creates the browser (if not created yet) with the specified dimensions.
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="hostViewHandle">Handle of the window that will be hosting the browser</param>
+        /// <returns>True if browser was created, false otherwise.</returns>
+        protected bool CreateBrowser(int width, int height, IntPtr? hostViewHandle = null)
         {
-            _adapter.CreateOrUpdateBrowser(x, y, width, height);
+            return _adapter.CreateBrowser(width, height, hostViewHandle);
         }
     }
 }

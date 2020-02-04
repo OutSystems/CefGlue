@@ -1,6 +1,5 @@
 using System;
 using Xilium.CefGlue.Common;
-using Xilium.CefGlue.WPF;
 
 namespace Xilium.CefGlue.Demo.WPF
 {
@@ -11,7 +10,11 @@ namespace Xilium.CefGlue.Demo.WPF
         {
             var settings = new CefSettings()
             {
+#if WINDOWLESS
                 WindowlessRenderingEnabled = true
+#else
+                WindowlessRenderingEnabled = false
+#endif
             };
             CefRuntimeLoader.Initialize(settings);
 

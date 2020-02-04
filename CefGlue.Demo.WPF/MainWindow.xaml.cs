@@ -13,6 +13,10 @@ namespace Xilium.CefGlue.Demo.WPF
         {
             InitializeComponent();
             CreateNewTab();
+
+#if WINDOWLESS
+            Title += " - OSR mode";
+#endif
         }
 
         private BrowserView ActiveBrowserView => (BrowserView) tabControl.SelectedContent;

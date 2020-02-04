@@ -3,7 +3,7 @@ using Xilium.CefGlue.Common.Platform;
 
 namespace CefGlue.Tests.Helpers
 {
-    internal class DummyPopup : DummyControl, IPopup
+    internal class DummyPopup : DummyControl, IOffScreenPopupHost
     {
         public int Width => throw new NotImplementedException();
 
