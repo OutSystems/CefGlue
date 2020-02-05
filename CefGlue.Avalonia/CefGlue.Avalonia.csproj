@@ -8,18 +8,6 @@
     <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>AVALONIA</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_WindowlessRender|AnyCPU'">
-    <DefineConstants>AVALONIA</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>AVALONIA</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="..\CefGlue.Common\BaseCefBrowser.cs" Link="Common\BaseCefBrowser.cs" />
   </ItemGroup>
