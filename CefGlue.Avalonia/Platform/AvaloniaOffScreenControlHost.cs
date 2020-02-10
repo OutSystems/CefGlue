@@ -230,7 +230,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             {
                 if (parentWnd.PlatformImpl.Handle is IMacOSTopLevelPlatformHandle macOSHandle)
                 {
-                    return macOSHandle.GetNSViewRetained();
+                    return macOSHandle.GetNSWindowRetained();
                 }
                 return parentWnd.PlatformImpl.Handle.Handle;
             }
