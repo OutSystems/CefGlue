@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Avalonia.Input;
 
@@ -9,7 +10,7 @@ namespace Xilium.CefGlue.Avalonia
     /// </summary>
     internal class CursorsProvider
     {
-        private static Dictionary<IntPtr, Cursor> _cache = new Dictionary<IntPtr, Cursor>();
+        private static IDictionary<IntPtr, Cursor> _cache = new ConcurrentDictionary<IntPtr, Cursor>();
 
         static CursorsProvider()
         {

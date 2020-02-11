@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -155,10 +156,15 @@ namespace Xilium.CefGlue.Common.Helpers
         {
             if (!_typeListConstructorCache.TryGetValue(expectedType, out var listContructor))
             {
-                listContructor = InnerGetListConstructor(expectedType);
-                _typeListConstructorCache[expectedType] = listContructor;
+                lock (_typeListConstructorCache)
+                {
+                    if (!_typeListConstructorCache.TryGetValue(expectedType, out listContructor))
+                    {
+                        listContructor = InnerGetListConstructor(expectedType);
+                        _typeListConstructorCache[expectedType] = listContructor;
+                    }
+                }
             }
-
             return listContructor;
         }
 
@@ -201,10 +207,15 @@ namespace Xilium.CefGlue.Common.Helpers
         {
             if (!_typeMembersCache.TryGetValue(type, out var members))
             {
-                members = InnerCollectMembers(type).ToArray();
-                _typeMembersCache[type] = members;
+                lock (_typeMembersCache)
+                {
+                    if (!_typeMembersCache.TryGetValue(type, out members))
+                    {
+                        members = InnerCollectMembers(type).ToArray();
+                        _typeMembersCache[type] = members;
+                    }
+                }
             }
-
             return members;
         }
 
