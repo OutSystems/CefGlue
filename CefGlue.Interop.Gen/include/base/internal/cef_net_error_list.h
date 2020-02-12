@@ -536,10 +536,8 @@ NET_ERROR(CERTIFICATE_TRANSPARENCY_REQUIRED, -214)
 // https://g.co/chrome/symantecpkicerts
 NET_ERROR(CERT_SYMANTEC_LEGACY, -215)
 
-// The certificate presented on a QUIC connection does not chain to a known root
-// and the origin connected to is not on a list of domains where unknown roots
-// are allowed.
-NET_ERROR(QUIC_CERT_ROOT_NOT_KNOWN, -216)
+// -216 was QUIC_CERT_ROOT_NOT_KNOWN which has been renumbered to not be in the
+// certificate error range.
 
 // Add new certificate error codes here.
 //
@@ -780,6 +778,11 @@ NET_ERROR(HTTP2_PUSHED_RESPONSE_DOES_NOT_MATCH, -378)
 // response itself. URLRequest for instance just passes most non-2xx
 // response back as success.
 NET_ERROR(HTTP_RESPONSE_CODE_FAILURE, -379)
+
+// The certificate presented on a QUIC connection does not chain to a known root
+// and the origin connected to is not on a list of domains where unknown roots
+// are allowed.
+NET_ERROR(QUIC_CERT_ROOT_NOT_KNOWN, -380)
 
 // The cache does not have the requested entry.
 NET_ERROR(CACHE_MISS, -400)

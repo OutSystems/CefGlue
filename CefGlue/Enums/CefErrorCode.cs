@@ -1,4 +1,4 @@
-﻿//
+//
 // This file manually written from cef/include/base/internal/cef_net_error_list.h.
 // C API name: cef_errorcode_t.
 //
@@ -758,12 +758,8 @@ namespace Xilium.CefGlue
         /// </summary>
         CERT_SYMANTEC_LEGACY = -215,
 
-        /// <summary>
-        /// The certificate presented on a QUIC connection does not chain to a known root
-        /// and the origin connected to is not on a list of domains where unknown roots
-        /// are allowed.
-        /// </summary>
-        QUIC_CERT_ROOT_NOT_KNOWN = -216,
+        // -216 was QUIC_CERT_ROOT_NOT_KNOWN which has been renumbered to not be in the
+        // certificate error range.
 
         // Add new certificate error codes here.
         //
@@ -1126,6 +1122,13 @@ namespace Xilium.CefGlue
         /// response back as success.
         /// </summary>
         HTTP_RESPONSE_CODE_FAILURE = -379,
+
+        /// <summary>
+        /// The certificate presented on a QUIC connection does not chain to a known root
+        /// and the origin connected to is not on a list of domains where unknown roots
+        /// are allowed.
+        /// </summary>
+        QUIC_CERT_ROOT_NOT_KNOWN = -380,
 
         /// <summary>
         /// The cache does not have the requested entry.
