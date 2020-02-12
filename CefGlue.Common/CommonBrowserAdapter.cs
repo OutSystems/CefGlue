@@ -293,10 +293,15 @@ namespace Xilium.CefGlue.Common
                 return false;
             }
 
+            hostViewHandle = hostViewHandle ?? Control.GetHostViewHandle();
+            if (hostViewHandle == null)
+            {
+                return false;
+            }
+
             IsBrowserCreated = true;
 
             var windowInfo = CefWindowInfo.Create();
-            hostViewHandle = hostViewHandle ?? Control.GetHostViewHandle();
             SetupBrowserView(windowInfo, width, height, hostViewHandle ?? IntPtr.Zero);
 
             var cefClient = CreateCefClient();

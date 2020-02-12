@@ -225,17 +225,12 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public override IntPtr? GetHostViewHandle()
         {
-            var parentWnd = _control.GetVisualRoot() as Window;
-            if (parentWnd != null)
+            var platformHandle = GetPlatformHandle();
+            if (platformHandle is IMacOSTopLevelPlatformHandle macOSHandle)
             {
-                if (parentWnd.PlatformImpl.Handle is IMacOSTopLevelPlatformHandle macOSHandle)
-                {
-                    return macOSHandle.GetNSWindowRetained();
-                }
-                return parentWnd.PlatformImpl.Handle.Handle;
+                return macOSHandle.GetNSWindowRetained();
             }
-
-            return null;
+            return platformHandle?.Handle;
         }
 
         public void SetCursor(IntPtr cursorHandle)

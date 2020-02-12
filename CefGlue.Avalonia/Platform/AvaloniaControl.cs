@@ -44,19 +44,19 @@ namespace Xilium.CefGlue.Avalonia.Platform
             SizeChanged?.Invoke(new CefSize((int)_control.Bounds.Width, (int)_control.Bounds.Height));
         }
 
+        protected IPlatformHandle GetPlatformHandle()
+        {
+            return (_control.GetVisualRoot() as Window)?.PlatformImpl.Handle;
+        }
+
         public virtual IntPtr? GetHostViewHandle()
         {
-            var parentWnd = _control.GetVisualRoot() as Window;
-            if (parentWnd != null)
+            var platformHandle = GetPlatformHandle();
+            if (platformHandle is IMacOSTopLevelPlatformHandle macOSHandle)
             {
-                if (parentWnd.PlatformImpl.Handle is IMacOSTopLevelPlatformHandle macOSHandle)
-                {
-                    return macOSHandle.GetNSViewRetained();
-                }
-                return parentWnd.PlatformImpl.Handle.Handle;
+                return macOSHandle.GetNSViewRetained();
             }
-
-            return null;
+            return platformHandle?.Handle;
         }
 
         public void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback)
