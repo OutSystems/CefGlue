@@ -60,6 +60,8 @@ namespace CefGlue.Tests.Helpers
         public event Action<float> ScreenInfoChanged { add { } remove { } }
         public event Action<bool> VisibilityChanged { add { } remove { } }
 
+        public void Dispose() { }
+
         public void Focus()
         {
             throw new NotImplementedException();

@@ -16,7 +16,10 @@ namespace Xilium.CefGlue.Avalonia.Platform
     /// </summary>
     internal class AvaloniaControl : Common.Platform.IControl
     {
+        private static IntPtr? _dummyHostView;
+
         private readonly Control _contextMenuDummyTarget;
+        private IntPtr? _browserHandle;
 
         protected readonly ContentControl _control;
 
@@ -39,6 +42,15 @@ namespace Xilium.CefGlue.Avalonia.Platform
             _control.LayoutUpdated += OnLayoutUpdated;
         }
 
+        public void Dispose()
+        {
+            if (_browserHandle != null)
+            {
+                NativeExtensions.objc_release(_browserHandle.Value);
+                _browserHandle = null;
+            }
+        }
+
         private void OnLayoutUpdated(object sender, EventArgs e)
         {
             SizeChanged?.Invoke(new CefSize((int)_control.Bounds.Width, (int)_control.Bounds.Height));
@@ -51,12 +63,18 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public virtual IntPtr? GetHostViewHandle()
         {
-            var platformHandle = GetPlatformHandle();
-            if (platformHandle is IMacOSTopLevelPlatformHandle macOSHandle)
+            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
             {
-                return macOSHandle.GetNSViewRetained();
+                if (_dummyHostView == null)
+                {
+                    // create a dummy nsview to host all browsers
+                    var nsViewClass = NativeExtensions.objc_getClass("NSView");
+                    var nsViewType = NativeExtensions.objc_msgSend(nsViewClass, NativeExtensions.sel_registerName("alloc"));
+                    _dummyHostView = NativeExtensions.objc_msgSend(nsViewType, NativeExtensions.sel_registerName("init"));
+                }
+                return _dummyHostView.Value;
             }
-            return platformHandle?.Handle;
+            return GetPlatformHandle()?.Handle;
         }
 
         public void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback)
@@ -116,9 +134,24 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public void InitializeRender(IntPtr browserHandle)
         {
+            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
+            {
+                // must retain the browser handle, as long as the browser lives, otherwise seg faults might occur
+                NativeExtensions.objc_retain(browserHandle);
+            }
             Dispatcher.UIThread.Post(() =>
             {
-                SetContent(new ExtendedAvaloniaNativeControlHost(browserHandle));
+                var nativeHost = new ExtendedAvaloniaNativeControlHost(browserHandle);
+
+                if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
+                {
+                    // workaround, otherwise on osx the browser starts with screen size
+                    var width = _control.Bounds.Width;
+                    nativeHost.Width = width + 1;
+                    DispatcherTimer.RunOnce(() => nativeHost.Width = double.NaN, TimeSpan.FromMilliseconds(1));
+                }
+
+                SetContent(nativeHost);
             });
         }
 

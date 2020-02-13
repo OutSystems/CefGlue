@@ -26,6 +26,8 @@ namespace Xilium.CefGlue.WPF.Platform
             control.LayoutUpdated += OnControlLayoutUpdated;
         }
 
+        public void Dispose() { }
+
         private void OnControlLayoutUpdated(object sender, EventArgs e)
         {
             SizeChanged?.Invoke(new CefSize((int)_control.RenderSize.Width, (int)_control.RenderSize.Height));
