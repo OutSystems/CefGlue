@@ -228,7 +228,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             var platformHandle = GetPlatformHandle();
             if (platformHandle is IMacOSTopLevelPlatformHandle macOSHandle)
             {
-                return macOSHandle.GetNSWindowRetained();
+                return macOSHandle.GetNSWindowRetained(); // TODO mem leak?
             }
             return platformHandle?.Handle;
         }
