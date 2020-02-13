@@ -64,6 +64,8 @@ namespace Xilium.CefGlue.Common
                 _logger.Info($"Browser adapter disposed (Id:{GetHashCode()}");
             }
 
+            Control.Dispose();
+
             var browserHost = BrowserHost;
             if (browserHost != null)
             {
