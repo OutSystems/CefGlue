@@ -13,7 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.9.3-cibuild0005872-beta" />
+    <PackageReference Include="Avalonia" Version="0.9.3-cibuild0005960-beta" />
+    <PackageReference Include="MonoMac.NetStandard" Version="0.0.4" />
   </ItemGroup>
 
   <ItemGroup>

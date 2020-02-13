@@ -7,6 +7,7 @@ using Avalonia.Layout;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using MonoMac.AppKit;
 using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Avalonia.Platform
@@ -17,6 +18,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
     internal class AvaloniaControl : Common.Platform.IControl
     {
         private readonly Control _contextMenuDummyTarget;
+        private object _dummyHostView;
+        private object _dummyBrowserView;
 
         protected readonly ContentControl _control;
 
@@ -51,12 +54,17 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public virtual IntPtr? GetHostViewHandle()
         {
-            var platformHandle = GetPlatformHandle();
-            if (platformHandle is IMacOSTopLevelPlatformHandle macOSHandle)
+            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
             {
-                return macOSHandle.GetNSViewRetained();
+                NSView nativeView = null;
+                if (_dummyHostView == null)
+                {
+                    nativeView = new NSView();
+                    _dummyHostView = nativeView; // store a ref
+                }
+                return nativeView.Handle;
             }
-            return platformHandle?.Handle;
+            return GetPlatformHandle()?.Handle;
         }
 
         public void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback)
@@ -118,7 +126,9 @@ namespace Xilium.CefGlue.Avalonia.Platform
         {
             Dispatcher.UIThread.Post(() =>
             {
-                SetContent(new ExtendedAvaloniaNativeControlHost(browserHandle));
+                var browserView = new NSView(browserHandle);
+                _dummyBrowserView = browserView; // store a ref 
+                SetContent(new ExtendedAvaloniaNativeControlHost(browserView.Handle));
             });
         }
 
