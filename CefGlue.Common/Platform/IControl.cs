@@ -4,7 +4,7 @@ using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Common.Platform
 {
-    internal interface IControl
+    internal interface IControl : IDisposable
     {
         event Action<CefSize> SizeChanged;
 
