@@ -139,7 +139,20 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 // must retain the browser handle, as long as the browser lives, otherwise seg faults might occur
                 NativeExtensions.objc_retain(browserHandle);
             }
-            Dispatcher.UIThread.Post(() => SetContent(new ExtendedAvaloniaNativeControlHost(browserHandle)));
+            Dispatcher.UIThread.Post(() =>
+            {
+                var nativeHost = new ExtendedAvaloniaNativeControlHost(browserHandle);
+
+                if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
+                {
+                    // workaround, otherwise on osx the browser starts with screen size
+                    var width = _control.Bounds.Width;
+                    nativeHost.Width = width + 1;
+                    DispatcherTimer.RunOnce(() => nativeHost.Width = double.NaN, TimeSpan.FromMilliseconds(1));
+                }
+
+                SetContent(nativeHost);
+            });
         }
 
         protected void SetContent(Control content)
