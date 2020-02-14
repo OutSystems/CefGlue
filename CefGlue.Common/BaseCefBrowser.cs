@@ -377,11 +377,10 @@ namespace Xilium.CefGlue.Common
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        /// <param name="hostViewHandle">Handle of the window that will be hosting the browser</param>
         /// <returns>True if browser was created, false otherwise.</returns>
-        protected bool CreateBrowser(int width, int height, IntPtr? hostViewHandle = null)
+        protected bool CreateBrowser(int width, int height)
         {
-            return _adapter.CreateBrowser(width, height, hostViewHandle);
+            return _adapter.CreateBrowser(width, height);
         }
     }
 }

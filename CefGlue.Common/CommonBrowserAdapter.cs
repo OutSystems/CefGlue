@@ -288,14 +288,14 @@ namespace Xilium.CefGlue.Common
             return _objectRegistry.Get(name) != null;
         }
 
-        public bool CreateBrowser(int width, int height, IntPtr? hostViewHandle = null)
+        public bool CreateBrowser(int width, int height)
         {
             if (IsBrowserCreated || width <= 0 || height <= 0)
             {
                 return false;
             }
 
-            hostViewHandle = hostViewHandle ?? Control.GetHostViewHandle();
+            var hostViewHandle = Control.GetHostViewHandle();
             if (hostViewHandle == null)
             {
                 return false;

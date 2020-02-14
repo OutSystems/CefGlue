@@ -44,7 +44,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
         public event Action<float> ScreenInfoChanged;
         public event Action<bool> VisibilityChanged;
 
-        public AvaloniaOffScreenControlHost(ContentControl control) : base(control)
+        public AvaloniaOffScreenControlHost(ContentControl control, Func<Window> getHostingWindow) : base(control, getHostingWindow)
         {
             DragDrop.SetAllowDrop(control, true);
 

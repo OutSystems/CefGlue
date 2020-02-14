@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -13,7 +14,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
     {
         private readonly ExtendedAvaloniaPopup _popup;
 
-        public AvaloniaPopup(ExtendedAvaloniaPopup popup) : base(popup)
+        public AvaloniaPopup(ExtendedAvaloniaPopup popup, Func<Window> getHostingWindow) : base(popup, getHostingWindow)
         {
             _popup = popup;
         }

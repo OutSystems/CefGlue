@@ -6,7 +6,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Platform;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Avalonia.Platform
@@ -20,14 +19,16 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         private readonly Control _contextMenuDummyTarget;
         private IntPtr? _browserHandle;
+        private Func<Window> _getHostingWindow;
 
         protected readonly ContentControl _control;
 
         public event Action<CefSize> SizeChanged;
 
-        public AvaloniaControl(ContentControl control)
+        public AvaloniaControl(ContentControl control, Func<Window> getHostingWindow)
         {
             _control = control;
+            _getHostingWindow = getHostingWindow;
 
             _contextMenuDummyTarget = new Control();
             _contextMenuDummyTarget.Width = 1;
@@ -58,7 +59,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         protected IPlatformHandle GetPlatformHandle()
         {
-            return (_control.GetVisualRoot() as Window)?.PlatformImpl.Handle;
+            return _getHostingWindow()?.PlatformImpl.Handle;
         }
 
         public virtual IntPtr? GetHostViewHandle()
