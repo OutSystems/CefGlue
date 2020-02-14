@@ -146,10 +146,15 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
                 if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
                 {
-                    // workaround, otherwise on osx the browser starts with screen size
-                    var width = _control.Bounds.Width;
-                    nativeHost.Width = width + 1;
-                    DispatcherTimer.RunOnce(() => nativeHost.Width = double.NaN, TimeSpan.FromMilliseconds(1));
+                    // in osx we need to force an extra update, otherwise the browser will have wrong dimensions when initialized
+                    IDisposable observable = null;
+                    void UpdateNativeControlBounds(AvaloniaPropertyChangedEventArgs e)
+                    {
+                        observable.Dispose();
+                        nativeHost.TryUpdateNativeControlPosition();
+                    }
+
+                    observable = nativeHost.GetPropertyChangedObservable(Control.TransformedBoundsProperty).Subscribe(UpdateNativeControlBounds);
                 }
 
                 SetContent(nativeHost);
