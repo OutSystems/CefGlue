@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.9.3-cibuild0005989-beta" />
+    <PackageReference Include="Avalonia" Version="0.9.3-cibuild0006018-beta" />
   </ItemGroup>
 
   <ItemGroup>
