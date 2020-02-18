@@ -45,11 +45,11 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public void Dispose()
         {
-            if (_browserHandle != null)
+            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX && _browserHandle != null)
             {
-                NativeExtensions.objc_release(_browserHandle.Value);
-                _browserHandle = null;
+                NativeExtensions.OSX.objc_release(_browserHandle.Value);
             }
+            _browserHandle = null;
         }
 
         private void OnLayoutUpdated(object sender, EventArgs e)
@@ -69,9 +69,9 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 if (_dummyHostView == null)
                 {
                     // create a dummy nsview to host all browsers
-                    var nsViewClass = NativeExtensions.objc_getClass("NSView");
-                    var nsViewType = NativeExtensions.objc_msgSend(nsViewClass, NativeExtensions.sel_registerName("alloc"));
-                    _dummyHostView = NativeExtensions.objc_msgSend(nsViewType, NativeExtensions.sel_registerName("init"));
+                    var nsViewClass = NativeExtensions.OSX.objc_getClass("NSView");
+                    var nsViewType = NativeExtensions.OSX.objc_msgSend(nsViewClass, NativeExtensions.OSX.sel_registerName("alloc"));
+                    _dummyHostView = NativeExtensions.OSX.objc_msgSend(nsViewType, NativeExtensions.OSX.sel_registerName("init"));
                 }
                 return _dummyHostView.Value;
             }
@@ -135,11 +135,14 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public void InitializeRender(IntPtr browserHandle)
         {
+            _browserHandle = browserHandle;
+
             if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
             {
                 // must retain the browser handle, as long as the browser lives, otherwise seg faults might occur
-                NativeExtensions.objc_retain(browserHandle);
+                NativeExtensions.OSX.objc_retain(browserHandle);
             }
+
             Dispatcher.UIThread.Post(() =>
             {
                 var nativeHost = new ExtendedAvaloniaNativeControlHost(browserHandle);
