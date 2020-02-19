@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,16 +14,37 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 {
     internal class NativeObjectMethodDispatcher : IDisposable
     {
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        private readonly NativeObjectRegistry _objectRegistry;
+        private class MethodExecutionContext
+        {
+            public readonly int CallId;
+            public readonly string ObjectName;
+            public readonly string MemberName;
+            public readonly object[] Arguments;
+            public readonly CefFrame Frame;
 
-        private readonly CountdownEvent _pendingTasks = new CountdownEvent(1);
+            public MethodExecutionContext(int callId, string objectName, string memberName, object[] arguments, CefFrame frame)
+            {
+                CallId = callId;
+                ObjectName = objectName;
+                MemberName = memberName;
+                Arguments = arguments;
+                Frame = frame;
+            }
+        }
+
+        private readonly NativeObjectRegistry _objectRegistry;
+        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private readonly BlockingCollection<MethodExecutionContext> _pendingTasks = new BlockingCollection<MethodExecutionContext>();
+    
+        private ManualResetEvent _dispatchExitWaitHandle;
 
         public NativeObjectMethodDispatcher(MessageDispatcher dispatcher, NativeObjectRegistry objectRegistry)
         {
             _objectRegistry = objectRegistry;
 
             dispatcher.RegisterMessageHandler(Messages.NativeObjectCallRequest.Name, HandleNativeObjectCallRequest);
+
+            Task.Factory.StartNew(DispatchNativeObjectCalls, _cancellationTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         private void HandleNativeObjectCallRequest(MessageReceivedEventArgs args)
@@ -37,63 +59,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                     return;
                 }
 
-                try
-                {
-                    _pendingTasks.AddCount();
-                    if (_cancellationTokenSource.IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    Task.Run(() =>
-                    {
-                        var resultMessage = new Messages.NativeObjectCallResult()
-                        {
-                            CallId = message.CallId,
-                            Result = new CefValueHolder(),
-                        };
-
-                        try
-                        {
-                            var targetObj = _objectRegistry.Get(message.ObjectName);
-                            if (targetObj != null)
-                            {
-                                var nativeMethod = targetObj.GetNativeMethod(message.MemberName);
-                                if (nativeMethod != null)
-                                {
-                                    var result = ExecuteMethod(targetObj.Target, nativeMethod, arguments, targetObj.MethodHandler);
-                                    CefValueSerialization.Serialize(result, resultMessage.Result);
-                                    resultMessage.Success = true;
-                                }
-                                else
-                                {
-                                    resultMessage.Success = false;
-                                    resultMessage.Exception = $"Object does not have a {message.ObjectName} method.";
-                                }
-                            }
-                            else
-                            {
-                                resultMessage.Success = false;
-                                resultMessage.Exception = $"Object named {message.ObjectName} was not found. Make sure it was registered before.";
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            resultMessage.Success = false;
-                            resultMessage.Exception = e.Message;
-                        }
-
-                        using (var cefMessage = resultMessage.ToCefProcessMessage())
-                        {
-                            args.Frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
-                        }
-
-                    }, _cancellationTokenSource.Token);
-                }
-                finally
-                {
-                    _pendingTasks.Signal();
-                }
+                _pendingTasks.Add(new MethodExecutionContext(message.CallId, message.ObjectName, message.MemberName, arguments, args.Frame));
             }
         }
 
@@ -146,11 +112,81 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             return paramInfo.GetCustomAttribute(typeof(ParamArrayAttribute), false) != null;
         }
 
+        private void DispatchNativeObjectCalls()
+        {
+            _dispatchExitWaitHandle = new ManualResetEvent(false);
+            try
+            {
+                while (!_cancellationTokenSource.IsCancellationRequested)
+                {
+                    var context = _pendingTasks.Take(_cancellationTokenSource.Token);
+                    if (context != null)
+                    {
+                        DispatchNativeObjectCall(context);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // stop
+            }
+            finally
+            {
+                _dispatchExitWaitHandle.Set();
+            }
+        }
+
+        private void DispatchNativeObjectCall(MethodExecutionContext context) 
+        { 
+            var resultMessage = new Messages.NativeObjectCallResult()
+            {
+                CallId = context.CallId,
+                Result = new CefValueHolder(),
+            };
+
+            try
+            {
+                var targetObj = _objectRegistry.Get(context.ObjectName);
+                if (targetObj != null)
+                {
+                    var nativeMethod = targetObj.GetNativeMethod(context.MemberName);
+                    if (nativeMethod != null)
+                    {
+                        var result = ExecuteMethod(targetObj.Target, nativeMethod, context.Arguments, targetObj.MethodHandler);
+                        CefValueSerialization.Serialize(result, resultMessage.Result);
+                        resultMessage.Success = true;
+                    }
+                    else
+                    {
+                        resultMessage.Success = false;
+                        resultMessage.Exception = $"Object does not have a {context.ObjectName} method.";
+                    }
+                }
+                else
+                {
+                    resultMessage.Success = false;
+                    resultMessage.Exception = $"Object named {context.ObjectName} was not found. Make sure it was registered before.";
+                }
+            }
+            catch (Exception e)
+            {
+                resultMessage.Success = false;
+                resultMessage.Exception = e.Message;
+            }
+
+            using (var cefMessage = resultMessage.ToCefProcessMessage())
+            {
+                if (context.Frame.IsValid)
+                {
+                    context.Frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
+                }
+            }
+        }
+
         public void Dispose()
         {
             _cancellationTokenSource.Cancel();
-            _pendingTasks.Signal(); // remove the dummy task
-            _pendingTasks.Wait();
+            _dispatchExitWaitHandle?.WaitOne();
             _cancellationTokenSource.Dispose();
         }
     }
