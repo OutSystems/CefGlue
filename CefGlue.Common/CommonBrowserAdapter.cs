@@ -160,7 +160,7 @@ namespace Xilium.CefGlue.Common
 
             /// to play safe, load url must be called after <see cref="OnBrowserCreated(CefBrowser)"/> which runs on CefThreadId.UI, 
             /// otherwise the navigation will be aborted
-            CefRuntime.PostTask(CefThreadId.UI, new ActionTask(() =>
+            ActionTask.Run(() =>
             {
                 if (_browser != null)
                 {
@@ -177,17 +177,17 @@ namespace Xilium.CefGlue.Common
                         {
                             Initialized -= OnBrowserInitialized;
 
-                            CefRuntime.PostTask(CefThreadId.UI, new ActionTask(() =>
+                            ActionTask.Run(() =>
                             {
                                 _browser?.GetMainFrame()?.LoadUrl(_initialUrl);
                                 _initialUrl = null;
-                            }));
+                            });
                         }
 
                         Initialized += OnBrowserInitialized;
                     }
                 }
-            }));
+            });
         }
 
         public void LoadString(string content, string url)
