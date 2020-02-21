@@ -168,7 +168,7 @@ namespace Xilium.CefGlue.WPF.Platform
 
         private void OnLostFocus(object sender, RoutedEventArgs e)
         {
-            LostFocus.Invoke();
+            LostFocus?.Invoke();
         }
 
         private void OnGotFocus(object sender, RoutedEventArgs e)
