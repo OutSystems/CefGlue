@@ -23,15 +23,37 @@ namespace Xilium.CefGlue.Demo.WPF
 
         private void CreateNewTab()
         {
-            var tab = new TabItem();
-            tab.Header = "New Tab";
-
             var view = new BrowserView();
+            var tab = new TabItem();
+            
+            var headerPanel = new DockPanel();
+            tab.Header = headerPanel;
+
+            var closeButton = new Button()
+            {
+                Content = "X",
+                Padding = new Thickness(2),
+                Margin = new Thickness(5, 0, 0, 0)
+            };
+            closeButton.Click += delegate 
+            {
+                view.Dispose();
+                tabControl.Items.Remove(tab); 
+            };
+            DockPanel.SetDock(closeButton, Dock.Right);
+
+            var tabTitle = new TextBlock() 
+            {
+                Text = "New Tab"
+            };
+            headerPanel.Children.Add(tabTitle);
+            headerPanel.Children.Add(closeButton);
+
             view.TitleChanged += title =>
             {
                 Application.Current.Dispatcher.BeginInvoke((Action)(() =>
                    {
-                       tab.Header = title;
+                       tabTitle.Text = title;
                        tab.ToolTip = title;
                    }));
             };

@@ -64,8 +64,6 @@ namespace Xilium.CefGlue.Common
                 _logger.Info($"Browser adapter disposed (Id:{GetHashCode()}");
             }
 
-            Control.Dispose();
-
             var browserHost = BrowserHost;
             if (browserHost != null)
             {
@@ -414,8 +412,15 @@ namespace Xilium.CefGlue.Common
             });
         }
 
-        protected virtual void OnBrowserHostCreated(CefBrowserHost browserHost) {
+        protected virtual void OnBrowserHostCreated(CefBrowserHost browserHost)
+        {
             Control.InitializeRender(browserHost.GetWindowHandle());
+        }
+
+        protected virtual bool OnBrowserClose()
+        {
+            Control.DestroyRender();
+            return true;
         }
 
         #region ICefBrowserHost
@@ -435,6 +440,17 @@ namespace Xilium.CefGlue.Common
                 _objectMethodDispatcher?.Dispose();
                 _objectMethodDispatcher = null;
             });
+        }
+
+        bool ICefBrowserHost.HandleBrowserClose(CefBrowser browser)
+        {
+            var result = false;
+            WithErrorHandling((nameof(ICefBrowserHost.HandleBrowserClose)), () =>
+            {
+                result = OnBrowserClose();
+            });
+
+            return result;
         }
 
         bool ICefBrowserHost.HandleTooltip(CefBrowser browser, string text)

@@ -7,6 +7,7 @@ namespace Xilium.CefGlue.Common
     {
         void HandleBrowserCreated(CefBrowser browser);
         void HandleBrowserDestroyed(CefBrowser browser);
+        bool HandleBrowserClose(CefBrowser browser);
 
         void HandleAddressChange(CefBrowser browser, CefFrame frame, string url);
         void HandleTitleChange(CefBrowser browser, string title);

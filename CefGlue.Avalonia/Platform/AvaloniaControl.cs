@@ -43,15 +43,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
             _control.LayoutUpdated += OnLayoutUpdated;
         }
 
-        public void Dispose()
-        {
-            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX && _browserHandle != null)
-            {
-                NativeExtensions.OSX.objc_release(_browserHandle.Value);
-            }
-            _browserHandle = null;
-        }
-
         private void OnLayoutUpdated(object sender, EventArgs e)
         {
             SizeChanged?.Invoke(new CefSize((int)_control.Bounds.Width, (int)_control.Bounds.Height));
@@ -146,7 +137,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             Dispatcher.UIThread.Post(() =>
             {
                 var nativeHost = new ExtendedAvaloniaNativeControlHost(browserHandle);
-
+                
                 if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
                 {
                     // in osx we need to force an extra update, otherwise the browser will have wrong dimensions when initialized
@@ -162,6 +153,26 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
                 SetContent(nativeHost);
             });
+        }
+
+        public void DestroyRender()
+        {
+            if (_browserHandle == null)
+            {
+                return;
+            }
+
+            switch (CefRuntime.Platform) {
+                case CefRuntimePlatform.Windows:
+                    NativeExtensions.Windows.DestroyWindow(_browserHandle.Value);
+                    break;
+
+                case CefRuntimePlatform.MacOSX:
+                    NativeExtensions.OSX.objc_release(_browserHandle.Value);
+                    break;   
+            }
+
+            _browserHandle = null;
         }
 
         protected void SetContent(Control content)

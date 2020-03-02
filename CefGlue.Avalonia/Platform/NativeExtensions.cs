@@ -26,8 +26,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public static class Windows
         {
-            [DllImport("user32.dll")]
-            public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
+            [DllImport("user32.dll", EntryPoint = "DestroyWindow", CharSet = CharSet.Unicode)]
+            public static extern bool DestroyWindow(IntPtr hwnd);
         }
     }
 }
