@@ -134,25 +134,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 NativeExtensions.OSX.objc_retain(browserHandle);
             }
 
-            Dispatcher.UIThread.Post(() =>
-            {
-                var nativeHost = new ExtendedAvaloniaNativeControlHost(browserHandle);
-                
-                if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
-                {
-                    // in osx we need to force an extra update, otherwise the browser will have wrong dimensions when initialized
-                    IDisposable observable = null;
-                    void UpdateNativeControlBounds(AvaloniaPropertyChangedEventArgs e)
-                    {
-                        observable.Dispose();
-                        nativeHost.TryUpdateNativeControlPosition();
-                    }
-
-                    observable = nativeHost.GetPropertyChangedObservable(Control.TransformedBoundsProperty).Subscribe(UpdateNativeControlBounds);
-                }
-
-                SetContent(nativeHost);
-            });
+            Dispatcher.UIThread.Post(() => SetContent(new ExtendedAvaloniaNativeControlHost(browserHandle)));
         }
 
         public void DestroyRender()
