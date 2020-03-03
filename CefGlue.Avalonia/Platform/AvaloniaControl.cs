@@ -15,7 +15,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
     /// </summary>
     internal class AvaloniaControl : Common.Platform.IControl
     {
-        private IntPtr? _dummyHostView;
+        private static IntPtr? _dummyHostView;
 
         private readonly Control _contextMenuDummyTarget;
         private IntPtr? _browserHandle;
@@ -168,9 +168,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
                     break;
 
                 case CefRuntimePlatform.MacOSX:
-                    NativeExtensions.OSX.objc_release(_dummyHostView.Value);
                     NativeExtensions.OSX.objc_release(_browserHandle.Value);
-                    _dummyHostView = null;
                     break;   
             }
 
