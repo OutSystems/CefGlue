@@ -43,15 +43,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
             _control.LayoutUpdated += OnLayoutUpdated;
         }
 
-        public void Dispose()
-        {
-            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX && _browserHandle != null)
-            {
-                NativeExtensions.OSX.objc_release(_browserHandle.Value);
-            }
-            _browserHandle = null;
-        }
-
         private void OnLayoutUpdated(object sender, EventArgs e)
         {
             SizeChanged?.Invoke(new CefSize((int)_control.Bounds.Width, (int)_control.Bounds.Height));
@@ -143,25 +134,27 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 NativeExtensions.OSX.objc_retain(browserHandle);
             }
 
-            Dispatcher.UIThread.Post(() =>
+            Dispatcher.UIThread.Post(() => SetContent(new ExtendedAvaloniaNativeControlHost(browserHandle)));
+        }
+
+        public void DestroyRender()
+        {
+            if (_browserHandle == null)
             {
-                var nativeHost = new ExtendedAvaloniaNativeControlHost(browserHandle);
+                return;
+            }
 
-                if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
-                {
-                    // in osx we need to force an extra update, otherwise the browser will have wrong dimensions when initialized
-                    IDisposable observable = null;
-                    void UpdateNativeControlBounds(AvaloniaPropertyChangedEventArgs e)
-                    {
-                        observable.Dispose();
-                        nativeHost.TryUpdateNativeControlPosition();
-                    }
+            switch (CefRuntime.Platform) {
+                case CefRuntimePlatform.Windows:
+                    NativeExtensions.Windows.DestroyWindow(_browserHandle.Value);
+                    break;
 
-                    observable = nativeHost.GetPropertyChangedObservable(Control.TransformedBoundsProperty).Subscribe(UpdateNativeControlBounds);
-                }
+                case CefRuntimePlatform.MacOSX:
+                    NativeExtensions.OSX.objc_release(_browserHandle.Value);
+                    break;   
+            }
 
-                SetContent(nativeHost);
-            });
+            _browserHandle = null;
         }
 
         protected void SetContent(Control content)

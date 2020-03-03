@@ -122,6 +122,11 @@ namespace CefGlue.Tests.Helpers
             throw new NotImplementedException();
         }
 
+        public void DestroyRender()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<CefDragOperationsMask> StartDrag(CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y)
         {
             throw new NotImplementedException();

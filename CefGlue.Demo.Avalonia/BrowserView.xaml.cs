@@ -102,5 +102,10 @@ namespace Xilium.CefGlue.Demo.Avalonia
         {
             browser.ShowDeveloperTools();
         }
+
+        public void Dispose()
+        {
+            browser.Dispose();
+        }
     }
 }

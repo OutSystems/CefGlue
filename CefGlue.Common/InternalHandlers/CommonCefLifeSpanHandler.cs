@@ -24,7 +24,8 @@ namespace Xilium.CefGlue.Common.InternalHandlers
 
         protected override bool DoClose(CefBrowser browser)
         {
-            return (_owner.LifeSpanHandler?.HandleDoClose(browser) ?? false) || base.DoClose(browser);
+            return (_owner.LifeSpanHandler?.HandleDoClose(browser) ?? false) || 
+                _owner.HandleBrowserClose(browser);
         }
 
         protected override void OnBeforeClose(CefBrowser browser)

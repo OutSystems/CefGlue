@@ -16,6 +16,7 @@ namespace Xilium.CefGlue.WPF.Platform
     internal class WpfControl : IControl
     {
         protected readonly FrameworkElement _control;
+        private ExtendedWpfNativeControlHost _nativeControl;
 
         public event Action<CefSize> SizeChanged;
 
@@ -25,8 +26,6 @@ namespace Xilium.CefGlue.WPF.Platform
 
             control.LayoutUpdated += OnControlLayoutUpdated;
         }
-
-        public void Dispose() { }
 
         private void OnControlLayoutUpdated(object sender, EventArgs e)
         {
@@ -109,7 +108,21 @@ namespace Xilium.CefGlue.WPF.Platform
                 DispatcherPriority.Input,
                 new Action(() =>
                 {
-                    ((ContentControl) _control).Content = new ExtendedWpfNativeControlHost(browserHandle);
+                    _nativeControl = new ExtendedWpfNativeControlHost(browserHandle);
+                    ((ContentControl) _control).Content = _nativeControl;
+                })
+            );
+        }
+
+        public void DestroyRender()
+        {
+            _nativeControl.DestroyWindow(); // must be destroyed on current thread
+            _control.Dispatcher.BeginInvoke(
+                DispatcherPriority.Normal,
+                new Action(() =>
+                {
+                    // dispose remaining resources
+                    _nativeControl.Dispose();
                 })
             );
         }

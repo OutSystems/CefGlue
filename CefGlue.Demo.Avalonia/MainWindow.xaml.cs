@@ -44,17 +44,43 @@ namespace Xilium.CefGlue.Demo.Avalonia
         {
             var tabItems = ((IList)this.FindControl<TabControl>("tabControl").Items);
 
-            var tab = new TabItem();
-            tab.Header = "New Tab";
-
             var view = new BrowserView();
-            view.TitleChanged += title => Dispatcher.UIThread.Post(() =>
+            var tab = new TabItem();
+
+            var headerPanel = new DockPanel();
+            tab.Header = headerPanel;
+
+            var closeButton = new Button()
             {
-                tab.Header = title;
-                ToolTip.SetTip(tab, title);
-            });
+                Content = "X",
+                Padding = new Thickness(2),
+                Margin = new Thickness(5, 0, 0, 0)
+            };
+            closeButton.Click += delegate
+            {
+                view.Dispose();
+                tabItems.Remove(tab);
+            };
+            DockPanel.SetDock(closeButton, Dock.Right);
+
+            var tabTitle = new TextBlock()
+            {
+                Text = "New Tab"
+            };
+            headerPanel.Children.Add(tabTitle);
+            headerPanel.Children.Add(closeButton);
+
+            view.TitleChanged += title =>
+            {
+                Dispatcher.UIThread.Post((Action)(() =>
+                {
+                    tabTitle.Text = title;
+                    ToolTip.SetTip(tab, title);
+                }));
+            };
 
             tab.Content = view;
+
             tabItems.Add(tab);
         }
 

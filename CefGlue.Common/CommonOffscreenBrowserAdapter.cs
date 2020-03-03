@@ -307,6 +307,14 @@ namespace Xilium.CefGlue.Common
             _logger.Debug($"Browser resized {newWidth}x{newHeight}");
         }
 
+
+        protected override bool OnBrowserClose()
+        {
+            // According to cef documentation:
+            // If no OS window exists (window rendering disabled) returning false will cause the browser object to be destroyed immediately
+            return false;
+        }
+
         #region IOffscreenCefBrowserHost
 
         void IOffscreenCefBrowserHost.GetViewRect(out CefRectangle rect)
