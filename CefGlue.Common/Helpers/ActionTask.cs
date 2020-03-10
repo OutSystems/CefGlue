@@ -16,5 +16,10 @@ namespace Xilium.CefGlue.Common.Helpers
             _action();
             _action = null;
         }
+
+        public static void Run(Action action, CefThreadId threadId = CefThreadId.UI)
+        {
+            CefRuntime.PostTask(threadId, new ActionTask(action));
+        }
     }
 }

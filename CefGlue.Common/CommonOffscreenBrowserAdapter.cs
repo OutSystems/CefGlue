@@ -198,7 +198,7 @@ namespace Xilium.CefGlue.Common
                         // workaround cef OSR bug (https://bitbucket.org/chromiumembedded/cef/issues/2483/osr-invalidate-does-not-generate-frame)
                         // we notify browser of a resize and return height+1px on next GetViewRect call
                         // then restore the original size back again
-                        CefRuntime.PostTask(CefThreadId.UI, new ActionTask(() =>
+                        ActionTask.Run(() =>
                         {
                             _getViewRectOverride = () =>
                             {
@@ -208,7 +208,7 @@ namespace Xilium.CefGlue.Common
                             };
 
                             BrowserHost.WasResized();
-                        }));
+                        });
                     }
                     else
                     {

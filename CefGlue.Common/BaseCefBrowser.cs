@@ -230,6 +230,13 @@ namespace Xilium.CefGlue.Common
         public CefBrowserSettings Settings => _adapter.Settings;
 
         /// <summary>
+        /// Specifies the behavior of native object methods execution. 
+        /// By default native methods will be executed in parallel.
+        /// If false, they will be executed sequentially.
+        /// </summary>
+        public bool AllowNativeMethodsParallelExecution { get => _adapter.AllowNativeMethodsParallelExecution; set => _adapter.AllowNativeMethodsParallelExecution = value; }
+
+        /// <summary>
         /// Get or set the current zoom level. The default zoom level is 0.0.
         /// </summary>
         public double ZoomLevel { get => _adapter.ZoomLevel; set => _adapter.ZoomLevel = value; }
