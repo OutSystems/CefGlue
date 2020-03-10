@@ -37,10 +37,12 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         private readonly BlockingCollection<MethodExecutionContext> _pendingTasks = new BlockingCollection<MethodExecutionContext>();
     
         private ManualResetEvent _dispatchExitWaitHandle;
+        private bool _allowParallelDispatching;
 
-        public NativeObjectMethodDispatcher(MessageDispatcher dispatcher, NativeObjectRegistry objectRegistry)
+        public NativeObjectMethodDispatcher(MessageDispatcher dispatcher, NativeObjectRegistry objectRegistry, bool allowParallelDispatching)
         {
             _objectRegistry = objectRegistry;
+            _allowParallelDispatching = allowParallelDispatching;
 
             dispatcher.RegisterMessageHandler(Messages.NativeObjectCallRequest.Name, HandleNativeObjectCallRequest);
 
@@ -115,6 +117,12 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         private void DispatchNativeObjectCalls()
         {
             _dispatchExitWaitHandle = new ManualResetEvent(false);
+
+            var dispatch =
+                _allowParallelDispatching ?
+                    new Action<MethodExecutionContext>(context => Task.Run(() => DispatchNativeObjectCall(context))) :
+                    DispatchNativeObjectCall;
+
             try
             {
                 while (!_cancellationTokenSource.IsCancellationRequested)
@@ -122,7 +130,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                     var context = _pendingTasks.Take(_cancellationTokenSource.Token);
                     if (context != null)
                     {
-                        DispatchNativeObjectCall(context);
+                        dispatch(context);
                     }
                 }
             }
