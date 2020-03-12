@@ -22,9 +22,8 @@ namespace Xilium.CefGlue.Common
         private string _initialUrl = DefaultUrl;
         private string _title;
         private string _tooltip;
-
+        private bool _allowNativeMethodsParallelExecution = true;
         private CefBrowser _browser;
-
         private CommonCefClient _cefClient;
         private JavascriptExecutionEngine _javascriptExecutionEngine;
         private NativeObjectMethodDispatcher _objectMethodDispatcher;
@@ -147,6 +146,19 @@ namespace Xilium.CefGlue.Common
 
         public bool IsJavascriptEngineInitialized => _javascriptExecutionEngine.IsMainFrameContextInitialized;
 
+        public bool AllowNativeMethodsParallelExecution
+        {
+            get => _allowNativeMethodsParallelExecution;
+            set
+            {
+                if (_objectMethodDispatcher != null)
+                {
+                    throw new InvalidOperationException($"Cannot set {nameof(AllowNativeMethodsParallelExecution)} after browser has been initialized");
+                }
+                _allowNativeMethodsParallelExecution = value;
+            }
+        }
+
         public CefBrowserSettings Settings { get; } = new CefBrowserSettings();
 
         public CefBrowser Browser => _browser;
@@ -158,7 +170,7 @@ namespace Xilium.CefGlue.Common
 
             /// to play safe, load url must be called after <see cref="OnBrowserCreated(CefBrowser)"/> which runs on CefThreadId.UI, 
             /// otherwise the navigation will be aborted
-            CefRuntime.PostTask(CefThreadId.UI, new ActionTask(() =>
+            ActionTask.Run(() =>
             {
                 if (_browser != null)
                 {
@@ -175,17 +187,17 @@ namespace Xilium.CefGlue.Common
                         {
                             Initialized -= OnBrowserInitialized;
 
-                            CefRuntime.PostTask(CefThreadId.UI, new ActionTask(() =>
+                            ActionTask.Run(() =>
                             {
                                 _browser?.GetMainFrame()?.LoadUrl(_initialUrl);
                                 _initialUrl = null;
-                            }));
+                            });
                         }
 
                         Initialized += OnBrowserInitialized;
                     }
                 }
-            }));
+            });
         }
 
         public void LoadString(string content, string url)
@@ -403,7 +415,7 @@ namespace Xilium.CefGlue.Common
                     _javascriptExecutionEngine = javascriptExecutionEngine;
 
                     _objectRegistry.SetBrowser(browser);
-                    _objectMethodDispatcher = new NativeObjectMethodDispatcher(dispatcher, _objectRegistry);
+                    _objectMethodDispatcher = new NativeObjectMethodDispatcher(dispatcher, _objectRegistry, AllowNativeMethodsParallelExecution);
                 }
 
                 OnBrowserHostCreated(browserHost);
