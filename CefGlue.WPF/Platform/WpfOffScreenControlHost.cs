@@ -268,9 +268,9 @@ namespace Xilium.CefGlue.WPF.Platform
         {
             var dataObject = new DataObject();
 
-            dataObject.SetText(dragData.FragmentText, TextDataFormat.Text);
-            dataObject.SetText(dragData.FragmentText, TextDataFormat.UnicodeText);
-            dataObject.SetText(dragData.FragmentHtml, TextDataFormat.Html);
+            dataObject.SetText(dragData.FragmentText ?? "", TextDataFormat.Text);
+            dataObject.SetText(dragData.FragmentText ?? "", TextDataFormat.UnicodeText);
+            dataObject.SetText(dragData.FragmentHtml ?? "", TextDataFormat.Html);
 
             var result = DragDropEffects.None;
 
