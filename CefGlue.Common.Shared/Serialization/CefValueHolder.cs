@@ -1,6 +1,6 @@
 using System;
 
-namespace Xilium.CefGlue.Common.Serialization
+namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal class CefValueHolder : CefListWrapper
     {

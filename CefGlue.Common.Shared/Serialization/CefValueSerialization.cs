@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 
-namespace Xilium.CefGlue.Common.Serialization
+namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal static class CefValueSerialization
     {

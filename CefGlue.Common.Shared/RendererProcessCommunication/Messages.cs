@@ -1,7 +1,7 @@
 using System;
-using Xilium.CefGlue.Common.Serialization;
+using Xilium.CefGlue.Common.Shared.Serialization;
 
-namespace Xilium.CefGlue.Common.RendererProcessCommunication
+namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
 {
     internal static class Messages
     {

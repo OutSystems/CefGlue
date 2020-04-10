@@ -1,8 +1,8 @@
 using System;
 using Xilium.CefGlue.BrowserProcess.JavascriptExecution;
 using Xilium.CefGlue.BrowserProcess.ObjectBinding;
-using Xilium.CefGlue.Common.Helpers;
-using Xilium.CefGlue.Common.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Shared.Helpers;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.BrowserProcess.Handlers
 {

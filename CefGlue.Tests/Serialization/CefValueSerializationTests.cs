@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Xilium.CefGlue;
-using Xilium.CefGlue.Common.Serialization;
-using static Xilium.CefGlue.Common.Serialization.CefValueSerialization;
+using Xilium.CefGlue.Common.Shared.Serialization;
+using static Xilium.CefGlue.Common.Shared.Serialization.CefValueSerialization;
 
 namespace CefGlue.Tests.Serialization
 {

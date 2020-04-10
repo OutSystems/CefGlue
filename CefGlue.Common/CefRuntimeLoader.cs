@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Xilium.CefGlue.Common.Handlers;
+using Xilium.CefGlue.Common.Shared;
 
 namespace Xilium.CefGlue.Common
 {

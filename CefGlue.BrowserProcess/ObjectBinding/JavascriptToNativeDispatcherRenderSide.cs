@@ -3,8 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xilium.CefGlue.BrowserProcess.Serialization;
-using Xilium.CefGlue.Common.Helpers;
-using Xilium.CefGlue.Common.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Shared.Helpers;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {

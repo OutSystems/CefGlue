@@ -1,4 +1,5 @@
 using Xilium.CefGlue.Common.Handlers;
+using Xilium.CefGlue.Common.Shared;
 
 namespace Xilium.CefGlue.Common.InternalHandlers
 {

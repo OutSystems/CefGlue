@@ -1,8 +1,8 @@
-namespace Xilium.CefGlue.Common.Serialization
+namespace Xilium.CefGlue.Common.Shared.Serialization
 {
-    internal class CefDictionaryWrapper : CefValueWrapper<string, ICefDictionaryValue>
+    internal class CefListWrapper : CefValueWrapper<int, ICefListValue>
     {
-        public CefDictionaryWrapper(ICefDictionaryValue container, string index) : base(container, index)
+        public CefListWrapper(ICefListValue container, int index) : base(container, index)
         {
         }
 
@@ -33,17 +33,17 @@ namespace Xilium.CefGlue.Common.Serialization
 
         public override void SetBinary(ICefBinaryValue value)
         {
-            _container.SetBinary(_index, value);
+            _container.SetBinary(_index, value as CefBinaryValue);
         }
 
         public override void SetList(ICefListValue value)
         {
-            _container.SetList(_index, value);
+            _container.SetList(_index, value as CefListValue);
         }
 
         public override void SetDictionary(ICefDictionaryValue value)
         {
-            _container.SetDictionary(_index, value);
+            _container.SetDictionary(_index, value as CefDictionaryValue);
         }
 
         public override bool GetBool()
@@ -85,5 +85,7 @@ namespace Xilium.CefGlue.Common.Serialization
         {
             return _container.GetValueType(_index);
         }
+
+        public int Count => _container.Count;
     }
 }
