@@ -6,6 +6,7 @@ using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 using Xilium.CefGlue.Common.Shared.Serialization;
+using Xilium.CefGlue.Common.Shared.Helpers;
 
 namespace Xilium.CefGlue.Common.JavascriptExecution
 {
