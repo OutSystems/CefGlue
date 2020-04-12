@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -21,7 +21,7 @@
             CheckSelf(self);
 
             var m_name = cef_string_t.ToString(name);
-            var m_obj = CefV8Value.FromNative(@object);
+            var m_obj = CefV8Value.FromNative(@object); // TODO dispose?
 
             CefV8Value m_retval;
             string m_exception;
@@ -95,8 +95,8 @@
             CheckSelf(self);
 
             var m_name = cef_string_t.ToString(name);
-            var m_obj = CefV8Value.FromNative(@object);
-            var m_value = CefV8Value.FromNative(value);
+            var m_obj = CefV8Value.FromNative(@object); // TODO dispose?
+            var m_value = CefV8Value.FromNative(value); // TODO dispose?
 
             string m_exception;
             if (SetByName(m_name, m_obj, m_value, out m_exception))
@@ -129,8 +129,8 @@
         {
             CheckSelf(self);
 
-            var m_obj = CefV8Value.FromNative(@object);
-            var m_value = CefV8Value.FromNative(value);
+            var m_obj = CefV8Value.FromNative(@object); // TODO dispose?
+            var m_value = CefV8Value.FromNative(value); // TODO dispose?
 
             string m_exception;
             if (SetByIndex(index, m_obj, m_value, out m_exception))

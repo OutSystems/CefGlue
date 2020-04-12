@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -17,7 +17,7 @@
         {
             CheckSelf(self);
 
-            var mRequestContext = CefRequestContext.FromNative(request_context);
+            var mRequestContext = CefRequestContext.FromNative(request_context); // TODO dispose?
             OnRequestContextInitialized(mRequestContext);
         }
 
@@ -36,7 +36,7 @@
             var mPluginUrl = cef_string_t.ToString(plugin_url);
             var mIsMainFrame = is_main_frame != 0;
             var mTopOriginUrl = cef_string_t.ToString(top_origin_url);
-            var mPluginInfo = CefWebPluginInfo.FromNative(plugin_info);
+            var mPluginInfo = CefWebPluginInfo.FromNative(plugin_info); // TODO dispose?
             var mPluginPolicy = *plugin_policy;
 
             var result = OnBeforePluginLoad(mMimeType, mPluginUrl, mIsMainFrame, mTopOriginUrl, mPluginInfo, ref mPluginPolicy);
@@ -76,7 +76,7 @@
 
             var m_browser = CefBrowser.FromNativeOrNull(browser);
             var m_frame = CefFrame.FromNativeOrNull(frame);
-            var m_request = CefRequest.FromNative(request);
+            var m_request = CefRequest.FromNative(request); // TODO dispose?
             var m_isNavigation = is_navigation != 0;
             var m_isDownload = is_download != 0;
             var m_requestInitiator = cef_string_t.ToString(request_initiator);

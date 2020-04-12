@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -32,9 +32,10 @@
         {
             CheckSelf(self);
 
-            var m_commandLine = CefCommandLine.FromNative(command_line);
-            OnBeforeChildProcessLaunch(m_commandLine);
-            m_commandLine.Dispose();
+            using (var m_commandLine = CefCommandLine.FromNative(command_line))
+            {
+                OnBeforeChildProcessLaunch(m_commandLine);
+            }
         }
 
         /// <summary>
@@ -53,9 +54,10 @@
         {
             CheckSelf(self);
 
-            var mExtraInfo = CefListValue.FromNative(extra_info);
-            OnRenderProcessThreadCreated(mExtraInfo);
-            mExtraInfo.Dispose();
+            using (var mExtraInfo = CefListValue.FromNative(extra_info))
+            {
+                OnRenderProcessThreadCreated(mExtraInfo);
+            }
         }
 
         /// <summary>

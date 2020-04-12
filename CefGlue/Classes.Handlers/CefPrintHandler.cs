@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -37,9 +37,10 @@
             CheckSelf(self);
 
             var mBrowser = CefBrowser.FromNative(browser);
-            var m_settings = CefPrintSettings.FromNative(settings);
-            OnPrintSettings(mBrowser, m_settings, get_defaults != 0);
-            m_settings.Dispose();
+            using (var m_settings = CefPrintSettings.FromNative(settings))
+            {
+                OnPrintSettings(mBrowser, m_settings, get_defaults != 0);
+            }
         }
 
         /// <summary>

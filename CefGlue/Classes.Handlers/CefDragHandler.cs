@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -17,7 +17,7 @@
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
-            var m_dragData = CefDragData.FromNative(dragData);
+            var m_dragData = CefDragData.FromNative(dragData); // TODO dispose?
             var m_result = OnDragEnter(m_browser, m_dragData, mask);
 
             return m_result ? 1 : 0;
@@ -48,7 +48,7 @@
                 m_regions = new CefDraggableRegion[m_count];
                 for (var i = 0; i < m_count; i++)
                 {
-                    m_regions[i] = CefDraggableRegion.FromNative(regions + i);
+                    m_regions[i] = CefDraggableRegion.FromNative(regions + i); // TODO dispose?
                 }
             }
 

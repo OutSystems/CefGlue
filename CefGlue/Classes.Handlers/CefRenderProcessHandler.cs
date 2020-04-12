@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -17,9 +17,10 @@
         {
             CheckSelf(self);
 
-            var mExtraInfo = CefListValue.FromNative(extra_info);
-            OnRenderThreadCreated(mExtraInfo);
-            mExtraInfo.Dispose();
+            using (var mExtraInfo = CefListValue.FromNative(extra_info))
+            {
+                OnRenderThreadCreated(mExtraInfo);
+            }
         }
 
         /// <summary>
@@ -50,7 +51,7 @@
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
-            var m_extraInfo = CefDictionaryValue.FromNative(extra_info);
+            var m_extraInfo = CefDictionaryValue.FromNative(extra_info); // TODO dispose?
 
             OnBrowserCreated(m_browser, m_extraInfo);
         }
@@ -151,9 +152,9 @@
 
             var mBrowser = CefBrowser.FromNative(browser);
             var mFrame = CefFrame.FromNative(frame);
-            var mContext = CefV8Context.FromNative(context);
-            var mException = CefV8Exception.FromNative(exception);
-            var mStackTrace = CefV8StackTrace.FromNative(stackTrace);
+            var mContext = CefV8Context.FromNative(context); // TODO dispose?
+            var mException = CefV8Exception.FromNative(exception); // TODO dispose?
+            var mStackTrace = CefV8StackTrace.FromNative(stackTrace); // TODO dispose?
 
             OnUncaughtException(mBrowser, mFrame, mContext, mException, mStackTrace);
         }
@@ -200,13 +201,12 @@
 
             var m_browser = CefBrowser.FromNative(browser);
             var m_frame = CefFrame.FromNative(frame);
-            var m_message = CefProcessMessage.FromNative(message);
+            using (var m_message = CefProcessMessage.FromNative(message))
+            {
+                var result = OnProcessMessageReceived(m_browser, m_frame, source_process, m_message);
 
-            var result = OnProcessMessageReceived(m_browser, m_frame, source_process, m_message);
-
-            m_message.Dispose();
-
-            return result ? 1 : 0;
+                return result ? 1 : 0;
+            }
         }
 
         /// <summary>
