@@ -60,11 +60,9 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                         ObjectName = name,
                     };
 
-                    using (var cefMessage = message.ToCefProcessMessage())
-                    {
-                        // TODO target main frame?
-                        _browser.GetMainFrame().SendProcessMessage(CefProcessId.Browser, cefMessage);
-                    }
+                    var cefMessage = message.ToCefProcessMessage();
+                    // TODO target main frame?
+                    _browser.GetMainFrame().SendProcessMessage(CefProcessId.Browser, cefMessage);
                 }
             }
         }
@@ -95,11 +93,9 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 MethodsNames = obj.MethodsNames.ToArray()
             };
 
-            using (var cefMessage = message.ToCefProcessMessage())
-            {
-                // TODO target main frame?
-                _browser.GetMainFrame().SendProcessMessage(CefProcessId.Browser, cefMessage);
-            }
+            var cefMessage = message.ToCefProcessMessage();
+            // TODO target main frame?
+            _browser.GetMainFrame().SendProcessMessage(CefProcessId.Browser, cefMessage);
         }
     }
 }

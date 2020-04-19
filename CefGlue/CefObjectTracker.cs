@@ -7,43 +7,60 @@ namespace Xilium.CefGlue
     public static class CefObjectTracker
     {
         private static bool _enabled;
-        private static readonly Dictionary<int, List<IDisposable>> _disposables = new Dictionary<int, List<IDisposable>>();
+        private static readonly Dictionary<int, HashSet<IDisposable>> _disposables = new Dictionary<int, HashSet<IDisposable>>();
 
-        private class TrackSession : IDisposable
+        private class TrackingSession : IDisposable
         {
-            public static readonly TrackSession Default = new TrackSession();
+            public static readonly TrackingSession Default = new TrackingSession(stopTracking: true);
+            public static readonly TrackingSession Nop = new TrackingSession(stopTracking: false);
 
-            private TrackSession() { }
+            private readonly bool _stopTracking;
+
+            private TrackingSession(bool stopTracking)
+            {
+                _stopTracking = stopTracking;
+            }
 
             public void Dispose()
             {
-                StopTracking();
+                if (_stopTracking) 
+                {
+                    StopTracking();
+                }
             }
         }
 
+        /// <summary>
+        /// Starts tracking the objects created on the current thread.
+        /// </summary>
+        /// <returns></returns>
         public static IDisposable StartTracking()
         {
             lock (_disposables)
             {
+                _enabled = true;
                 var currentThreadId = Thread.CurrentThread.ManagedThreadId;
                 if (!_disposables.ContainsKey(currentThreadId))
                 {
-                    _disposables.Add(currentThreadId, new List<IDisposable>());
+                    // no sessions have been strated for current thread
+                    _disposables.Add(currentThreadId, new HashSet<IDisposable>());
+                    return TrackingSession.Default;
                 }
-                _enabled = true;
+                return TrackingSession.Nop; // return a nop session, won't stop tracking, the outer most session should do the job
             }
-            return TrackSession.Default;
         }
 
+        /// <summary>
+        /// Disposes the objects registered on the current thread since tracker was started.
+        /// </summary>
         public static void StopTracking()
         {
-            System.Diagnostics.Debugger.Launch();
             lock (_disposables)
             {
                 var currentThreadId = Thread.CurrentThread.ManagedThreadId;
                 if (_disposables.TryGetValue(currentThreadId, out var disposables))
                 {
-                    _disposables.Remove(Thread.CurrentThread.ManagedThreadId);
+                    _disposables.Remove(currentThreadId);
                     foreach (var disposable in disposables)
                     {
                         disposable.Dispose();
@@ -53,9 +70,14 @@ namespace Xilium.CefGlue
             }
         }
 
-        public static void Track(IDisposable obj) 
+        /// <summary>
+        /// Registers the specified object to be disposed later.
+        /// </summary>
+        /// <param name="obj"></param>
+        public static void Track(IDisposable obj)
         {
-            if (_enabled) {
+            if (_enabled)
+            {
                 var currentThreadId = Thread.CurrentThread.ManagedThreadId;
                 if (_disposables.TryGetValue(currentThreadId, out var threadDisposables))
                 {
@@ -64,7 +86,11 @@ namespace Xilium.CefGlue
             }
         }
         
-        public static void Untrack(IDisposable obj, bool dispose = true)
+        /// <summary>
+        /// Removes the specified object from the tracking list.
+        /// </summary>
+        /// <param name="obj"></param>
+        public static void Untrack(IDisposable obj)
         {
             if (_enabled)
             {

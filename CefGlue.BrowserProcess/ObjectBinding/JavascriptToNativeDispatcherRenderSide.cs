@@ -33,7 +33,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             if (_registeredObjects.TryAdd(objectInfo.Name, objectInfo))
             {
                 // register objects in the main frame
-                using (var frame = args.Browser.GetMainFrame())
+                var frame = args.Browser.GetMainFrame();
                 using (var context = frame.V8Context.EnterOrFail())
                 {
                     var objectCreated = CreateNativeObjects(new[] { objectInfo }, context.V8Context);
@@ -52,7 +52,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         {
             var message = Messages.NativeObjectUnregistrationRequest.FromCefMessage(args.Message);
 
-            using (var frame = args.Browser.GetMainFrame()) // unregister objects from the main frame
+            var frame = args.Browser.GetMainFrame(); // unregister objects from the main frame
             using (var context = frame.V8Context.EnterOrFail())
             {
                 DeleteNativeObject(message.ObjectName, context.V8Context);
@@ -64,8 +64,8 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             message.CallId = lastCallId++;
 
             using (var context = CefV8Context.GetCurrentContext().EnterOrFail(shallDispose: false)) // context will be released when promise is resolved
-            using (var frame = context.V8Context.GetFrame())
             {
+                var frame = context.V8Context.GetFrame();
                 if (frame == null)
                 {
                     // TODO, what now?
@@ -78,10 +78,8 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     throw new InvalidOperationException("Call id already exists");
                 }
 
-                using (var cefMessage = message.ToCefProcessMessage())
-                {
-                    frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
-                }
+                var cefMessage = message.ToCefProcessMessage();
+                frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
 
                 return promiseHolder;
             }
@@ -99,17 +97,13 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     {
                         if (message.Success)
                         {
-                            using (var value = V8ValueSerialization.SerializeCefValue(message.Result))
-                            {
-                                resolve(value);
-                            }
+                            var value = V8ValueSerialization.SerializeCefValue(message.Result);
+                            resolve(value);
                         }
                         else
                         {
-                            using (var exceptionMsg = CefV8Value.CreateString(message.Exception))
-                            {
-                                reject(exceptionMsg);
-                            }
+                            var exceptionMsg = CefV8Value.CreateString(message.Exception);
+                            reject(exceptionMsg);
                         }
                     });
                 }
@@ -159,26 +153,20 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 try
                 {
-                    using (var global = context.GetGlobal())
+                    var global = context.GetGlobal();
+                    foreach (var objectInfo in objectInfos)
                     {
-                        foreach (var objectInfo in objectInfos)
+                        var handler = new V8FunctionHandler(objectInfo.Name, HandleNativeObjectCall);
+                        var attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontDelete;
+
+                        var v8Obj = CefV8Value.CreateObject();
+                        foreach (var methodName in objectInfo.MethodsNames)
                         {
-                            var handler = new V8FunctionHandler(objectInfo.Name, HandleNativeObjectCall);
-                            var attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontDelete;
-
-                            using (var v8Obj = CefV8Value.CreateObject())
-                            {
-                                foreach (var methodName in objectInfo.MethodsNames)
-                                {
-                                    using (var v8Function = CefV8Value.CreateFunction(methodName, handler))
-                                    {
-                                        v8Obj.SetValue(methodName, v8Function, attributes);
-                                    }
-                                }
-
-                                global.SetValue(objectInfo.Name, v8Obj);
-                            }
+                            var v8Function = CefV8Value.CreateFunction(methodName, handler);
+                            v8Obj.SetValue(methodName, v8Function, attributes);
                         }
+
+                        global.SetValue(objectInfo.Name, v8Obj);
                     }
 
                     return true;
@@ -199,10 +187,8 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         {
             if (_registeredObjects.TryRemove(objName, out var objectInfo))
             {
-                using (var global = context.GetGlobal())
-                {
-                    global.DeleteValue(objectInfo.Name);
-                }
+                var global = context.GetGlobal();
+                global.DeleteValue(objectInfo.Name);
             }
         }
 

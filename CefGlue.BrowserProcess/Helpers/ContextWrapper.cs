@@ -10,6 +10,10 @@ namespace Xilium.CefGlue.BrowserProcess
         {
             V8Context = context;
             _shallDispose = shallDispose;
+            if (!shallDispose)
+            {
+                CefObjectTracker.Untrack(context);
+            }
         }
 
         public CefV8Context V8Context { get; }

@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -16,40 +16,43 @@
 
         private int execute(cef_v8handler_t* self, cef_string_t* name, cef_v8value_t* @object, UIntPtr argumentsCount, cef_v8value_t** arguments, cef_v8value_t** retval, cef_string_t* exception)
         {
-            CheckSelf(self);
-
-            var m_name = cef_string_t.ToString(name);
-            var m_obj = CefV8Value.FromNative(@object);
-            var argc = (int)argumentsCount;
-            CefV8Value[] m_arguments;
-            if (argc == 0) { m_arguments = emtpyArgs; }
-            else
+            using (CefObjectTracker.StartTracking())
             {
-                m_arguments = new CefV8Value[argc];
-                for (var i = 0; i < argc; i++)
+                CheckSelf(self);
+
+                var m_name = cef_string_t.ToString(name);
+                var m_obj = CefV8Value.FromNative(@object);
+                var argc = (int)argumentsCount;
+                CefV8Value[] m_arguments;
+                if (argc == 0) { m_arguments = emtpyArgs; }
+                else
                 {
-                    m_arguments[i] = CefV8Value.FromNative(arguments[i]);
+                    m_arguments = new CefV8Value[argc];
+                    for (var i = 0; i < argc; i++)
+                    {
+                        m_arguments[i] = CefV8Value.FromNative(arguments[i]);
+                    }
                 }
+
+                CefV8Value m_returnValue;
+                string m_exception;
+
+                var handled = Execute(m_name, m_obj, m_arguments, out m_returnValue, out m_exception);
+
+                if (handled)
+                {
+                    if (m_exception != null)
+                    {
+                        cef_string_t.Copy(m_exception, exception);
+                    }
+                    else if (m_returnValue != null)
+                    {
+                        *retval = m_returnValue.ToNative();
+                    }
+                }
+
+                return handled ? 1 : 0;
             }
-
-            CefV8Value m_returnValue;
-            string m_exception;
-
-            var handled = Execute(m_name, m_obj, m_arguments, out m_returnValue, out m_exception);
-
-            if (handled)
-            {
-                if (m_exception != null)
-                {
-                    cef_string_t.Copy(m_exception, exception);
-                }
-                else if (m_returnValue != null)
-                {
-                    *retval = m_returnValue.ToNative();
-                }
-            }
-
-            return handled ? 1 : 0;
         }
 
         /// <summary>

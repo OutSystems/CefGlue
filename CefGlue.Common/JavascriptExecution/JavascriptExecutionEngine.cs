@@ -91,10 +91,8 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
             try
             {
-                using (var cefMessage = message.ToCefProcessMessage())
-                {
-                    frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
-                }
+                var cefMessage = message.ToCefProcessMessage();
+                frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
 
                 // TODO should we add any timeout param and remove the task after that ?
                 await messageReceiveCompletionSource.Task;

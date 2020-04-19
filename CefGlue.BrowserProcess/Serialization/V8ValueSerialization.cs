@@ -121,29 +121,25 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                     return CefV8Value.CreateBool(cefValue.GetBool());
 
                 case CefValueType.Dictionary:
-                    using (var dictionary = cefValue.GetDictionary())
+                    var dictionary = cefValue.GetDictionary();
+                    var v8Dictionary = CefV8Value.CreateObject();
+                    foreach (var key in dictionary.GetKeys())
                     {
-                        var v8Dictionary = CefV8Value.CreateObject();
-                        foreach (var key in dictionary.GetKeys())
-                        {
-                            v8Dictionary.SetValue(key, SerializeCefValue(new CefDictionaryWrapper(dictionary, key)));
-                        }
-                        return v8Dictionary;
+                        v8Dictionary.SetValue(key, SerializeCefValue(new CefDictionaryWrapper(dictionary, key)));
                     }
-
+                    return v8Dictionary;
+                    
                 case CefValueType.Double:
                     return CefV8Value.CreateDouble(cefValue.GetDouble());
 
                 case CefValueType.List:
-                    using (var list = cefValue.GetList())
+                    var list = cefValue.GetList();
+                    var v8List = CefV8Value.CreateArray(list.Count);
+                    for (var i = 0; i < list.Count; i++)
                     {
-                        var v8List = CefV8Value.CreateArray(list.Count);
-                        for (var i = 0; i < list.Count; i++)
-                        {
-                            v8List.SetValue(i, SerializeCefValue(new CefListWrapper(list, i)));
-                        }
-                        return v8List;
+                        v8List.SetValue(i, SerializeCefValue(new CefListWrapper(list, i)));
                     }
+                    return v8List;
 
                 case CefValueType.Int:
                     return CefV8Value.CreateInt(cefValue.GetInt());

@@ -35,10 +35,8 @@ namespace Xilium.CefGlue.BrowserProcess.JavascriptExecution
                     V8ValueSerialization.SerializeV8Object(value, response.Result);
                 }
 
-                using (var cefResponseMessage = response.ToCefProcessMessage())
-                {
-                    frame.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
-                }
+                var cefResponseMessage = response.ToCefProcessMessage();
+                frame.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
             }
         }
     }
