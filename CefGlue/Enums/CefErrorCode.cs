@@ -333,10 +333,7 @@ namespace Xilium.CefGlue
         /// </summary>
         PROXY_AUTH_REQUESTED = -127,
 
-        /// <summary>
-        /// The SSL server attempted to use a weak ephemeral Diffie-Hellman key.
-        /// </summary>
-        SSL_WEAK_SERVER_EPHEMERAL_DH_KEY = -129,
+        // Error -129 was removed (SSL_WEAK_SERVER_EPHEMERAL_DH_KEY).
 
         /// <summary>
         /// Could not create a connection to the proxy server. An error occurred
@@ -767,13 +764,18 @@ namespace Xilium.CefGlue
         /// </summary>
         CERT_KNOWN_INTERCEPTION_BLOCKED = -217,
 
+        /// <summary>
+        /// The connection uses an obsolete version of SSL/TLS.
+        /// </summary>
+        SSL_OBSOLETE_VERSION = -218,
+
         // Add new certificate error codes here.
         //
         // Update the value of CERT_END whenever you add a new certificate error
         // code.
 
         // The value immediately past the last certificate error code.
-        //CERT_END = -218,
+        //CERT_END = -219,
 
         /// <summary>
         /// The URL is invalid.

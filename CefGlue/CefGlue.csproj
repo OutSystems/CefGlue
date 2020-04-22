@@ -288,6 +288,7 @@
     <Compile Include="Classes.Proxies\CefXmlReader.cs" />
     <Compile Include="Classes.Proxies\CefZipReader.cs" />
     <Compile Include="Enums\CefCdmRegistrationError.cs" />
+    <Compile Include="Enums\CefCompositionUnderlineStyle.cs" />
     <Compile Include="Enums\CefCrossAxisAlignment.cs" />
     <Compile Include="Enums\CefMediaRouteConnectionState.cs" />
     <Compile Include="Enums\CefMenuColorType.cs" />

@@ -725,6 +725,11 @@ typedef struct _cef_urlparts_t {
   // Query string component (i.e., everything following the '?').
   ///
   cef_string_t query;
+
+  ///
+  // Fragment (hash) identifier component (i.e., the string following the '#').
+  ///
+  cef_string_t fragment;
 } cef_urlparts_t;
 
 ///
@@ -1775,6 +1780,7 @@ typedef enum {
   EVENTFLAG_IS_KEY_PAD = 1 << 9,
   EVENTFLAG_IS_LEFT = 1 << 10,
   EVENTFLAG_IS_RIGHT = 1 << 11,
+  EVENTFLAG_ALTGR_DOWN = 1 << 12,
 } cef_event_flags_t;
 
 ///
@@ -2418,13 +2424,13 @@ typedef struct _cef_pdf_print_settings_t {
   int scale_factor;
 
   ///
-  // Margins in millimeters. Only used if |margin_type| is set to
+  // Margins in points. Only used if |margin_type| is set to
   // PDF_PRINT_MARGIN_CUSTOM.
   ///
-  double margin_top;
-  double margin_right;
-  double margin_bottom;
-  double margin_left;
+  int margin_top;
+  int margin_right;
+  int margin_bottom;
+  int margin_left;
 
   ///
   // Margin type.
@@ -2916,6 +2922,16 @@ typedef enum {
 } cef_cdm_registration_error_t;
 
 ///
+// Composition underline style.
+///
+typedef enum {
+  CEF_CUS_SOLID,
+  CEF_CUS_DOT,
+  CEF_CUS_DASH,
+  CEF_CUS_NONE,
+} cef_composition_underline_style_t;
+
+///
 // Structure representing IME composition underline information. This is a thin
 // wrapper around Blink's WebCompositionUnderline class and should be kept in
 // sync with that.
@@ -2940,6 +2956,11 @@ typedef struct _cef_composition_underline_t {
   // Set to true (1) for thick underline.
   ///
   int thick;
+
+  ///
+  // Style.
+  ///
+  cef_composition_underline_style_t style;
 } cef_composition_underline_t;
 
 ///
