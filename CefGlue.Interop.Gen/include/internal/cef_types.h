@@ -1107,9 +1107,8 @@ typedef enum {
   TT_LINK = 0,
 
   ///
-  // Source is some other "explicit" navigation action such as creating a new
-  // browser or using the LoadURL function. This is also the default value
-  // for navigations where the actual type is unknown.
+  // Source is some other "explicit" navigation. This is the default value for
+  // navigations where the actual type is unknown. See also TT_DIRECT_LOAD_FLAG.
   ///
   TT_EXPLICIT = 1,
 
@@ -1161,8 +1160,14 @@ typedef enum {
 
   ///
   // Used the Forward or Back function to navigate among browsing history.
+  // Will be ORed to the transition type for the original load.
   ///
   TT_FORWARD_BACK_FLAG = 0x01000000,
+
+  ///
+  // Loaded a URL directly via CreateBrowser, LoadURL or LoadRequest.
+  ///
+  TT_DIRECT_LOAD_FLAG = 0x02000000,
 
   ///
   // The beginning of a navigation chain.
@@ -2288,20 +2293,9 @@ typedef enum {
   UU_URL_SPECIAL_CHARS_EXCEPT_PATH_SEPARATORS = 1 << 3,
 
   ///
-  // Unescapes characters that can be used in spoofing attempts (such as LOCK)
-  // and control characters (such as BiDi control characters and %01).  This
-  // INCLUDES NULLs.  This is used for rare cases such as data: URL decoding
-  // where the result is binary data.
-  //
-  // DO NOT use UU_SPOOFING_AND_CONTROL_CHARS if the URL is going to be
-  // displayed in the UI for security reasons.
-  ///
-  UU_SPOOFING_AND_CONTROL_CHARS = 1 << 4,
-
-  ///
   // URL queries use "+" for space. This flag controls that replacement.
   ///
-  UU_REPLACE_PLUS_WITH_SPACE = 1 << 5,
+  UU_REPLACE_PLUS_WITH_SPACE = 1 << 4,
 } cef_uri_unescape_rule_t;
 
 ///
@@ -2947,6 +2941,36 @@ typedef struct _cef_composition_underline_t {
   ///
   int thick;
 } cef_composition_underline_t;
+
+///
+// Result codes for CefMediaRouter::CreateRoute. These constants match
+// their equivalents in Chromium's route_request_result.h and should not be
+// renumbered.
+///
+typedef enum {
+  CEF_MRCR_UNKNOWN_ERROR = 0,
+  CEF_MRCR_OK = 1,
+  CEF_MRCR_TIMED_OUT = 2,
+  CEF_MRCR_ROUTE_NOT_FOUND = 3,
+  CEF_MRCR_SINK_NOT_FOUND = 4,
+  CEF_MRCR_INVALID_ORIGIN = 5,
+  CEF_MRCR_NO_SUPPORTED_PROVIDER = 7,
+  CEF_MRCR_CANCELLED = 8,
+  CEF_MRCR_ROUTE_ALREADY_EXISTS = 9,
+
+  CEF_MRCR_TOTAL_COUNT = 11  // The total number of values.
+} cef_media_route_create_result_t;
+
+///
+// Connection state for a MediaRoute object.
+///
+typedef enum {
+  CEF_MRCS_UNKNOWN,
+  CEF_MRCS_CONNECTING,
+  CEF_MRCS_CONNECTED,
+  CEF_MRCS_CLOSED,
+  CEF_MRCS_TERMINATED,
+} cef_media_route_connection_state_t;
 
 #ifdef __cplusplus
 }

@@ -163,6 +163,8 @@ c2cs_enumtypes = {
 	'cef_ssl_content_status_t': 'CefSslContentStatus',
     'cef_menu_color_type_t': 'CefMenuColorType',
     'cef_state_t': 'CefState',
+    'cef_media_route_connection_state_t': 'CefMediaRouteConnectionState',
+    'cef_media_route_create_result_t': 'CefMediaRouteCreateResult',
     }
 
 c2cs_structtypes = { }

@@ -1,4 +1,4 @@
-//
+﻿//
 // This file manually written from cef/include/base/internal/cef_net_error_list.h.
 // C API name: cef_errorcode_t.
 //
@@ -761,13 +761,19 @@ namespace Xilium.CefGlue
         // -216 was QUIC_CERT_ROOT_NOT_KNOWN which has been renumbered to not be in the
         // certificate error range.
 
+        /// <summary>
+        /// The certificate is known to be used for interception by an entity other
+        /// the device owner.
+        /// </summary>
+        CERT_KNOWN_INTERCEPTION_BLOCKED = -217,
+
         // Add new certificate error codes here.
         //
         // Update the value of CERT_END whenever you add a new certificate error
         // code.
 
         // The value immediately past the last certificate error code.
-        //CERT_END = -217,
+        //CERT_END = -218,
 
         /// <summary>
         /// The URL is invalid.
@@ -1233,9 +1239,9 @@ namespace Xilium.CefGlue
         INVALID_SIGNED_EXCHANGE = -504,
 
         /// <summary>
-        /// An error occurred while handling a bundled-exchanges source.
+        /// An error occurred while handling a Web Bundle source.
         /// </summary>
-        INVALID_BUNDLED_EXCHANGES = -505,
+        INVALID_WEB_BUNDLE = -505,
 
         // *** Code -600 is reserved (was FTP_PASV_COMMAND_FAILED). ***
 
@@ -1403,11 +1409,12 @@ namespace Xilium.CefGlue
         /// </summary>
         DNS_SORT_ERROR = -806,
 
-        /// <summary>
-        /// Failed to resolve over HTTP, fallback to legacy
-        /// </summary>
-        DNS_HTTP_FAILED = -807,
+        // Error -807 was removed (DNS_HTTP_FAILED)
 
+        /// <summary>
+        /// Failed to resolve the hostname of a DNS-over-HTTPS server.
+        /// </summary>
+        DNS_SECURE_RESOLVER_HOSTNAME_RESOLUTION_FAILED = -808,
 
         // CefGlue backward compatiblity.
         // Generally we prefer .NET naming rules, but will care about later.

@@ -95,6 +95,12 @@
     <Compile Include="Classes.g\CefLifeSpanHandler.g.cs" />
     <Compile Include="Classes.g\CefListValue.g.cs" />
     <Compile Include="Classes.g\CefLoadHandler.g.cs" />
+    <Compile Include="Classes.g\CefMediaObserver.g.cs" />
+    <Compile Include="Classes.g\CefMediaRoute.g.cs" />
+    <Compile Include="Classes.g\CefMediaRouteCreateCallback.g.cs" />
+    <Compile Include="Classes.g\CefMediaRouter.g.cs" />
+    <Compile Include="Classes.g\CefMediaSink.g.cs" />
+    <Compile Include="Classes.g\CefMediaSource.g.cs" />
     <Compile Include="Classes.g\CefMenuModel.g.cs" />
     <Compile Include="Classes.g\CefMenuModelDelegate.g.cs" />
     <Compile Include="Classes.g\CefNavigationEntry.g.cs" />
@@ -109,6 +115,7 @@
     <Compile Include="Classes.g\CefProcessMessage.g.cs" />
     <Compile Include="Classes.g\CefReadHandler.g.cs" />
     <Compile Include="Classes.g\CefRegisterCdmCallback.g.cs" />
+    <Compile Include="Classes.g\CefRegistration.g.cs" />
     <Compile Include="Classes.g\CefRenderHandler.g.cs" />
     <Compile Include="Classes.g\CefRenderProcessHandler.g.cs" />
     <Compile Include="Classes.g\CefRequest.g.cs" />
@@ -185,6 +192,8 @@
     <Compile Include="Classes.Handlers\CefKeyboardHandler.cs" />
     <Compile Include="Classes.Handlers\CefLifeSpanHandler.cs" />
     <Compile Include="Classes.Handlers\CefLoadHandler.cs" />
+    <Compile Include="Classes.Handlers\CefMediaObserver.cs" />
+    <Compile Include="Classes.Handlers\CefMediaRouteCreateCallback.cs" />
     <Compile Include="Classes.Handlers\CefMenuModelDelegate.cs" />
     <Compile Include="Classes.Handlers\CefNavigationEntryVisitor.cs" />
     <Compile Include="Classes.Handlers\CefPdfPrintCallback.cs" />
@@ -237,6 +246,10 @@
     <Compile Include="Classes.Proxies\CefImage.cs" />
     <Compile Include="Classes.Proxies\CefJSDialogCallback.cs" />
     <Compile Include="Classes.Proxies\CefListValue.cs" />
+    <Compile Include="Classes.Proxies\CefMediaRoute.cs" />
+    <Compile Include="Classes.Proxies\CefMediaRouter.cs" />
+    <Compile Include="Classes.Proxies\CefMediaSink.cs" />
+    <Compile Include="Classes.Proxies\CefMediaSource.cs" />
     <Compile Include="Classes.Proxies\CefMenuModel.cs" />
     <Compile Include="Classes.Proxies\CefNavigationEntry.cs" />
     <Compile Include="Classes.Proxies\CefPostData.cs" />
@@ -245,6 +258,7 @@
     <Compile Include="Classes.Proxies\CefPrintJobCallback.cs" />
     <Compile Include="Classes.Proxies\CefPrintSettings.cs" />
     <Compile Include="Classes.Proxies\CefProcessMessage.cs" />
+    <Compile Include="Classes.Proxies\CefRegistration.cs" />
     <Compile Include="Classes.Proxies\CefRequest.cs" />
     <Compile Include="Classes.Proxies\CefRequestCallback.cs" />
     <Compile Include="Classes.Proxies\CefRequestContext.cs" />
@@ -275,6 +289,7 @@
     <Compile Include="Classes.Proxies\CefZipReader.cs" />
     <Compile Include="Enums\CefCdmRegistrationError.cs" />
     <Compile Include="Enums\CefCrossAxisAlignment.cs" />
+    <Compile Include="Enums\CefMediaRouteConnectionState.cs" />
     <Compile Include="Enums\CefMenuColorType.cs" />
     <Compile Include="Enums\CefMainAxisAlignment.cs" />
     <Compile Include="Enums\CefPointerType.cs" />
@@ -297,6 +312,7 @@
     <Compile Include="Enums\CefReturnValue.cs" />
     <Compile Include="Enums\CefScaleFactor.cs" />
     <Compile Include="Enums\CefColorType.cs" />
+    <Compile Include="Enums\CefMediaRouteCreateResult.cs" />
     <Compile Include="Enums\CefWindowOpenDisposition.cs" />
     <Compile Include="Enums\CefUriUnescapeRules.cs" />
     <Compile Include="Enums\CefCursorType.cs" />
@@ -391,6 +407,12 @@
     <Compile Include="Interop\Classes.g\cef_life_span_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_list_value_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_load_handler_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_media_observer_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_media_router_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_media_route_create_callback_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_media_route_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_media_sink_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_media_source_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_menu_model_delegate_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_menu_model_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_navigation_entry_t.g.cs" />
@@ -405,6 +427,7 @@
     <Compile Include="Interop\Classes.g\cef_process_message_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_read_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_register_cdm_callback_t.g.cs" />
+    <Compile Include="Interop\Classes.g\cef_registration_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_render_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_render_process_handler_t.g.cs" />
     <Compile Include="Interop\Classes.g\cef_request_callback_t.g.cs" />
