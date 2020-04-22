@@ -8,7 +8,7 @@ namespace Xilium.CefGlue
     using System.Diagnostics;
     using System.Runtime.InteropServices;
     using Xilium.CefGlue.Interop;
-
+    
     // Role: PROXY
     public sealed unsafe partial class CefRegistration : IDisposable
     {
