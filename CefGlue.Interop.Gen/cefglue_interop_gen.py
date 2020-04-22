@@ -24,10 +24,6 @@ parser.add_option('--cpp-header-dir', dest='cppheaderdir', metavar='DIR',
                   help='input directory for C++ header files [required]')
 parser.add_option('--cefglue-dir', dest='cefgluedir', metavar='DIR',
                   help='output directory for cefglue interop files')
-parser.add_option('--schema', dest='schema', action='store',
-                  help='schema name')
-parser.add_option('--cef1', dest='cef1', action='store_true', default=False,
-                  help='generate CEF1 interop')
 parser.add_option('--no-backup',
                   action='store_true', dest='nobackup', default=False,
                   help='do not create a backup of modified files')
@@ -37,7 +33,7 @@ parser.add_option('-q', '--quiet',
 (options, args) = parser.parse_args()
 
 # required options: cppheader, cef1 or cef3
-if options.cppheaderdir is None or options.schema is None or options.cefgluedir is None:
+if options.cppheaderdir is None or options.cefgluedir is None:
     parser.print_help(sys.stdout)
     sys.exit()
 
@@ -59,7 +55,7 @@ if not options.cefgluedir is None:
     # output cefglue interop
     if not options.quiet:
         sys.stdout.write('Generating CefGlue interop files...\n')
-    writect += write_interop(header, options.cefgluedir, not options.nobackup, options.schema, options.cppheaderdir)
+    writect += write_interop(header, options.cefgluedir, not options.nobackup, 'cef3', options.cppheaderdir)
 
 if not options.quiet:
     sys.stdout.write('Done - Wrote '+str(writect)+' files.\n')
