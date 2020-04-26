@@ -3,30 +3,17 @@ using Xilium.CefGlue.Common.Shared;
 
 namespace Xilium.CefGlue.BrowserProcess
 {
-    internal class RendererCefApp : CefApp
+    internal class RendererCefApp : CommonCefApp
     {
         private readonly CefRenderProcessHandler _renderProcessHandler = new RenderProcessHandler();
-        private readonly CustomScheme[] _customSchemes;
 
-        internal RendererCefApp(CustomScheme[] customSchemes)
+        internal RendererCefApp(CustomScheme[] customSchemes) : base(customSchemes)
         {
-            _customSchemes = customSchemes;
         }
 
         protected override CefRenderProcessHandler GetRenderProcessHandler()
         {
             return _renderProcessHandler;
-        }
-
-        protected override void OnRegisterCustomSchemes(CefSchemeRegistrar registrar)
-        {
-            if (_customSchemes != null)
-            {
-                foreach (var scheme in _customSchemes)
-                {
-                    registrar.AddCustomScheme(scheme.SchemeName, scheme.Options);
-                }
-            }
         }
     }
 }

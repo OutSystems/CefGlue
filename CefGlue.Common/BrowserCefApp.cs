@@ -5,12 +5,13 @@ using Xilium.CefGlue.Common.Shared;
 
 namespace Xilium.CefGlue.Common
 {
-    internal class CommonCefApp : CefApp
+    internal class BrowserCefApp : CommonCefApp
     {
         private readonly CefBrowserProcessHandler _browserProcessHandler;
         private readonly KeyValuePair<string, string>[] _flags;
 
-        internal CommonCefApp(CustomScheme[] customSchemes = null, KeyValuePair<string, string>[] flags = null, BrowserProcessHandler browserProcessHandler = null)
+        internal BrowserCefApp(CustomScheme[] customSchemes = null, KeyValuePair<string, string>[] flags = null, BrowserProcessHandler browserProcessHandler = null) :
+            base(customSchemes)
         {
             _browserProcessHandler = new CommonBrowserProcessHandler(browserProcessHandler, customSchemes);
             _flags = flags;
