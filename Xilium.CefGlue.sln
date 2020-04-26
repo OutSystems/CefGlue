@@ -52,7 +52,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{953C06E5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Tests", "CefGlue.Tests\CefGlue.Tests.csproj", "{F7E38B04-0D84-4540-B608-4887E6C1B46B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue.Common.Shared", "CefGlue.Common.Shared\CefGlue.Common.Shared.csproj", "{BA0F8218-A7D3-4C90-AA4D-F914A3C974E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Common.Shared", "CefGlue.Common.Shared\CefGlue.Common.Shared.csproj", "{BA0F8218-A7D3-4C90-AA4D-F914A3C974E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -280,8 +280,8 @@ Global
 		{F7E38B04-0D84-4540-B608-4887E6C1B46B}.ReleaseWPFAvalonia|Any CPU.Build.0 = Release|Any CPU
 		{F7E38B04-0D84-4540-B608-4887E6C1B46B}.ReleaseWPFAvalonia|x86.ActiveCfg = Release|Any CPU
 		{F7E38B04-0D84-4540-B608-4887E6C1B46B}.ReleaseWPFAvalonia|x86.Build.0 = Release|Any CPU
-		{BA0F8218-A7D3-4C90-AA4D-F914A3C974E9}.Debug_WindowlessRender|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA0F8218-A7D3-4C90-AA4D-F914A3C974E9}.Debug_WindowlessRender|Any CPU.Build.0 = Debug|Any CPU
+		{BA0F8218-A7D3-4C90-AA4D-F914A3C974E9}.Debug_WindowlessRender|Any CPU.ActiveCfg = Debug_WindowlessRender|Any CPU
+		{BA0F8218-A7D3-4C90-AA4D-F914A3C974E9}.Debug_WindowlessRender|Any CPU.Build.0 = Debug_WindowlessRender|Any CPU
 		{BA0F8218-A7D3-4C90-AA4D-F914A3C974E9}.Debug_WindowlessRender|x86.ActiveCfg = Debug|Any CPU
 		{BA0F8218-A7D3-4C90-AA4D-F914A3C974E9}.Debug_WindowlessRender|x86.Build.0 = Debug|Any CPU
 		{BA0F8218-A7D3-4C90-AA4D-F914A3C974E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

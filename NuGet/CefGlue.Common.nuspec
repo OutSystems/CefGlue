@@ -25,6 +25,9 @@
     <file src="..\CefGlue.Common\bin\Release\net472\Xilium.CefGlue.Common.dll" target="lib\net472\x64"/>
     <file src="..\CefGlue.Common\bin\Release\net472\Xilium.CefGlue.Common.pdb" target="lib\net472\x64"/>
 
+    <file src="..\CefGlue.Common.Shared\bin\Release\net472\Xilium.CefGlue.Common.Shared.dll" target="lib\net472\x64"/>
+    <file src="..\CefGlue.Common.Shared\bin\Release\net472\Xilium.CefGlue.Common.Shared.pdb" target="lib\net472\x64"/>
+
     <file src="..\CefGlue.BrowserProcess\bin\Release\net472\Xilium.CefGlue.BrowserProcess.exe" target="lib\net472\x64"/>
     <file src="..\CefGlue.BrowserProcess\bin\Release\net472\Xilium.CefGlue.BrowserProcess.exe.config" target="lib\net472\x64"/>
     <file src="..\CefGlue.BrowserProcess\bin\Release\net472\Xilium.CefGlue.BrowserProcess.pdb" target="lib\net472\x64"/>
@@ -34,6 +37,9 @@
 
     <file src="..\CefGlue.Common\bin\Release\netstandard2.0\Xilium.CefGlue.Common.dll" target="lib\netcoreapp3.1\x64"/>
     <file src="..\CefGlue.Common\bin\Release\netstandard2.0\Xilium.CefGlue.Common.pdb" target="lib\netcoreapp3.1\x64"/>
+
+    <file src="..\CefGlue.Common.Shared\bin\Release\netstandard2.0\Xilium.CefGlue.Common.Shared.dll" target="lib\netcoreapp3.1\x64"/>
+    <file src="..\CefGlue.Common.Shared\bin\Release\netstandard2.0\Xilium.CefGlue.Common.Shared.pdb" target="lib\netcoreapp3.1\x64"/>
 
     <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp3.1\Xilium.CefGlue.BrowserProcess.dll" target="lib\netcoreapp3.1\x64"/>
     <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp3.1\Xilium.CefGlue.BrowserProcess.pdb" target="lib\netcoreapp3.1\x64"/>
