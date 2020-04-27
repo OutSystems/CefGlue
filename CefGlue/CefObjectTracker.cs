@@ -42,7 +42,7 @@ namespace Xilium.CefGlue
                 var currentThreadId = Thread.CurrentThread.ManagedThreadId;
                 if (!_disposables.ContainsKey(currentThreadId))
                 {
-                    // no sessions have been strated for current thread
+                    // no sessions have started in current thread
                     _disposables.Add(currentThreadId, new HashSet<IDisposable>());
                     return TrackingSession.Default;
                 }
@@ -79,9 +79,12 @@ namespace Xilium.CefGlue
             if (_enabled)
             {
                 var currentThreadId = Thread.CurrentThread.ManagedThreadId;
-                if (_disposables.TryGetValue(currentThreadId, out var threadDisposables))
+                lock (_disposables)
                 {
-                    threadDisposables.Add(obj);
+                    if (_disposables.TryGetValue(currentThreadId, out var threadDisposables))
+                    {
+                        threadDisposables.Add(obj);
+                    }
                 }
             }
         }
@@ -95,9 +98,12 @@ namespace Xilium.CefGlue
             if (_enabled)
             {
                 var currentThreadId = Thread.CurrentThread.ManagedThreadId;
-                if (_disposables.TryGetValue(currentThreadId, out var threadDisposables))
+                lock (_disposables)
                 {
-                    threadDisposables.Remove(obj);
+                    if (_disposables.TryGetValue(currentThreadId, out var threadDisposables))
+                    {
+                        threadDisposables.Remove(obj);
+                    }
                 }
             }
         }
