@@ -9,6 +9,8 @@ namespace Xilium.CefGlue.Common
 {
     internal class CommonOffscreenBrowserAdapter : CommonBrowserAdapter, IOffscreenCefBrowserHost
     {
+        private static readonly TimeSpan ResizeDelay = TimeSpan.FromMilliseconds(50);
+
         private bool _isVisible = true;
 
         private Func<CefRectangle> _getViewRectOverride;
@@ -198,17 +200,22 @@ namespace Xilium.CefGlue.Common
                         // workaround cef OSR bug (https://bitbucket.org/chromiumembedded/cef/issues/2483/osr-invalidate-does-not-generate-frame)
                         // we notify browser of a resize and return height+1px on next GetViewRect call
                         // then restore the original size back again
-                        ActionTask.Run(() =>
+                        ActionTask.Run(async () =>
                         {
                             _getViewRectOverride = () =>
                             {
-                                _getViewRectOverride = null;
-                                BrowserHost?.WasResized();
                                 return new CefRectangle(0, 0, Width, Height + 1);
                             };
-
                             BrowserHost.WasResized();
-                        });
+
+                            await Task.Delay(ResizeDelay);
+
+                            if (BrowserHost != null)
+                            {
+                                _getViewRectOverride = null;
+                                BrowserHost.WasResized();
+                            }
+                        });   
                     }
                     else
                     {
@@ -391,6 +398,11 @@ namespace Xilium.CefGlue.Common
 
         void IOffscreenCefBrowserHost.HandleViewPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects, bool isPopup)
         {
+            if (_getViewRectOverride != null)
+            {
+                return;
+            }
+
             OffScreenRenderSurface renderHandler;
             if (isPopup)
             {
