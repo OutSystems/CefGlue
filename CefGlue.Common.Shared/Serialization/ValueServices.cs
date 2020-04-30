@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue.Common.Serialization
+namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     public static class ValueServices
     {

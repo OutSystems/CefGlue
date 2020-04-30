@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Xilium.CefGlue.Common.Helpers
+namespace Xilium.CefGlue.Common.Shared.Helpers
 {
     internal class MessageDispatcher
     {

@@ -2,6 +2,7 @@ using System;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Helpers.Logger;
 using Xilium.CefGlue.Common.InternalHandlers;
+using Xilium.CefGlue.Common.Shared.Helpers;
 
 namespace Xilium.CefGlue.Common
 {

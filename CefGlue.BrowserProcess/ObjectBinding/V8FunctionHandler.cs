@@ -1,7 +1,7 @@
 using System;
 using Xilium.CefGlue.BrowserProcess.Serialization;
-using Xilium.CefGlue.Common.RendererProcessCommunication;
-using Xilium.CefGlue.Common.Serialization;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
@@ -18,36 +18,34 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         protected override bool Execute(string name, CefV8Value obj, CefV8Value[] arguments, out CefV8Value returnValue, out string exception)
         {
-            using (var cefArgs = CefListValue.Create())
+            var cefArgs = CefListValue.Create();
+            // create a copy of the args to pass to the browser process
+            for (var i = 0; i < arguments.Length; i++)
             {
-                // create a copy of the args to pass to the browser process
-                for (var i = 0; i < arguments.Length; i++)
-                {
-                    V8ValueSerialization.SerializeV8Object(arguments[i], new CefListWrapper(cefArgs, i));
-                }
-
-                var message = new Messages.NativeObjectCallRequest()
-                {
-                    ObjectName = _objectName,
-                    MemberName = name,
-                    Arguments = cefArgs
-                };
-
-                var promiseHolder = _functionCallHandler(message);
-
-                if (promiseHolder != null)
-                {
-                    returnValue = promiseHolder.Promise;
-                    exception = null;
-                } 
-                else
-                {
-                    returnValue = null;
-                    exception = "Failed to create promise";
-                }
-
-                return true;
+                V8ValueSerialization.SerializeV8Object(arguments[i], new CefListWrapper(cefArgs, i));
             }
+
+            var message = new Messages.NativeObjectCallRequest()
+            {
+                ObjectName = _objectName,
+                MemberName = name,
+                Arguments = cefArgs
+            };
+
+            var promiseHolder = _functionCallHandler(message);
+
+            if (promiseHolder != null)
+            {
+                returnValue = promiseHolder.Promise;
+                exception = null;
+            } 
+            else
+            {
+                returnValue = null;
+                exception = "Failed to create promise";
+            }
+
+            return true;
         }
     }
 }

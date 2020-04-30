@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -26,7 +26,7 @@
             var m_windowInfo = CefWindowInfo.FromNative(windowInfo);
             var m_client = CefClient.FromNative(*client);
             var m_settings = new CefBrowserSettings(settings);
-            var m_extraInfo = CefDictionaryValue.FromNativeOrNull(*extra_info);
+            var m_extraInfo = CefDictionaryValue.FromNativeOrNull(*extra_info); // TODO dispose?
             var m_noJavascriptAccess = (*no_javascript_access) != 0;
 
             var o_extraInfo = m_extraInfo;

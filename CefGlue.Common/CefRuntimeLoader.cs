@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Xilium.CefGlue.Common.Handlers;
+using Xilium.CefGlue.Common.Shared;
 
 namespace Xilium.CefGlue.Common
 {
@@ -49,7 +50,7 @@ namespace Xilium.CefGlue.Common
             AppDomain.CurrentDomain.ProcessExit += delegate { CefRuntime.Shutdown(); };
 
             IsOSREnabled = settings.WindowlessRenderingEnabled;
-            CefRuntime.Initialize(new CefMainArgs(new string[0]), settings, new CommonCefApp(customSchemes, flags, browserProcessHandler), IntPtr.Zero);
+            CefRuntime.Initialize(new CefMainArgs(new string[0]), settings, new BrowserCefApp(customSchemes, flags, browserProcessHandler), IntPtr.Zero);
 
             if (customSchemes != null)
             {

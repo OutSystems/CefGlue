@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -18,7 +18,7 @@
         {
             CheckSelf(self);
 
-            var m_request = CefUrlRequest.FromNative(request);
+            var m_request = CefUrlRequest.FromNative(request); // TODO dispose?
 
             OnRequestComplete(m_request);
         }
@@ -35,7 +35,7 @@
         {
             CheckSelf(self);
 
-            var m_request = CefUrlRequest.FromNative(request);
+            var m_request = CefUrlRequest.FromNative(request); // TODO dispose?
 
             OnUploadProgress(m_request, current, total);
         }
@@ -53,7 +53,7 @@
         {
             CheckSelf(self);
 
-            var m_request = CefUrlRequest.FromNative(request);
+            var m_request = CefUrlRequest.FromNative(request); // TODO dispose?
 
             OnDownloadProgress(m_request, current, total);
         }
@@ -70,7 +70,7 @@
         {
             CheckSelf(self);
 
-            var m_request = CefUrlRequest.FromNative(request);
+            var m_request = CefUrlRequest.FromNative(request); // TODO dispose?
 
             using (var stream = new UnmanagedMemoryStream((byte*)data, (long)data_length))
             {

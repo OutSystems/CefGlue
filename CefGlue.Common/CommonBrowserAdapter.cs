@@ -7,7 +7,8 @@ using Xilium.CefGlue.Common.Helpers.Logger;
 using Xilium.CefGlue.Common.JavascriptExecution;
 using Xilium.CefGlue.Common.ObjectBinding;
 using Xilium.CefGlue.Common.Platform;
-using Xilium.CefGlue.Common.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Shared.Helpers;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common
 {

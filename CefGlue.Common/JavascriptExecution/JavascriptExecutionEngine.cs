@@ -4,8 +4,9 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers;
-using Xilium.CefGlue.Common.RendererProcessCommunication;
-using Xilium.CefGlue.Common.Serialization;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Shared.Serialization;
+using Xilium.CefGlue.Common.Shared.Helpers;
 
 namespace Xilium.CefGlue.Common.JavascriptExecution
 {
@@ -90,10 +91,8 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
             try
             {
-                using (var cefMessage = message.ToCefProcessMessage())
-                {
-                    frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
-                }
+                var cefMessage = message.ToCefProcessMessage();
+                frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
 
                 // TODO should we add any timeout param and remove the task after that ?
                 await messageReceiveCompletionSource.Task;

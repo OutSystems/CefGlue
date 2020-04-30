@@ -40,17 +40,20 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         public static PromiseHolder CreatePromise(this CefV8Context context)
         {
-            using (var global = context.GetGlobal())
-            using (var cefGlueGlobal = global.GetValue(GlobalObjectName)) // TODO what if cefGlueGlobal == null?
-            using (var promiseFactory = cefGlueGlobal.GetValue(PromiseFactoryFunctionName))
-            using (var promiseData = promiseFactory.ExecuteFunctionWithContext(context, null, new CefV8Value[0])) // create a promise and return the resolve and reject callbacks
-            {
-                var promise = promiseData.GetValue("promise");
-                var resolve = promiseData.GetValue("resolve");
-                var reject = promiseData.GetValue("reject");
+            var global = context.GetGlobal();
+            var cefGlueGlobal = global.GetValue(GlobalObjectName); // TODO what if cefGlueGlobal == null?
+            var promiseFactory = cefGlueGlobal.GetValue(PromiseFactoryFunctionName);
+            var promiseData = promiseFactory.ExecuteFunctionWithContext(context, null, new CefV8Value[0]); // create a promise and return the resolve and reject callbacks
 
-                return new PromiseHolder(promise, resolve, reject, context);
-            }
+            var promise = promiseData.GetValue("promise");
+            var resolve = promiseData.GetValue("resolve");
+            var reject = promiseData.GetValue("reject");
+
+            CefObjectTracker.Untrack(promise);
+            CefObjectTracker.Untrack(resolve);
+            CefObjectTracker.Untrack(reject);
+
+            return new PromiseHolder(promise, resolve, reject, context);
         }
     }
 }

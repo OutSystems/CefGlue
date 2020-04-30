@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue.Common.Helpers
+namespace Xilium.CefGlue.Common.Shared.Helpers
 {
     internal class MessageReceivedEventArgs
     {

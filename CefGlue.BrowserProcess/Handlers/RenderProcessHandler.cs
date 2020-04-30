@@ -1,8 +1,8 @@
 using System;
 using Xilium.CefGlue.BrowserProcess.JavascriptExecution;
 using Xilium.CefGlue.BrowserProcess.ObjectBinding;
-using Xilium.CefGlue.Common.Helpers;
-using Xilium.CefGlue.Common.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Shared.Helpers;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.BrowserProcess.Handlers
 {
@@ -30,7 +30,10 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
         {
             WithErrorHandling(() =>
             {
-                _messageDispatcher.DispatchMessage(browser, frame, sourceProcess, message);
+                using (CefObjectTracker.StartTracking())
+                {
+                    _messageDispatcher.DispatchMessage(browser, frame, sourceProcess, message);
+                }
             }, frame);
             return base.OnProcessMessageReceived(browser, frame, sourceProcess, message);
         }
@@ -39,12 +42,13 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
         {
             WithErrorHandling(() =>
             {
-                base.OnContextCreated(browser, frame, context);
-                _javascriptToNativeDispatcher.HandleContextCreated(context, frame.IsMain);
-
-                var message = new Messages.JsContextCreated();
-                using (var cefMessage = message.ToCefProcessMessage())
+                using (CefObjectTracker.StartTracking())
                 {
+                    base.OnContextCreated(browser, frame, context);
+                    _javascriptToNativeDispatcher.HandleContextCreated(context, frame.IsMain);
+
+                    var message = new Messages.JsContextCreated();
+                    var cefMessage = message.ToCefProcessMessage();
                     frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
                 }
             }, frame);
@@ -54,12 +58,13 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
         {
             WithErrorHandling(() =>
             {
-                _javascriptToNativeDispatcher.HandleContextReleased(context, frame.IsMain);
-                base.OnContextReleased(browser, frame, context);
-
-                var message = new Messages.JsContextReleased();
-                using (var cefMessage = message.ToCefProcessMessage())
+                using (CefObjectTracker.StartTracking())
                 {
+                    _javascriptToNativeDispatcher.HandleContextReleased(context, frame.IsMain);
+                    base.OnContextReleased(browser, frame, context);
+
+                    var message = new Messages.JsContextReleased();
+                    var cefMessage = message.ToCefProcessMessage();
                     frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
                 }
             }, frame);
@@ -69,30 +74,32 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
         {
             WithErrorHandling(() =>
             {
-                var frames = new Messages.JsStackFrame[stackTrace.FrameCount];
-                for (var i = 0; i < stackTrace.FrameCount; i++)
+                using (CefObjectTracker.StartTracking())
                 {
-                    var stackFrame = stackTrace.GetFrame(i);
-                    frames[i] = new Messages.JsStackFrame()
+                    var frames = new Messages.JsStackFrame[stackTrace.FrameCount];
+                    for (var i = 0; i < stackTrace.FrameCount; i++)
                     {
-                        FunctionName = stackFrame.FunctionName,
-                        ScriptNameOrSourceUrl = stackFrame.ScriptNameOrSourceUrl,
-                        LineNumber = stackFrame.LineNumber,
-                        Column = stackFrame.Column
+                        var stackFrame = stackTrace.GetFrame(i);
+                        frames[i] = new Messages.JsStackFrame()
+                        {
+                            FunctionName = stackFrame.FunctionName,
+                            ScriptNameOrSourceUrl = stackFrame.ScriptNameOrSourceUrl,
+                            LineNumber = stackFrame.LineNumber,
+                            Column = stackFrame.Column
+                        };
+                    }
+
+                    var message = new Messages.JsUncaughtException()
+                    {
+                        Message = exception.Message,
+                        StackFrames = frames
                     };
-                }
 
-                var message = new Messages.JsUncaughtException()
-                {
-                    Message = exception.Message,
-                    StackFrames = frames
-                };
-                using (var cefMessage = message.ToCefProcessMessage())
-                {
+                    var cefMessage = message.ToCefProcessMessage();
                     frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
-                }
 
-                base.OnUncaughtException(browser, frame, context, exception, stackTrace);
+                    base.OnUncaughtException(browser, frame, context, exception, stackTrace);
+                }
             }, frame);
         }
 
@@ -120,14 +127,15 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
                 {
                     if (frame != null)
                     {
-                        var exceptionMessage = new Messages.UnhandledException()
+                        using (CefObjectTracker.StartTracking())
                         {
-                            ExceptionType = e.GetType().FullName,
-                            Message = e.Message,
-                            StackTrace = e.StackTrace
-                        };
-                        using (var message = exceptionMessage.ToCefProcessMessage())
-                        {
+                            var exceptionMessage = new Messages.UnhandledException()
+                            {
+                                ExceptionType = e.GetType().FullName,
+                                Message = e.Message,
+                                StackTrace = e.StackTrace
+                            };
+                            var message = exceptionMessage.ToCefProcessMessage();
                             frame.SendProcessMessage(CefProcessId.Browser, message);
                         }
                     }

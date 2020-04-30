@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -16,7 +16,7 @@
         {
             CheckSelf(self);
 
-            var m_info = CefWebPluginInfo.FromNative(info);
+            var m_info = CefWebPluginInfo.FromNative(info); // TODO dispose?
 
             var result = Visit(m_info, count, total);
 

@@ -40,23 +40,20 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
                                 boundQueryTask.ContinueWith(t =>
                                 {
+                                    using (CefObjectTracker.StartTracking())
                                     using (resultingPromise.Context.EnterOrFail())
                                     {
                                         resultingPromise.ResolveOrReject((resolve, reject) =>
                                         {
                                             if (t.IsFaulted)
                                             {
-                                                using (var exceptionMsg = CefV8Value.CreateString(t.Exception.Message))
-                                                {
-                                                    reject(exceptionMsg);
-                                                }
+                                                var exceptionMsg = CefV8Value.CreateString(t.Exception.Message);
+                                                reject(exceptionMsg);
                                             }
                                             else
                                             {
-                                                using (var result = CefV8Value.CreateBool(t.Result))
-                                                {
-                                                    resolve(result);
-                                                }
+                                                var result = CefV8Value.CreateBool(t.Result);
+                                                resolve(result);
                                             }
                                         });
                                     }

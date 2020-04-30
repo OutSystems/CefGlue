@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <AssemblyName>Xilium.CefGlue.Common.Shared</AssemblyName>
+    <RootNamespace>Xilium.CefGlue.Common.Shared</RootNamespace>
+    <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
+  </ItemGroup>
+
+</Project>

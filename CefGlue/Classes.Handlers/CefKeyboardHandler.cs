@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -17,7 +17,7 @@
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
-            var m_event = CefKeyEvent.FromNative(@event);
+            var m_event = CefKeyEvent.FromNative(@event); // TODO dispose?
             // TODO: wrap cef_event_handle_t (os_event)
             IntPtr m_os_event = IntPtr.Zero;
             if (os_event != IntPtr.Zero)
@@ -51,7 +51,7 @@
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
-            var m_event = CefKeyEvent.FromNative(@event);
+            var m_event = CefKeyEvent.FromNative(@event); // TODO dispose?
             // TODO: wrap cef_event_handle_t (os_event)
             IntPtr m_os_event = IntPtr.Zero;
             if (os_event != IntPtr.Zero)

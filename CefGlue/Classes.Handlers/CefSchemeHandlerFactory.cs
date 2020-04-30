@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -19,7 +19,7 @@
             var m_browser = CefBrowser.FromNativeOrNull(browser);
             var m_frame = CefFrame.FromNativeOrNull(frame);
             var m_schemeName = cef_string_t.ToString(scheme_name);
-            var m_request = CefRequest.FromNative(request);
+            var m_request = CefRequest.FromNative(request); // TODO dispose?
 
             var handler = Create(m_browser, m_frame, m_schemeName, m_request);
 

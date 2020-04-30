@@ -149,6 +149,10 @@
       <Project>{1e60fb67-049e-4877-92a9-d5480f81a324}</Project>
       <Name>CefGlue.BrowserProcess</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CefGlue.Common.Shared\CefGlue.Common.Shared.csproj">
+      <Project>{BA0F8218-A7D3-4C90-AA4D-F914A3C974E9}</Project>
+      <Name>CefGlue.Common.Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj">
       <Project>{F8F4D0B8-5777-41A1-AB3C-0E324E61FAF9}</Project>
       <Name>CefGlue.Common</Name>

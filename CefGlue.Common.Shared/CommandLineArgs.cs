@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue.Common
+namespace Xilium.CefGlue.Common.Shared
 {
     internal static class CommandLineArgs
     {

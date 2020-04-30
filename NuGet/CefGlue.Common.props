@@ -8,6 +8,10 @@
             <HintPath>$(MSBuildThisFileDirectory)..\lib\net472\x64\Xilium.CefGlue.Common.dll</HintPath>
             <Private>False</Private>
         </Reference>
+        <Reference Include="Xilium.CefGlue.Common.Shared">
+            <HintPath>$(MSBuildThisFileDirectory)..\lib\net472\x64\Xilium.CefGlue.Common.Shared.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
         <None Include="@(CefGlueCommonBinaries)">
             <Visible>false</Visible>
             <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>

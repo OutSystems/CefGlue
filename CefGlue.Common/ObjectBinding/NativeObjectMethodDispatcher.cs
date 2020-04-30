@@ -7,8 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers;
-using Xilium.CefGlue.Common.RendererProcessCommunication;
-using Xilium.CefGlue.Common.Serialization;
+using Xilium.CefGlue.Common.Shared.Helpers;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
@@ -52,17 +53,15 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         private void HandleNativeObjectCallRequest(MessageReceivedEventArgs args)
         {
             // message and arguments must be deserialized at this point because it will be disposed after
-            using (var message = Messages.NativeObjectCallRequest.FromCefMessage(args.Message))
+            var message = Messages.NativeObjectCallRequest.FromCefMessage(args.Message);
+            var arguments = CefValueSerialization.DeserializeCefList<object>(message.Arguments);
+
+            if (_cancellationTokenSource.IsCancellationRequested)
             {
-                var arguments = CefValueSerialization.DeserializeCefList<object>(message.Arguments);
-
-                if (_cancellationTokenSource.IsCancellationRequested)
-                {
-                    return;
-                }
-
-                _pendingTasks.Add(new MethodExecutionContext(message.CallId, message.ObjectName, message.MemberName, arguments, args.Frame));
+                return;
             }
+
+            _pendingTasks.Add(new MethodExecutionContext(message.CallId, message.ObjectName, message.MemberName, arguments, args.Frame));
         }
 
         private object ExecuteMethod(object targetObj, MethodInfo method, object[] args, JavascriptObjectMethodCallHandler methodHandler)
@@ -145,45 +144,46 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         }
 
         private void DispatchNativeObjectCall(MethodExecutionContext context) 
-        { 
-            var resultMessage = new Messages.NativeObjectCallResult()
+        {
+            using (CefObjectTracker.StartTracking())
             {
-                CallId = context.CallId,
-                Result = new CefValueHolder(),
-            };
-
-            try
-            {
-                var targetObj = _objectRegistry.Get(context.ObjectName);
-                if (targetObj != null)
+                var resultMessage = new Messages.NativeObjectCallResult()
                 {
-                    var nativeMethod = targetObj.GetNativeMethod(context.MemberName);
-                    if (nativeMethod != null)
+                    CallId = context.CallId,
+                    Result = new CefValueHolder(),
+                };
+
+                try
+                {
+                    var targetObj = _objectRegistry.Get(context.ObjectName);
+                    if (targetObj != null)
                     {
-                        var result = ExecuteMethod(targetObj.Target, nativeMethod, context.Arguments, targetObj.MethodHandler);
-                        CefValueSerialization.Serialize(result, resultMessage.Result);
-                        resultMessage.Success = true;
+                        var nativeMethod = targetObj.GetNativeMethod(context.MemberName);
+                        if (nativeMethod != null)
+                        {
+                            var result = ExecuteMethod(targetObj.Target, nativeMethod, context.Arguments, targetObj.MethodHandler);
+                            CefValueSerialization.Serialize(result, resultMessage.Result);
+                            resultMessage.Success = true;
+                        }
+                        else
+                        {
+                            resultMessage.Success = false;
+                            resultMessage.Exception = $"Object does not have a {context.ObjectName} method.";
+                        }
                     }
                     else
                     {
                         resultMessage.Success = false;
-                        resultMessage.Exception = $"Object does not have a {context.ObjectName} method.";
+                        resultMessage.Exception = $"Object named {context.ObjectName} was not found. Make sure it was registered before.";
                     }
                 }
-                else
+                catch (Exception e)
                 {
                     resultMessage.Success = false;
-                    resultMessage.Exception = $"Object named {context.ObjectName} was not found. Make sure it was registered before.";
+                    resultMessage.Exception = e.Message;
                 }
-            }
-            catch (Exception e)
-            {
-                resultMessage.Success = false;
-                resultMessage.Exception = e.Message;
-            }
 
-            using (var cefMessage = resultMessage.ToCefProcessMessage())
-            {
+                var cefMessage = resultMessage.ToCefProcessMessage();
                 if (context.Frame.IsValid)
                 {
                     context.Frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);

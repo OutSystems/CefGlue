@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Xilium.CefGlue.Common;
+using Xilium.CefGlue.Common.Shared;
 
 namespace Xilium.CefGlue.BrowserProcess
 {
@@ -20,7 +20,7 @@ namespace Xilium.CefGlue.BrowserProcess
 
                 // first argument is the path of the executable, but its ignored for now
                 var mainArgs = new CefMainArgs(new[] { "BrowserProcess" }.Concat(args).ToArray());
-                var exitCode = CefRuntime.ExecuteProcess(mainArgs, new BrowserCefApp(customSchemes), IntPtr.Zero);
+                var exitCode = CefRuntime.ExecuteProcess(mainArgs, new RendererCefApp(customSchemes), IntPtr.Zero);
                 if (exitCode != -1)
                 {
                     Environment.Exit(exitCode);

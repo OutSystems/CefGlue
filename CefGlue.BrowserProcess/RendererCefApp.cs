@@ -1,13 +1,13 @@
 using Xilium.CefGlue.BrowserProcess.Handlers;
-using Xilium.CefGlue.Common;
+using Xilium.CefGlue.Common.Shared;
 
 namespace Xilium.CefGlue.BrowserProcess
 {
-    internal class BrowserCefApp : CommonCefApp
+    internal class RendererCefApp : CommonCefApp
     {
         private readonly CefRenderProcessHandler _renderProcessHandler = new RenderProcessHandler();
 
-        internal BrowserCefApp(CustomScheme[] customSchemes) : base(customSchemes)
+        internal RendererCefApp(CustomScheme[] customSchemes) : base(customSchemes)
         {
         }
 

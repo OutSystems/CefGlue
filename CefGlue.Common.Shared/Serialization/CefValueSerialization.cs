@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 
-namespace Xilium.CefGlue.Common.Serialization
+namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal static class CefValueSerialization
     {
@@ -180,13 +180,11 @@ namespace Xilium.CefGlue.Common.Serialization
 
                 case CefValueType.Dictionary:
                     IDictionary<string, object> dictionary = new ExpandoObject();
-                    using (var cefDictionary = cefValue.GetDictionary())
+                    var cefDictionary = cefValue.GetDictionary();
+                    var keys = cefDictionary.GetKeys();
+                    foreach (var key in keys)
                     {
-                        var keys = cefDictionary.GetKeys();
-                        foreach (var key in keys)
-                        {
-                            dictionary[key] = DeserializeCefValue(new CefDictionaryWrapper(cefDictionary, key));
-                        }
+                        dictionary[key] = DeserializeCefValue(new CefDictionaryWrapper(cefDictionary, key));
                     }
                     return dictionary;
 
@@ -194,10 +192,8 @@ namespace Xilium.CefGlue.Common.Serialization
                     return cefValue.GetDouble();
 
                 case CefValueType.List:
-                    using (var cefList = cefValue.GetList())
-                    {
-                        return DeserializeCefList<object>(cefList);
-                    }
+                    var cefList = cefValue.GetList();
+                    return DeserializeCefList<object>(cefList);
 
                 case CefValueType.Int:
                     return cefValue.GetInt();

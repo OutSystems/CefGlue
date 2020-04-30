@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Xilium.CefGlue.Common
+namespace Xilium.CefGlue.Common.Shared
 {
     public class CustomScheme
     {
