@@ -40,7 +40,7 @@ namespace Xilium.CefGlue.WPF.Platform
                 return new WindowInteropHelper(window).Handle;
             }
 
-            return null;
+            return IntPtr.Zero;
         }
 
         public virtual void SetTooltip(string text)

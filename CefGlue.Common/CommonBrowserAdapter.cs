@@ -301,7 +301,7 @@ namespace Xilium.CefGlue.Common
 
         public bool CreateBrowser(int width, int height)
         {
-            if (IsBrowserCreated || width <= 0 || height <= 0)
+            if (IsBrowserCreated || width < 0 || height < 0)
             {
                 return false;
             }
