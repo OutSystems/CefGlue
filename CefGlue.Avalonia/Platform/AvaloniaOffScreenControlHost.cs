@@ -44,7 +44,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
         public event Action<float> ScreenInfoChanged;
         public event Action<bool> VisibilityChanged;
 
-        public AvaloniaOffScreenControlHost(ContentControl control, Func<Window> getHostingWindow) : base(control, getHostingWindow)
+        public AvaloniaOffScreenControlHost(ContentControl control, Func<WindowBase> getHostingWindow) : base(control, getHostingWindow)
         {
             DragDrop.SetAllowDrop(control, true);
 
@@ -75,6 +75,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
             SetContent(image);
             RenderSurface = new AvaloniaRenderSurface(image);
         }
+
+        protected override bool NeedsRootWindowStylesFix => false;
 
         public OffScreenRenderSurface RenderSurface { get; }
 

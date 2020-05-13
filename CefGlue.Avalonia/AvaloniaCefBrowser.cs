@@ -39,9 +39,9 @@ namespace Xilium.CefGlue.Avalonia
             return new AvaloniaPopup(popup, GetHostingWindow);
         }
 
-        protected virtual Window GetHostingWindow()
+        protected virtual WindowBase GetHostingWindow()
         {
-            return this.GetVisualRoot() as Window;
+            return this.GetVisualRoot() as WindowBase;
         }
     }
 }

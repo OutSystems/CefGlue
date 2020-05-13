@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Xilium.CefGlue.Common.Helpers;
@@ -19,13 +20,13 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         private readonly Control _contextMenuDummyTarget;
         private IntPtr? _browserHandle;
-        private Func<Window> _getHostingWindow;
+        private Func<WindowBase> _getHostingWindow;
 
         protected readonly ContentControl _control;
 
         public event Action<CefSize> SizeChanged;
 
-        public AvaloniaControl(ContentControl control, Func<Window> getHostingWindow)
+        public AvaloniaControl(ContentControl control, Func<WindowBase> getHostingWindow)
         {
             _control = control;
             _getHostingWindow = getHostingWindow;
@@ -41,6 +42,23 @@ namespace Xilium.CefGlue.Avalonia.Platform
             _control.Content = panel;
 
             _control.LayoutUpdated += OnLayoutUpdated;
+
+            if (NeedsRootWindowStylesFix)
+            {
+                _control.AttachedToLogicalTree += OnAttachedToLogicalTree;
+            }
+        }
+
+        protected virtual bool NeedsRootWindowStylesFix => CefRuntime.Platform == CefRuntimePlatform.Windows;
+
+        private void OnAttachedToLogicalTree(object sender, LogicalTreeAttachmentEventArgs e)
+        {
+            if (e.Root is PopupRoot root)
+            {
+                // FIX avalonia popups dont apply the CLIPCHILDREN style, so we must force it
+                var rootHandle = root.PlatformImpl.Handle.Handle;
+                NativeExtensions.Windows.SetWindowLong(rootHandle, NativeExtensions.Windows.GWL.STYLE, NativeExtensions.Windows.WS.CLIPCHILDREN);
+            }
         }
 
         private void OnLayoutUpdated(object sender, EventArgs e)

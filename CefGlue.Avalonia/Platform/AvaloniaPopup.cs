@@ -14,7 +14,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
     {
         private readonly ExtendedAvaloniaPopup _popup;
 
-        public AvaloniaPopup(ExtendedAvaloniaPopup popup, Func<Window> getHostingWindow) : base(popup, getHostingWindow)
+        public AvaloniaPopup(ExtendedAvaloniaPopup popup, Func<WindowBase> getHostingWindow) : base(popup, getHostingWindow)
         {
             _popup = popup;
         }

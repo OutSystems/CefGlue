@@ -315,7 +315,7 @@ namespace Xilium.CefGlue.Common
             IsBrowserCreated = true;
 
             var windowInfo = CefWindowInfo.Create();
-            SetupBrowserView(windowInfo, width, height, hostViewHandle ?? IntPtr.Zero);
+            SetupBrowserView(windowInfo, width, height, hostViewHandle.Value);
 
             var cefClient = CreateCefClient();
             cefClient.Dispatcher.RegisterMessageHandler(Messages.UnhandledException.Name, OnBrowserProcessUnhandledException);
