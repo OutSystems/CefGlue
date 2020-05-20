@@ -23,13 +23,16 @@ namespace Xilium.CefGlue.WPF.Platform
         public WpfControl(FrameworkElement control)
         {
             _control = control;
-
+            
             control.LayoutUpdated += OnControlLayoutUpdated;
         }
 
         private void OnControlLayoutUpdated(object sender, EventArgs e)
         {
-            SizeChanged?.Invoke(new CefSize((int)_control.RenderSize.Width, (int)_control.RenderSize.Height));
+            if (_control.IsLoaded)
+            {
+                SizeChanged?.Invoke(new CefSize((int)_control.RenderSize.Width, (int)_control.RenderSize.Height));
+            }
         }
 
         public IntPtr? GetHostViewHandle()
