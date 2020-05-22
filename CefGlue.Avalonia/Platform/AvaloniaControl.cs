@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Avalonia.Platform
@@ -19,29 +20,20 @@ namespace Xilium.CefGlue.Avalonia.Platform
     {
         private static IntPtr? _dummyHostView;
 
-        private readonly Control _contextMenuDummyTarget;
         private IntPtr? _browserHandle;
         private Func<WindowBase> _getHostingWindow;
+        private readonly IAvaloniaList<IVisual> _controlVisualChildren;
 
-        protected readonly ContentControl _control;
+        protected readonly Control _control;
 
         public event Action GotFocus;
         public event Action<CefSize> SizeChanged;
 
-        public AvaloniaControl(ContentControl control, Func<WindowBase> getHostingWindow)
+        public AvaloniaControl(Control control, IAvaloniaList<IVisual> visualChildren, Func<WindowBase> getHostingWindow)
         {
             _control = control;
+            _controlVisualChildren = visualChildren;
             _getHostingWindow = getHostingWindow;
-
-            _contextMenuDummyTarget = new Control();
-            _contextMenuDummyTarget.Width = 1;
-            _contextMenuDummyTarget.Height = 1;
-            _contextMenuDummyTarget.HorizontalAlignment = HorizontalAlignment.Left;
-            _contextMenuDummyTarget.VerticalAlignment = VerticalAlignment.Top;
-
-            var panel = new Panel();
-            panel.Children.Add(_contextMenuDummyTarget);
-            _control.Content = panel;
 
             _control.GotFocus += OnGotFocus;
             _control.LayoutUpdated += OnLayoutUpdated;
@@ -134,7 +126,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
                     menu.Items = menuItems;
 
                     _control.ContextMenu = menu;
-                    menu.Open(_contextMenuDummyTarget, new Point(x, y));
+                    menu.Open(_control, new Point(x, y));
                 },
                 DispatcherPriority.Input);
         }
@@ -185,7 +177,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         protected void SetContent(Control content)
         {
-            ((Panel)_control.Content).Children.Add(content); 
+            _controlVisualChildren.Add(content);
+            _control.InvalidateArrange();
         }
 
         public virtual void SetTooltip(string text) { }

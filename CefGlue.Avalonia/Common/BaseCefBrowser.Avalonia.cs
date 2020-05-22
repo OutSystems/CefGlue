@@ -1,11 +1,8 @@
 using Avalonia.Controls;
-using Avalonia.Styling;
-using System;
 
 namespace Xilium.CefGlue.Common
 {
-    partial class BaseCefBrowser : ContentControl, IStyleable
+    partial class BaseCefBrowser : Control
     {
-        Type IStyleable.StyleKey => typeof(ContentControl);
     }
 }

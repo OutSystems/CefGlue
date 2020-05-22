@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
+using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.VisualTree;
 
 namespace Xilium.CefGlue.Avalonia.Platform
 {
@@ -80,5 +82,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             }
             OnOpened(EventArgs.Empty);
         }
+
+        public new IAvaloniaList<IVisual> VisualChildren => base.VisualChildren;
     }
 }

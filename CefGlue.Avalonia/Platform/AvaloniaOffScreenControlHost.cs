@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -43,7 +44,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
         public event Action<float> ScreenInfoChanged;
         public event Action<bool> VisibilityChanged;
 
-        public AvaloniaOffScreenControlHost(ContentControl control, Func<WindowBase> getHostingWindow) : base(control, getHostingWindow)
+        public AvaloniaOffScreenControlHost(Control control, IAvaloniaList<IVisual> visualChildren, Func<WindowBase> getHostingWindow) : 
+            base(control, visualChildren, getHostingWindow)
         {
             DragDrop.SetAllowDrop(control, true);
 
