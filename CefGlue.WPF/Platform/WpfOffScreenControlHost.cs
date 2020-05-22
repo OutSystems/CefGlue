@@ -23,7 +23,6 @@ namespace Xilium.CefGlue.WPF.Platform
 
         private Point _browserScreenLocation;
 
-        public event Action GotFocus;
         public event Action LostFocus;
         public event Common.Platform.KeyEventHandler KeyDown;
         public event Common.Platform.KeyEventHandler KeyUp;
@@ -45,7 +44,6 @@ namespace Xilium.CefGlue.WPF.Platform
             control.AllowDrop = true;
 
             control.IsVisibleChanged += OnIsVisibleChanged;
-            control.GotFocus += OnGotFocus;
             control.LostFocus += OnLostFocus;
 
             control.MouseMove += OnMouseMove;
@@ -169,11 +167,6 @@ namespace Xilium.CefGlue.WPF.Platform
         private void OnLostFocus(object sender, RoutedEventArgs e)
         {
             LostFocus?.Invoke();
-        }
-
-        private void OnGotFocus(object sender, RoutedEventArgs e)
-        {
-            GotFocus?.Invoke();
         }
 
         private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)

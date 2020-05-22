@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Platform;
@@ -24,6 +25,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         protected readonly ContentControl _control;
 
+        public event Action GotFocus;
         public event Action<CefSize> SizeChanged;
 
         public AvaloniaControl(ContentControl control, Func<WindowBase> getHostingWindow)
@@ -41,6 +43,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             panel.Children.Add(_contextMenuDummyTarget);
             _control.Content = panel;
 
+            _control.GotFocus += OnGotFocus;
             _control.LayoutUpdated += OnLayoutUpdated;
 
             if (NeedsRootWindowStylesFix)
@@ -64,6 +67,11 @@ namespace Xilium.CefGlue.Avalonia.Platform
         private void OnLayoutUpdated(object sender, EventArgs e)
         {
             SizeChanged?.Invoke(new CefSize((int)_control.Bounds.Width, (int)_control.Bounds.Height));
+        }
+
+        private void OnGotFocus(object sender, GotFocusEventArgs e)
+        {
+            GotFocus?.Invoke();
         }
 
         protected IPlatformHandle GetPlatformHandle()

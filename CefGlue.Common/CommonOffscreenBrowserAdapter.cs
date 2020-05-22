@@ -39,7 +39,7 @@ namespace Xilium.CefGlue.Common
             BrowserHost?.SendMouseClickEvent(mouseEvent, mouseButton, isMouseUp, clickCount);
         }
 
-        private void HandleGotFocus()
+        protected override void HandleGotFocus()
         {
             WithErrorHandling(nameof(HandleGotFocus), () =>
             {
@@ -254,7 +254,6 @@ namespace Xilium.CefGlue.Common
 
         private void AttachEventHandlers(IOffScreenControlHost control)
         {
-            control.GotFocus += HandleGotFocus;
             control.LostFocus += HandleLostFocus;
 
             control.MouseMoved += HandleMouseMove;

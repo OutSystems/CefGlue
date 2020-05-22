@@ -6,6 +6,8 @@ namespace Xilium.CefGlue.Common.Platform
 {
     internal interface IControl
     {
+        event Action GotFocus;
+
         event Action<CefSize> SizeChanged;
 
         IntPtr? GetHostViewHandle();

@@ -17,17 +17,24 @@ namespace Xilium.CefGlue.WPF.Platform
     {
         protected readonly FrameworkElement _control;
         private ExtendedWpfNativeControlHost _nativeControl;
-
+        
+        public event Action GotFocus;
         public event Action<CefSize> SizeChanged;
 
         public WpfControl(FrameworkElement control)
         {
             _control = control;
-            
-            control.LayoutUpdated += OnControlLayoutUpdated;
+
+            control.GotFocus += OnGotFocus;
+            control.LayoutUpdated += OnLayoutUpdated;
         }
 
-        private void OnControlLayoutUpdated(object sender, EventArgs e)
+        private void OnGotFocus(object sender, RoutedEventArgs e)
+        {
+            GotFocus?.Invoke();
+        }
+
+        private void OnLayoutUpdated(object sender, EventArgs e)
         {
             if (_control.IsLoaded)
             {

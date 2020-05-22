@@ -27,7 +27,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
         private Cursor _currentDragCursor;
         private Cursor _previousCursor;
 
-        public event Action GotFocus;
         public event Action LostFocus;
         public event KeyEventHandler KeyDown;
         public event KeyEventHandler KeyUp;
@@ -51,7 +50,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
             control.AttachedToVisualTree += OnAttachedToVisualTree;
             control.DetachedFromVisualTree += OnDetachedFromVisualTree;
 
-            control.GotFocus += OnGotFocus;
             control.LostFocus += OnLostFocus;
 
             control.PointerMoved += OnPointerMoved;
@@ -168,11 +166,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
         private void OnPointerMoved(object sender, PointerEventArgs e)
         {
             MouseMoved?.Invoke(e.AsCefMouseEvent(MousePositionReferential));
-        }
-
-        private void OnGotFocus(object sender, GotFocusEventArgs e)
-        {
-            GotFocus?.Invoke();
         }
 
         private void OnLostFocus(object sender, RoutedEventArgs e)

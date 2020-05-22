@@ -39,6 +39,7 @@ namespace Xilium.CefGlue.Common
 
             Control = control;
 
+            control.GotFocus += HandleGotFocus;
             control.SizeChanged += HandleControlSizeChanged;
 
             if (_logger.IsInfoEnabled)
@@ -368,6 +369,14 @@ namespace Xilium.CefGlue.Common
         {
             _logger.ErrorException($"{_name} : Caught exception in {scopeName}()", exception);
             UnhandledException?.Invoke(_eventsEmitter, new AsyncUnhandledExceptionEventArgs(exception));
+        }
+
+        protected virtual void HandleGotFocus()
+        {
+            WithErrorHandling(nameof(HandleGotFocus), () =>
+            {
+                BrowserHost?.SetFocus(true);
+            });
         }
 
         protected virtual void HandleControlSizeChanged(CefSize size)

@@ -9,7 +9,6 @@ namespace Xilium.CefGlue.Common.Platform
 
     internal interface IOffScreenControlHost : IControl
     {
-        event Action GotFocus;
         event Action LostFocus;
 
         event KeyEventHandler KeyDown;
