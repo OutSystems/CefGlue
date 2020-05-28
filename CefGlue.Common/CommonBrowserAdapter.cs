@@ -23,7 +23,7 @@ namespace Xilium.CefGlue.Common
         private string _initialUrl = DefaultUrl;
         private string _title;
         private string _tooltip;
-        private bool _allowNativeMethodsParallelExecution = true;
+        private TaskScheduler _nativeMethodsTaskScheduler;
         private CefBrowser _browser;
         private CommonCefClient _cefClient;
         private JavascriptExecutionEngine _javascriptExecutionEngine;
@@ -148,16 +148,16 @@ namespace Xilium.CefGlue.Common
 
         public bool IsJavascriptEngineInitialized => _javascriptExecutionEngine.IsMainFrameContextInitialized;
 
-        public bool AllowNativeMethodsParallelExecution
+        public TaskScheduler NativeMethodsTaskScheduler
         {
-            get => _allowNativeMethodsParallelExecution;
+            get => _nativeMethodsTaskScheduler;
             set
             {
                 if (_objectMethodDispatcher != null)
                 {
-                    throw new InvalidOperationException($"Cannot set {nameof(AllowNativeMethodsParallelExecution)} after browser has been initialized");
+                    throw new InvalidOperationException($"Cannot set {nameof(NativeMethodsTaskScheduler)} after browser has been initialized");
                 }
-                _allowNativeMethodsParallelExecution = value;
+                _nativeMethodsTaskScheduler = value;
             }
         }
 
@@ -425,7 +425,7 @@ namespace Xilium.CefGlue.Common
                     _javascriptExecutionEngine = javascriptExecutionEngine;
 
                     _objectRegistry.SetBrowser(browser);
-                    _objectMethodDispatcher = new NativeObjectMethodDispatcher(dispatcher, _objectRegistry, AllowNativeMethodsParallelExecution);
+                    _objectMethodDispatcher = new NativeObjectMethodDispatcher(dispatcher, _objectRegistry, NativeMethodsTaskScheduler);
                 }
 
                 OnBrowserHostCreated(browserHost);
