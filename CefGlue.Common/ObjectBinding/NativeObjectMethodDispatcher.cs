@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Shared.Helpers;
@@ -34,19 +32,20 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         }
 
         private readonly NativeObjectRegistry _objectRegistry;
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        private readonly BlockingCollection<MethodExecutionContext> _pendingTasks = new BlockingCollection<MethodExecutionContext>();
-        private readonly CountdownEvent _dispatchPendingTasks = new CountdownEvent(1);
-        private readonly TaskScheduler _nativeMethodsTaskScheduler;
+        private readonly ActionBlock<MethodExecutionContext> _executionDispatcher;
 
-        public NativeObjectMethodDispatcher(MessageDispatcher dispatcher, NativeObjectRegistry objectRegistry, TaskScheduler nativeMethodsTaskScheduler = null)
+        public NativeObjectMethodDispatcher(MessageDispatcher dispatcher, NativeObjectRegistry objectRegistry, int maxDegreeOfParallelism)
         {
             _objectRegistry = objectRegistry;
-            _nativeMethodsTaskScheduler = nativeMethodsTaskScheduler ?? TaskScheduler.Default;
+
+            _executionDispatcher = new ActionBlock<MethodExecutionContext>(
+                DispatchNativeObjectCall, 
+                new ExecutionDataflowBlockOptions() { 
+                    MaxDegreeOfParallelism = maxDegreeOfParallelism,
+                    EnsureOrdered = true
+                });
 
             dispatcher.RegisterMessageHandler(Messages.NativeObjectCallRequest.Name, HandleNativeObjectCallRequest);
-
-            Task.Factory.StartNew(DispatchNativeObjectCalls, _cancellationTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         private void HandleNativeObjectCallRequest(MessageReceivedEventArgs args)
@@ -55,12 +54,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             var message = Messages.NativeObjectCallRequest.FromCefMessage(args.Message);
             var arguments = CefValueSerialization.DeserializeCefList<object>(message.Arguments);
 
-            if (_cancellationTokenSource.IsCancellationRequested)
-            {
-                return;
-            }
-
-            _pendingTasks.Add(new MethodExecutionContext(message.CallId, message.ObjectName, message.MemberName, arguments, args.Frame));
+            _executionDispatcher.Post(new MethodExecutionContext(message.CallId, message.ObjectName, message.MemberName, arguments, args.Frame));
         }
 
         private object ExecuteMethod(object targetObj, MethodInfo method, object[] args, JavascriptObjectMethodCallHandler methodHandler)
@@ -110,59 +104,6 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         private static bool IsParamArray(ParameterInfo paramInfo)
         {
             return paramInfo.GetCustomAttribute(typeof(ParamArrayAttribute), false) != null;
-        }
-
-        private void DispatchNativeObjectCalls()
-        {
-            Task Dispatch(MethodExecutionContext context)
-            {
-                return Task.Factory.StartNew(
-                    () =>
-                    {
-                        _dispatchPendingTasks.AddCount();
-                        try
-                        {
-                            if (_cancellationTokenSource.IsCancellationRequested)
-                            {
-                                // cancellation requested meanwhile, bail-out
-                                return;
-                            }
-                            DispatchNativeObjectCall(context);
-                        }
-                        finally
-                        {
-                            _dispatchPendingTasks.Signal();
-                        }
-                    },
-                    _cancellationTokenSource.Token, 
-                    TaskCreationOptions.DenyChildAttach,
-                    _nativeMethodsTaskScheduler);
-            }
-
-            try
-            {
-                while (!_cancellationTokenSource.IsCancellationRequested)
-                {
-                    var context = _pendingTasks.Take(_cancellationTokenSource.Token);
-                    if (context != null)
-                    {
-                        Dispatch(context);
-                    }
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                // stop
-            }
-            finally
-            {
-                if (_dispatchPendingTasks.CurrentCount > 1)
-                {
-                    _dispatchPendingTasks.Signal(); // remove dummy entry
-                    _dispatchPendingTasks.Wait();
-                }
-                _cancellationTokenSource.Dispose();
-            }
         }
 
         private void DispatchNativeObjectCall(MethodExecutionContext context) 
@@ -215,7 +156,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
         public void Dispose()
         {
-            _cancellationTokenSource.Cancel();
+            _executionDispatcher.Complete();
         }
     }
 }

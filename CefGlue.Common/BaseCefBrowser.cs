@@ -230,10 +230,10 @@ namespace Xilium.CefGlue.Common
         public CefBrowserSettings Settings => _adapter.Settings;
 
         /// <summary>
-        /// Specifies the task scheduler used for executing native object methods. 
-        /// Defaults to the TaskScheduler.Default.
+        /// Specifies the maximium number of calls that can be made simultaneously to native object methods. 
+        /// Defaults to the int.MaxValue.
         /// </summary>
-        public TaskScheduler NativeMethodsTaskScheduler { get => _adapter.NativeMethodsTaskScheduler; set => _adapter.NativeMethodsTaskScheduler = value; }
+        public int MaxNativeMethodsParallelCalls { get => _adapter.MaxNativeMethodsParallelCalls; set => _adapter.MaxNativeMethodsParallelCalls = value; }
 
         /// <summary>
         /// Get or set the current zoom level. The default zoom level is 0.0.
