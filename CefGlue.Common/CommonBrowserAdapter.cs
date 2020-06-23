@@ -439,8 +439,13 @@ namespace Xilium.CefGlue.Common
             Control.InitializeRender(browserHost.GetWindowHandle());
         }
 
-        protected virtual bool OnBrowserClose()
+        protected virtual bool OnBrowserClose(CefBrowser browser)
         {
+            if (!browser.IsSame(Browser))
+            {
+                // maybe a popup (devtools)
+                return false;
+            }
             Control.DestroyRender();
             return true;
         }
@@ -469,7 +474,7 @@ namespace Xilium.CefGlue.Common
             var result = false;
             WithErrorHandling((nameof(ICefBrowserHost.HandleBrowserClose)), () =>
             {
-                result = OnBrowserClose();
+                result = OnBrowserClose(browser);
             });
 
             return result;

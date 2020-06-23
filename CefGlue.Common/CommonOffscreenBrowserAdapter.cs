@@ -314,7 +314,7 @@ namespace Xilium.CefGlue.Common
         }
 
 
-        protected override bool OnBrowserClose()
+        protected override bool OnBrowserClose(CefBrowser browser)
         {
             // According to cef documentation:
             // If no OS window exists (window rendering disabled) returning false will cause the browser object to be destroyed immediately
