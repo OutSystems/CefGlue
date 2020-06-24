@@ -441,10 +441,10 @@ namespace Xilium.CefGlue.Common
 
         protected virtual bool OnBrowserClose(CefBrowser browser)
         {
-            if (!browser.IsSame(Browser))
+            if (browser.IsPopup)
             {
-                // maybe a popup (devtools)
-                return false;
+                // popup such as devtools, let it close its window
+                return false; 
             }
             Control.DestroyRender();
             return true;
