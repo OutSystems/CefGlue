@@ -3189,6 +3189,18 @@ typedef struct _cef_media_sink_device_info_t {
   cef_string_t model_name;
 } cef_media_sink_device_info_t;
 
+///
+// Represents commands available to TextField.
+///
+typedef enum {
+  CEF_TFC_CUT = 1,
+  CEF_TFC_COPY,
+  CEF_TFC_PASTE,
+  CEF_TFC_UNDO,
+  CEF_TFC_DELETE,
+  CEF_TFC_SELECT_ALL,
+} cef_text_field_commands_t;
+
 #ifdef __cplusplus
 }
 #endif
