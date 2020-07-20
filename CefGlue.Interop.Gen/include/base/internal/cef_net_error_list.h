@@ -859,6 +859,15 @@ NET_ERROR(INVALID_SIGNED_EXCHANGE, -504)
 // An error occurred while handling a Web Bundle source.
 NET_ERROR(INVALID_WEB_BUNDLE, -505)
 
+// A Trust Tokens protocol operation-executing request failed for one of a
+// number of reasons (precondition failure, internal error, bad response).
+NET_ERROR(TRUST_TOKEN_OPERATION_FAILED, -506)
+
+// When handling a Trust Tokens protocol operation-executing request, the system
+// found that the request's desired Trust Tokens results were already present in
+// a local cache; as a result, the main request was cancelled.
+NET_ERROR(TRUST_TOKEN_OPERATION_CACHE_HIT, -507)
+
 // *** Code -600 is reserved (was FTP_PASV_COMMAND_FAILED). ***
 
 // A generic error for failed FTP control connection command.

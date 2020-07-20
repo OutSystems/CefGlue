@@ -381,6 +381,7 @@ _simpletypes = {
     'uint64': ['uint64', '0'],
     'double': ['double', '0'],
     'float': ['float', '0'],
+    'float*': ['float*', 'NULL'],
     'long': ['long', '0'],
     'unsigned long': ['unsigned long', '0'],
     'long long': ['long long', '0'],
@@ -404,6 +405,7 @@ _simpletypes = {
     'CefDraggableRegion': ['cef_draggable_region_t', 'CefDraggableRegion()'],
     'CefThreadId': ['cef_thread_id_t', 'TID_UI'],
     'CefTime': ['cef_time_t', 'CefTime()'],
+    'CefAudioParameters': ['cef_audio_parameters_t', 'CefAudioParameters()']
 }
 
 
@@ -469,7 +471,7 @@ def get_next_function_impl(existing, name):
   return result
 
 
-def get_copyright(full=False):
+def get_copyright(full=False, translator=True):
   if full:
     result = \
 """// Copyright (c) $YEAR$ Marshall A. Greenblatt. All rights reserved.
@@ -508,7 +510,8 @@ def get_copyright(full=False):
 // can be found in the LICENSE file.
 """
 
-  result += \
+  if translator:
+    result += \
 """//
 // ---------------------------------------------------------------------------
 //
@@ -521,6 +524,7 @@ def get_copyright(full=False):
 //
 
 """
+
   # add the copyright year
   return result.replace('$YEAR$', get_year())
 
@@ -1586,12 +1590,13 @@ class obj_argument:
       return 'CefString()'
     elif type == 'refptr_same' or type == 'refptr_diff' or \
          type == 'rawptr_same' or type == 'rawptr_diff':
-      return 'NULL'
+      if for_capi:
+        return 'NULL'
+      return 'nullptr'
     elif type == 'ownptr_same' or type == 'ownptr_diff':
       if for_capi:
         return 'NULL'
-      else:
-        return 'CefOwnPtr<' + self.type.get_ptr_type() + '>()'
+      return 'CefOwnPtr<' + self.type.get_ptr_type() + '>()'
 
     return ''
 

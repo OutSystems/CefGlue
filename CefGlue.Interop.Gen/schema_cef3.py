@@ -168,4 +168,7 @@ classdef = {
     'CefMediaRouteCreateCallback': { 'role': ROLE_HANDLER },
     'CefMediaSink': { 'role': ROLE_PROXY },
     'CefMediaSource': { 'role': ROLE_PROXY },
+    # 83
+    'CefDevToolsMessageObserver': { 'role': ROLE_HANDLER },
+    'CefMediaSinkDeviceInfoCallback': { 'role': ROLE_HANDLER, 'autodispose': True },
     }

@@ -18,6 +18,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_name;
         internal IntPtr _get_description;
         internal IntPtr _get_icon_type;
+        internal IntPtr _get_device_info;
         internal IntPtr _is_cast_sink;
         internal IntPtr _is_dial_sink;
         internal IntPtr _is_compatible_with;
@@ -75,6 +76,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate CefMediaSinkIconType get_icon_type_delegate(cef_media_sink_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void get_device_info_delegate(cef_media_sink_t* self, cef_media_sink_device_info_callback_t* callback);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -247,53 +254,70 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // IsCastSink
+        // GetDeviceInfo
         private static IntPtr _p9;
-        private static is_cast_sink_delegate _d9;
+        private static get_device_info_delegate _d9;
+        
+        public static void get_device_info(cef_media_sink_t* self, cef_media_sink_device_info_callback_t* callback)
+        {
+            get_device_info_delegate d;
+            var p = self->_get_device_info;
+            if (p == _p9) { d = _d9; }
+            else
+            {
+                d = (get_device_info_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_device_info_delegate));
+                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
+            }
+            d(self, callback);
+        }
+        
+        // IsCastSink
+        private static IntPtr _pa;
+        private static is_cast_sink_delegate _da;
         
         public static int is_cast_sink(cef_media_sink_t* self)
         {
             is_cast_sink_delegate d;
             var p = self->_is_cast_sink;
-            if (p == _p9) { d = _d9; }
-            else
-            {
-                d = (is_cast_sink_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_cast_sink_delegate));
-                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
-            }
-            return d(self);
-        }
-        
-        // IsDialSink
-        private static IntPtr _pa;
-        private static is_dial_sink_delegate _da;
-        
-        public static int is_dial_sink(cef_media_sink_t* self)
-        {
-            is_dial_sink_delegate d;
-            var p = self->_is_dial_sink;
             if (p == _pa) { d = _da; }
             else
             {
-                d = (is_dial_sink_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_dial_sink_delegate));
+                d = (is_cast_sink_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_cast_sink_delegate));
                 if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
             }
             return d(self);
         }
         
-        // IsCompatibleWith
+        // IsDialSink
         private static IntPtr _pb;
-        private static is_compatible_with_delegate _db;
+        private static is_dial_sink_delegate _db;
+        
+        public static int is_dial_sink(cef_media_sink_t* self)
+        {
+            is_dial_sink_delegate d;
+            var p = self->_is_dial_sink;
+            if (p == _pb) { d = _db; }
+            else
+            {
+                d = (is_dial_sink_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_dial_sink_delegate));
+                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
+            }
+            return d(self);
+        }
+        
+        // IsCompatibleWith
+        private static IntPtr _pc;
+        private static is_compatible_with_delegate _dc;
         
         public static int is_compatible_with(cef_media_sink_t* self, cef_media_source_t* source)
         {
             is_compatible_with_delegate d;
             var p = self->_is_compatible_with;
-            if (p == _pb) { d = _db; }
+            if (p == _pc) { d = _dc; }
             else
             {
                 d = (is_compatible_with_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_compatible_with_delegate));
-                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
+                if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
             }
             return d(self, source);
         }

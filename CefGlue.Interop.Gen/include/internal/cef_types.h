@@ -170,23 +170,25 @@ typedef struct _cef_settings_t {
   // will be used. If this value is empty on macOS then a helper executable must
   // exist at "Contents/Frameworks/<app> Helper.app/Contents/MacOS/<app> Helper"
   // in the top-level app bundle. See the comments on CefExecuteProcess() for
-  // details. Also configurable using the "browser-subprocess-path" command-line
-  // switch.
+  // details. If this value is non-empty then it must be an absolute path. Also
+  // configurable using the "browser-subprocess-path" command-line switch.
   ///
   cef_string_t browser_subprocess_path;
 
   ///
   // The path to the CEF framework directory on macOS. If this value is empty
   // then the framework must exist at "Contents/Frameworks/Chromium Embedded
-  // Framework.framework" in the top-level app bundle. Also configurable using
-  // the "framework-dir-path" command-line switch.
+  // Framework.framework" in the top-level app bundle. If this value is
+  // non-empty then it must be an absolute path. Also configurable using the
+  // "framework-dir-path" command-line switch.
   ///
   cef_string_t framework_dir_path;
 
   ///
   // The path to the main bundle on macOS. If this value is empty then it
-  // defaults to the top-level app bundle. Also configurable using
-  // the "main-bundle-path" command-line switch.
+  // defaults to the top-level app bundle. If this value is non-empty then it
+  // must be an absolute path. Also configurable using the "main-bundle-path"
+  // command-line switch.
   ///
   cef_string_t main_bundle_path;
 
@@ -227,33 +229,35 @@ typedef struct _cef_settings_t {
 
   ///
   // The location where data for the global browser cache will be stored on
-  // disk. If non-empty this must be either equal to or a child directory of
-  // CefSettings.root_cache_path. If empty then browsers will be created in
-  // "incognito mode" where in-memory caches are used for storage and no data is
-  // persisted to disk. HTML5 databases such as localStorage will only persist
-  // across sessions if a cache path is specified. Can be overridden for
-  // individual CefRequestContext instances via the
-  // CefRequestContextSettings.cache_path value.
+  // disk. If this value is non-empty then it must be an absolute path that is
+  // either equal to or a child directory of CefSettings.root_cache_path. If
+  // this value is empty then browsers will be created in "incognito mode" where
+  // in-memory caches are used for storage and no data is persisted to disk.
+  // HTML5 databases such as localStorage will only persist across sessions if a
+  // cache path is specified. Can be overridden for individual CefRequestContext
+  // instances via the CefRequestContextSettings.cache_path value.
   ///
   cef_string_t cache_path;
 
   ///
   // The root directory that all CefSettings.cache_path and
   // CefRequestContextSettings.cache_path values must have in common. If this
-  // value is empty and CefSettings.cache_path is non-empty then this value will
-  // default to the CefSettings.cache_path value. Failure to set this value
-  // correctly may result in the sandbox blocking read/write access to the
-  // cache_path directory.
+  // value is empty and CefSettings.cache_path is non-empty then it will
+  // default to the CefSettings.cache_path value. If this value is non-empty
+  // then it must be an absolute path. Failure to set this value correctly may
+  // result in the sandbox blocking read/write access to the cache_path
+  // directory.
   ///
   cef_string_t root_cache_path;
 
   ///
   // The location where user data such as spell checking dictionary files will
-  // be stored on disk. If empty then the default platform-specific user data
-  // directory will be used ("~/.cef_user_data" directory on Linux,
-  // "~/Library/Application Support/CEF/User Data" directory on Mac OS X,
-  // "Local Settings\Application Data\CEF\User Data" directory under the user
-  // profile directory on Windows).
+  // be stored on disk. If this value is empty then the default
+  // platform-specific user data directory will be used ("~/.cef_user_data"
+  // directory on Linux, "~/Library/Application Support/CEF/User Data" directory
+  // on Mac OS X, "Local Settings\Application Data\CEF\User Data" directory
+  // under the user profile directory on Windows). If this value is non-empty
+  // then it must be an absolute path.
   ///
   cef_string_t user_data_path;
 
@@ -333,16 +337,17 @@ typedef struct _cef_settings_t {
   // The fully qualified path for the resources directory. If this value is
   // empty the cef.pak and/or devtools_resources.pak files must be located in
   // the module directory on Windows/Linux or the app bundle Resources directory
-  // on Mac OS X. Also configurable using the "resources-dir-path" command-line
-  // switch.
+  // on Mac OS X. If this value is non-empty then it must be an absolute path.
+  // Also configurable using the "resources-dir-path" command-line switch.
   ///
   cef_string_t resources_dir_path;
 
   ///
   // The fully qualified path for the locales directory. If this value is empty
-  // the locales directory must be located in the module directory. This value
-  // is ignored on Mac OS X where pack files are always loaded from the app
-  // bundle Resources directory. Also configurable using the "locales-dir-path"
+  // the locales directory must be located in the module directory. If this
+  // value is non-empty then it must be an absolute path. This value is ignored
+  // on Mac OS X where pack files are always loaded from the app bundle
+  // Resources directory. Also configurable using the "locales-dir-path"
   // command-line switch.
   ///
   cef_string_t locales_dir_path;
@@ -428,13 +433,13 @@ typedef struct _cef_request_context_settings_t {
 
   ///
   // The location where cache data for this request context will be stored on
-  // disk. If non-empty this must be either equal to or a child directory of
-  // CefSettings.root_cache_path. If empty then browsers will be created in
-  // "incognito mode" where in-memory caches are used for storage and no data is
-  // persisted to disk. HTML5 databases such as localStorage will only persist
-  // across sessions if a cache path is specified. To share the global browser
-  // cache and related configuration set this value to match the
-  // CefSettings.cache_path value.
+  // disk. If this value is non-empty then it must be an absolute path that is
+  // either equal to or a child directory of CefSettings.root_cache_path. If
+  // this value is empty then browsers will be created in "incognito mode" where
+  // in-memory caches are used for storage and no data is persisted to disk.
+  // HTML5 databases such as localStorage will only persist across sessions if a
+  // cache path is specified. To share the global browser cache and related
+  // configuration set this value to match the CefSettings.cache_path value.
   ///
   cef_string_t cache_path;
 
@@ -733,6 +738,25 @@ typedef struct _cef_urlparts_t {
 } cef_urlparts_t;
 
 ///
+// Cookie priority values.
+///
+typedef enum {
+  CEF_COOKIE_PRIORITY_LOW = -1,
+  CEF_COOKIE_PRIORITY_MEDIUM = 0,
+  CEF_COOKIE_PRIORITY_HIGH = 1,
+} cef_cookie_priority_t;
+
+///
+// Cookie same site values.
+///
+typedef enum {
+  CEF_COOKIE_SAME_SITE_UNSPECIFIED,
+  CEF_COOKIE_SAME_SITE_NO_RESTRICTION,
+  CEF_COOKIE_SAME_SITE_LAX_MODE,
+  CEF_COOKIE_SAME_SITE_STRICT_MODE,
+} cef_cookie_same_site_t;
+
+///
 // Cookie information.
 ///
 typedef struct _cef_cookie_t {
@@ -786,6 +810,16 @@ typedef struct _cef_cookie_t {
   ///
   int has_expires;
   cef_time_t expires;
+
+  ///
+  // Same site.
+  ///
+  cef_cookie_same_site_t same_site;
+
+  ///
+  // Priority.
+  ///
+  cef_cookie_priority_t priority;
 } cef_cookie_t;
 
 ///
@@ -2238,7 +2272,13 @@ typedef enum {
   CT_ZOOMOUT,
   CT_GRAB,
   CT_GRABBING,
+  CT_MIDDLE_PANNING_VERTICAL,
+  CT_MIDDLE_PANNING_HORIZONTAL,
   CT_CUSTOM,
+  CT_DND_NONE,
+  CT_DND_MOVE,
+  CT_DND_COPY,
+  CT_DND_LINK,
 } cef_cursor_type_t;
 
 ///
@@ -2964,6 +3004,137 @@ typedef struct _cef_composition_underline_t {
 } cef_composition_underline_t;
 
 ///
+// Enumerates the various representations of the ordering of audio channels.
+// Must be kept synchronized with media::ChannelLayout from Chromium.
+// See media\base\channel_layout.h
+///
+typedef enum {
+  CEF_CHANNEL_LAYOUT_NONE = 0,
+  CEF_CHANNEL_LAYOUT_UNSUPPORTED = 1,
+
+  // Front C
+  CEF_CHANNEL_LAYOUT_MONO = 2,
+
+  // Front L, Front R
+  CEF_CHANNEL_LAYOUT_STEREO = 3,
+
+  // Front L, Front R, Back C
+  CEF_CHANNEL_LAYOUT_2_1 = 4,
+
+  // Front L, Front R, Front C
+  CEF_CHANNEL_LAYOUT_SURROUND = 5,
+
+  // Front L, Front R, Front C, Back C
+  CEF_CHANNEL_LAYOUT_4_0 = 6,
+
+  // Front L, Front R, Side L, Side R
+  CEF_CHANNEL_LAYOUT_2_2 = 7,
+
+  // Front L, Front R, Back L, Back R
+  CEF_CHANNEL_LAYOUT_QUAD = 8,
+
+  // Front L, Front R, Front C, Side L, Side R
+  CEF_CHANNEL_LAYOUT_5_0 = 9,
+
+  // Front L, Front R, Front C, LFE, Side L, Side R
+  CEF_CHANNEL_LAYOUT_5_1 = 10,
+
+  // Front L, Front R, Front C, Back L, Back R
+  CEF_CHANNEL_LAYOUT_5_0_BACK = 11,
+
+  // Front L, Front R, Front C, LFE, Back L, Back R
+  CEF_CHANNEL_LAYOUT_5_1_BACK = 12,
+
+  // Front L, Front R, Front C, Side L, Side R, Back L, Back R
+  CEF_CHANNEL_LAYOUT_7_0 = 13,
+
+  // Front L, Front R, Front C, LFE, Side L, Side R, Back L, Back R
+  CEF_CHANNEL_LAYOUT_7_1 = 14,
+
+  // Front L, Front R, Front C, LFE, Side L, Side R, Front LofC, Front RofC
+  CEF_CHANNEL_LAYOUT_7_1_WIDE = 15,
+
+  // Stereo L, Stereo R
+  CEF_CHANNEL_LAYOUT_STEREO_DOWNMIX = 16,
+
+  // Stereo L, Stereo R, LFE
+  CEF_CHANNEL_LAYOUT_2POINT1 = 17,
+
+  // Stereo L, Stereo R, Front C, LFE
+  CEF_CHANNEL_LAYOUT_3_1 = 18,
+
+  // Stereo L, Stereo R, Front C, Rear C, LFE
+  CEF_CHANNEL_LAYOUT_4_1 = 19,
+
+  // Stereo L, Stereo R, Front C, Side L, Side R, Back C
+  CEF_CHANNEL_LAYOUT_6_0 = 20,
+
+  // Stereo L, Stereo R, Side L, Side R, Front LofC, Front RofC
+  CEF_CHANNEL_LAYOUT_6_0_FRONT = 21,
+
+  // Stereo L, Stereo R, Front C, Rear L, Rear R, Rear C
+  CEF_CHANNEL_LAYOUT_HEXAGONAL = 22,
+
+  // Stereo L, Stereo R, Front C, LFE, Side L, Side R, Rear Center
+  CEF_CHANNEL_LAYOUT_6_1 = 23,
+
+  // Stereo L, Stereo R, Front C, LFE, Back L, Back R, Rear Center
+  CEF_CHANNEL_LAYOUT_6_1_BACK = 24,
+
+  // Stereo L, Stereo R, Side L, Side R, Front LofC, Front RofC, LFE
+  CEF_CHANNEL_LAYOUT_6_1_FRONT = 25,
+
+  // Front L, Front R, Front C, Side L, Side R, Front LofC, Front RofC
+  CEF_CHANNEL_LAYOUT_7_0_FRONT = 26,
+
+  // Front L, Front R, Front C, LFE, Back L, Back R, Front LofC, Front RofC
+  CEF_CHANNEL_LAYOUT_7_1_WIDE_BACK = 27,
+
+  // Front L, Front R, Front C, Side L, Side R, Rear L, Back R, Back C.
+  CEF_CHANNEL_LAYOUT_OCTAGONAL = 28,
+
+  // Channels are not explicitly mapped to speakers.
+  CEF_CHANNEL_LAYOUT_DISCRETE = 29,
+
+  // Front L, Front R, Front C. Front C contains the keyboard mic audio. This
+  // layout is only intended for input for WebRTC. The Front C channel
+  // is stripped away in the WebRTC audio input pipeline and never seen outside
+  // of that.
+  CEF_CHANNEL_LAYOUT_STEREO_AND_KEYBOARD_MIC = 30,
+
+  // Front L, Front R, Side L, Side R, LFE
+  CEF_CHANNEL_LAYOUT_4_1_QUAD_SIDE = 31,
+
+  // Actual channel layout is specified in the bitstream and the actual channel
+  // count is unknown at Chromium media pipeline level (useful for audio
+  // pass-through mode).
+  CEF_CHANNEL_LAYOUT_BITSTREAM = 32,
+
+  // Max value, must always equal the largest entry ever logged.
+  CEF_CHANNEL_LAYOUT_MAX = CEF_CHANNEL_LAYOUT_BITSTREAM
+} cef_channel_layout_t;
+
+///
+// Structure representing the audio parameters for setting up the audio handler.
+///
+typedef struct _cef_audio_parameters_t {
+  ///
+  // Layout of the audio channels
+  ///
+  cef_channel_layout_t channel_layout;
+
+  ///
+  // Sample rate
+  //
+  int sample_rate;
+
+  ///
+  // Number of frames per buffer
+  ///
+  int frames_per_buffer;
+} cef_audio_parameters_t;
+
+///
 // Result codes for CefMediaRouter::CreateRoute. Should be kept in sync with
 // Chromium's media_router::RouteRequestResult::ResultCode type.
 ///
@@ -3008,6 +3179,15 @@ typedef enum {
 
   CEF_MSIT_TOTAL_COUNT,  // The total number of values.
 } cef_media_sink_icon_type_t;
+
+///
+// Device information for a MediaSink object.
+///
+typedef struct _cef_media_sink_device_info_t {
+  cef_string_t ip_address;
+  int port;
+  cef_string_t model_name;
+} cef_media_sink_device_info_t;
 
 #ifdef __cplusplus
 }

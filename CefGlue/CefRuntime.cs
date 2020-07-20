@@ -729,6 +729,12 @@
             }
         }
 
+        public static CefValue ParseJson(IntPtr json, int jsonSize, CefJsonParserOptions options)
+        {
+            var n_result = libcef.parse_json_buffer((void*)json, checked((UIntPtr)jsonSize), options);
+            return CefValue.FromNativeOrNull(n_result);
+        }
+
         /// <summary>
         /// Parses the specified |json_string| and returns a dictionary or list
         /// representation. If JSON parsing fails this method returns NULL and populates

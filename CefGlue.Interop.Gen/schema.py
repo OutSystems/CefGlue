@@ -82,6 +82,8 @@ c2cs_types = {
     'cef_pdf_print_settings_t': 'cef_pdf_print_settings_t',
     'cef_composition_underline_t': 'cef_composition_underline_t',
     'cef_touch_event_t': 'cef_touch_event_t',
+    'cef_audio_parameters_t': 'cef_audio_parameters_t',
+    'cef_media_sink_device_info_t': 'cef_media_sink_device_info_t',
     
 
     # platform dependend structs
