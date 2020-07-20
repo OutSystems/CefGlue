@@ -31,6 +31,8 @@ namespace Xilium.CefGlue.Common
 
         private readonly NativeObjectRegistry _objectRegistry = new NativeObjectRegistry();
 
+        private object _disposeLock = new object();
+
         public CommonBrowserAdapter(object eventsEmitter, string name, IControl control, ILogger logger)
         {
             _eventsEmitter = eventsEmitter;
@@ -60,6 +62,22 @@ namespace Xilium.CefGlue.Common
 
         public void Dispose(bool disposing)
         {
+            var disposeLock = _disposeLock;
+            if (disposeLock == null)
+            {
+                return; // already disposed
+            }
+
+            lock (disposeLock)
+            {
+                if (_disposeLock == null)
+                {
+                    return; // already disposed
+                }
+
+                _disposeLock = null;
+            }
+
             if (_logger.IsInfoEnabled)
             {
                 _logger.Info($"Browser adapter disposed (Id:{GetHashCode()}");
@@ -68,19 +86,10 @@ namespace Xilium.CefGlue.Common
             var browserHost = BrowserHost;
             if (browserHost != null)
             {
-                BrowserHost = null;
                 if (disposing)
                 {
                     browserHost.CloseBrowser(true);
                 }
-                browserHost.Dispose();
-            }
-
-            var browser = _browser;
-            if (browser != null)
-            {
-                _browser = null;
-                browser.Dispose();
             }
 
             if (disposing)
@@ -446,8 +455,20 @@ namespace Xilium.CefGlue.Common
                 // popup such as devtools, let it close its window
                 return false; 
             }
+
             Control.DestroyRender();
+            Cleanup(browser);
+
             return true;
+        }
+
+        protected void Cleanup(CefBrowser browser)
+        {
+            browser.Dispose();
+
+            BrowserHost = null;
+            _cefClient = null;
+            _browser = null;
         }
 
         #region ICefBrowserHost

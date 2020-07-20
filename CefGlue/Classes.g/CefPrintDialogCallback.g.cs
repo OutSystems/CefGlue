@@ -29,6 +29,7 @@ namespace Xilium.CefGlue
         {
             if (ptr == null) throw new ArgumentNullException("ptr");
             _self = ptr;
+            AddRef();
             CefObjectTracker.Track(this);
         }
         

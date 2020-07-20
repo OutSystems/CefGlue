@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
 
 namespace Xilium.CefGlue
 {
     public static class CefObjectTracker
     {
-        private static bool _enabled;
-        private static readonly Dictionary<int, HashSet<IDisposable>> _disposables = new Dictionary<int, HashSet<IDisposable>>();
+        [ThreadStatic]
+        private static HashSet<IDisposable> _disposables;
 
         private class TrackingSession : IDisposable
         {
@@ -23,7 +23,7 @@ namespace Xilium.CefGlue
 
             public void Dispose()
             {
-                if (_stopTracking) 
+                if (_stopTracking)
                 {
                     StopTracking();
                 }
@@ -36,18 +36,12 @@ namespace Xilium.CefGlue
         /// <returns></returns>
         public static IDisposable StartTracking()
         {
-            lock (_disposables)
+            if (_disposables != null)
             {
-                _enabled = true;
-                var currentThreadId = Thread.CurrentThread.ManagedThreadId;
-                if (!_disposables.ContainsKey(currentThreadId))
-                {
-                    // no sessions have started in current thread
-                    _disposables.Add(currentThreadId, new HashSet<IDisposable>());
-                    return TrackingSession.Default;
-                }
                 return TrackingSession.Nop; // return a nop session, won't stop tracking, the outer most session should do the job
             }
+            _disposables = new HashSet<IDisposable>();
+            return TrackingSession.Default;
         }
 
         /// <summary>
@@ -55,18 +49,17 @@ namespace Xilium.CefGlue
         /// </summary>
         public static void StopTracking()
         {
-            lock (_disposables)
+            if (_disposables == null)
             {
-                var currentThreadId = Thread.CurrentThread.ManagedThreadId;
-                if (_disposables.TryGetValue(currentThreadId, out var disposables))
-                {
-                    _disposables.Remove(currentThreadId);
-                    foreach (var disposable in disposables)
-                    {
-                        disposable.Dispose();
-                    }
-                }
-                _enabled = _disposables.Count > 0;
+                return;
+            }
+
+            var disposables = _disposables.ToArray();
+            _disposables = null; // set null before running dispose to prevent objects running untrack
+
+            foreach (var disposable in disposables)
+            {
+                disposable.Dispose();
             }
         }
 
@@ -76,16 +69,9 @@ namespace Xilium.CefGlue
         /// <param name="obj"></param>
         public static void Track(IDisposable obj)
         {
-            if (_enabled)
+            if (_disposables != null)
             {
-                var currentThreadId = Thread.CurrentThread.ManagedThreadId;
-                lock (_disposables)
-                {
-                    if (_disposables.TryGetValue(currentThreadId, out var threadDisposables))
-                    {
-                        threadDisposables.Add(obj);
-                    }
-                }
+                _disposables.Add(obj);
             }
         }
         
@@ -95,16 +81,9 @@ namespace Xilium.CefGlue
         /// <param name="obj"></param>
         public static void Untrack(IDisposable obj)
         {
-            if (_enabled)
+            if (_disposables != null)
             {
-                var currentThreadId = Thread.CurrentThread.ManagedThreadId;
-                lock (_disposables)
-                {
-                    if (_disposables.TryGetValue(currentThreadId, out var threadDisposables))
-                    {
-                        threadDisposables.Remove(obj);
-                    }
-                }
+                _disposables.Remove(obj);
             }
         }
     }

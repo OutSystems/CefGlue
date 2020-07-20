@@ -20,6 +20,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+launchSettings.json
 
 # IDE: Visual Studio Code
 !.vscode/
@@ -30,9 +31,7 @@
 # IDE: Xamarin Studio (MonoDevelop)
 *.userprefs
 CefGlue.BrowserProcess/Properties/PublishProfiles/
-<<<<<<< HEAD
+
+#Nuget
 NuGet/output/
-=======
 packages/
->>>>>>> master
-CefGlue.Demo.Avalonia/Properties/launchSettings.json
