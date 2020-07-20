@@ -290,6 +290,7 @@
     <Compile Include="Enums\CefCdmRegistrationError.cs" />
     <Compile Include="Enums\CefCompositionUnderlineStyle.cs" />
     <Compile Include="Enums\CefCrossAxisAlignment.cs" />
+    <Compile Include="Enums\CefMediaSinkIconType.cs" />
     <Compile Include="Enums\CefMediaRouteConnectionState.cs" />
     <Compile Include="Enums\CefMenuColorType.cs" />
     <Compile Include="Enums\CefMainAxisAlignment.cs" />

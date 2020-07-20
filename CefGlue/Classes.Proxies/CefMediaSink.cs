@@ -55,6 +55,12 @@
         }
 
         /// <summary>
+        /// Returns the icon type for this sink.
+        /// </summary>
+        public CefMediaSinkIconType IconType =>
+            cef_media_sink_t.get_icon_type(_self);
+
+        /// <summary>
         /// Returns true if this sink accepts content via Cast.
         /// </summary>
         public bool IsCastSink => cef_media_sink_t.is_cast_sink(_self) != 0;

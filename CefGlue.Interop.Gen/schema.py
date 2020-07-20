@@ -165,6 +165,7 @@ c2cs_enumtypes = {
     'cef_state_t': 'CefState',
     'cef_media_route_connection_state_t': 'CefMediaRouteConnectionState',
     'cef_media_route_create_result_t': 'CefMediaRouteCreateResult',
+    'cef_media_sink_icon_type_t': 'CefMediaSinkIconType',
     }
 
 c2cs_structtypes = { }
