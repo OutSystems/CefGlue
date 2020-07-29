@@ -40,7 +40,6 @@ namespace Xilium.CefGlue.Common
                     }
                 }
             }
-
         }
 
         protected override CefBrowserProcessHandler GetBrowserProcessHandler()

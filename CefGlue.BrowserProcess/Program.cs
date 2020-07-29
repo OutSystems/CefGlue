@@ -36,8 +36,8 @@ namespace Xilium.CefGlue.BrowserProcess
 
         private static string GetArgumentValue(string[] args, string argName)
         {
-            var arg = args.FirstOrDefault(a => a?.StartsWith(argName) == true);
-            return arg?.Substring(argName.Length) ?? "";
+            var arg = args.FirstOrDefault(a => a?.StartsWith(argName + "=") == true);
+            return arg?.Substring(argName.Length + 1) ?? "";
         }
     }
 }
