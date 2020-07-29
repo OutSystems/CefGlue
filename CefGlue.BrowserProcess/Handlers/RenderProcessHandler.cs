@@ -1,7 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using Xilium.CefGlue.BrowserProcess.JavascriptExecution;
 using Xilium.CefGlue.BrowserProcess.ObjectBinding;
 using Xilium.CefGlue.Common.Shared.Helpers;
@@ -12,9 +9,10 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
     internal class RenderProcessHandler : CefRenderProcessHandler
     {
         private CefBrowser _browser;
+        private string _crashPipeName;
         private JavascriptExecutionEngineRenderSide _javascriptExecutionEngine;
         private JavascriptToNativeDispatcherRenderSide _javascriptToNativeDispatcher;
-
+        
         private readonly MessageDispatcher _messageDispatcher = new MessageDispatcher();
 
         public RenderProcessHandler()
@@ -109,14 +107,24 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
 
         protected override void OnBrowserCreated(CefBrowser browser, CefDictionaryValue extraInfo)
         {
+            _crashPipeName = extraInfo.GetString(Constants.CrashPipeNameKey);
             _browser = browser;
             base.OnBrowserCreated(browser, extraInfo);
         }
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            CefFrame frame = null;
             var exception = (Exception)e.ExceptionObject;
-            LogException(exception, _browser?.FrameCount > 0 ? _browser?.GetMainFrame() : null);
+            try
+            {
+                frame = _browser?.FrameCount > 0 ? _browser?.GetMainFrame() : null;
+            } 
+            catch
+            {
+                // ignore
+            }
+            HandleException(exception, frame);
         }
 
         private void WithErrorHandling(Action action, CefFrame frame)
@@ -127,15 +135,15 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
             }
             catch (Exception e)
             {
-                LogException(e, frame);
+                HandleException(e, frame);
             }
         }
 
-        private void LogException(Exception e, CefFrame frame)
+        private void HandleException(Exception e, CefFrame frame)
         {
-            try
+            if (frame != null)
             {
-                if (frame != null)
+                try
                 {
                     using (CefObjectTracker.StartTracking())
                     {
@@ -148,46 +156,45 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
                         var message = exceptionMessage.ToCefProcessMessage();
                         frame.SendProcessMessage(CefProcessId.Browser, message);
                     }
+                    return;
                 }
-                else
+                catch
                 {
-                    LogExceptionToFile(e);
+                    // ignore, lets try an alternative method using the crash pipe
+                }
+            }
+            SendExceptionToParentProcess(e);
+        }
+
+        /// <summary>
+        /// Alternative way to send the exception to the parent process using a side named pipe.
+        /// </summary>
+        /// <param name="e"></param>
+        private void SendExceptionToParentProcess(Exception e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_crashPipeName))
+                {
+                    return; // not initialized yet
+                }
+
+                var serializableException = new SerializableException()
+                {
+                    ExceptionType = e.GetType().ToString(),
+                    Message = e.Message,
+                    StackTrace = e.StackTrace
+                };
+
+                
+                using (var pipeClient = new PipeClient(_crashPipeName))
+                {
+                    pipeClient.SendMessage(serializableException.SerializeToString());
                 }
             }
             catch
             {
-                LogExceptionToFile(e);
-            }
-
-        }
-
-        private void LogExceptionToFile(Exception e)
-        {
-            const string LogFileArg = "--log-file=";
-            
-            var args = Environment.GetCommandLineArgs();
-            var logFile = args.FirstOrDefault(a => a.StartsWith(LogFileArg));
-            if (string.IsNullOrEmpty(logFile)) {
-                // no logfile arg
-                return;
-            }
-
-            logFile = logFile.Substring(LogFileArg.Length).Trim('"');
-            if (string.IsNullOrEmpty(logFile)) {
-                // no logfile path
-                return;
-            }
-
-            try {
-                var logPath = new DirectoryInfo(Path.GetDirectoryName(logFile));
-                if (!logPath.Exists)
-                {
-                    logPath.Create();
-                }
-                var processLogFile = Path.Combine(logPath.FullName, Path.GetFileNameWithoutExtension(logFile) + "-" + Process.GetCurrentProcess().Id + ".cefrenderlog");
-                File.WriteAllText(processLogFile, e.ToString());
-            } catch {
-                // failed at logging
+                // failed at failing
             }
         }
     }

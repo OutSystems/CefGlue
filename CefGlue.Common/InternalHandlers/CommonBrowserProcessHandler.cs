@@ -17,10 +17,9 @@ namespace Xilium.CefGlue.Common.InternalHandlers
         protected override void OnBeforeChildProcessLaunch(CefCommandLine commandLine)
         {
             _handler?.HandleBeforeChildProcessLaunch(commandLine);
-
             if (_customSchemes?.Length > 0)
             {
-                commandLine.AppendArgument(CommandLineArgs.CustomScheme + CustomScheme.ToCommandLineValue(_customSchemes));
+                commandLine.AppendSwitch(CommandLineArgs.CustomScheme, CustomScheme.ToCommandLineValue(_customSchemes));
             }
         }
 

@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using Avalonia;
 using Xilium.CefGlue.Common;
+using Xilium.CefGlue.Common.Shared;
 
 namespace Xilium.CefGlue.Demo.Avalonia
 {
@@ -17,7 +18,13 @@ namespace Xilium.CefGlue.Demo.Avalonia
 #else
                           WindowlessRenderingEnabled = false
 #endif
-
+                      },
+                      customSchemes: new[] {
+                        new CustomScheme()
+                        {
+                            SchemeName = "test",
+                            SchemeHandlerFactory = new CustomSchemeHandler()
+                        }
                       }))
                       .StartWithClassicDesktopLifetime(args);
                       

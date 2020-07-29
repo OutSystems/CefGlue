@@ -1,6 +1,6 @@
 namespace Xilium.CefGlue.Common.Handlers
 {
-    public class BrowserProcessHandler : CefBrowserProcessHandler 
+    public class BrowserProcessHandler : CefBrowserProcessHandler
     {
         internal CefPrintHandler HandleGetPrintHandler()
         {
@@ -28,7 +28,8 @@ namespace Xilium.CefGlue.Common.Handlers
         }
     }
 
-    public class ContextMenuHandler : CefContextMenuHandler {
+    public class ContextMenuHandler : CefContextMenuHandler
+    {
 
         internal void HandleBeforeContextMenu(CefBrowser browser, CefFrame frame, CefContextMenuParams state, CefMenuModel model)
         {
@@ -113,7 +114,8 @@ namespace Xilium.CefGlue.Common.Handlers
 
     public class KeyboardHandler : CefKeyboardHandler { }
 
-    public class LifeSpanHandler : CefLifeSpanHandler {
+    public class LifeSpanHandler : CefLifeSpanHandler
+    {
 
         internal bool HandleDoClose(CefBrowser browser)
         {
@@ -145,12 +147,12 @@ namespace Xilium.CefGlue.Common.Handlers
 
         internal void HandleScrollOffsetChanged(CefBrowser browser, double x, double y)
         {
-            HandleScrollOffsetChanged(browser, x, y);
+            OnScrollOffsetChanged(browser, x, y);
         }
     }
 
-    public class RequestHandler : CefRequestHandler {
-
+    public class RequestHandler : CefRequestHandler
+    {
         protected override CefResourceRequestHandler GetResourceRequestHandler(CefBrowser browser, CefFrame frame, CefRequest request, bool isNavigation, bool isDownload, string requestInitiator, ref bool disableDefaultHandling)
         {
             return null;

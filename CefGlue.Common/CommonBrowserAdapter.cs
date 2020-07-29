@@ -26,6 +26,8 @@ namespace Xilium.CefGlue.Common
         private int _maxNativeMethodsParallelCalls = int.MaxValue;
         private CefBrowser _browser;
         private CommonCefClient _cefClient;
+        private PipeServer _crashServerPipe;
+        private string _crashServerPipeName;
         private JavascriptExecutionEngine _javascriptExecutionEngine;
         private NativeObjectMethodDispatcher _objectMethodDispatcher;
 
@@ -331,8 +333,15 @@ namespace Xilium.CefGlue.Common
             cefClient.Dispatcher.RegisterMessageHandler(Messages.UnhandledException.Name, OnBrowserProcessUnhandledException);
             _cefClient = cefClient;
 
-            // This is the first time the window is being rendered, so create it.
-            CefBrowserHost.CreateBrowser(windowInfo, cefClient, Settings, _initialUrl);
+            using (var extraInfo = CefDictionaryValue.Create())
+            {
+                // send the name of the crash (side) pipe to the render process
+                _crashServerPipeName = Guid.NewGuid().ToString();
+                extraInfo.SetString(Constants.CrashPipeNameKey, _crashServerPipeName);
+
+                // This is the first time the window is being rendered, so create it.
+                CefBrowserHost.CreateBrowser(windowInfo, cefClient, Settings, _initialUrl, extraInfo);
+            }
 
             return true;
         }
@@ -400,13 +409,25 @@ namespace Xilium.CefGlue.Common
         private void OnBrowserProcessUnhandledException(MessageReceivedEventArgs e)
         {
             var exceptionDetails = Messages.UnhandledException.FromCefMessage(e.Message);
-            var exception = new RenderProcessUnhandledException(exceptionDetails.ExceptionType, exceptionDetails.Message, exceptionDetails.StackTrace);
+            FireBrowserProcessUnhandledExceptionHandler(exceptionDetails.ExceptionType, exceptionDetails.Message, exceptionDetails.StackTrace);
+        }
+
+        private void OnChildProcessCrashed(string message)
+        {
+            WithErrorHandling(nameof(OnChildProcessCrashed), () =>
+            {
+                var exception = SerializableException.DeserializeFromString(message);
+                FireBrowserProcessUnhandledExceptionHandler(exception.ExceptionType, exception.Message, exception.StackTrace);
+            });
+        }
+
+        private void FireBrowserProcessUnhandledExceptionHandler(string exceptionType, string message, string stackTrace)
+        {
+            var exception = new RenderProcessUnhandledException(exceptionType, message, stackTrace);
 
             _logger.ErrorException("Browser process unhandled exception", exception);
 
-            UnhandledException?.Invoke(
-                _eventsEmitter,
-                new AsyncUnhandledExceptionEventArgs(new RenderProcessUnhandledException(exceptionDetails.ExceptionType, exceptionDetails.Message, exceptionDetails.StackTrace)));
+            UnhandledException?.Invoke(_eventsEmitter, new AsyncUnhandledExceptionEventArgs(exception));
         }
 
         private void OnBrowserCreated(CefBrowser browser)
@@ -420,6 +441,8 @@ namespace Xilium.CefGlue.Common
             WithErrorHandling((nameof(OnBrowserCreated)), () =>
             {
                 _browser = browser;
+                _crashServerPipe = new PipeServer(_crashServerPipeName);
+                _crashServerPipe.MessageReceived += OnChildProcessCrashed;
 
                 var browserHost = browser.GetHost();
                 BrowserHost = browserHost;
@@ -464,6 +487,8 @@ namespace Xilium.CefGlue.Common
 
         protected void Cleanup(CefBrowser browser)
         {
+            _crashServerPipe?.Dispose();
+
             browser.Dispose();
 
             BrowserHost = null;
