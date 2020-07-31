@@ -92,11 +92,8 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             if (optionalParam != null)
             {
                 var optionalArgs = args.Skip(argIndex).ToArray();
-                if (optionalArgs.Any())
-                {
-                    convertedArgs.Add(JavascriptToNativeTypeConverter.ConvertToNative(optionalArgs, optionalParam.ParameterType));
-                }
-            }
+                convertedArgs.Add(JavascriptToNativeTypeConverter.ConvertToNative(optionalArgs, optionalParam.ParameterType));
+            } 
 
             return convertedArgs.ToArray();
         }
