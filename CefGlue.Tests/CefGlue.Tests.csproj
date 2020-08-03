@@ -9,19 +9,31 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\CefGlue.Common\BaseCefBrowser.cs" Link="BaseCefBrowser.cs" />
+    <None Remove="Helpers\App.xaml" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Helpers\App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.11-preview-cibuild0008240-beta" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="Moq" Version="4.10.1" />
+    <PackageReference Include="cef.redist.x64" Version="75.1.14" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CefGlue.Avalonia\CefGlue.Avalonia.csproj" />
+    <ProjectReference Include="..\CefGlue.BrowserProcess\CefGlue.BrowserProcess.csproj" />
     <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj" />
     <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
   </ItemGroup>
 
+  <Import Project="$(ProjectDir)..\Xilium.CefGlue.Native.props" />
+  
 </Project>
