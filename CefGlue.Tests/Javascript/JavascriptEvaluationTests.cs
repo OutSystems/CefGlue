@@ -58,17 +58,11 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public async Task ExceptionThrown()
+        public void ExceptionThrown()
         {
             const string ExceptionMessage = "ups";
-            try
-            {
-                await EvaluateJavascript<string>($"throw new Error('{ExceptionMessage}')");
-            }
-            catch (Exception e)
-            {
-                StringAssert.Contains(ExceptionMessage, e.Message);
-            }
+            var exception = Assert.ThrowsAsync<Exception>(async () => await EvaluateJavascript<string>($"throw new Error('{ExceptionMessage}')"));
+            StringAssert.Contains(ExceptionMessage, exception.Message);
         }
     }
 }

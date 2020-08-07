@@ -58,6 +58,7 @@ namespace CefGlue.Tests
         [SetUp]
         protected async Task Setup()
         {
+            var testName = TestContext.CurrentContext.Test.FullName; // capture test name outside the async part (otherwise wont work properly)
             await Run(async () =>
             {
                 if (window == null)
@@ -69,7 +70,7 @@ namespace CefGlue.Tests
                     window.Show();
                 }
 
-                window.Title = TestContext.CurrentContext.Test.FullName;
+                window.Title = testName;
 
                 var browserInitTaskCompletionSource = new TaskCompletionSource<bool>();
                 browser = new AvaloniaCefBrowser();
