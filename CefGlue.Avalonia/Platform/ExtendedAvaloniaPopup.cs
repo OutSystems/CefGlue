@@ -27,7 +27,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
         public ExtendedAvaloniaPopup()
         {
             CanResize = false;
-            HasSystemDecorations = false;
+            SystemDecorations = SystemDecorations.None;
             Focusable = false;
             Topmost = true;
         }

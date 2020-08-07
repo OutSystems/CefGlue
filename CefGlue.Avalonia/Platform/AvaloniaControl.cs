@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.Platform;
@@ -37,23 +38,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
             _control.GotFocus += OnGotFocus;
             _control.LayoutUpdated += OnLayoutUpdated;
-
-            if (NeedsRootWindowStylesFix)
-            {
-                _control.AttachedToLogicalTree += OnAttachedToLogicalTree;
-            }
-        }
-
-        protected virtual bool NeedsRootWindowStylesFix => CefRuntime.Platform == CefRuntimePlatform.Windows;
-
-        private void OnAttachedToLogicalTree(object sender, LogicalTreeAttachmentEventArgs e)
-        {
-            if (e.Root is PopupRoot root)
-            {
-                // FIX avalonia popups dont apply the CLIPCHILDREN style, so we must force it
-                var rootHandle = root.PlatformImpl.Handle.Handle;
-                NativeExtensions.Windows.SetWindowLong(rootHandle, NativeExtensions.Windows.GWL.STYLE, NativeExtensions.Windows.WS.CLIPCHILDREN);
-            }
         }
 
         private void OnLayoutUpdated(object sender, EventArgs e)
@@ -92,7 +76,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             Dispatcher.UIThread.Post(
                 () =>
                 {
-                    var menu = new ExtendedAvaloniaContextMenu();
+                    var menu = new ContextMenu();
                     var menuItems = new List<TemplatedControl>();
 
                     foreach (var menuEntry in menuEntries)
@@ -126,7 +110,12 @@ namespace Xilium.CefGlue.Avalonia.Platform
                     menu.Items = menuItems;
 
                     _control.ContextMenu = menu;
-                    menu.Open(_control, new Point(x, y));
+
+                    menu.PlacementAnchor = PopupAnchor.TopLeft;
+                    menu.PlacementGravity = PopupGravity.BottomRight;
+                    menu.PlacementMode = PlacementMode.AnchorAndGravity;
+                    menu.PlacementRect = new Rect(x, y, 1, 1);
+                    menu.Open(_control);
                 },
                 DispatcherPriority.Input);
         }
