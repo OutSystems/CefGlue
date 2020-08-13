@@ -13,6 +13,10 @@
     <DefineConstants>WINDOWLESS</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="App.xaml" />
     <None Remove="BrowserView.xaml" />
@@ -28,8 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-preview2" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.999-cibuild0009894-beta" />
     <PackageReference Include="cef.redist.x64" Version="75.1.14" />
+    <PackageReference Include="MonoMac.NetStandard" Version="0.0.4" />
   </ItemGroup>
 
   <ItemGroup>

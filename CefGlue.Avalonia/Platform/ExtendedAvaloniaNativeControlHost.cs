@@ -19,11 +19,10 @@ namespace Xilium.CefGlue.Avalonia.Platform
             base.OnAttachedToVisualTree(e);
             if(CefRuntime.Platform == CefRuntimePlatform.MacOSX)
             {
-                // in osx we need to force an extra update, otherwise the browser will have wrong dimensions when initialized
+                // In OSX we need to force update of the browser bounds: https://magpcss.org/ceforum/viewtopic.php?f=6&t=16341
                 IDisposable observable = null;
                 void UpdateNativeControlBounds(AvaloniaPropertyChangedEventArgs _)
                 {
-                    observable.Dispose();
                     TryUpdateNativeControlPosition();
                 }
 
