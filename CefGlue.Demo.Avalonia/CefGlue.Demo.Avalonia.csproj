@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.999-cibuild0009894-beta" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-preview5" />
     <PackageReference Include="cef.redist.x64" Version="75.1.14" />
     <PackageReference Include="MonoMac.NetStandard" Version="0.0.4" />
   </ItemGroup>
