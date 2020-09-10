@@ -230,6 +230,7 @@ namespace Xilium.CefGlue.Common
             WithErrorHandling(nameof(HandleScreenInfoChanged), () =>
             {
                 Control.RenderSurface.DeviceScaleFactor = deviceScaleFactor;
+                Popup.RenderSurface.DeviceScaleFactor = deviceScaleFactor;
 
                 BrowserHost?.WasResized();
                 // Might cause a crash due to a SurfaceSync check in chromium code.
