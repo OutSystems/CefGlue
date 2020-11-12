@@ -76,6 +76,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
             RenderSurface = new AvaloniaRenderSurface(image);
         }
 
+        protected override bool NeedsRootWindowStylesFix => false;
+
         public OffScreenRenderSurface RenderSurface { get; }
 
         private void OnTextInput(object sender, TextInputEventArgs e)

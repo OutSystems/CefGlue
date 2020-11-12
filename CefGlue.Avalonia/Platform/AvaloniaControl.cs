@@ -38,6 +38,23 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
             _control.GotFocus += OnGotFocus;
             _control.LayoutUpdated += OnLayoutUpdated;
+
+            if (NeedsRootWindowStylesFix)
+            {
+                _control.AttachedToLogicalTree += OnAttachedToLogicalTree;
+            }
+        }
+
+        protected virtual bool NeedsRootWindowStylesFix => CefRuntime.Platform == CefRuntimePlatform.Windows;
+
+        private void OnAttachedToLogicalTree(object sender, LogicalTreeAttachmentEventArgs e)
+        {
+            if (e.Root is PopupRoot root)
+            {
+                // FIX avalonia popups dont apply the CLIPCHILDREN style, so we must force it
+                var rootHandle = root.PlatformImpl.Handle.Handle;
+                NativeExtensions.Windows.SetWindowLong(rootHandle, NativeExtensions.Windows.GWL.STYLE, NativeExtensions.Windows.WS.CLIPCHILDREN);
+            }
         }
 
         private void OnLayoutUpdated(object sender, EventArgs e)
