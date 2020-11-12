@@ -9,6 +9,7 @@ using Xilium.CefGlue.Common.ObjectBinding;
 using Xilium.CefGlue.Common.Platform;
 using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
+using Xilium.CefGlue.Platform.Windows;
 
 namespace Xilium.CefGlue.Common
 {
@@ -353,6 +354,7 @@ namespace Xilium.CefGlue.Common
 
         protected virtual void SetupBrowserView(CefWindowInfo windowInfo, int width, int height, IntPtr hostViewHandle)
         {
+            windowInfo.StyleEx |= WindowStyleEx.WS_EX_NOACTIVATE; // disable window activation (prevent stealing focus)
             windowInfo.SetAsChild(hostViewHandle, new CefRectangle(0, 0, width, height));
         }
 
