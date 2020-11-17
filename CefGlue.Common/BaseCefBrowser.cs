@@ -246,18 +246,6 @@ namespace Xilium.CefGlue.Common
         protected CefBrowser UnderlyingBrowser => _adapter.Browser;
 
         /// <summary>
-        /// Load the contents specified with the specified dummy |url|. |url|
-        /// should have a standard scheme (for example, http scheme) or behaviors like
-        /// link clicks and web security restrictions may not behave as expected.
-        /// </summary>
-        /// <param name="content"></param>
-        /// <param name="url"></param>
-        public void LoadString(string content, string url)
-        {
-            _adapter.LoadString(content, url);
-        }
-
-        /// <summary>
         /// Returns true if the browser can navigate backwards.
         /// </summary>
         /// <returns></returns>

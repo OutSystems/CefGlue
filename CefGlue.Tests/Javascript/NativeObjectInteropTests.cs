@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -45,9 +45,9 @@ namespace CefGlue.Tests.Javascript
             }
         }
 
-        private void Load()
+        private Task Load()
         {
-            Browser.LoadString($"<script></script>", "about:blank");
+            return Browser.LoadContent($"<script></script>");
         }
 
         private void Execute(string script)
@@ -55,12 +55,12 @@ namespace CefGlue.Tests.Javascript
             Browser.ExecuteJavaScript("(function() { " + script + " })()");
         }
 
-        protected override Task ExtraSetup()
+        protected async override Task ExtraSetup()
         {
             nativeObject = new NativeObject();
             Browser.RegisterJavascriptObject(nativeObject, ObjName);
-            Load();
-            return base.ExtraSetup();
+            await Load();
+            await base.ExtraSetup();
         }
 
         [Test]

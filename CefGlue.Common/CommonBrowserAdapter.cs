@@ -214,15 +214,6 @@ namespace Xilium.CefGlue.Common
             });
         }
 
-        public void LoadString(string content, string url)
-        {
-            // Remove leading whitespace from the URL
-            url = url.TrimStart();
-
-            // TODO
-            //_browser?.GetMainFrame().LoadString(content, url);
-        }
-
         public bool CanGoBack()
         {
             return _browser?.CanGoBack ?? false;

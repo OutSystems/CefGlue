@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -74,6 +74,7 @@ namespace CefGlue.Tests
 
                 var browserInitTaskCompletionSource = new TaskCompletionSource<bool>();
                 browser = new AvaloniaCefBrowser();
+                browser.Settings.WebSecurity = Xilium.CefGlue.CefState.Disabled;
                 browser.BrowserInitialized += delegate () { browserInitTaskCompletionSource.SetResult(true); };
 
                 window.Content = browser;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -12,10 +12,10 @@ namespace CefGlue.Tests.Javascript
             public int Age = 0;
         }
 
-        protected override Task ExtraSetup()
+        protected async override Task ExtraSetup()
         {
-            Browser.LoadString("<script></script>", "about:blank");
-            return base.ExtraSetup();
+            await Browser.LoadContent("<script></script>");
+            await base.ExtraSetup();
         }
 
         [Test]
