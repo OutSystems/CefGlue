@@ -1156,6 +1156,12 @@ namespace Xilium.CefGlue
         QUIC_CERT_ROOT_NOT_KNOWN = -380,
 
         /// <summary>
+        /// A GOAWAY frame has been received indicating that the request has not been
+        /// processed and is therefore safe to retry on a different connection.
+        /// </summary>
+        QUIC_GOAWAY_REQUEST_CAN_BE_RETRIED = -381,
+
+        /// <summary>
         /// The cache does not have the requested entry.
         /// </summary>
         CACHE_MISS = -400,

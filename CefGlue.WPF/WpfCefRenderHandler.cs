@@ -93,14 +93,15 @@ namespace Xilium.CefGlue.WPF
             }
         }
 
-        protected override void OnCursorChange(CefBrowser browser, IntPtr cursorHandle, CefCursorType type, CefCursorInfo customCursorInfo)
-        {
-            _uiHelper.PerformInUiThread(() =>
-                {
-                    Cursor cursor = CursorInteropHelper.Create(new SafeFileHandle(cursorHandle, false));
-                    _owner.Cursor = cursor;
-                });
-        }
+        // Moved to CefDisplayHandler.
+        //protected override void OnCursorChange(CefBrowser browser, IntPtr cursorHandle, CefCursorType type, CefCursorInfo customCursorInfo)
+        //{
+        //    _uiHelper.PerformInUiThread(() =>
+        //        {
+        //            Cursor cursor = CursorInteropHelper.Create(new SafeFileHandle(cursorHandle, false));
+        //            _owner.Cursor = cursor;
+        //        });
+        //}
 
         protected override void OnScrollOffsetChanged(CefBrowser browser, double x, double y)
         {
