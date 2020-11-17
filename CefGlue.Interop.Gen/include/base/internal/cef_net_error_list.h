@@ -121,6 +121,12 @@ NET_ERROR(BLOCKED_BY_RESPONSE, -27)
 // requests. Used for NetworkSecurityPolicy on Android.
 NET_ERROR(CLEARTEXT_NOT_PERMITTED, -29)
 
+// The request was blocked by a Content Security Policy
+NET_ERROR(BLOCKED_BY_CSP, -30)
+
+// The request was blocked because of no H/2 or QUIC session.
+NET_ERROR(H2_OR_QUIC_REQUIRED, -31)
+
 // A connection was closed (corresponding to a TCP FIN).
 NET_ERROR(CONNECTION_CLOSED, -100)
 
