@@ -25,11 +25,11 @@
             var platformId = Environment.OSVersion.Platform;
 
             if (platformId == PlatformID.MacOSX)
-                return CefRuntimePlatform.MacOSX;
+                return CefRuntimePlatform.MacOS;
 
             int p = (int)platformId;
             if ((p == 4) || (p == 128))
-                return IsRunningOnMac() ? CefRuntimePlatform.MacOSX : CefRuntimePlatform.Linux;
+                return IsRunningOnMac() ? CefRuntimePlatform.MacOS : CefRuntimePlatform.Linux;
 
             return CefRuntimePlatform.Windows;
         }
@@ -145,7 +145,7 @@
             switch (CefRuntime.Platform)
             {
                 case CefRuntimePlatform.Windows: expected = libcef.CEF_API_HASH_PLATFORM_WIN; break;
-                case CefRuntimePlatform.MacOSX: expected = libcef.CEF_API_HASH_PLATFORM_MACOSX; break;
+                case CefRuntimePlatform.MacOS: expected = libcef.CEF_API_HASH_PLATFORM_MACOS; break;
                 case CefRuntimePlatform.Linux: expected = libcef.CEF_API_HASH_PLATFORM_LINUX; break;
                 default: throw new PlatformNotSupportedException();
             }

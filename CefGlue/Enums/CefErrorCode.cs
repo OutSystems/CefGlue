@@ -189,6 +189,13 @@ namespace Xilium.CefGlue
         H2_OR_QUIC_REQUIRED = -31,
 
         /// <summary>
+        /// The request was blocked because it is a private network request coming from
+        /// an insecure context in a less private IP address space. This is used to
+        /// enforce CORS-RFC1918: https://wicg.github.io/cors-rfc1918.
+        /// </summary>
+        INSECURE_PRIVATE_NETWORK_REQUEST = -32,
+
+        /// <summary>
         /// A connection was closed (corresponding to a TCP FIN).
         /// </summary>
         CONNECTION_CLOSED = -100,
