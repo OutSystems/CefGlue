@@ -20,6 +20,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+launchSettings.json
 
 # IDE: Visual Studio Code
 !.vscode/
@@ -29,3 +30,10 @@
 
 # IDE: Xamarin Studio (MonoDevelop)
 *.userprefs
+CefGlue.BrowserProcess/Properties/PublishProfiles/
+
+#Nuget
+NuGet/output/
+packages/
+CefGlue.Interop.Gen/Classes.Handlers.tmpl/
+CefGlue.Interop.Gen/Classes.Proxies.tmpl/

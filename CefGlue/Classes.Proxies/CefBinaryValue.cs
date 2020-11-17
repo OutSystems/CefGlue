@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -11,7 +11,7 @@
     /// <summary>
     /// Class representing a binary value. Can be used on any process and thread.
     /// </summary>
-    public sealed unsafe partial class CefBinaryValue
+    public sealed unsafe partial class CefBinaryValue : ICefBinaryValue
     {
         /// <summary>
         /// Creates a new object that is not owned by any other object. The specified
@@ -51,24 +51,24 @@
         /// Returns true if this object and |that| object have the same underlying
         /// data.
         /// </summary>
-        public bool IsSame(CefBinaryValue that)
+        public bool IsSame(ICefBinaryValue that)
         {
-            return cef_binary_value_t.is_same(_self, that.ToNative()) != 0;
+            return cef_binary_value_t.is_same(_self, ((CefBinaryValue)that).ToNative()) != 0;
         }
 
         /// <summary>
         /// Returns true if this object and |that| object have an equivalent underlying
         /// value but are not necessarily the same object.
         /// </summary>
-        public bool IsEqual(CefBinaryValue that)
+        public bool IsEqual(ICefBinaryValue that)
         {
-            return cef_binary_value_t.is_equal(_self, that.ToNative()) != 0;
+            return cef_binary_value_t.is_equal(_self, ((CefBinaryValue)that).ToNative()) != 0;
         }
 
         /// <summary>
         /// Returns a copy of this object. The data in this object will also be copied.
         /// </summary>
-        public CefBinaryValue Copy()
+        public ICefBinaryValue Copy()
         {
             var value = cef_binary_value_t.copy(_self);
             return CefBinaryValue.FromNative(value);

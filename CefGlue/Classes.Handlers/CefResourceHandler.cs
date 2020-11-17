@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -170,19 +170,22 @@
 
             var m_callback = CefResourceReadCallback.FromNative(callback);
 
-            var m_result = Read((IntPtr)data_out, bytes_to_read, out var m_bytesRead, m_callback);
+            using (var m_stream = new UnmanagedMemoryStream((byte*)data_out, bytes_to_read, bytes_to_read, FileAccess.Write))
+            {
+                var m_result = Read(m_stream, bytes_to_read, out var m_bytesRead, m_callback);
 
-            *bytes_read = m_bytesRead;
+                *bytes_read = m_bytesRead;
 
-            return m_result ? 1 : 0;
+                return m_result ? 1 : 0;
+            }
         }
 
         /// <summary>
         /// Read response data. If data is available immediately copy up to
-        /// |bytes_to_read| bytes into |data_out|, set |bytes_read| to the number of
+        /// |bytes_to_read| bytes into |response|, set |bytes_read| to the number of
         /// bytes copied, and return true. To read the data at a later time keep a
         /// pointer to |data_out|, set |bytes_read| to 0, return true and execute
-        /// |callback| when the data is available (|data_out| will remain valid until
+        /// |callback| when the data is available (|response| will remain valid until
         /// the callback is executed). To indicate response completion set |bytes_read|
         /// to 0 and return false. To indicate failure set |bytes_read| to &lt; 0 (e.g. -2
         /// for ERR_FAILED) and return false. This method will be called in sequence
@@ -190,7 +193,7 @@
         /// |bytes_read| to -1 and return false and the ReadResponse method will be
         /// called.
         /// </summary>
-        protected abstract bool Read(IntPtr dataOut, int bytesToRead, out int bytesRead, CefResourceReadCallback callback);
+        protected abstract bool Read(Stream response, int bytesToRead, out int bytesRead, CefResourceReadCallback callback);
 
 
         private int read_response(cef_resource_handler_t* self, void* data_out, int bytes_to_read, int* bytes_read, cef_callback_t* callback)

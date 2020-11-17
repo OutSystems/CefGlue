@@ -1,0 +1,19 @@
+﻿<Window x:Class="Xilium.CefGlue.Demo.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="500" Width="700">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New Tab" Click="OnNewTabMenuItemClick" />
+                <MenuItem Header="_Close Tab" Click="OnCloseTabMenuItemClick" />
+                <MenuItem Header="_Open Dev Tools..." Click="OnOpenDevToolsMenuItemClick"/>
+                <MenuItem Header="_Evaluate Javascript" Click="OnEvaluateJavascriptMenuItemClick" />
+                <MenuItem Header="_Bind Javascript Object" Click="OnBindJavascriptObjectMenuItemClick" />
+            </MenuItem>
+        </Menu>
+
+        <TabControl Name="tabControl">
+        </TabControl>
+    </DockPanel>
+</Window>

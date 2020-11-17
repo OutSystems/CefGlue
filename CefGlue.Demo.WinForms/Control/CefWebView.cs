@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue.Demo
+namespace Xilium.CefGlue.Demo
 {
     using System;
     using System.Collections.Generic;
@@ -11,9 +11,7 @@
     // There is old / incomplete code. Don't rely on it.
     public class CefWebView
     {
-        private bool _handleCreated;
         private WebBrowser _core;
-        private IntPtr _browserWindowHandle;
 
         public CefWebView(string url, bool transparent = false)
         {

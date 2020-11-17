@@ -379,19 +379,22 @@ def make_proxy_g_body(cls):
     result.append('private %s* _self;' % iname)
     result.append('')
 
+    isRefCounted = cls.get_parent_capi_name() == "cef_base_ref_counted_t"
+    isScoped = cls.get_parent_capi_name() == "cef_base_scoped_t"
+
     # ctor
     result.append('private %(csname)s(%(iname)s* ptr)' % { 'csname' : csname, 'iname' : iname })
     result.append('{')
     result.append(indent + 'if (ptr == null) throw new ArgumentNullException("ptr");')
     result.append(indent + '_self = ptr;')
+    if isRefCounted:
+        result.append(indent + 'AddRef();')
+        result.append(indent + 'CefObjectTracker.Track(this);')
     #
     # todo: diagnostics code: Interlocked.Increment(ref _objCt);
     #
     result.append('}')
     result.append('')
-
-    isRefCounted = cls.get_parent_capi_name() == "cef_base_ref_counted_t"
-    isScoped = cls.get_parent_capi_name() == "cef_base_scoped_t"
 
     if isRefCounted:
         # disposable
@@ -412,6 +415,7 @@ def make_proxy_g_body(cls):
         result.append(indent + indent + 'Release();')
         result.append(indent + indent + '_self = null;')
         result.append(indent + '}')
+        result.append(indent + 'CefObjectTracker.Untrack(this);')
         result.append(indent + 'GC.SuppressFinalize(this);')
         result.append('}')
         result.append('')

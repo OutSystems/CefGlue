@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <AssemblyName>Xilium.CefGlue.Common</AssemblyName>
+    <RootNamespace>Xilium.CefGlue.Common</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="BaseCefBrowser.cs" />
+    <Compile Remove="CommonBrowserBehaviors.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="BaseCefBrowser.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NLog" Version="4.6.2" />
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.11.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CefGlue.Common.Shared\CefGlue.Common.Shared.csproj" />
+    <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
+  </ItemGroup>
+
+</Project>

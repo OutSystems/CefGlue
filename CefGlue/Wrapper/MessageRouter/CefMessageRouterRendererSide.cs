@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue.Wrapper
+namespace Xilium.CefGlue.Wrapper
 {
     using System;
     using System.Collections.Generic;
@@ -227,8 +227,6 @@
             {
                 return _browserRequestInfoMap.Count();
             }
-
-            return 0;
         }
 
         #region The below methods should be called from other CEF handlers. They must be called exactly as documented for the router to function correctly.

@@ -1,4 +1,4 @@
-﻿namespace Xilium.CefGlue
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -439,13 +439,9 @@
             }
         }
 
-        /// <summary>
-        /// Returns the MediaRouter object associated with this context.
-        /// </summary>
-        public CefMediaRouter GetMediaRouter()
+        internal cef_request_context_t* ToWeakNativeRef()
         {
-            var n_result = cef_request_context_t.get_media_router(_self);
-            return CefMediaRouter.FromNative(n_result);
+            return _self;
         }
     }
 }
