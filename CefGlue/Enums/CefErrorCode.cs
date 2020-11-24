@@ -179,6 +179,16 @@ namespace Xilium.CefGlue
         CLEARTEXT_NOT_PERMITTED = -29,
 
         /// <summary>
+        /// The request was blocked by a Content Security Policy.
+        /// </summary>
+        BLOCKED_BY_CSP = -30,
+
+        /// <summary>
+        /// The request was blocked because of no H/2 or QUIC session.
+        /// </summary>
+        H2_OR_QUIC_REQUIRED = -31,
+
+        /// <summary>
         /// A connection was closed (corresponding to a TCP FIN).
         /// </summary>
         CONNECTION_CLOSED = -100,

@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -13,24 +13,6 @@ namespace Xilium.CefGlue
     /// </summary>
     public abstract unsafe partial class CefRenderProcessHandler
     {
-        private void on_render_thread_created(cef_render_process_handler_t* self, cef_list_value_t* extra_info)
-        {
-            CheckSelf(self);
-
-            using (var mExtraInfo = CefListValue.FromNative(extra_info))
-            {
-                OnRenderThreadCreated(mExtraInfo);
-            }
-        }
-
-        /// <summary>
-        /// Called after the render process main thread has been created.
-        /// </summary>
-        protected virtual void OnRenderThreadCreated(CefListValue extraInfo)
-        {
-        }
-
-
         private void on_web_kit_initialized(cef_render_process_handler_t* self)
         {
             CheckSelf(self);
@@ -203,10 +185,10 @@ namespace Xilium.CefGlue
             var m_frame = CefFrame.FromNative(frame);
             using (var m_message = CefProcessMessage.FromNative(message))
             {
-                var result = OnProcessMessageReceived(m_browser, m_frame, source_process, m_message);
+            var result = OnProcessMessageReceived(m_browser, m_frame, source_process, m_message);
 
-                return result ? 1 : 0;
-            }
+            return result ? 1 : 0;
+        }
         }
 
         /// <summary>
