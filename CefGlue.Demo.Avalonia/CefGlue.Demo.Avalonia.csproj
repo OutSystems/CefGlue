@@ -37,7 +37,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="0.10.0-preview5" />
-    <PackageReference Include="cef.redist.x64" Version="84.3.10" />
+    <PackageReference Include="cef.redist.x64" Version="85.3.12" />
     <PackageReference Include="MonoMac.NetStandard" Version="0.0.4" />
   </ItemGroup>
 

@@ -32,7 +32,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="Moq" Version="4.10.1" />
-    <PackageReference Include="cef.redist.x64" Version="84.3.10" />
+    <PackageReference Include="cef.redist.x64" Version="85.3.12" />
   </ItemGroup>
 
   <ItemGroup>
