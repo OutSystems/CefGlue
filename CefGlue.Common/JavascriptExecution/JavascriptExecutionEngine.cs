@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers;
+using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 using Xilium.CefGlue.Common.Shared.Serialization;
-using Xilium.CefGlue.Common.Shared.Helpers;
 
 namespace Xilium.CefGlue.Common.JavascriptExecution
 {
@@ -14,8 +14,10 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
     {
         private static volatile int lastTaskId;
 
-        private readonly ConcurrentDictionary<int, TaskCompletionSource<object>> _pendingTasks = new ConcurrentDictionary<int, TaskCompletionSource<object>>();
+        private readonly static Task InfiniteWaitTask = Task.Delay(TimeSpan.FromMilliseconds(-1));
 
+        private readonly ConcurrentDictionary<int, TaskCompletionSource<object>> _pendingTasks = new ConcurrentDictionary<int, TaskCompletionSource<object>>();
+        
         public JavascriptExecutionEngine(MessageDispatcher dispatcher)
         {
             dispatcher.RegisterMessageHandler(Messages.JsEvaluationResult.Name, HandleScriptEvaluationResultMessage);
@@ -74,7 +76,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             UncaughtException?.Invoke(new JavascriptUncaughtExceptionEventArgs(args.Frame, message.Message, stackFrames.ToArray()));
         }
 
-        public Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame)
+        public async Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame, TimeSpan? timeout = null)
         {
             var taskId = lastTaskId++;
             var message = new Messages.JsEvaluationRequest()
@@ -94,23 +96,25 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 var cefMessage = message.ToCefProcessMessage();
                 frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
 
-                // TODO should we add any timeout param and remove the task after that ?
-                return messageReceiveCompletionSource.Task.ContinueWith(t =>
+                var timeoutTask = timeout.HasValue ? Task.Delay(timeout.Value) : InfiniteWaitTask;
+
+                var resultTask = await Task.WhenAny(messageReceiveCompletionSource.Task, timeoutTask);
+                if (resultTask == timeoutTask)
                 {
-                    switch (t.Status) {
-                        case TaskStatus.RanToCompletion:
-                            return JavascriptToNativeTypeConverter.ConvertToNative<T>(t.Result);
-                        case TaskStatus.Canceled:
-                            _pendingTasks.TryRemove(message.TaskId, out var pendingTask);
-                            return default;
-                        default:
-                            throw t.Exception?.InnerException;
-                    }
-                });
+                    // task evaluation timeout
+                    throw new TaskCanceledException();
+                }
+
+                if (messageReceiveCompletionSource.Task.IsFaulted)
+                {
+                    throw messageReceiveCompletionSource.Task.Exception.InnerException;
+                }
+
+                return JavascriptToNativeTypeConverter.ConvertToNative<T>(messageReceiveCompletionSource.Task.Result);
             }
             catch
             {
-                _pendingTasks.TryRemove(taskId, out var dummy);
+                _pendingTasks.TryRemove(taskId, out var _);
                 throw;
             }
         }

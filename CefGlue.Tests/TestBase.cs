@@ -109,6 +109,6 @@ namespace CefGlue.Tests
 
         protected Task Run(Action action) => Dispatcher.UIThread.InvokeAsync(action, DispatcherPriority.Background);
 
-        protected Task<T> EvaluateJavascript<T>(string script) => Browser.EvaluateJavaScript<T>("(function() { " + script + " })()");
+        protected Task<T> EvaluateJavascript<T>(string script, TimeSpan? timeout = null) => Browser.EvaluateJavaScript<T>("(function() { " + script + " })()", timeout: timeout);
     }
 }

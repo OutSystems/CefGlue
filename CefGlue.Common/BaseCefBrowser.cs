@@ -300,10 +300,11 @@ namespace Xilium.CefGlue.Common
         /// <param name="url">Url where the script in question can be found.</param>
         /// <param name="line">The base line number to use for error, if any.</param>
         /// <param name="frameName">The name of the frame where the script will be executed.</param>
+        /// <param name="timeout">Timeout after which the evaluation is cancelled.</param>
         /// <returns>The result of the evaluation.</returns>
-        public Task<T> EvaluateJavaScript<T>(string code, string frameName = null, string url = null, int line = 1)
+        public Task<T> EvaluateJavaScript<T>(string code, string frameName = null, string url = null, int line = 1, TimeSpan? timeout = null)
         {
-            return _adapter.EvaluateJavaScript<T>(code, url ?? "about:blank", line, frameName);
+            return _adapter.EvaluateJavaScript<T>(code, url ?? "about:blank", line, frameName, timeout);
         }
 
         /// <summary>
@@ -314,10 +315,11 @@ namespace Xilium.CefGlue.Common
         /// <param name="url">Url where the script in question can be found.</param>
         /// <param name="line">The base line number to use for error, if any.</param>
         /// <param name="frame">The frame where the script will be executed.</param>
+        /// <param name="timeout">Timeout after which the evaluation is cancelled.</param>
         /// <returns>The result of the evaluation.</returns>
-        public Task<T> EvaluateJavaScript<T>(string code, CefFrame frame, string url = null, int line = 1)
+        public Task<T> EvaluateJavaScript<T>(string code, CefFrame frame, string url = null, int line = 1, TimeSpan? timeout = null)
         {
-            return _adapter.EvaluateJavaScript<T>(code, url ?? "about:blank", line, frame);
+            return _adapter.EvaluateJavaScript<T>(code, url ?? "about:blank", line, frame, timeout);
         }
 
         /// <summary>

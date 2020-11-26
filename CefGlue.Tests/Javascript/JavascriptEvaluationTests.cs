@@ -64,5 +64,20 @@ namespace CefGlue.Tests.Javascript
             var exception = Assert.ThrowsAsync<Exception>(async () => await EvaluateJavascript<string>($"throw new Error('{ExceptionMessage}')"));
             StringAssert.Contains(ExceptionMessage, exception.Message);
         }
+
+        [Test]
+        public void CancelledOnTimeout()
+        {
+            var timeout = TimeSpan.FromMilliseconds(500);
+            Assert.ThrowsAsync<TaskCanceledException>(async () => await EvaluateJavascript<string>($"var start = new Date(); while((new Date() - start) < ({timeout.TotalMilliseconds} + 200));", timeout));
+        }
+
+        [Test]
+        public async Task NotCancelledBeforeTimeout()
+        {
+            var timeout = TimeSpan.FromMilliseconds(500);
+            var result = await EvaluateJavascript<int>($"return 1;", timeout);
+            Assert.AreEqual(1, result);
+        }
     }
 }
