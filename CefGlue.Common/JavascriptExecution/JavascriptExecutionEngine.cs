@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
@@ -74,7 +74,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             UncaughtException?.Invoke(new JavascriptUncaughtExceptionEventArgs(args.Frame, message.Message, stackFrames.ToArray()));
         }
 
-        public async Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame)
+        public Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame)
         {
             var taskId = lastTaskId++;
             var message = new Messages.JsEvaluationRequest()
@@ -85,7 +85,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 Line = line
             };
 
-            var messageReceiveCompletionSource = new TaskCompletionSource<object>();
+            var messageReceiveCompletionSource = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
 
             _pendingTasks.TryAdd(taskId, messageReceiveCompletionSource);
 
@@ -95,16 +95,24 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
 
                 // TODO should we add any timeout param and remove the task after that ?
-                await messageReceiveCompletionSource.Task;
+                return messageReceiveCompletionSource.Task.ContinueWith(t =>
+                {
+                    switch (t.Status) {
+                        case TaskStatus.RanToCompletion:
+                            return JavascriptToNativeTypeConverter.ConvertToNative<T>(t.Result);
+                        case TaskStatus.Canceled:
+                            _pendingTasks.TryRemove(message.TaskId, out var pendingTask);
+                            return default;
+                        default:
+                            throw t.Exception?.InnerException;
+                    }
+                });
             }
             catch
             {
                 _pendingTasks.TryRemove(taskId, out var dummy);
                 throw;
             }
-
-            var result = messageReceiveCompletionSource.Task.Result;
-            return JavascriptToNativeTypeConverter.ConvertToNative<T>(result);
         }
     }
 }

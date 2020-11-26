@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -41,7 +41,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     if (objectCreated)
                     {
                         // notify that the object has been registered, any pending promises on the object will be resolved
-                        var taskSource = _pendingBoundQueryTasks.GetOrAdd(objectInfo.Name, _ => new TaskCompletionSource<bool>());
+                        var taskSource = _pendingBoundQueryTasks.GetOrAdd(objectInfo.Name, _ => new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously));
                         taskSource.TrySetResult(true);
                     }
                 }
@@ -194,7 +194,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         Task<bool> INativeObjectRegistry.Bind(string objName)
         {
-            return _pendingBoundQueryTasks.GetOrAdd(objName, _ => new TaskCompletionSource<bool>()).Task;
+            return _pendingBoundQueryTasks.GetOrAdd(objName, _ => new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously)).Task;
         }
 
         void INativeObjectRegistry.Unbind(string objName)

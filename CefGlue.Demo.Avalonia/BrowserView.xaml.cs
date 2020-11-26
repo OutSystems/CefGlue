@@ -1,9 +1,10 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using System;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Xilium.CefGlue.Avalonia;
@@ -60,21 +61,25 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
         public async void EvaluateJavascript()
         {
-            Console.WriteLine(await browser.EvaluateJavaScript<string>("\"Hello World!\""));
+            var result = new StringWriter();
 
-            Console.WriteLine(await browser.EvaluateJavaScript<int>("1+1"));
+            result.WriteLine(await browser.EvaluateJavaScript<string>("\"Hello World!\""));
 
-            Console.WriteLine(await browser.EvaluateJavaScript<bool>("false"));
+            result.WriteLine(await browser.EvaluateJavaScript<int>("1+1"));
 
-            Console.WriteLine(await browser.EvaluateJavaScript<double>("1.5+1.5"));
+            result.WriteLine(await browser.EvaluateJavaScript<bool>("false"));
 
-            Console.WriteLine(await browser.EvaluateJavaScript<double>("3+1.5"));
+            result.WriteLine(await browser.EvaluateJavaScript<double>("1.5+1.5"));
 
-            Console.WriteLine(await browser.EvaluateJavaScript<DateTime>("new Date()"));
+            result.WriteLine(await browser.EvaluateJavaScript<double>("3+1.5"));
 
-            Console.WriteLine(string.Join(", ", await browser.EvaluateJavaScript<object[]>("[1, 2, 3]")));
+            result.WriteLine(await browser.EvaluateJavaScript<DateTime>("new Date()"));
 
-            Console.WriteLine(string.Join(", ", (await browser.EvaluateJavaScript<ExpandoObject>("(function() { return { a: 'valueA', b: 1, c: true } })()")).Select(p => p.Key + ":" + p.Value)));
+            result.WriteLine(string.Join(", ", await browser.EvaluateJavaScript<object[]>("[1, 2, 3]")));
+
+            result.WriteLine(string.Join(", ", (await browser.EvaluateJavaScript<ExpandoObject>("(function() { return { a: 'valueA', b: 1, c: true } })()")).Select(p => p.Key + ":" + p.Value)));
+
+            browser.ExecuteJavaScript($"alert(\"{result.ToString().Replace("\r\n", " | ").Replace("\"", "\\\"")}\")");
         }
 
         public void BindJavascriptObject()
