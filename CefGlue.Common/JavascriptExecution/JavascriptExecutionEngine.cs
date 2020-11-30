@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
@@ -13,8 +14,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
     internal class JavascriptExecutionEngine
     {
         private static volatile int lastTaskId;
-
-        private readonly static Task InfiniteWaitTask = Task.Delay(TimeSpan.FromMilliseconds(-1));
 
         private readonly ConcurrentDictionary<int, TaskCompletionSource<object>> _pendingTasks = new ConcurrentDictionary<int, TaskCompletionSource<object>>();
         
@@ -96,9 +95,19 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 var cefMessage = message.ToCefProcessMessage();
                 frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
 
-                var timeoutTask = timeout.HasValue ? Task.Delay(timeout.Value) : InfiniteWaitTask;
+                var tasks = new List<Task>(2)
+                {
+                    messageReceiveCompletionSource.Task
+                };
 
-                var resultTask = await Task.WhenAny(messageReceiveCompletionSource.Task, timeoutTask);
+                Task timeoutTask = null;
+                if (timeout.HasValue)
+                {
+                    timeoutTask = Task.Delay(timeout.Value);
+                    tasks.Add(timeoutTask);
+                }
+
+                var resultTask = await Task.WhenAny(tasks);
                 if (resultTask == timeoutTask)
                 {
                     // task evaluation timeout
