@@ -1,4 +1,4 @@
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.IO;
 
 namespace Xilium.CefGlue.Common.Handlers
@@ -40,6 +40,13 @@ namespace Xilium.CefGlue.Common.Handlers
         /// The url to redirect to;
         /// </summary>
         public string RedirectUrl { get; set; }
+
+        public DefaultResourceHandler()
+        {
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
+            // Workaround for requests from different scheme (e.g. requests from https made to custom-scheme)
+            Headers.Add("Access-Control-Allow-Origin", "*");
+        }
 
         protected override void Cancel()
         {
@@ -137,7 +144,7 @@ namespace Xilium.CefGlue.Common.Handlers
                 return false;
             }
 
-            response.Write(buffer, 0, buffer.Length);
+            response.Write(buffer, 0, bytesRead);
 
             return bytesRead > 0;
         }
