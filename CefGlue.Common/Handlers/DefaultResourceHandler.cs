@@ -1,10 +1,21 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.IO;
+using System.Threading;
 
 namespace Xilium.CefGlue.Common.Handlers
 {
     public class DefaultResourceHandler : CefResourceHandler
     {
+        private Stream _responseStream;
+        private long _responseStreamReadPosition = -1;
+
+        public DefaultResourceHandler()
+        {
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
+            // Workaround for requests from different scheme (e.g. requests from https made to custom-scheme)
+            Headers.Add("Access-Control-Allow-Origin", "*");
+        }
 
         /// <summary>
         /// Gets or sets the response mime type.
@@ -14,7 +25,18 @@ namespace Xilium.CefGlue.Common.Handlers
         /// <summary>
         /// Response returned.
         /// </summary>
-        public Stream Response { get; set; }
+        public Stream Response 
+        { 
+            get => _responseStream;
+            set 
+            {                
+                if (_responseStreamReadPosition > -1)
+                {
+                    throw new Exception($"Cannot set {nameof(Response)} Stream after request handling started");
+                }
+                _responseStream = value;
+            } 
+        }
 
         /// <summary>
         /// Gets or sets the response error code. When set, the response is ignored.
@@ -24,12 +46,12 @@ namespace Xilium.CefGlue.Common.Handlers
         /// <summary>
         /// Gets or sets the response status code.
         /// </summary>
-        public int Status { get; set; }
+        public int Status { get; set; } = 200;
 
         /// <summary>
         /// Gets or sets the status text.
         /// </summary>
-        public string StatusText { get; set; }
+        public string StatusText { get; set; } = "OK";
 
         /// <summary>
         /// Get all response header fields.
@@ -41,51 +63,47 @@ namespace Xilium.CefGlue.Common.Handlers
         /// </summary>
         public string RedirectUrl { get; set; }
 
-        public DefaultResourceHandler()
-        {
-            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
-            // Workaround for requests from different scheme (e.g. requests from https made to custom-scheme)
-            Headers.Add("Access-Control-Allow-Origin", "*");
-        }
-
         protected override void Cancel()
         {
-            Response = null;
+            // nothing to do
         }
 
-        protected override void GetResponseHeaders(CefResponse response, out long responseLength, out string redirectUrl)
+        protected override void GetResponseHeaders(CefResponse response, out long responseLength, out string outRedirectUrl)
         {
-            redirectUrl = null;
+            outRedirectUrl = null;
 
-            if (ErrorCode != CefErrorCode.None)
+            var headers = Headers;
+            if (headers != null)
             {
-                response.Error = ErrorCode;
-                responseLength = 0;
+                response.SetHeaderMap(headers);
             }
-            else
+
+            var errorCode = ErrorCode;
+            if (errorCode != CefErrorCode.None)
             {
-                responseLength = -1;
+                response.Error = errorCode;
+                responseLength = 0;
+                return;
+            }
 
-                if (RedirectUrl != null)
-                {
-                    redirectUrl = RedirectUrl;
-                    return;
-                }
+            responseLength = -1;
 
-                response.MimeType = MimeType ?? "text/html";
-                response.Status = Status;
-                response.StatusText = StatusText;
-                if (Headers != null)
-                {
-                    response.SetHeaderMap(Headers);
-                }
-                
+            response.MimeType = MimeType ?? "text/html";
+            response.Status = Status;
+            response.StatusText = StatusText;
+
+            var redirectUrl = RedirectUrl;
+            if (redirectUrl != null)
+            {
+                outRedirectUrl = redirectUrl;
+                return;
+            }
+
+            var responseStream = _responseStream;
+            if (responseStream?.CanSeek == true)
+            {
                 // attempt to infer the length
-                if (Response != null && Response.CanSeek)
-                {
-                    responseLength = Response.Length;
-                    Response.Position = 0; // reset the stream
-                }
+                responseLength = responseStream.Length;
             }
         }
 
@@ -115,38 +133,65 @@ namespace Xilium.CefGlue.Common.Handlers
 
         protected override bool Skip(long bytesToSkip, out long bytesSkipped, CefResourceSkipCallback callback)
         {
-            if (Response == null || !Response.CanSeek)
+            InitializeStreamPositionIfNeeded();
+
+            var responseStream = _responseStream;
+            if (responseStream?.CanSeek != true)
             {
-                bytesSkipped = - 2; // ERR_FAILED
+                bytesSkipped = -2; // ERR_FAILED
                 return false;
             }
 
             bytesSkipped = bytesToSkip;
-            Response.Seek(bytesToSkip, SeekOrigin.Current);
+            lock (responseStream)
+            {
+                _responseStreamReadPosition += bytesToSkip;
+            }
             return true;
         }
 
-        protected override bool Read(Stream response, int bytesToRead, out int bytesRead, CefResourceReadCallback callback)
+        protected override bool Read(Stream outResponse, int bytesToRead, out int bytesRead, CefResourceReadCallback callback)
         {
-            callback.Dispose();
+            callback?.Dispose();
 
-            if (Response == null)
+            InitializeStreamPositionIfNeeded();
+
+            var responseStream = _responseStream;
+            if (responseStream == null)
             {
-                bytesRead = 0;
+                bytesRead = -2; // ERR_FAILED
                 return false;
             }
 
-            var buffer = new byte[response.Length];
-            bytesRead = Response.Read(buffer, 0, buffer.Length);
+            var buffer = new byte[bytesToRead];
+
+            // lock response stream because it can be shared with other resource handlers
+            lock (responseStream)
+            {
+                if (responseStream.Position != _responseStreamReadPosition)
+                {
+                    if (!responseStream.CanSeek)
+                    {
+                        bytesRead = -2; // ERR_FAILED
+                        return false;
+                    }
+                    responseStream.Position = _responseStreamReadPosition;
+                }
+                
+                bytesRead = responseStream.Read(buffer, 0, buffer.Length);
+                _responseStreamReadPosition = responseStream.Position;
+            }
 
             if (bytesRead == 0)
             {
                 return false;
             }
 
-            response.Write(buffer, 0, bytesRead);
+            outResponse.Write(buffer, 0, bytesRead);
 
             return bytesRead > 0;
         }
+
+        private void InitializeStreamPositionIfNeeded() => Interlocked.CompareExchange(ref _responseStreamReadPosition, 0, -1); // mark as initialized if not yet
     }
 }
