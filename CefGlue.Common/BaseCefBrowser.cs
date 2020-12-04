@@ -104,7 +104,7 @@ namespace Xilium.CefGlue.Common
         public event AddressChangedEventHandler AddressChanged { add => _adapter.AddressChanged += value; remove => _adapter.AddressChanged -= value; }
 
         /// <summary>
-        /// Event fired when the page title changes.
+        /// Event fired when a console message arrives.
         /// </summary>
         public event ConsoleMessageEventHandler ConsoleMessage { add => _adapter.ConsoleMessage += value; remove => _adapter.ConsoleMessage -= value; }
 
