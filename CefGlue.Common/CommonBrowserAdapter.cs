@@ -158,7 +158,7 @@ namespace Xilium.CefGlue.Common
             set => BrowserHost?.SetZoomLevel(value);
         }
 
-        public bool IsJavascriptEngineInitialized => _javascriptExecutionEngine.IsMainFrameContextInitialized;
+        public bool IsJavascriptEngineInitialized => _javascriptExecutionEngine?.IsMainFrameContextInitialized == true;
 
         public int MaxNativeMethodsParallelCalls
         {
