@@ -36,8 +36,9 @@ namespace Xilium.CefGlue.WPF.Platform
 
         private void OnLayoutUpdated(object sender, EventArgs e)
         {
-            if (_control.IsLoaded)
+            if (_control.IsLoaded || !_control.RenderSize.IsEmpty)
             {
+                // fire as soon as the control becomes loaded or the render size is not empty
                 SizeChanged?.Invoke(new CefSize((int)_control.RenderSize.Width, (int)_control.RenderSize.Height));
             }
         }
