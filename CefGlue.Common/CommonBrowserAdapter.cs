@@ -21,7 +21,7 @@ namespace Xilium.CefGlue.Common
         private readonly string _name;
         protected readonly ILogger _logger;
 
-        private string _initialUrl = DefaultUrl;
+        private string _initialUrl;
         private string _title;
         private string _tooltip;
         private int _maxNativeMethodsParallelCalls = int.MaxValue;
