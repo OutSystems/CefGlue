@@ -14,7 +14,7 @@ namespace CefGlue.Tests.Javascript
 
         protected override Task ExtraSetup()
         {
-            Browser.LoadString("<script></script>", "about:blank");
+            Browser.LoadContent("<script></script>");
             return base.ExtraSetup();
         }
 

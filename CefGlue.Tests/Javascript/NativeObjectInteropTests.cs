@@ -47,7 +47,7 @@ namespace CefGlue.Tests.Javascript
 
         private void Load()
         {
-            Browser.LoadString($"<script></script>", "about:blank");
+            Browser.LoadContent($"<script></script>");
         }
 
         private void Execute(string script)

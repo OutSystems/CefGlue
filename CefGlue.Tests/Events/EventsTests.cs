@@ -1,13 +1,12 @@
-using System.Threading;
-using System.Threading.Tasks;
 using NUnit.Framework;
+using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 
 namespace CefGlue.Tests.Events
 {
     public class EventsTests : TestBase
     {
-        private const string Url = "http://test/";
+        private const string Url = "data:";
 
         [Test]
         public async Task LoadStartIsFired()
@@ -21,7 +20,7 @@ namespace CefGlue.Tests.Events
                 }
             }
             Browser.LoadStart += OnBrowserLoadStart;
-            Browser.LoadString("<html/>", Url);
+            await Browser.LoadContent("<html/>");
             await taskCompletionSource.Task;
         }
 
@@ -37,7 +36,7 @@ namespace CefGlue.Tests.Events
                 }
             }
             Browser.LoadEnd += OnBrowserLoadEnd;
-            Browser.LoadString("<html/>", Url);
+            await Browser.LoadContent("<html/>");
             await taskCompletionSource.Task;
         }
 
@@ -50,25 +49,27 @@ namespace CefGlue.Tests.Events
                 taskCompletionSource.SetResult(true);
             }
             Browser.LoadError += OnBrowserLoadError;
-            Browser.Address = "error";
+            Browser.Address = "http://0.0.0.0"; // navigate to an invalid url
             await taskCompletionSource.Task;
         }
 
         [Test]
         public async Task LoadingStateChangeIsFired()
         {
+            var completed = false;
             var loadStateChangeCount = 0;
             var taskCompletionSource = new TaskCompletionSource<bool>();
             void OnLoadingStateChange(object sender, LoadingStateChangeEventArgs e)
             {
                 loadStateChangeCount++;
-                if (loadStateChangeCount > 1 && !e.IsLoading)
+                if (loadStateChangeCount > 1 && !completed)
                 {
+                    completed = true;
                     taskCompletionSource.SetResult(true);
                 }
             }
             Browser.LoadingStateChange += OnLoadingStateChange;
-            Browser.LoadString("<html/>", Url);
+            await Browser.LoadContent("<html/>");
             await taskCompletionSource.Task;
         }
 
@@ -84,7 +85,7 @@ namespace CefGlue.Tests.Events
                 }
             }
             Browser.AddressChanged += OnAddressChanged;
-            Browser.LoadString("<html/>", Url);
+            await Browser.LoadContent("<html/>");
             await taskCompletionSource.Task;
         }
 
@@ -98,7 +99,7 @@ namespace CefGlue.Tests.Events
                 taskCompletionSource.SetResult(e.Message);
             }
             Browser.ConsoleMessage += OnConsoleMessage;
-            Browser.LoadString($"<script>console.log('{ConsoleMessage}')</script>", Url);
+            await Browser.LoadContent($"<html><script>console.log('{ConsoleMessage}')</script></html>");
             var message = await taskCompletionSource.Task;
             Assert.AreEqual(ConsoleMessage, message);
         }
@@ -122,10 +123,10 @@ namespace CefGlue.Tests.Events
             Browser.JavascriptContextCreated += OnJavascriptContextCreated;
             Browser.JavascriptContextReleased += OnJavascriptContextReleased;
 
-            Browser.LoadString($"<script>1+1</script>", Url);
+            await Browser.LoadContent($"<script>1+1</script>");
             await contextCreatedCompletionSource.Task;
 
-            Browser.LoadString($"<html/>", Url);
+            await Browser.LoadContent($"<html/>");
             await contextReleasedCompletionSource.Task;
         }
 
@@ -139,7 +140,7 @@ namespace CefGlue.Tests.Events
                 taskCompletionSource.SetResult(e.Message);
             }
             Browser.JavascriptUncaughException += OnJavascriptUncaughException;
-            Browser.LoadString($"<script>throw new Error('{ExceptionMessage}')</script>", Url);
+            await Browser.LoadContent($"<script>throw new Error('{ExceptionMessage}')</script>");
             var message = await taskCompletionSource.Task;
             StringAssert.Contains(ExceptionMessage, message);
         }
