@@ -50,7 +50,7 @@ namespace Xilium.CefGlue.Common
 
         protected virtual void Dispose(bool disposing)
         {
-            _adapter.Dispose(disposing);
+            _adapter?.Dispose(disposing);
         }
 
         #endregion
