@@ -33,10 +33,7 @@ namespace Xilium.CefGlue.Common
                 {
                     foreach (var flag in _flags)
                     {
-                        if (!commandLine.HasSwitch(flag.Key))
-                        {
-                            commandLine.AppendSwitch(flag.Key, flag.Value);
-                        }
+                        commandLine.AppendSwitch(flag.Key, flag.Value);
                     }
                 }
             }

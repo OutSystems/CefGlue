@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Avalonia;
 using Xilium.CefGlue.Common;
@@ -19,6 +20,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
                           WindowlessRenderingEnabled = false
 #endif
                       },
+                      flags: new[] { new KeyValuePair<string, string>("disable-features", "NetworkService,VizDisplayCompositor") },
                       customSchemes: new[] {
                         new CustomScheme()
                         {
