@@ -1,3 +1,4 @@
+﻿using System.Diagnostics;
 using Xilium.CefGlue.Common.Handlers;
 using Xilium.CefGlue.Common.Shared;
 
@@ -7,11 +8,13 @@ namespace Xilium.CefGlue.Common.InternalHandlers
     {
         private readonly CustomScheme[] _customSchemes;
         private readonly BrowserProcessHandler _handler;
+        private readonly string _currentProcessId;
 
         public CommonBrowserProcessHandler(BrowserProcessHandler handler, CustomScheme[] customSchemes)
         {
             _customSchemes = customSchemes;
             _handler = handler;
+            _currentProcessId = Process.GetCurrentProcess().Id.ToString();
         }
 
         protected override void OnBeforeChildProcessLaunch(CefCommandLine commandLine)
@@ -21,6 +24,8 @@ namespace Xilium.CefGlue.Common.InternalHandlers
             {
                 commandLine.AppendSwitch(CommandLineArgs.CustomScheme, CustomScheme.ToCommandLineValue(_customSchemes));
             }
+
+            commandLine.AppendSwitch(CommandLineArgs.ParentProcessId, _currentProcessId);
         }
 
         protected override CefPrintHandler GetPrintHandler()

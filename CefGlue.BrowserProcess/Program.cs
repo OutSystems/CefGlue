@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Linq;
+using Xilium.CefGlue.BrowserProcess.Helpers;
 using Xilium.CefGlue.Common.Shared;
 
 namespace Xilium.CefGlue.BrowserProcess
@@ -12,6 +13,12 @@ namespace Xilium.CefGlue.BrowserProcess
             try
             {
 #endif
+                var parentProcessId = GetArgumentValue(args, CommandLineArgs.ParentProcessId);
+                if (parentProcessId != null && int.TryParse(parentProcessId, out var parentProcessIdAsInt))
+                {
+                    ParentProcessMonitor.StartMonitoring(parentProcessIdAsInt);
+                }
+
                 CefRuntime.Load();
                 CefRuntime.EnableHighDpiSupport();
 
