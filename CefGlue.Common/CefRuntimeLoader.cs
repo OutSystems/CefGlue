@@ -44,12 +44,17 @@ namespace Xilium.CefGlue.Common
                     break;
 
                 case CefRuntimePlatform.MacOSX:
+                    var resourcesPath = Path.Combine(path, "Resources");
+                    if (!Directory.Exists(resourcesPath))
+                    {
+                        throw new FileNotFoundException($"Unable to find Resources folder");
+                    }
                     settings.NoSandbox = true;
                     settings.MultiThreadedMessageLoop = false;
                     settings.ExternalMessagePump = true;
                     settings.MainBundlePath = path;
                     settings.FrameworkDirPath = path;
-                    settings.ResourcesDirPath = Path.Combine(path, "Resources");
+                    settings.ResourcesDirPath = resourcesPath;
                     break;
             }
 
