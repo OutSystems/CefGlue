@@ -1,15 +1,29 @@
 <Project>
-    <ItemGroup>
-        <CefGlueCommonBinaries Include="$(MSBuildThisFileDirectory)..\lib\net472\**\*.*" />
+    <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'win'">
         <None Include="@(CefRedist64)">
             <Visible>false</Visible>
-            <Link>$(OutputDirectory)\x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <Link>$(OutputDirectory)\%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <PublishState>Included</PublishState>
         </None>
-        <None Include="@(CefGlueCommonBinaries)">
+    </ItemGroup>
+    <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'osx'">
+        <None Include="@(CefRedistOSX64)">
+            <Visible>false</Visible>
+            <Link>$(OutputDirectory)\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <PublishState>Included</PublishState>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="@(CefGlueCommonFiles)">
             <Visible>false</Visible>
             <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <PublishState>Included</PublishState>
         </None>
     </ItemGroup>
 </Project>

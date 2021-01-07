@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
+﻿using CefGlue.Tests.Helpers;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xilium.CefGlue;
 using Xilium.CefGlue.Common.Events;
@@ -94,8 +94,6 @@ namespace CefGlue.Tests.Network
             public string RedirectUrl { get; set; }
         }
 
-        private static Stream GetStream(string content) => new MemoryStream(Encoding.ASCII.GetBytes(content));
-
         private Task<Response> GetResponse()
         {
             var taskCompletion = new TaskCompletionSource<Response>();
@@ -152,7 +150,7 @@ namespace CefGlue.Tests.Network
             Browser.RequestHandler = new TestsRequestHandler(_ =>
             {
                 var handler = new DefaultResourceHandler();
-                handler.Response = GetStream(Data);
+                handler.Response = StreamHelper.GetStream(Data);
                 return handler;
             });
 
@@ -183,7 +181,7 @@ namespace CefGlue.Tests.Network
                 var handler = new DefaultResourceHandler();
                 if (request.Url == RedirectUrl)
                 {
-                    handler.Response = GetStream("ok");
+                    handler.Response = StreamHelper.GetStream("ok");
                 }
                 else
                 {

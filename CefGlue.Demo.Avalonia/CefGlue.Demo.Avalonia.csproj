@@ -6,21 +6,27 @@
     <AssemblyName>Xilium.CefGlue.Demo.Avalonia</AssemblyName>
     <RootNamespace>Xilium.CefGlue.Demo.Avalonia</RootNamespace>
     <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
-    <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
   </PropertyGroup>
-
+    
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_WindowlessRender|AnyCPU'">
-    <DefineConstants>WINDOWLESS</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType></DebugType>
+    <DefineConstants>$(DefineConstants);WINDOWLESS</DefineConstants>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  
+  <PropertyGroup>
+    <CFBundleName>Xilium.CefGlue.Demo.Avalonia</CFBundleName> <!-- Also defines .app file name -->
+    <CFBundleDisplayName>CefGlueDemoAvalonia</CFBundleDisplayName>
+    <CFBundleIdentifier>com.example</CFBundleIdentifier>
+    <CFBundleVersion>1.0.0</CFBundleVersion>
+    <CFBundlePackageType>AAPL</CFBundlePackageType>
+    <CFBundleSignature>4242</CFBundleSignature>
+    <CFBundleShortVersionString>DemoAvalonia</CFBundleShortVersionString>
+    <CFBundleExecutable>Xilium.CefGlue.Demo.Avalonia</CFBundleExecutable>
+    <CFBundleIconFile>AppName.icns</CFBundleIconFile> <!-- Will be copied from output directory -->
+    <NSPrincipalClass>NSApplication</NSPrincipalClass>
+    <NSHighResolutionCapable>true</NSHighResolutionCapable>
   </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+    
   <ItemGroup>
     <None Remove="App.xaml" />
     <None Remove="BrowserView.xaml" />
@@ -34,11 +40,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.xaml" />
   </ItemGroup>
+    
+  <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc1" />
     <PackageReference Include="cef.redist.x64" Version="85.3.12" />
-    <PackageReference Include="MonoMac.NetStandard" Version="0.0.4" />
+    <PackageReference Include="cef.redist.osx64" Version="85.3.12"/>
+    <PackageReference Include="MonoMac.NetStandard" Version="0.0.4"/>
+    <PackageReference Include="Dotnet.Bundle" Version="0.9.13"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -46,6 +56,6 @@
     <ProjectReference Include="..\CefGlue\CefGlue.csproj" />  
   </ItemGroup>
 
-  <Import Project="$(ProjectDir)..\Xilium.CefGlue.Native.props" />
-  
+  <Import Project="$(ProjectDir)..\Nuget\CefGlue.Common.targets" />
+
 </Project>

@@ -31,6 +31,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{654422AE-4104-44E8-85CF-575CBDF23CD1}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		CefGlue.CopyLocal.props = CefGlue.CopyLocal.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue.Demo.WPF", "CefGlue.Demo.WPF\CefGlue.Demo.WPF.csproj", "{8E758128-CA79-4533-963E-91A1BF0558FB}"
@@ -40,14 +41,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{953C06E5-DABF-4958-8640-62147CD1DFAD}"
 	ProjectSection(SolutionItems) = preProject
 		NuGet\CefGlue.Avalonia.nuspec = NuGet\CefGlue.Avalonia.nuspec
-		NuGet\CefGlue.Avalonia.props = NuGet\CefGlue.Avalonia.props
-		NuGet\CefGlue.Avalonia.targets = NuGet\CefGlue.Avalonia.targets
 		NuGet\CefGlue.Common.nuspec = NuGet\CefGlue.Common.nuspec
 		NuGet\CefGlue.Common.props = NuGet\CefGlue.Common.props
 		NuGet\CefGlue.Common.targets = NuGet\CefGlue.Common.targets
 		NuGet\CefGlue.Wpf.nuspec = NuGet\CefGlue.Wpf.nuspec
-		NuGet\CefGlue.Wpf.props = NuGet\CefGlue.Wpf.props
-		NuGet\CefGlue.Wpf.targets = NuGet\CefGlue.Wpf.targets
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Tests", "CefGlue.Tests\CefGlue.Tests.csproj", "{F7E38B04-0D84-4540-B608-4887E6C1B46B}"

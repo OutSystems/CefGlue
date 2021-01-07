@@ -1,10 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
-
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     <IsPackable>false</IsPackable>
-
     <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
   </PropertyGroup>
 
@@ -25,11 +23,11 @@
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
-
+    
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc1" />
     <PackageReference Include="nunit" Version="3.12.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="Moq" Version="4.10.1" />
     <PackageReference Include="cef.redist.x64" Version="85.3.12" />
@@ -42,6 +40,7 @@
     <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
   </ItemGroup>
 
-  <Import Project="$(ProjectDir)..\Xilium.CefGlue.Native.props" />
+  <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />
+  <Import Project="$(ProjectDir)..\Nuget\CefGlue.Common.targets" />
   
 </Project>

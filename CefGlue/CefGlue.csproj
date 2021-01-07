@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
     <AssemblyName>Xilium.CefGlue</AssemblyName>
-    <Version>75.1.0.0</Version>
+    <Version>85.1.0.0</Version>
     <Company>Xilium</Company>
     <Authors>Xilium</Authors>
     <PackageProjectUrl>https://gitlab.com/xiliumhq/chromiumembedded/cefglue</PackageProjectUrl>
