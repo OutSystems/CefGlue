@@ -1,21 +1,7 @@
-using System;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-
 namespace Xilium.CefGlue.Common.Handlers
 {
     public class BrowserProcessHandler : CefBrowserProcessHandler
     {
-        private static readonly Lazy<Func<string, string>> MacOSHelperAppFixer = new Lazy<Func<string, string>>(() =>
-        {
-            // remove the last 2 occurrences from the helper app, eg: (GPU), (Renderer), ...
-            // we always use the same helper app
-
-            var appName = Process.GetCurrentProcess().MainModule.FileName;
-            appName = appName.Substring(0, appName.LastIndexOf("/Contents/"));
-            var regex = new Regex("\\s\\(\\w*\\)", RegexOptions.IgnoreCase);
-            return input => regex.Replace(input, "", 2, appName.Length);
-        });
 
         internal CefPrintHandler HandleGetPrintHandler()
         {
@@ -24,10 +10,6 @@ namespace Xilium.CefGlue.Common.Handlers
 
         internal void HandleBeforeChildProcessLaunch(CefCommandLine commandLine)
         {
-            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
-            {
-                commandLine.SetProgram(MacOSHelperAppFixer.Value(commandLine.GetProgram()));
-            }
             OnBeforeChildProcessLaunch(commandLine);
         }
 

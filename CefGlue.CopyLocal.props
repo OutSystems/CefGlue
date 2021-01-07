@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+    <PropertyGroup>
+        <BrowserProcessDir>$(MSBuildThisFileDirectory)CefGlue.BrowserProcess\bin\$(Configuration)\$(TargetFramework)</BrowserProcessDir>
+        <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
+    </PropertyGroup>
+    
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <CefGlueTargetPlatform>win</CefGlueTargetPlatform>
+    </PropertyGroup>
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+        <CefGlueTargetPlatform>osx</CefGlueTargetPlatform>
+    </PropertyGroup>
+    
+    <ItemGroup Condition="'$(RuntimeIdentifier)' == ''">
+        <CefGlueCommonFiles Include="$(BrowserProcessDir)\Xilium.CefGlue.BrowserProcess.*" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(RuntimeIdentifier)' != ''">
+        <CefGlueCommonFiles Include="$(BrowserProcessDir)\$(RuntimeIdentifier)\publish\Xilium.CefGlue.BrowserProcess.*" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'osx'">
+        <CefGlueCommonFiles Include="$(BrowserProcessDir)\osx-x64\Xilium.CefGlue.BrowserProcess" />
+    </ItemGroup>
+</Project>

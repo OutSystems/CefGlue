@@ -1,12 +1,15 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using CefGlue.Tests.CustomSchemes;
 using CefGlue.Tests.Helpers;
 using NUnit.Framework;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Xilium.CefGlue.Avalonia;
+using Xilium.CefGlue.Common;
+using Xilium.CefGlue.Common.Shared;
 
 namespace CefGlue.Tests
 {
@@ -29,6 +32,14 @@ namespace CefGlue.Tests
             }
 
             var initializationTaskCompletionSource = new TaskCompletionSource<bool>();
+
+            CefRuntimeLoader.Initialize(customSchemes: new[] { 
+                new CustomScheme()
+                {
+                    SchemeName = CustomSchemeHandlerFactory.SchemeName,
+                    SchemeHandlerFactory = new CustomSchemeHandlerFactory()
+                }
+            });
 
             lock (initLock)
             {
