@@ -1,65 +1,65 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata>
-    <id>CefGlue.Common</id>
-    <version>$version$</version>
-    <title>CefGlue.Common</title>
-    <authors>Xilium CefGlue Team</authors>
-    <owners>Xilium CefGlue Team</owners>
-    <projectUrl>https://gitlab.com/xiliumhq/chromiumembedded/cefglue</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Xilium.CefGlue is a .NET/Mono binding for The Chromium Embedded Framework (CEF).</description>
-    <releaseNotes></releaseNotes>
-    <tags>cef, chromium, chrome browser, cefglue</tags>
-    <dependencies>
-      <dependency id="cef.redist.x64" version="$RedistVersion$" />
-      <dependency id="cef.redist.osx64" version="$RedistVersion$" />
-      <dependency id="NLog" version="4.6.2" />
-      <dependency id="System.Threading.Tasks.Dataflow" version="4.11.1" />
-    </dependencies>
-  </metadata>
-  <files>
-    <!-- Common CefGlue stuff (shared between both Avalonia and WPF) -->
+    <metadata>
+        <id>CefGlue.Common</id>
+        <version>$version$</version>
+        <title>CefGlue.Common</title>
+        <authors>Xilium CefGlue Team</authors>
+        <owners>Xilium CefGlue Team</owners>
+        <projectUrl>https://gitlab.com/xiliumhq/chromiumembedded/cefglue</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Xilium.CefGlue is a .NET/Mono binding for The Chromium Embedded Framework (CEF).</description>
+        <releaseNotes></releaseNotes>
+        <tags>cef, chromium, chrome browser, cefglue</tags>
+        <dependencies>
+            <dependency id="cef.redist.x64" version="$CefRedistVersion$" />
+            <dependency id="cef.redist.osx64" version="$CefRedistOSXVersion$" />
+            <dependency id="NLog" version="$NLogVersion$" />
+            <dependency id="System.Threading.Tasks.Dataflow" version="$TasksDataFlowVersion$" />
+        </dependencies>
+    </metadata>
+    <files>
+        <!-- Common CefGlue stuff (shared between both Avalonia and WPF) -->
 
-    <file src="..\CefGlue.Common\bin\Release\net472\Xilium.CefGlue.dll" target="lib\net472"/>
-    <file src="..\CefGlue.Common\bin\Release\net472\Xilium.CefGlue.pdb" target="lib\net472"/>
+        <file src="..\CefGlue.Common\bin\$Configuration$\net472\Xilium.CefGlue.dll" target="lib\net472"/>
+        <file src="..\CefGlue.Common\bin\$Configuration$\net472\Xilium.CefGlue.pdb" target="lib\net472"/>
 
-    <file src="..\CefGlue.Common\bin\Release\net472\Xilium.CefGlue.Common.dll" target="lib\net472"/>
-    <file src="..\CefGlue.Common\bin\Release\net472\Xilium.CefGlue.Common.pdb" target="lib\net472"/>
+        <file src="..\CefGlue.Common\bin\$Configuration$\net472\Xilium.CefGlue.Common.dll" target="lib\net472"/>
+        <file src="..\CefGlue.Common\bin\$Configuration$\net472\Xilium.CefGlue.Common.pdb" target="lib\net472"/>
 
-    <file src="..\CefGlue.Common.Shared\bin\Release\net472\Xilium.CefGlue.Common.Shared.dll" target="lib\net472"/>
-    <file src="..\CefGlue.Common.Shared\bin\Release\net472\Xilium.CefGlue.Common.Shared.pdb" target="lib\net472"/>
+        <file src="..\CefGlue.Common.Shared\bin\$Configuration$\net472\Xilium.CefGlue.Common.Shared.dll" target="lib\net472"/>
+        <file src="..\CefGlue.Common.Shared\bin\$Configuration$\net472\Xilium.CefGlue.Common.Shared.pdb" target="lib\net472"/>
 
-    <file src="..\CefGlue.BrowserProcess\bin\Release\net472\Xilium.CefGlue.BrowserProcess.exe" target="lib\net472"/>
-    <file src="..\CefGlue.BrowserProcess\bin\Release\net472\Xilium.CefGlue.BrowserProcess.exe.config" target="lib\net472"/>
-    <file src="..\CefGlue.BrowserProcess\bin\Release\net472\Xilium.CefGlue.BrowserProcess.pdb" target="lib\net472"/>
+        <file src="..\CefGlue.BrowserProcess\bin\$Configuration$\net472\Xilium.CefGlue.BrowserProcess.exe" target="lib\net472"/>
+        <file src="..\CefGlue.BrowserProcess\bin\$Configuration$\net472\Xilium.CefGlue.BrowserProcess.exe.config" target="lib\net472"/>
+        <file src="..\CefGlue.BrowserProcess\bin\$Configuration$\net472\Xilium.CefGlue.BrowserProcess.pdb" target="lib\net472"/>
 
-    <file src="..\CefGlue.Common\bin\Release\netstandard2.0\Xilium.CefGlue.dll" target="lib\netstandard"/>
-    <file src="..\CefGlue.Common\bin\Release\netstandard2.0\Xilium.CefGlue.pdb" target="lib\netstandard"/>
+        <file src="..\CefGlue.Common\bin\$Configuration$\netstandard2.0\Xilium.CefGlue.dll" target="lib\netstandard"/>
+        <file src="..\CefGlue.Common\bin\$Configuration$\netstandard2.0\Xilium.CefGlue.pdb" target="lib\netstandard"/>
 
-    <file src="..\CefGlue.Common\bin\Release\netstandard2.0\Xilium.CefGlue.Common.dll" target="lib\netstandard"/>
-    <file src="..\CefGlue.Common\bin\Release\netstandard2.0\Xilium.CefGlue.Common.pdb" target="lib\netstandard"/>
+        <file src="..\CefGlue.Common\bin\$Configuration$\netstandard2.0\Xilium.CefGlue.Common.dll" target="lib\netstandard"/>
+        <file src="..\CefGlue.Common\bin\$Configuration$\netstandard2.0\Xilium.CefGlue.Common.pdb" target="lib\netstandard"/>
 
-    <file src="..\CefGlue.Common.Shared\bin\Release\netstandard2.0\Xilium.CefGlue.Common.Shared.dll" target="lib\netstandard"/>
-    <file src="..\CefGlue.Common.Shared\bin\Release\netstandard2.0\Xilium.CefGlue.Common.Shared.pdb" target="lib\netstandard"/>
+        <file src="..\CefGlue.Common.Shared\bin\$Configuration$\netstandard2.0\Xilium.CefGlue.Common.Shared.dll" target="lib\netstandard"/>
+        <file src="..\CefGlue.Common.Shared\bin\$Configuration$\netstandard2.0\Xilium.CefGlue.Common.Shared.pdb" target="lib\netstandard"/>
 
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp3.1\Xilium.CefGlue.BrowserProcess.dll" target="lib\netstandard"/>
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp3.1\Xilium.CefGlue.BrowserProcess.pdb" target="lib\netstandard"/>
+        <file src="..\CefGlue.BrowserProcess\bin\$Configuration$\netcoreapp3.1\Xilium.CefGlue.BrowserProcess.dll" target="lib\netstandard"/>
+        <file src="..\CefGlue.BrowserProcess\bin\$Configuration$\netcoreapp3.1\Xilium.CefGlue.BrowserProcess.pdb" target="lib\netstandard"/>
 
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp3.1\Xilium.CefGlue.BrowserProcess.runtimeconfig.json" target="config\frameworkdependent"/>
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp3.1\Xilium.CefGlue.BrowserProcess.deps.json" target="config\frameworkdependent"/>
+        <file src="..\CefGlue.BrowserProcess\bin\$Configuration$\netcoreapp3.1\Xilium.CefGlue.BrowserProcess.runtimeconfig.json" target="config\frameworkdependent"/>
+        <file src="..\CefGlue.BrowserProcess\bin\$Configuration$\netcoreapp3.1\Xilium.CefGlue.BrowserProcess.deps.json" target="config\frameworkdependent"/>
 
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp3.1\win-x64\Xilium.CefGlue.BrowserProcess.deps.json" target="config\selfcontained\win"/>
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp3.1\win-x64\Xilium.CefGlue.BrowserProcess.runtimeconfig.json" target="config\selfcontained\win"/>
-      
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp3.1\osx-x64\Xilium.CefGlue.BrowserProcess.deps.json" target="config\selfcontained\osx"/>
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp3.1\osx-x64\Xilium.CefGlue.BrowserProcess.runtimeconfig.json" target="config\selfcontained\osx"/>
-      
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp3.1\Xilium.CefGlue.BrowserProcess.exe" target="bin\win"/>  
-    <file src="..\CefGlue.BrowserProcess\bin\Release\netcoreapp3.1\osx-x64\Xilium.CefGlue.BrowserProcess" target="bin\osx"/>
+        <file src="..\CefGlue.BrowserProcess\bin\$Configuration$\netcoreapp3.1\win-x64\Xilium.CefGlue.BrowserProcess.deps.json" target="config\selfcontained\win"/>
+        <file src="..\CefGlue.BrowserProcess\bin\$Configuration$\netcoreapp3.1\win-x64\Xilium.CefGlue.BrowserProcess.runtimeconfig.json" target="config\selfcontained\win"/>
 
-    <file src="CefGlue.Common.props" target="build" />
-    <file src="CefGlue.Common.targets" target="build" />
-  </files>
+        <file src="..\CefGlue.BrowserProcess\bin\$Configuration$\netcoreapp3.1\osx-x64\Xilium.CefGlue.BrowserProcess.deps.json" target="config\selfcontained\osx"/>
+        <file src="..\CefGlue.BrowserProcess\bin\$Configuration$\netcoreapp3.1\osx-x64\Xilium.CefGlue.BrowserProcess.runtimeconfig.json" target="config\selfcontained\osx"/>
+
+        <file src="..\CefGlue.BrowserProcess\bin\$Configuration$\netcoreapp3.1\Xilium.CefGlue.BrowserProcess.exe" target="bin\win"/>
+        <file src="..\CefGlue.BrowserProcess\bin\$Configuration$\netcoreapp3.1\osx-x64\Xilium.CefGlue.BrowserProcess" target="bin\osx"/>
+
+        <file src="CefGlue.Common.props" target="build" />
+        <file src="CefGlue.Common.targets" target="build" />
+    </files>
 </package>
 
