@@ -10,20 +10,21 @@ namespace Xilium.CefGlue.Avalonia.Platform
     {
         private readonly IntPtr _browserHandle;
 
+        private bool _isAttached;
+
         public ExtendedAvaloniaNativeControlHost(IntPtr browserHandle)
         {
             _browserHandle = browserHandle;
-        }
 
-        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-        {
-            base.OnAttachedToVisualTree(e);
-            if(CefRuntime.Platform == CefRuntimePlatform.MacOSX)
+            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
             {
                 // In OSX we need to force update of the browser bounds: https://magpcss.org/ceforum/viewtopic.php?f=6&t=16341
-                IDisposable observable = null;
                 void UpdateNativeControlBounds(AvaloniaPropertyChangedEventArgs ea)
                 {
+                    if (!_isAttached)
+                    {
+                        return;
+                    }
                     var transformedBoundsEventArg = (AvaloniaPropertyChangedEventArgs<TransformedBounds?>)ea;
                     if (transformedBoundsEventArg.NewValue.Value?.Bounds.IsEmpty == false)
                     {
@@ -32,8 +33,20 @@ namespace Xilium.CefGlue.Avalonia.Platform
                     }
                 }
 
-                observable = this.GetPropertyChangedObservable(Control.TransformedBoundsProperty).Subscribe(UpdateNativeControlBounds);
+                this.GetPropertyChangedObservable(TransformedBoundsProperty).Subscribe(UpdateNativeControlBounds);
             }
+        }
+
+        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnAttachedToVisualTree(e);
+            _isAttached = true;
+        }
+
+        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnDetachedFromVisualTree(e);
+            _isAttached = false;
         }
 
         protected override IPlatformHandle CreateNativeControlCore(IPlatformHandle handle)
