@@ -2,6 +2,7 @@ using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
+using Avalonia.VisualTree;
 
 namespace Xilium.CefGlue.Avalonia.Platform
 {
@@ -21,9 +22,14 @@ namespace Xilium.CefGlue.Avalonia.Platform
             {
                 // In OSX we need to force update of the browser bounds: https://magpcss.org/ceforum/viewtopic.php?f=6&t=16341
                 IDisposable observable = null;
-                void UpdateNativeControlBounds(AvaloniaPropertyChangedEventArgs _)
+                void UpdateNativeControlBounds(AvaloniaPropertyChangedEventArgs ea)
                 {
-                    TryUpdateNativeControlPosition();
+                    var transformedBoundsEventArg = (AvaloniaPropertyChangedEventArgs<TransformedBounds?>)ea;
+                    if (transformedBoundsEventArg.NewValue.Value?.Bounds.IsEmpty == false)
+                    {
+                        // only update when not empty otherwise consequent updates might not have effect
+                        TryUpdateNativeControlPosition();
+                    }
                 }
 
                 observable = this.GetPropertyChangedObservable(Control.TransformedBoundsProperty).Subscribe(UpdateNativeControlBounds);
