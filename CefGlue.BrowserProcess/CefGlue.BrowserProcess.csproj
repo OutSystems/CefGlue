@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net472;net5.0</TargetFrameworks>
     <AssemblyName>Xilium.CefGlue.BrowserProcess</AssemblyName>
     <RootNamespace>Xilium.CefGlue.BrowserProcess</RootNamespace>
     <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
@@ -15,7 +15,7 @@
       <CustomCommands>
         <Command>
           <type>AfterBuild</type>
-          <command>dotnet publish --framework netcoreapp3.1 --runtime osx-x64 -p:IsPublishing=True</command>
+          <command>dotnet publish --framework net5.0 --runtime osx-x64 -p:IsPublishing=True</command>
         </Command>
       </CustomCommands>
     </CustomCommands>
@@ -26,7 +26,7 @@
     <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
   </ItemGroup>
 
-  <Target Name="PublishAppWin" AfterTargets="AfterBuild" Condition="$(TargetFramework.StartsWith('netcoreapp')) and '$(IsPublishing)' != 'True' and $([MSBuild]::IsOSPlatform('Windows'))">
+  <Target Name="PublishAppWin" AfterTargets="AfterBuild" Condition="$(TargetFramework.StartsWith('net5')) and '$(IsPublishing)' != 'True' and $([MSBuild]::IsOSPlatform('Windows'))">
     <!-- Publish both pltaforms on Windows for packaging -->
     <Message Text="Publishing..." Importance="High" />
     <Exec Command="dotnet publish --framework $(TargetFramework) --configuration $(Configuration) -p:IsPublishing=True --runtime win-x64" />
