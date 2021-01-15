@@ -23,7 +23,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 {
                     try
                     {
-                        using (var serverPipe = new NamedPipeServerStream(pipeName, PipeDirection.In, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous))
+                        using (var serverPipe = new NamedPipeServerStream(pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
                         {
                             await serverPipe.WaitForConnectionAsync(_cancellationTokenSource.Token);
                             HandleClientConnected(serverPipe);
