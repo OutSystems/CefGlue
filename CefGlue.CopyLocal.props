@@ -18,9 +18,12 @@
     </PropertyGroup>
     
     <ItemGroup Condition="'$(RuntimeIdentifier)' == ''">
-        <CefGlueCommonFiles Include="$(BrowserProcessDir)\$(CefGlueTargetPlatform)-x64\publish\*" />
+        <CefGlueCommonFiles Include="$(BrowserProcessDir)\Xilium.CefGlue.BrowserProcess.*" />
     </ItemGroup>
     <ItemGroup Condition="'$(RuntimeIdentifier)' != ''">
-        <CefGlueCommonFiles Include="$(BrowserProcessDir)\$(RuntimeIdentifier)\publish\*" />
+        <CefGlueCommonFiles Include="$(BrowserProcessDir)\$(RuntimeIdentifier)\publish\Xilium.CefGlue.BrowserProcess.*" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'osx'">
+        <CefGlueCommonFiles Include="$(BrowserProcessDir)\osx-x64\Xilium.CefGlue.BrowserProcess" />
     </ItemGroup>
 </Project>

@@ -15,7 +15,7 @@
       <CustomCommands>
         <Command>
           <type>AfterBuild</type>
-          <command>dotnet publish --framework net5.0 --runtime osx-x64 -p:IsPublishing=True -p:PublishSingleFile=true -p:PublishTrimmed=true -p:IncludeAllContentForSelfExtract=true</command>
+          <command>dotnet publish --framework net5.0 --runtime osx-x64 -p:IsPublishing=True</command>
         </Command>
       </CustomCommands>
     </CustomCommands>
@@ -29,8 +29,8 @@
   <Target Name="PublishAppWin" AfterTargets="AfterBuild" Condition="$(TargetFramework.StartsWith('net5')) and '$(IsPublishing)' != 'True' and $([MSBuild]::IsOSPlatform('Windows'))">
     <!-- Publish both pltaforms on Windows for packaging -->
     <Message Text="Publishing..." Importance="High" />
-    <Exec Command="dotnet publish --framework $(TargetFramework) --configuration $(Configuration) -p:IsPublishing=True --runtime win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -p:IncludeAllContentForSelfExtract=true" />
-    <Exec Command="dotnet publish --framework $(TargetFramework) --configuration $(Configuration) -p:IsPublishing=True --runtime osx-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -p:IncludeAllContentForSelfExtract=true" />
+    <Exec Command="dotnet publish --framework $(TargetFramework) --configuration $(Configuration) -p:IsPublishing=True --runtime win-x64" />
+    <Exec Command="dotnet publish --framework $(TargetFramework) --configuration $(Configuration) -p:IsPublishing=True --runtime osx-x64" />
   </Target>
 
 </Project>
