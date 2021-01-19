@@ -1,7 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using Xilium.CefGlue.Common.Handlers;
 using Xilium.CefGlue.Common.Shared;
 
@@ -27,14 +26,19 @@ namespace Xilium.CefGlue.Common
 
             settings.UncaughtExceptionStackSize = 100; // for uncaught exception event work properly
 
-            var path = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+            var path = AppDomain.CurrentDomain.BaseDirectory;
 
             var subprocessPath = Path.Combine(path, BrowserProcessFileName);
             if (!File.Exists(subprocessPath))
             {
-                throw new FileNotFoundException($"Unable to find \"{subprocessPath}\"");
+                subprocessPath = Path.Combine(path, "CefGlueBrowserProcess", BrowserProcessFileName);
+                
+                if (!File.Exists(subprocessPath))
+                {
+                    throw new FileNotFoundException($"Unable to find \"{subprocessPath}\"");
+                }
             }
-
+            
             settings.BrowserSubprocessPath = subprocessPath;
 
             switch (CefRuntime.Platform)
@@ -49,6 +53,7 @@ namespace Xilium.CefGlue.Common
                     {
                         throw new FileNotFoundException($"Unable to find Resources folder");
                     }
+
                     settings.NoSandbox = true;
                     settings.MultiThreadedMessageLoop = false;
                     settings.ExternalMessagePump = true;

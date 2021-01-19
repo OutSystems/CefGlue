@@ -14,6 +14,8 @@ namespace Xilium.CefGlue.BrowserProcess
             try
             {
 #endif
+                NativeLibsLoader.Install();
+
                 var parentProcessId = GetArgumentValue(args, CommandLineArgs.ParentProcessId);
                 if (parentProcessId != null && int.TryParse(parentProcessId, out var parentProcessIdAsInt))
                 {
