@@ -18,9 +18,9 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <None Include="@(CefGlueCommonFiles)">
+        <None Include="@(CefGlueBrowserProcessFiles)">
             <Visible>false</Visible>
-            <Link>$(OutputDirectory)\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <Link>$(OutputDirectory)\CefGlueBrowserProcess\%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>

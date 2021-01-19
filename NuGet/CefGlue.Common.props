@@ -10,12 +10,6 @@
         <CefGlueTargetPlatform>osx</CefGlueTargetPlatform>
     </PropertyGroup>
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' != ''">
-        <CefGlueCommonFiles Include="$(MSBuildThisFileDirectory)..\bin\$(CefGlueTargetPlatform)\*" />
-    </ItemGroup>
-    <ItemGroup Condition="'$(RuntimeIdentifier)' == ''">
-        <CefGlueCommonFiles Include="$(MSBuildThisFileDirectory)..\config\frameworkdependent\*" />
-    </ItemGroup>
-    <ItemGroup Condition="'$(RuntimeIdentifier)' != ''">
-        <CefGlueCommonFiles Include="$(MSBuildThisFileDirectory)..\config\selfcontained\$(CefGlueTargetPlatform)\*" />
+        <CefGlueBrowserProcessFiles Include="$(MSBuildThisFileDirectory)..\bin\$(CefGlueTargetPlatform)\*" />
     </ItemGroup>
 </Project>
