@@ -2,7 +2,7 @@ using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
-using Avalonia.VisualTree;
+using Avalonia.Threading;
 
 namespace Xilium.CefGlue.Avalonia.Platform
 {
@@ -18,35 +18,17 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
             if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
             {
-                // In OSX we need to force update of the browser bounds: https://magpcss.org/ceforum/viewtopic.php?f=6&t=16341
+                // HACK: In OSX we need to force update of the browser bounds: https://magpcss.org/ceforum/viewtopic.php?f=6&t=16341
                 void UpdateNativeControlBounds(AvaloniaPropertyChangedEventArgs ea)
                 {
-                    if (!_isAttached)
-                    {
-                        return;
-                    }
-                    var transformedBoundsEventArg = (AvaloniaPropertyChangedEventArgs<TransformedBounds?>)ea;
-                    if (transformedBoundsEventArg.NewValue.Value?.Bounds.IsEmpty == false)
-                    {
-                        // only update when not empty otherwise consequent updates might not have effect
-                        TryUpdateNativeControlPosition();
-                    }
+                    FixNativeNativeControlBounds();
                 }
 
-                this.GetPropertyChangedObservable(TransformedBoundsProperty).Subscribe(UpdateNativeControlBounds);
+                this.GetPropertyChangedObservable(BoundsProperty).Subscribe(UpdateNativeControlBounds);
+
+                AttachedToVisualTree += OnAttachedToVisualTree;
+                DetachedFromVisualTree += OnDetachedFromVisualTree;
             }
-        }
-
-        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-        {
-            base.OnAttachedToVisualTree(e);
-            _isAttached = true;
-        }
-
-        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-        {
-            base.OnDetachedFromVisualTree(e);
-            _isAttached = false;
         }
 
         protected override IPlatformHandle CreateNativeControlCore(IPlatformHandle handle)
@@ -57,6 +39,45 @@ namespace Xilium.CefGlue.Avalonia.Platform
         protected override void DestroyNativeControlCore(IPlatformHandle control)
         {
             // do nothing
+        }
+
+        private void OnAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        {
+            _isAttached = true;
+            if (e.Root is WindowBase rootWindow)
+            {
+                rootWindow.Opened += OnRootWindowOpened;
+            }
+            FixNativeNativeControlBounds();
+        }
+
+        private void OnDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        {
+            _isAttached = false;
+            if (e.Root is WindowBase rootWindow)
+            {
+                rootWindow.Opened -= OnRootWindowOpened;
+            }
+        }
+
+        private void OnRootWindowOpened(object sender, EventArgs e)
+        {
+            FixNativeNativeControlBounds();
+        }
+
+        private void FixNativeNativeControlBounds()
+        {
+            if (!Bounds.IsEmpty && _isAttached)
+            {
+                // try delay native host position update, because running right away seems to have no effect sometimes
+                DispatcherTimer.RunOnce(() =>
+                {
+                    if (_isAttached)
+                    {
+                        TryUpdateNativeControlPosition();
+                    }
+                }, TimeSpan.FromMilliseconds(50));
+            }
         }
     }
 }
