@@ -54,14 +54,14 @@ namespace Xilium.CefGlue.Avalonia.Platform
             return _getHostingWindow()?.PlatformImpl.Handle;
         }
 
-        public virtual IntPtr? GetHostViewHandle()
+        public virtual IntPtr? GetHostViewHandle(int initialWidth, int initialHeight)
         {
             if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
             {
                 if (_hostView == null)
                 {
                     // create an host NSView to embed cef with current control dimensions
-                    _hostView = new NSView(_control.Bounds.Width, _control.Bounds.Height);
+                    _hostView = new NSView(initialWidth, initialHeight);
                 }
                 return _hostView.Handle;
             }

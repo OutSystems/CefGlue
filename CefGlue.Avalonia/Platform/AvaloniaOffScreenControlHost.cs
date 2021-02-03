@@ -218,7 +218,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             return result;
         }
 
-        public override IntPtr? GetHostViewHandle()
+        public override IntPtr? GetHostViewHandle(int initialWidth, int initialHeight)
         {
             var platformHandle = GetPlatformHandle();
             if (platformHandle is IMacOSTopLevelPlatformHandle macOSHandle)
