@@ -12,7 +12,8 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
     {
         private static volatile int lastCallId;
 
-        private readonly ConcurrentDictionary<string, ObjectRegistrationInfo> _registeredObjects = new ConcurrentDictionary<string, ObjectRegistrationInfo>();
+        private readonly object _registrationSyncRoot = new object();
+        private readonly Dictionary<string, ObjectRegistrationInfo> _registeredObjects = new Dictionary<string, ObjectRegistrationInfo>();
         private readonly ConcurrentDictionary<int, PromiseHolder> _pendingCalls = new ConcurrentDictionary<int, PromiseHolder>();
         private readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _pendingBoundQueryTasks = new ConcurrentDictionary<string, TaskCompletionSource<bool>>();
         
@@ -30,21 +31,47 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             var message = Messages.NativeObjectRegistrationRequest.FromCefMessage(args.Message);
             var objectInfo = new ObjectRegistrationInfo(message.ObjectName, message.MethodsNames);
 
-            if (_registeredObjects.TryAdd(objectInfo.Name, objectInfo))
+            void Log(string log)
             {
+                var processId = System.Diagnostics.Process.GetCurrentProcess().Id;
+                System.IO.File.AppendAllText(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "cefglue" + processId + ".txt"), log + "\n");
+            }
+
+            Log("Registering " + objectInfo.Name);
+
+            lock (_registrationSyncRoot)
+            {
+                if (_registeredObjects.ContainsKey(objectInfo.Name))
+                {
+                    return;
+                }
+
+                _registeredObjects.Add(objectInfo.Name, objectInfo);
+                var taskSource = _pendingBoundQueryTasks.GetOrAdd(objectInfo.Name, _ => new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously));
+
                 // register objects in the main frame
                 var frame = args.Browser.GetMainFrame();
-                using (var context = frame.V8Context.EnterOrFail())
-                {
-                    var objectCreated = CreateNativeObjects(new[] { objectInfo }, context.V8Context);
+                var context = frame?.V8Context;
 
-                    if (objectCreated)
-                    {
-                        // notify that the object has been registered, any pending promises on the object will be resolved
-                        var taskSource = _pendingBoundQueryTasks.GetOrAdd(objectInfo.Name, _ => new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously));
-                        taskSource.TrySetResult(true);
-                    }
+                if (context == null)
+                {
+                    Log("Unable to obtain main frame context");
+                    // bail-out, lets try later when context is created
+                    return;
                 }
+
+                var objectCreated = CreateNativeObjects(new[] { objectInfo }, context);
+
+                if (!objectCreated)
+                {
+                    Log("Failed native object creation");
+                    taskSource.TrySetException(new Exception("Failed to create native object"));
+                    return;
+                }
+
+                // notify that the object has been registered, any pending promises on the object will be resolved
+                Log("Created native object with success");
+                taskSource.TrySetResult(true);
             }
         }
 
@@ -114,7 +141,10 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         {
             if (isMain)
             {
-                CreateNativeObjects(_registeredObjects.Values, context);
+                lock (_registrationSyncRoot)
+                {
+                    CreateNativeObjects(_registeredObjects.Values, context);
+                }
             }
         }
 
@@ -185,10 +215,13 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         private void DeleteNativeObject(string objName, CefV8Context context)
         {
-            if (_registeredObjects.TryRemove(objName, out var objectInfo))
+            lock (_registrationSyncRoot)
             {
-                var global = context.GetGlobal();
-                global.DeleteValue(objectInfo.Name);
+                if (_registeredObjects.Remove(objName))
+                {
+                    var global = context.GetGlobal();
+                    global.DeleteValue(objName);
+                }
             }
         }
 
