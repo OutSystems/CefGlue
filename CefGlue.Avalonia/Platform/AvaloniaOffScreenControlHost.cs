@@ -76,8 +76,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
             RenderSurface = new AvaloniaRenderSurface(image);
         }
 
-        protected override bool NeedsRootWindowStylesFix => false;
-
         public OffScreenRenderSurface RenderSurface { get; }
 
         private void OnTextInput(object sender, TextInputEventArgs e)
@@ -220,7 +218,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             return result;
         }
 
-        public override IntPtr? GetHostViewHandle()
+        public override IntPtr? GetHostViewHandle(int initialWidth, int initialHeight)
         {
             var platformHandle = GetPlatformHandle();
             if (platformHandle is IMacOSTopLevelPlatformHandle macOSHandle)

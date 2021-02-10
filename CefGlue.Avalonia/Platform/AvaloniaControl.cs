@@ -6,10 +6,11 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Xilium.CefGlue.Avalonia.Platform.MacOS;
+using Xilium.CefGlue.Avalonia.Platform.Windows;
 using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Avalonia.Platform
@@ -19,9 +20,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
     /// </summary>
     internal class AvaloniaControl : Common.Platform.IControl
     {
-        private static IntPtr? _dummyHostView;
-
-        private IntPtr? _browserHandle;
+        private IHost _hostView;
         private Func<WindowBase> _getHostingWindow;
         private readonly IAvaloniaList<IVisual> _controlVisualChildren;
 
@@ -38,23 +37,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
             _control.GotFocus += OnGotFocus;
             _control.LayoutUpdated += OnLayoutUpdated;
-
-            if (NeedsRootWindowStylesFix)
-            {
-                _control.AttachedToLogicalTree += OnAttachedToLogicalTree;
-            }
-        }
-
-        protected virtual bool NeedsRootWindowStylesFix => CefRuntime.Platform == CefRuntimePlatform.Windows;
-
-        private void OnAttachedToLogicalTree(object sender, LogicalTreeAttachmentEventArgs e)
-        {
-            if (e.Root is PopupRoot root)
-            {
-                // FIX avalonia popups dont apply the CLIPCHILDREN style, so we must force it
-                var rootHandle = root.PlatformImpl.Handle.Handle;
-                NativeExtensions.Windows.SetWindowLong(rootHandle, NativeExtensions.Windows.GWL.STYLE, NativeExtensions.Windows.WS.CLIPCHILDREN);
-            }
         }
 
         private void OnLayoutUpdated(object sender, EventArgs e)
@@ -72,19 +54,19 @@ namespace Xilium.CefGlue.Avalonia.Platform
             return _getHostingWindow()?.PlatformImpl.Handle;
         }
 
-        public virtual IntPtr? GetHostViewHandle()
+        public virtual IntPtr? GetHostViewHandle(int initialWidth, int initialHeight)
         {
             if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
             {
-                if (_dummyHostView == null)
+                if (_hostView == null)
                 {
-                    // create a dummy nsview to host all browsers
-                    var nsViewClass = NativeExtensions.OSX.objc_getClass("NSView");
-                    var nsViewType = NativeExtensions.OSX.objc_msgSend(nsViewClass, NativeExtensions.OSX.sel_registerName("alloc"));
-                    _dummyHostView = NativeExtensions.OSX.objc_msgSend(nsViewType, NativeExtensions.OSX.sel_registerName("init"));
+                    // create an host NSView to embed cef with current control dimensions
+                    _hostView = new NSView(initialWidth, initialHeight);
                 }
-                return _dummyHostView.Value;
+                return _hostView.Handle;
             }
+
+            // return the window handle
             return GetPlatformHandle()?.Handle;
         }
 
@@ -150,35 +132,19 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public void InitializeRender(IntPtr browserHandle)
         {
-            _browserHandle = browserHandle;
-
-            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
+            if (CefRuntime.Platform == CefRuntimePlatform.Windows)
             {
-                // must retain the browser handle, as long as the browser lives, otherwise seg faults might occur
-                NativeExtensions.OSX.objc_retain(browserHandle);
+                // store cef window handle, to dispose later
+                _hostView = new HostWindow(browserHandle);
             }
 
-            Dispatcher.UIThread.Post(() => SetContent(new ExtendedAvaloniaNativeControlHost(browserHandle)));
+            Dispatcher.UIThread.Post(() => SetContent(new ExtendedAvaloniaNativeControlHost(_hostView.Handle)));
         }
 
         public void DestroyRender()
         {
-            if (_browserHandle == null)
-            {
-                return;
-            }
-
-            switch (CefRuntime.Platform) {
-                case CefRuntimePlatform.Windows:
-                    NativeExtensions.Windows.DestroyWindow(_browserHandle.Value);
-                    break;
-
-                case CefRuntimePlatform.MacOSX:
-                    NativeExtensions.OSX.objc_release(_browserHandle.Value);
-                    break;   
-            }
-
-            _browserHandle = null;
+            _hostView?.Dispose();
+            _hostView = null;
         }
 
         protected void SetContent(Control content)

@@ -10,7 +10,7 @@ namespace Xilium.CefGlue.Common.Platform
 
         event Action<CefSize> SizeChanged;
 
-        IntPtr? GetHostViewHandle();
+        IntPtr? GetHostViewHandle(int initialWidth, int initialHeight);
 
         void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback);
         void CloseContextMenu();

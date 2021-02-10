@@ -311,7 +311,7 @@ namespace Xilium.CefGlue.Common
                 return false;
             }
 
-            var hostViewHandle = Control.GetHostViewHandle();
+            var hostViewHandle = Control.GetHostViewHandle(width, height);
             if (hostViewHandle == null)
             {
                 return false;
