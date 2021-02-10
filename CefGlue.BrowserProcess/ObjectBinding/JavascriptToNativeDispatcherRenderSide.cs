@@ -26,18 +26,10 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             JavascriptHelper.Register(this);
         }
 
-        void Log(string log)
-        {
-            var processId = System.Diagnostics.Process.GetCurrentProcess().Id;
-            System.IO.File.AppendAllText(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "cefglue" + processId + ".txt"), log + "\n");
-        }
-
         private void HandleNativeObjectRegistration(MessageReceivedEventArgs args)
         {
             var message = Messages.NativeObjectRegistrationRequest.FromCefMessage(args.Message);
             var objectInfo = new ObjectRegistrationInfo(message.ObjectName, message.MethodsNames);
-
-            Log("Registering " + objectInfo.Name);
 
             lock (_registrationSyncRoot)
             {
@@ -55,7 +47,6 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
                 if (context == null)
                 {
-                    Log("Unable to obtain main frame context");
                     // bail-out, lets try later when context is created
                     return;
                 }
@@ -64,13 +55,11 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
                 if (!objectCreated)
                 {
-                    Log("Failed native object creation");
                     taskSource.TrySetException(new Exception("Failed to create native object"));
                     return;
                 }
 
                 // notify that the object has been registered, any pending promises on the object will be resolved
-                Log("Created native object with success");
                 taskSource.TrySetResult(true);
             }
         }
@@ -118,7 +107,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             if (_pendingCalls.TryRemove(message.CallId, out var promiseHolder))
             {
                 using (promiseHolder)
-                using (var context = promiseHolder.Context.EnterOrFail())
+                using (promiseHolder.Context.EnterOrFail())
                 {
                     promiseHolder.ResolveOrReject((resolve, reject) =>
                     {
@@ -141,7 +130,6 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         { 
             if (isMain)
             {
-                Log("Context created " + context);
                 lock (_registrationSyncRoot)
                 {
                     CreateNativeObjects(_registeredObjects.Values, context);
@@ -159,8 +147,6 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
             if (isMain)
             {
-                Log("Context released " + context);
-
                 foreach (var promiseHolder in _pendingCalls.Values)
                 {
                     ReleasePromiseHolder(promiseHolder);
