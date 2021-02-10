@@ -1,6 +1,6 @@
 using System;
 
-namespace Xilium.CefGlue.Common.Helpers
+namespace Xilium.CefGlue.Common.Shared.Helpers
 {
     internal sealed class ActionTask : CefTask
     {

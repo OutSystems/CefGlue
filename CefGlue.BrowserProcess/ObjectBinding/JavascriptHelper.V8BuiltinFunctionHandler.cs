@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Xilium.CefGlue.Common.Shared.Helpers;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
@@ -30,6 +31,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                                 PromiseHolder resultingPromise;
 
                                 var objectName = arguments[0].GetStringValue();
+
                                 using (var context = CefV8Context.GetCurrentContext().EnterOrFail(shallDispose: false)) // context will be released when promise is resolved
                                 {
                                     resultingPromise = context.V8Context.CreatePromise();
@@ -38,26 +40,31 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                                     boundQueryTask = _nativeObjectRegistry.Bind(objectName);
                                 }
 
+                                
                                 boundQueryTask.ContinueWith(t =>
                                 {
-                                    using (CefObjectTracker.StartTracking())
-                                    using (resultingPromise.Context.EnterOrFail())
+                                    var context = resultingPromise.Context;
+                                    context.GetTaskRunner().PostTask(new ActionTask(() =>
                                     {
-                                        resultingPromise.ResolveOrReject((resolve, reject) =>
+                                        using (CefObjectTracker.StartTracking())
+                                        using (context.EnterOrFail())
                                         {
-                                            if (t.IsFaulted)
+                                            resultingPromise.ResolveOrReject((resolve, reject) =>
                                             {
-                                                var exceptionMsg = CefV8Value.CreateString(t.Exception.Message);
-                                                reject(exceptionMsg);
-                                            }
-                                            else
-                                            {
-                                                var result = CefV8Value.CreateBool(t.Result);
-                                                resolve(result);
-                                            }
-                                        });
-                                    }
-                                }, TaskContinuationOptions.ExecuteSynchronously);
+                                                if (t.IsFaulted)
+                                                {
+                                                    var exceptionMsg = CefV8Value.CreateString(t.Exception.Message);
+                                                    reject(exceptionMsg);
+                                                }
+                                                else
+                                                {
+                                                    var result = CefV8Value.CreateBool(t.Result);
+                                                    resolve(result);
+                                                }
+                                            });
+                                        }
+                                    }));
+                                });
                             }
                             else
                             {
