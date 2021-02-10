@@ -43,7 +43,7 @@ namespace Xilium.CefGlue.WPF.Platform
             }
         }
 
-        public IntPtr? GetHostViewHandle()
+        public IntPtr? GetHostViewHandle(int initialWidth, int initialHeight)
         {
             var window = Window.GetWindow(_control);
             if (window != null)

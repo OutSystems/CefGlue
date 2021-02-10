@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.0-rc2" />
+    <PackageReference Include="Avalonia" Version="0.10.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,4 +24,8 @@
     <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Platform\MacOS\" />
+    <Folder Include="Platform\Windows\" />
+  </ItemGroup>
 </Project>
