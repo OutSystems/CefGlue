@@ -3,6 +3,28 @@ using System.Threading.Tasks;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
+
+    internal sealed class ActionTask : CefTask
+    {
+        private Action _action;
+
+        public ActionTask(Action action)
+        {
+            _action = action;
+        }
+
+        protected override void Execute()
+        {
+            _action();
+            _action = null;
+        }
+
+        public static void Run(Action action, CefThreadId threadId = CefThreadId.UI)
+        {
+            CefRuntime.PostTask(threadId, new ActionTask(action));
+        }
+    }
+
     partial class JavascriptHelper
     {
         private class V8BuiltinFunctionHandler : CefV8Handler
@@ -39,7 +61,8 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
                                 Log("Calling bind of " + objectName);
 
-                                using (var context = CefV8Context.GetCurrentContext().EnterOrFail(shallDispose: false)) // context will be released when promise is resolved
+                                var v8Context = CefV8Context.GetCurrentContext();
+                                using (var context = v8Context.EnterOrFail(shallDispose: false)) // context will be released when promise is resolved
                                 {
                                     resultingPromise = context.V8Context.CreatePromise();
                                     returnValue = resultingPromise.Promise; // do not dispose, because it will be delivered to cef
@@ -47,26 +70,33 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                                     boundQueryTask = _nativeObjectRegistry.Bind(objectName);
                                 }
 
+                                
                                 boundQueryTask.ContinueWith(t =>
                                 {
-                                    Log("Continuing bind of " + objectName + " / context valid:" + resultingPromise.Context.IsValid);
-                                    using (CefObjectTracker.StartTracking())
-                                    using (resultingPromise.Context.EnterOrFail())
+                                    
+                                    Log("1 Continuing bind of " + objectName + " / context valid:" + resultingPromise.Context.IsValid);
+                                    v8Context.GetTaskRunner().PostTask(new ActionTask(() =>
                                     {
-                                        resultingPromise.ResolveOrReject((resolve, reject) =>
+                                        Log("2 Continuing bind of " + objectName + " / context valid:" + resultingPromise.Context.IsValid);
+
+                                        using (CefObjectTracker.StartTracking())
+                                        using (resultingPromise.Context.EnterOrFail())
                                         {
-                                            if (t.IsFaulted)
+                                            resultingPromise.ResolveOrReject((resolve, reject) =>
                                             {
-                                                var exceptionMsg = CefV8Value.CreateString(t.Exception.Message);
-                                                reject(exceptionMsg);
-                                            }
-                                            else
-                                            {
-                                                var result = CefV8Value.CreateBool(t.Result);
-                                                resolve(result);
-                                            }
-                                        });
-                                    }
+                                                if (t.IsFaulted)
+                                                {
+                                                    var exceptionMsg = CefV8Value.CreateString(t.Exception.Message);
+                                                    reject(exceptionMsg);
+                                                }
+                                                else
+                                                {
+                                                    var result = CefV8Value.CreateBool(t.Result);
+                                                    resolve(result);
+                                                }
+                                            });
+                                        }
+                                    }));
                                 }, TaskContinuationOptions.ExecuteSynchronously);
                             }
                             else
