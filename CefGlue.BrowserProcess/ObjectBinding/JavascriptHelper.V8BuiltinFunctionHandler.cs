@@ -16,6 +16,12 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
             protected override bool Execute(string name, CefV8Value obj, CefV8Value[] arguments, out CefV8Value returnValue, out string exception)
             {
+                void Log(string log)
+                {
+                    var processId = System.Diagnostics.Process.GetCurrentProcess().Id;
+                    System.IO.File.AppendAllText(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "cefglue" + processId + ".txt"), log + "\n");
+                }
+
                 returnValue = null;
                 exception = null;
                 
@@ -30,6 +36,9 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                                 PromiseHolder resultingPromise;
 
                                 var objectName = arguments[0].GetStringValue();
+
+                                Log("Calling bind of " + objectName);
+
                                 using (var context = CefV8Context.GetCurrentContext().EnterOrFail(shallDispose: false)) // context will be released when promise is resolved
                                 {
                                     resultingPromise = context.V8Context.CreatePromise();
@@ -40,6 +49,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
                                 boundQueryTask.ContinueWith(t =>
                                 {
+                                    Log("Continuing bind of " + objectName + " / context valid:" + resultingPromise.Context.IsValid);
                                     using (CefObjectTracker.StartTracking())
                                     using (resultingPromise.Context.EnterOrFail())
                                     {

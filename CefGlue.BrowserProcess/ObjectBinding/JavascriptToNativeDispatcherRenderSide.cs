@@ -26,16 +26,16 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             JavascriptHelper.Register(this);
         }
 
+        void Log(string log)
+        {
+            var processId = System.Diagnostics.Process.GetCurrentProcess().Id;
+            System.IO.File.AppendAllText(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "cefglue" + processId + ".txt"), log + "\n");
+        }
+
         private void HandleNativeObjectRegistration(MessageReceivedEventArgs args)
         {
             var message = Messages.NativeObjectRegistrationRequest.FromCefMessage(args.Message);
             var objectInfo = new ObjectRegistrationInfo(message.ObjectName, message.MethodsNames);
-
-            void Log(string log)
-            {
-                var processId = System.Diagnostics.Process.GetCurrentProcess().Id;
-                System.IO.File.AppendAllText(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "cefglue" + processId + ".txt"), log + "\n");
-            }
 
             Log("Registering " + objectInfo.Name);
 
@@ -138,9 +138,10 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         }
 
         public void HandleContextCreated(CefV8Context context, bool isMain)
-        {
+        { 
             if (isMain)
             {
+                Log("Context created " + context);
                 lock (_registrationSyncRoot)
                 {
                     CreateNativeObjects(_registeredObjects.Values, context);
@@ -158,6 +159,8 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
             if (isMain)
             {
+                Log("Context released " + context);
+
                 foreach (var promiseHolder in _pendingCalls.Values)
                 {
                     ReleasePromiseHolder(promiseHolder);
