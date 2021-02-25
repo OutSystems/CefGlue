@@ -1,4 +1,7 @@
-﻿using System;
+﻿// NLog dependency was removed.
+#if HAS_NLOG
+
+using System;
 using System.Diagnostics;
 using NLog;
 
@@ -232,3 +235,5 @@ namespace Xilium.CefGlue.Helpers.Log
         }
     }
 }
+
+#endif

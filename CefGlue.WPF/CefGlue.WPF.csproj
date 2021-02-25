@@ -57,9 +57,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.2.0.1.2\lib\net35\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -74,6 +71,7 @@
   <ItemGroup>
     <Compile Include="Helpers\Log\ILogger.cs" />
     <Compile Include="Helpers\Log\NLogLogger.cs" />
+    <Compile Include="Helpers\Log\NullLogger.cs" />
     <Compile Include="IUiHelper.cs" />
     <Compile Include="LoadEndEventArgs.cs" />
     <Compile Include="LoadEndEventHandler.cs" />

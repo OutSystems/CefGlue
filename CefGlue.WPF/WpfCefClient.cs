@@ -21,7 +21,7 @@ namespace Xilium.CefGlue.WPF
 
             _lifeSpanHandler = new WpfCefLifeSpanHandler(owner);
             _displayHandler = new WpfCefDisplayHandler(owner);
-            _renderHandler = new WpfCefRenderHandler(owner, new NLogLogger("WpfCefRenderHandler"), new UiHelper(new NLogLogger("WpfCefRenderHandler")));
+            _renderHandler = new WpfCefRenderHandler(owner, new NullLogger("WpfCefRenderHandler"), new UiHelper(new NullLogger("WpfCefRenderHandler")));
             _loadHandler = new WpfCefLoadHandler(owner);
             _jsDialogHandler = new WpfCefJSDialogHandler();
         }
