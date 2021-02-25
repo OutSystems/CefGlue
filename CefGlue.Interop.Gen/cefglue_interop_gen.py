@@ -47,6 +47,7 @@ if not options.quiet:
     sys.stdout.write('Parsing C++ headers from '+options.cppheaderdir+'...\n')
 header = obj_header()
 excluded_files = ['cef_application_mac.h', 'cef_version.h']
+excluded_files += ['cef_thread.h', 'cef_waitable_event.h']
 header.add_directory(options.cppheaderdir, excluded_files)
 
 writect = 0
