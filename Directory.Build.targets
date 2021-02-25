@@ -1,0 +1,8 @@
+<Project>
+  <!-- For any non-packable projects, suppress generate documentation. -->
+  <PropertyGroup Condition="'$(IsPackable)' == 'false'">
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <DocumentationFile />
+  </PropertyGroup>
+
+</Project>

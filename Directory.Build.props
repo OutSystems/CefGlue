@@ -1,0 +1,44 @@
+<Project>
+  <PropertyGroup>
+    <EnableDefaultItems>false</EnableDefaultItems>
+
+    <!-- For CefGlue nullable support will not be enabled for a while. This option for vNext. -->
+    <!--
+    <Nullable>enable</Nullable>
+    -->
+
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+
+    <IsPackable>false</IsPackable>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)..\artifacts\</PackageOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>XiliumHQ</Authors>
+    <Company>XiliumHQ</Company>
+    <Product>Xilium CefGlue</Product>
+    <AssemblyTitle>Xilium CefGlue</AssemblyTitle>
+    <Description>Xilium.CefGlue is a .NET/Mono binding for The Chromium Embedded Framework (CEF) by Marshall A. Greenblatt.</Description>
+    <Copyright>Copyright &#xA9; XiliumHQ 2021</Copyright>
+    <PackageDescription>XiliumHQ: ChromiumEmbedded. $(Description)</PackageDescription>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- <PackageIcon></PackageIcon> -->
+    <IncludeSymbols>false</IncludeSymbols>
+    <IncludeSource>false</IncludeSource>
+    <RepositoryUrl>https://gitlab.com/xiliumhq/chromiumembedded/cefglue</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <!-- Don't assign versions by MinVer in Debug builds. -->
+  <!--
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <MinVerSkip Condition="'$(MinVerSkip)' == ''">true</MinVerSkip>
+  </PropertyGroup>
+  -->
+
+  <!-- Generate documentation in Release builds. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+</Project>
