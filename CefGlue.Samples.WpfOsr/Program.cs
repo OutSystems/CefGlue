@@ -34,7 +34,7 @@
             var mainArgs = new CefMainArgs(args);
             var cefApp = new SampleCefApp();
 
-            var exitCode = CefRuntime.ExecuteProcess(mainArgs, cefApp);
+            var exitCode = CefRuntime.ExecuteProcess(mainArgs, cefApp, IntPtr.Zero);
             if (exitCode != -1) { return exitCode; }
 
             var cefSettings = new CefSettings
@@ -48,7 +48,7 @@
 
             try
             {
-                CefRuntime.Initialize(mainArgs, cefSettings, cefApp);
+                CefRuntime.Initialize(mainArgs, cefSettings, cefApp, IntPtr.Zero);
             }
             catch (CefRuntimeException ex)
             {

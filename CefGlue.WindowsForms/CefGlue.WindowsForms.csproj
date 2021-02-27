@@ -1,47 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{679AF14D-8FF5-4608-BFF8-EC1A7DED04A4}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Xilium.CefGlue.WindowsForms</RootNamespace>
+    <TargetFramework>net40</TargetFramework>
+    <!-- After moving to net5.0 - use Microsoft.NET.Sdk.WindowsDesktop. -->
+    <!--
+    <TargetFramework>net5.0-windows</TargetFramework>
+    -->
     <AssemblyName>Xilium.CefGlue.WindowsForms</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <RootNamespace>Xilium.CefGlue.WindowsForms</RootNamespace>
+
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <DocumentationFile>bin\Release\Xilium.CefGlue.WindowsForms.xml</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
+
   <ItemGroup>
     <Compile Include="AddressChangedEventArgs.cs" />
     <Compile Include="BeforePopupEventArgs.cs" />
@@ -60,7 +30,6 @@
     <Compile Include="LoadStartEventArgs.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="PluginCrashedEventArgs.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderProcessTerminatedEventArgs.cs" />
     <Compile Include="SetWindowPosFlags.cs" />
     <Compile Include="StatusMessageEventArgs.cs" />
@@ -68,25 +37,11 @@
     <Compile Include="TooltipEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Xilium.CefGlue.snk">
-      <Link>Properties\Xilium.CefGlue.snk</Link>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="CefWebBrowser.bmp" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\CefGlue\CefGlue.csproj">
-      <Project>{703FF300-34B9-48D4-A5D6-E741F48D5F95}</Project>
-      <Name>CefGlue</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

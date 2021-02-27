@@ -1,80 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
   <PropertyGroup>
-    <StartupObject />
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup />
-  <PropertyGroup>
+    <TargetFramework>net40</TargetFramework>
+    <!-- After moving to net5.0 - use Microsoft.NET.Sdk.WindowsDesktop. -->
+    <!--
+    <TargetFramework>net5.0-windows</TargetFramework>
+    -->
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>Xilium.CefGlue.Demo.WinForms</AssemblyName>
+    <RootNamespace>Xilium.CefGlue.Demo</RootNamespace>
+
+    <UseWindowsForms>true</UseWindowsForms>
+
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F9025CE1-2DF4-409B-8961-A51DFAEAABDD}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Xilium.CefGlue.Demo</RootNamespace>
-    <AssemblyName>Xilium.CefGlue.Demo.WinForms</AssemblyName>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup />
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
+
   <ItemGroup>
     <Compile Include="Control\CefWebView.cs" />
     <Compile Include="Control\NativeMethods.cs" />
@@ -87,7 +27,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebNavigationBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -107,9 +46,6 @@
     <EmbeddedResource Include="WebNavigationBox.resx">
       <DependentUpon>WebNavigationBox.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="..\Xilium.CefGlue.snk">
-      <Link>Properties\Xilium.CefGlue.snk</Link>
-    </None>
     <None Include="app.config" />
     <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -122,39 +58,19 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CefGlue.Demo\CefGlue.Demo.csproj">
-      <Project>{b928a030-e818-4634-9c6b-f9224e996bd6}</Project>
-      <Name>CefGlue.Demo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CefGlue\CefGlue.csproj">
-      <Project>{703ff300-34b9-48d4-a5d6-e741f48d5f95}</Project>
-      <Name>CefGlue</Name>
-    </ProjectReference>
-  </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="Resources\appbar.arrow.left.png" />
     <EmbeddedResource Include="Resources\appbar.arrow.right.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\appbar.close.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\appbar.refresh.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\appbar.home.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\go.png" />
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\CefGlue.Demo\CefGlue.Demo.csproj" />
+    <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
+  </ItemGroup>
+
 </Project>

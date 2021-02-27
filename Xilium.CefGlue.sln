@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue", "CefGlue\CefGlue.csproj", "{703FF300-34B9-48D4-A5D6-E741F48D5F95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue.Client", "CefGlue.Client\CefGlue.Client.csproj", "{311984DF-EB92-4B01-B4AD-C7E73A13E271}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Client", "CefGlue.Client\CefGlue.Client.csproj", "{311984DF-EB92-4B01-B4AD-C7E73A13E271}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue.WindowsForms", "CefGlue.WindowsForms\CefGlue.WindowsForms.csproj", "{679AF14D-8FF5-4608-BFF8-EC1A7DED04A4}"
 EndProject
