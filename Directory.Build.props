@@ -10,7 +10,7 @@
     <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
 
     <IsPackable>false</IsPackable>
-    <PackageOutputPath>$(MSBuildThisFileDirectory)..\artifacts\</PackageOutputPath>
+    <PackageOutputPath>$(MSBuildThisFileDirectory).\artifacts\</PackageOutputPath>
   </PropertyGroup>
 
   <PropertyGroup>

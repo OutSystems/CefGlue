@@ -7,15 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue", "CefGlue\CefGlue.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Client", "CefGlue.Client\CefGlue.Client.csproj", "{311984DF-EB92-4B01-B4AD-C7E73A13E271}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue.WindowsForms", "CefGlue.WindowsForms\CefGlue.WindowsForms.csproj", "{679AF14D-8FF5-4608-BFF8-EC1A7DED04A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.WindowsForms", "CefGlue.WindowsForms\CefGlue.WindowsForms.csproj", "{679AF14D-8FF5-4608-BFF8-EC1A7DED04A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue.Demo", "CefGlue.Demo\CefGlue.Demo.csproj", "{B928A030-E818-4634-9C6B-F9224E996BD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Demo", "CefGlue.Demo\CefGlue.Demo.csproj", "{B928A030-E818-4634-9C6B-F9224E996BD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue.Demo.WinForms", "CefGlue.Demo.WinForms\CefGlue.Demo.WinForms.csproj", "{F9025CE1-2DF4-409B-8961-A51DFAEAABDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Demo.WinForms", "CefGlue.Demo.WinForms\CefGlue.Demo.WinForms.csproj", "{F9025CE1-2DF4-409B-8961-A51DFAEAABDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue.Samples.WpfOsr", "CefGlue.Samples.WpfOsr\CefGlue.Samples.WpfOsr.csproj", "{8E758128-CA79-4533-963E-91A1BF0558FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Samples.WpfOsr", "CefGlue.Samples.WpfOsr\CefGlue.Samples.WpfOsr.csproj", "{8E758128-CA79-4533-963E-91A1BF0558FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue.WPF", "CefGlue.WPF\CefGlue.WPF.csproj", "{447C6790-E36E-4A54-BFAC-06C92FFF4AA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.WPF", "CefGlue.WPF\CefGlue.WPF.csproj", "{447C6790-E36E-4A54-BFAC-06C92FFF4AA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

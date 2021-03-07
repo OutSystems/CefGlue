@@ -1,11 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
-    <!-- After moving to net5.0 - use Microsoft.NET.Sdk.WindowsDesktop. -->
-    <!--
     <TargetFramework>net5.0-windows</TargetFramework>
-    -->
+
     <OutputType>WinExe</OutputType>
     <AssemblyName>Xilium.CefGlue.Demo.WinForms</AssemblyName>
     <RootNamespace>Xilium.CefGlue.Demo</RootNamespace>
