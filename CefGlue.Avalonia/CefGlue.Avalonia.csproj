@@ -11,6 +11,10 @@
     <NuspecProperties>$(NuspecProperties);Configuration=$(Configuration)</NuspecProperties>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_WindowlessRender|AnyCPU'">
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\CefGlue.Common\BaseCefBrowser.cs" Link="Common\BaseCefBrowser.cs" />
   </ItemGroup>
