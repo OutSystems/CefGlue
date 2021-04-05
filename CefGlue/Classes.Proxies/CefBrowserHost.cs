@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -32,10 +32,10 @@ namespace Xilium.CefGlue
             // TODO: [ApiUsage] if windowInfo.WindowRenderingDisabled && client doesn't provide RenderHandler implementation -> throw exception
 
             var n_windowInfo = windowInfo.GetNativePointer();
-            var n_client = client.ToWeakNativeRef();
+            var n_client = client.ToNative();
             var n_settings = settings.ToNative();
-            var n_extraInfo = extraInfo != null ? extraInfo.ToWeakNativeRef() : null;
-            var n_requestContext = requestContext != null ? requestContext.ToWeakNativeRef() : null;
+            var n_extraInfo = extraInfo != null ? extraInfo.ToNative() : null;
+            var n_requestContext = requestContext != null ? requestContext.ToNative() : null;
 
             fixed (char* url_ptr = url)
             {
@@ -63,10 +63,10 @@ namespace Xilium.CefGlue
             // TODO: [ApiUsage] if windowInfo.WindowRenderingDisabled && client doesn't provide RenderHandler implementation -> throw exception
 
             var n_windowInfo = windowInfo.GetNativePointer();
-            var n_client = client.ToWeakNativeRef();
+            var n_client = client.ToNative();
             var n_settings = settings.ToNative();
-            var n_extraInfo = extraInfo != null ? extraInfo.ToWeakNativeRef() : null;
-            var n_requestContext = requestContext != null ? requestContext.ToWeakNativeRef() : null;
+            var n_extraInfo = extraInfo != null ? extraInfo.ToNative() : null;
+            var n_requestContext = requestContext != null ? requestContext.ToNative() : null;
 
             fixed (char* url_ptr = url)
             {
