@@ -95,23 +95,24 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 var cefMessage = message.ToCefProcessMessage();
                 frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
 
-                var tasks = new List<Task>(2)
-                {
-                    messageReceiveCompletionSource.Task
-                };
-
-                Task timeoutTask = null;
                 if (timeout.HasValue)
                 {
-                    timeoutTask = Task.Delay(timeout.Value);
-                    tasks.Add(timeoutTask);
-                }
+                    var tasks = new Task[]
+                    {
+                        messageReceiveCompletionSource.Task,
+                        Task.Delay(timeout.Value)
+                    };
 
-                var resultTask = await Task.WhenAny(tasks);
-                if (resultTask == timeoutTask)
+                    var resultTask = await Task.WhenAny(tasks).ConfigureAwait(false);
+                    if (resultTask != messageReceiveCompletionSource.Task)
+                    {
+                        // task evaluation timeout
+                        throw new TaskCanceledException();
+                    }
+                }
+                else
                 {
-                    // task evaluation timeout
-                    throw new TaskCanceledException();
+                    await messageReceiveCompletionSource.Task;
                 }
 
                 if (messageReceiveCompletionSource.Task.IsFaulted)
