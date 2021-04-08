@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -44,7 +44,7 @@ namespace Xilium.CefGlue.WPF.Platform
             control.AllowDrop = true;
 
             control.IsVisibleChanged += OnIsVisibleChanged;
-            control.LostFocus += OnLostFocus;
+            control.LostKeyboardFocus += OnLostFocus;
 
             control.MouseMove += OnMouseMove;
             control.MouseLeave += OnMouseLeave;

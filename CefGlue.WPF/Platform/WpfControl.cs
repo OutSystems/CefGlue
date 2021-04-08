@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,7 +25,7 @@ namespace Xilium.CefGlue.WPF.Platform
         {
             _control = control;
 
-            control.GotFocus += OnGotFocus;
+            control.GotKeyboardFocus += OnGotFocus;
             control.LayoutUpdated += OnLayoutUpdated;
         }
 
