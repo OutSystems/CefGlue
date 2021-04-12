@@ -9,7 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 
-    <Version>90.2.0</Version>
+    <Version>90.4.0</Version>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
@@ -141,6 +141,7 @@
     <Compile Include="Enums\CefCdmRegistrationError.cs" />
     <Compile Include="Enums\CefCertStatus.cs" />
     <Compile Include="Enums\CefChannelLayout.cs" />
+    <Compile Include="Enums\CefChromeToolbarType.cs" />
     <Compile Include="Enums\CefColorModel.cs" />
     <Compile Include="Enums\CefColorType.cs" />
     <Compile Include="Enums\CefCompositionUnderlineStyle.cs" />

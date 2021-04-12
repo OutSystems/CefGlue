@@ -242,7 +242,9 @@ typedef struct _cef_settings_t {
   // in-memory caches are used for storage and no data is persisted to disk.
   // HTML5 databases such as localStorage will only persist across sessions if a
   // cache path is specified. Can be overridden for individual CefRequestContext
-  // instances via the CefRequestContextSettings.cache_path value.
+  // instances via the CefRequestContextSettings.cache_path value. When using
+  // the Chrome runtime the "default" profile will be used if |cache_path| and
+  // |root_cache_path| have the same value.
   ///
   cef_string_t cache_path;
 
@@ -264,7 +266,8 @@ typedef struct _cef_settings_t {
   // directory on Linux, "~/Library/Application Support/CEF/User Data" directory
   // on Mac OS X, "Local Settings\Application Data\CEF\User Data" directory
   // under the user profile directory on Windows). If this value is non-empty
-  // then it must be an absolute path.
+  // then it must be an absolute path. When using the Chrome runtime this value
+  // will be ignored in favor of the |root_cache_path| value.
   ///
   cef_string_t user_data_path;
 
@@ -420,6 +423,20 @@ typedef struct _cef_settings_t {
   cef_string_t accept_language_list;
 
   ///
+  // Comma delimited list of schemes supported by the associated
+  // CefCookieManager. If |cookieable_schemes_exclude_defaults| is false (0) the
+  // default schemes ("http", "https", "ws" and "wss") will also be supported.
+  // Specifying a |cookieable_schemes_list| value and setting
+  // |cookieable_schemes_exclude_defaults| to true (1) will disable all loading
+  // and saving of cookies for this manager. Can be overridden
+  // for individual CefRequestContext instances via the
+  // CefRequestContextSettings.cookieable_schemes_list and
+  // CefRequestContextSettings.cookieable_schemes_exclude_defaults values.
+  ///
+  cef_string_t cookieable_schemes_list;
+  int cookieable_schemes_exclude_defaults;
+
+  ///
   // GUID string used for identifying the application. This is passed to the
   // system AV function for scanning downloaded files. By default, the GUID
   // will be an empty string and the file will be treated as an untrusted
@@ -487,6 +504,18 @@ typedef struct _cef_request_context_settings_t {
   // ignored if |cache_path| matches the CefSettings.cache_path value.
   ///
   cef_string_t accept_language_list;
+
+  ///
+  // Comma delimited list of schemes supported by the associated
+  // CefCookieManager. If |cookieable_schemes_exclude_defaults| is false (0) the
+  // default schemes ("http", "https", "ws" and "wss") will also be supported.
+  // Specifying a |cookieable_schemes_list| value and setting
+  // |cookieable_schemes_exclude_defaults| to true (1) will disable all loading
+  // and saving of cookies for this manager. These values will be ignored if
+  // |cache_path| matches the CefSettings.cache_path value.
+  ///
+  cef_string_t cookieable_schemes_list;
+  int cookieable_schemes_exclude_defaults;
 } cef_request_context_settings_t;
 
 ///
@@ -651,7 +680,7 @@ typedef struct _cef_browser_settings_t {
   ///
   // Comma delimited ordered list of language codes without any whitespace that
   // will be used in the "Accept-Language" HTTP header. May be set globally
-  // using the CefBrowserSettings.accept_language_list value. If both values are
+  // using the CefSettings.accept_language_list value. If both values are
   // empty then "en-US,en" will be used.
   ///
   cef_string_t accept_language_list;
@@ -3184,6 +3213,15 @@ typedef enum {
   CEF_TFC_DELETE,
   CEF_TFC_SELECT_ALL,
 } cef_text_field_commands_t;
+
+///
+// Supported Chrome toolbar types.
+///
+typedef enum {
+  CEF_CTT_NONE = 1,
+  CEF_CTT_NORMAL,
+  CEF_CTT_LOCATION,
+} cef_chrome_toolbar_type_t;
 
 #ifdef __cplusplus
 }

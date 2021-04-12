@@ -102,7 +102,9 @@
         /// in-memory caches are used for storage and no data is persisted to disk.
         /// HTML5 databases such as localStorage will only persist across sessions if a
         /// cache path is specified. Can be overridden for individual CefRequestContext
-        /// instances via the CefRequestContextSettings.cache_path value.
+        /// instances via the CefRequestContextSettings.cache_path value. When using
+        /// the Chrome runtime the "default" profile will be used if |cache_path| and
+        /// |root_cache_path| have the same value.
         /// </summary>
         public string CachePath { get; set; }
 
@@ -124,7 +126,8 @@
         /// directory on Linux, "~/Library/Application Support/CEF/User Data" directory
         /// on Mac OS X, "Local Settings\Application Data\CEF\User Data" directory
         /// under the user profile directory on Windows). If this value is non-empty
-        /// then it must be an absolute path.
+        /// then it must be an absolute path. When using the Chrome runtime this value
+        /// will be ignored in favor of the |root_cache_path| value.
         /// </summary>
         public string UserDataPath { get; set; }
 
@@ -279,6 +282,21 @@
         public string AcceptLanguageList { get; set; }
 
         /// <summary>
+        /// Comma delimited list of schemes supported by the associated
+        /// CefCookieManager. If |cookieable_schemes_exclude_defaults| is false (0) the
+        /// default schemes ("http", "https", "ws" and "wss") will also be supported.
+        /// Specifying a |cookieable_schemes_list| value and setting
+        /// |cookieable_schemes_exclude_defaults| to true (1) will disable all loading
+        /// and saving of cookies for this manager. Can be overridden
+        /// for individual CefRequestContext instances via the
+        /// CefRequestContextSettings.cookieable_schemes_list and
+        /// CefRequestContextSettings.cookieable_schemes_exclude_defaults values.
+        /// </summary>
+        public string CookieableSchemesList { get; set; }
+
+        public bool CookieableSchemesExcludeDefaults { get; set; }
+
+        /// <summary>
         /// GUID string used for identifying the application. This is passed to the
         /// system AV function for scanning downloaded files. By default, the GUID
         /// will be an empty string and the file will be treated as an untrusted
@@ -317,6 +335,8 @@
             ptr->ignore_certificate_errors = IgnoreCertificateErrors ? 1 : 0;
             ptr->background_color = BackgroundColor.ToArgb();
             cef_string_t.Copy(AcceptLanguageList, &ptr->accept_language_list);
+            cef_string_t.Copy(CookieableSchemesList, &ptr->cookieable_schemes_list);
+            ptr->cookieable_schemes_exclude_defaults = CookieableSchemesExcludeDefaults ? 1 : 0;
             cef_string_t.Copy(ApplicationClientIdForFileScanning, &ptr->application_client_id_for_file_scanning);
             return ptr;
         }
@@ -337,6 +357,7 @@
             libcef.string_clear(&ptr->resources_dir_path);
             libcef.string_clear(&ptr->locales_dir_path);
             libcef.string_clear(&ptr->accept_language_list);
+            libcef.string_clear(&ptr->cookieable_schemes_list);
             libcef.string_clear(&ptr->application_client_id_for_file_scanning);
         }
 

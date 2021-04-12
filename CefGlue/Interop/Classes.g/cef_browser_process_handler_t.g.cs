@@ -13,7 +13,6 @@ namespace Xilium.CefGlue.Interop
     internal unsafe struct cef_browser_process_handler_t
     {
         internal cef_base_ref_counted_t _base;
-        internal IntPtr _get_cookieable_schemes;
         internal IntPtr _on_context_initialized;
         internal IntPtr _on_before_child_process_launch;
         internal IntPtr _on_schedule_message_pump_work;
@@ -42,12 +41,6 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate int has_at_least_one_ref_delegate(cef_browser_process_handler_t* self);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate void get_cookieable_schemes_delegate(cef_browser_process_handler_t* self, cef_string_list* schemes, int* include_defaults);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

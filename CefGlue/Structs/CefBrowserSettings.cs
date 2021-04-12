@@ -313,7 +313,7 @@
         /// <summary>
         /// Comma delimited ordered list of language codes without any whitespace that
         /// will be used in the "Accept-Language" HTTP header. May be set globally
-        /// using the CefBrowserSettings.accept_language_list value. If both values are
+        /// using the CefSettings.accept_language_list value. If both values are
         /// empty then "en-US,en" will be used.
         /// </summary>
         public string AcceptLanguageList
