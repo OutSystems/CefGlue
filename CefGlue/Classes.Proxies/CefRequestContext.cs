@@ -438,10 +438,5 @@ namespace Xilium.CefGlue
                 return CefExtension.FromNativeOrNull(n_result);
             }
         }
-
-        internal cef_request_context_t* ToWeakNativeRef()
-        {
-            return _self;
-        }
     }
 }

@@ -398,10 +398,5 @@ namespace Xilium.CefGlue
                 return cef_dictionary_value_t.set_list(_self, &n_key, ((CefListValue)value).ToNative()) != 0;
             }
         }
-
-        internal cef_dictionary_value_t* ToWeakNativeRef()
-        {
-            return _self;
-        }
     }
 }

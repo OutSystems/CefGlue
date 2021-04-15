@@ -7,6 +7,7 @@ namespace Xilium.CefGlue
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Runtime.InteropServices;
+    using System.Threading;
     using Xilium.CefGlue.Interop;
     
     // Role: PROXY
@@ -24,18 +25,18 @@ namespace Xilium.CefGlue
         }
         
         private cef_list_value_t* _self;
+        private int _disposed = 0;
         
         private CefListValue(cef_list_value_t* ptr)
         {
             if (ptr == null) throw new ArgumentNullException("ptr");
             _self = ptr;
-            AddRef();
             CefObjectTracker.Track(this);
         }
         
         ~CefListValue()
         {
-            if (_self != null)
+            if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
             {
                 Release();
                 _self = null;
@@ -44,7 +45,7 @@ namespace Xilium.CefGlue
         
         public void Dispose()
         {
-            if (_self != null)
+            if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
             {
                 Release();
                 _self = null;

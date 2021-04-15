@@ -5,6 +5,7 @@ namespace Xilium.CefGlue
     using System.Diagnostics;
     using System.Runtime.InteropServices;
     using Xilium.CefGlue.Interop;
+    using System.Threading;
     using System.IO;
 
     /// <summary>
@@ -13,35 +14,24 @@ namespace Xilium.CefGlue
     /// </summary>
     public abstract unsafe partial class CefResourceHandler
     {
-        private volatile bool _keepObject;
+        /// <summary>
+        /// set to 1 for keeping, otherwise 0
+        /// </summary>
+        private int _keepObject;
 
         public void KeepObject()
         {
-            if (!_keepObject)
+            if (Interlocked.CompareExchange(ref _keepObject, 1, 0) == 0)
             {
-                lock (SyncRoot)
-                {
-                    if (!_keepObject)
-                    {
-                        add_ref(_self);
-                        _keepObject = true;
-                    }
-                }
+                add_ref(_self);
             }
         }
 
         public void ReleaseObject()
         {
-            if (_keepObject)
+            if (Interlocked.CompareExchange(ref _keepObject, 0, 1) == 1)
             {
-                lock (SyncRoot)
-                {
-                    if (_keepObject)
-                    {
-                        release(_self);
-                        _keepObject = false;
-                    }
-                }
+                 release(_self);
             }
         }
 
