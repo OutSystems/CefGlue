@@ -269,10 +269,5 @@ namespace Xilium.CefGlue
         {
             return false;
         }
-
-        internal cef_client_t* ToWeakNativeRef()
-        {
-            return _self;
-        }
     }
 }
