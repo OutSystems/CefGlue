@@ -138,13 +138,22 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 _hostView = new HostWindow(browserHandle);
             }
 
-            Dispatcher.UIThread.Post(() => SetContent(new ExtendedAvaloniaNativeControlHost(_hostView.Handle)));
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (_hostView != null)
+                {
+                    SetContent(new ExtendedAvaloniaNativeControlHost(_hostView.Handle))
+                }
+            });
         }
 
         public void DestroyRender()
         {
-            _hostView?.Dispose();
-            _hostView = null;
+            Dispatcher.UIThread.Post(() =>
+            {
+                _hostView?.Dispose();
+                _hostView = null;
+            });
         }
 
         protected void SetContent(Control content)
