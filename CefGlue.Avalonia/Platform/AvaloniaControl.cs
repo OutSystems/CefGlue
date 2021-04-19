@@ -142,7 +142,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             {
                 if (_hostView != null)
                 {
-                    SetContent(new ExtendedAvaloniaNativeControlHost(_hostView.Handle))
+                    SetContent(new ExtendedAvaloniaNativeControlHost(_hostView.Handle));
                 }
             });
         }
