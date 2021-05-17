@@ -164,9 +164,9 @@
         /// Value that will be inserted as the product portion of the default
         /// User-Agent string. If empty the Chromium product version will be used. If
         /// |userAgent| is specified this value will be ignored. Also configurable
-        /// using the "product-version" command-line switch.
+        /// using the "user-agent-product" command-line switch.
         /// </summary>
-        public string ProductVersion { get; set; }
+        public string UserAgentProduct { get; set; }
 
         /// <summary>
         /// The locale string that will be passed to WebKit. If empty the default
@@ -322,7 +322,7 @@
             ptr->persist_session_cookies = PersistSessionCookies ? 1 : 0;
             ptr->persist_user_preferences = PersistUserPreferences ? 1 : 0;
             cef_string_t.Copy(UserAgent, &ptr->user_agent);
-            cef_string_t.Copy(ProductVersion, &ptr->product_version);
+            cef_string_t.Copy(UserAgentProduct, &ptr->user_agent_product);
             cef_string_t.Copy(Locale, &ptr->locale);
             cef_string_t.Copy(LogFile, &ptr->log_file);
             ptr->log_severity = LogSeverity;
@@ -350,7 +350,7 @@
             libcef.string_clear(&ptr->root_cache_path);
             libcef.string_clear(&ptr->user_data_path);
             libcef.string_clear(&ptr->user_agent);
-            libcef.string_clear(&ptr->product_version);
+            libcef.string_clear(&ptr->user_agent_product);
             libcef.string_clear(&ptr->locale);
             libcef.string_clear(&ptr->log_file);
             libcef.string_clear(&ptr->javascript_flags);

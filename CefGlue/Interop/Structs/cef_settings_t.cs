@@ -31,7 +31,7 @@ namespace Xilium.CefGlue.Interop
         public int persist_session_cookies;
         public int persist_user_preferences;
         public cef_string_t user_agent;
-        public cef_string_t product_version;
+        public cef_string_t user_agent_product;
         public cef_string_t locale;
         public cef_string_t log_file;
         public CefLogSeverity log_severity;
