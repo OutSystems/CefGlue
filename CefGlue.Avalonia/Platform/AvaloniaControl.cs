@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Collections;
@@ -140,20 +140,36 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
             Dispatcher.UIThread.Post(() =>
             {
-                if (_hostView != null)
+                var hostView = _hostView;
+                if (hostView != null)
                 {
-                    SetContent(new ExtendedAvaloniaNativeControlHost(_hostView.Handle));
+                    // lock hostView to avoid race condition with Destroy
+                    lock (hostView)
+                    {
+                        if (_hostView != null)
+                        {
+                            SetContent(new ExtendedAvaloniaNativeControlHost(_hostView.Handle));
+                        }
+                    }
                 }
             });
         }
 
         public void DestroyRender()
         {
-            Dispatcher.UIThread.Post(() =>
+            var hostView = _hostView;
+            if (hostView != null)
             {
-                _hostView?.Dispose();
-                _hostView = null;
-            });
+                lock (hostView)
+                {
+                    if (_hostView != null)
+                    {
+                        _hostView.Dispose();
+                        _hostView = null;
+                    }
+
+                }
+            }
         }
 
         protected void SetContent(Control content)
