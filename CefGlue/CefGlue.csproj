@@ -284,17 +284,17 @@
     <Compile Include="Structs\CefTouchEvent.cs" />
     <Compile Include="Structs\CefUrlParts.cs" />
     <Compile Include="Structs\CefWindowInfo.cs" />
+    <Compile Include="Wrapper\MessageRouter\CefBrowserInfoMap.cs" />
+    <Compile Include="Wrapper\MessageRouter\CefMessageRouterBrowserSide.cs" />
+    <Compile Include="Wrapper\MessageRouter\CefMessageRouterConfig.cs" />
+    <Compile Include="Wrapper\MessageRouter\CefMessageRouterRendererSide.cs" />
+    <Compile Include="Wrapper\MessageRouter\CefMessageRouter.cs" />
+    <Compile Include="Wrapper\MessageRouter\Helpers.cs" />
   </ItemGroup>
 
   <!-- Disabled Sources -->
   <ItemGroup>
     <None Include="Interop\Base\cef_string_t.disabled.cs" />
-    <None Include="Wrapper\MessageRouter\CefBrowserInfoMap.cs" />
-    <None Include="Wrapper\MessageRouter\CefMessageRouter.cs" />
-    <None Include="Wrapper\MessageRouter\CefMessageRouterBrowserSide.cs" />
-    <None Include="Wrapper\MessageRouter\CefMessageRouterConfig.cs" />
-    <None Include="Wrapper\MessageRouter\CefMessageRouterRendererSide.cs" />
-    <None Include="Wrapper\MessageRouter\Helpers.cs" />
     <None Include="Wrapper\MessageRouter\ReadMe.txt" />
   </ItemGroup>
 
