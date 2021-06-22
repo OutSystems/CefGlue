@@ -1,13 +1,14 @@
+using System;
+
 namespace Xilium.CefGlue
 {
-    public interface ICefBinaryValue
+    public interface ICefBinaryValue : IDisposable
     {
         bool IsOwned { get; }
         bool IsValid { get; }
         long Size { get; }
 
         ICefBinaryValue Copy();
-        void Dispose();
         long GetData(byte[] buffer, long bufferSize, long dataOffset);
         bool IsEqual(ICefBinaryValue that);
         bool IsSame(ICefBinaryValue that);

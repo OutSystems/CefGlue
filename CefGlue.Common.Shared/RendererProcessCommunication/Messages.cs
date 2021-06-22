@@ -53,7 +53,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 var arguments = message.Arguments;
                 arguments.SetInt(0, TaskId);
                 arguments.SetBool(1, Success);
-                Result?.CopyTo(arguments, 2);
+                Result?.AssignToListAndClearReference(arguments, 2);
                 arguments.SetString(3, Exception);
                 return message;
             }
@@ -65,7 +65,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 {
                     TaskId = arguments.GetInt(0),
                     Success = arguments.GetBool(1),
-                    Result = new CefValueHolder(arguments, 2, isReadOnly: true),
+                    Result = new CefValueHolder(arguments.GetValue(2)),
                     Exception = arguments.GetString(3)
                 };
             }
@@ -84,13 +84,15 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 var arguments = message.Arguments;
                 arguments.SetString(0, ObjectName);
 
-                var methods = CefListValue.Create();
-                for (var i = 0; i < MethodsNames.Length; i++)
+                using (var methods = CefListValue.Create())
                 {
-                    methods.SetString(i, MethodsNames[i]);
-                }
+                    for (var i = 0; i < MethodsNames.Length; i++)
+                    {
+                        methods.SetString(i, MethodsNames[i]);
+                    }
 
-                arguments.SetList(1, methods);
+                    arguments.SetList(1, methods);
+                }
                 return message;
             }
 
@@ -137,7 +139,8 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
             public int CallId;
             public string ObjectName;
             public string MemberName;
-            public ICefListValue Arguments;
+            public ICefListValue ArgumentsIn;
+            public object[] ArgumentsOut;
 
             public CefProcessMessage ToCefProcessMessage()
             {
@@ -146,25 +149,30 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 arguments.SetInt(0, CallId);
                 arguments.SetString(1, ObjectName);
                 arguments.SetString(2, MemberName);
-                arguments.SetList(3, Arguments);
+                arguments.SetList(3, ArgumentsIn);
+                ArgumentsIn.Dispose();
+                ArgumentsIn = null;
                 return message;
             }
 
             public static NativeObjectCallRequest FromCefMessage(CefProcessMessage message)
             {
                 var arguments = message.Arguments;
+                var argsArgs = arguments.GetList(3);
                 return new NativeObjectCallRequest()
                 {
                     CallId = arguments.GetInt(0),
                     ObjectName = arguments.GetString(1),
                     MemberName = arguments.GetString(2),
-                    Arguments = arguments.GetList(3)
+                    ArgumentsIn = null,
+                    ArgumentsOut = CefValueSerialization.DeserializeCefList<object>(argsArgs),
                 };
             }
 
             public void Dispose()
             {
-                Arguments?.Dispose();
+                ArgumentsIn?.Dispose();
+                ArgumentsIn = null;
             }
         }
 
@@ -184,7 +192,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 var arguments = message.Arguments;
                 arguments.SetInt(0, CallId);
                 arguments.SetBool(1, Success);
-                Result?.CopyTo(arguments, 2);
+                Result?.AssignToListAndClearReference(arguments, 2);
                 arguments.SetString(3, Exception);
                 return message;
             }
@@ -195,7 +203,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 return new NativeObjectCallResult() {
                     CallId = arguments.GetInt(0),
                     Success = arguments.GetBool(1),
-                    Result = new CefValueHolder(arguments, 2, isReadOnly: true),
+                    Result = new CefValueHolder(arguments.GetValue(2)),
                     Exception = arguments.GetString(3)
                 };
             }
@@ -244,13 +252,15 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 var arguments = message.Arguments;
                 arguments.SetString(0, Message);
 
-                var frames = CefListValue.Create();
-                for (var i = 0; i < StackFrames.Length; i++)
+                using (var frames = CefListValue.Create())
                 {
-                    frames.SetList(i, StackFrames[i].ToCefValue());
-                }
+                    for (var i = 0; i < StackFrames.Length; i++)
+                    {
+                        frames.SetList(i, StackFrames[i].ToCefValue());
+                    }
 
-                arguments.SetList(1, frames);
+                    arguments.SetList(1, frames);
+                }
                 return message;
             }
 
@@ -261,8 +271,10 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 var frames = new JsStackFrame[cefFrames.Count];
                 for (var i = 0; i < cefFrames.Count; i++)
                 {
-                    var cefFrame = cefFrames.GetList(i);
-                    frames[i] = JsStackFrame.FromCefValue(cefFrame);
+                    using (var cefFrame = cefFrames.GetList(i))
+                    {
+                        frames[i] = JsStackFrame.FromCefValue(cefFrame);
+                    }
                 }
                 return new JsUncaughtException()
                 {

@@ -45,8 +45,10 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
             {
                 // TODO time returned is UTC
                 var date = obj.GetDateValue();
-                var binary = CefValueSerialization.ToCefBinary(CefValueSerialization.BinaryMagicBytes.DateTime, BitConverter.GetBytes(date.ToBinary()));
-                cefValue.SetBinary(binary);
+                using (var binary = CefValueSerialization.ToCefBinary(CefValueSerialization.BinaryMagicBytes.DateTime, BitConverter.GetBytes(date.ToBinary())))
+                {
+                    cefValue.SetBinary(binary);
+                }
             }
             else if (obj.IsArray)
             {
@@ -54,13 +56,15 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                 if (arrLength > 0)
                 {
                     var keys = obj.GetKeys();
-                    var cefList = CefListValue.Create();
-                    for (var i = 0; i < arrLength; i++)
+                    using (var cefList = CefListValue.Create())
                     {
-                        SerializeV8Object(obj.GetValue(keys[i]), new CefListWrapper(cefList, i), visitedObjects);
-                    }
+                        for (var i = 0; i < arrLength; i++)
+                        {
+                            SerializeV8Object(obj.GetValue(keys[i]), new CefListWrapper(cefList, i), visitedObjects);
+                        }
 
-                    cefValue.SetList(cefList);
+                        cefValue.SetList(cefList);
+                    }
                 }
                 else
                 {
@@ -79,15 +83,17 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                 var keys = obj.GetKeys();
                 if (keys.Length > 0)
                 {
-                    var cefDictionary = CefDictionaryValue.Create();
-                    foreach (var key in keys)
+                    using (var cefDictionary = CefDictionaryValue.Create())
                     {
-                        if (obj.HasValue(key))
+                        foreach (var key in keys)
                         {
-                            SerializeV8Object(obj.GetValue(key), new CefDictionaryWrapper(cefDictionary, key), visitedObjects);
+                            if (obj.HasValue(key))
+                            {
+                                SerializeV8Object(obj.GetValue(key), new CefDictionaryWrapper(cefDictionary, key), visitedObjects);
+                            }
                         }
+                        cefValue.SetDictionary(cefDictionary);
                     }
-                    cefValue.SetDictionary(cefDictionary);
                 }
             }
             else
@@ -133,13 +139,15 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                     return CefV8Value.CreateDouble(cefValue.GetDouble());
 
                 case CefValueType.List:
-                    var list = cefValue.GetList();
-                    var v8List = CefV8Value.CreateArray(list.Count);
-                    for (var i = 0; i < list.Count; i++)
+                    using (var list = cefValue.GetList())
                     {
-                        v8List.SetValue(i, SerializeCefValue(new CefListWrapper(list, i)));
+                        var v8List = CefV8Value.CreateArray(list.Count);
+                        for (var i = 0; i < list.Count; i++)
+                        {
+                            v8List.SetValue(i, SerializeCefValue(new CefListWrapper(list, i)));
+                        }
+                        return v8List;
                     }
-                    return v8List;
 
                 case CefValueType.Int:
                     return CefV8Value.CreateInt(cefValue.GetInt());

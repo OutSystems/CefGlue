@@ -29,7 +29,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 ObjectName = _objectName,
                 MemberName = name,
-                Arguments = cefArgs
+                ArgumentsIn = cefArgs
             };
 
             var promiseHolder = _functionCallHandler(message);

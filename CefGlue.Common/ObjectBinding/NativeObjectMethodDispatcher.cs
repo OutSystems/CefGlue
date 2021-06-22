@@ -47,9 +47,8 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         {
             // message and arguments must be deserialized at this point because it will be disposed after
             var message = Messages.NativeObjectCallRequest.FromCefMessage(args.Message);
-            var arguments = CefValueSerialization.DeserializeCefList<object>(message.Arguments);
 
-            _executionDispatcher.Post(new MethodExecutionContext(message.CallId, message.ObjectName, message.MemberName, arguments, args.Frame));
+            _executionDispatcher.Post(new MethodExecutionContext(message.CallId, message.ObjectName, message.MemberName, message.ArgumentsOut, args.Frame));
         }
 
         private void DispatchNativeObjectCall(MethodExecutionContext context) 
