@@ -30,7 +30,10 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             if (value is byte[] byteArr)
             {
                 // handle binaries in a special way (otherwise it will fall on object and be serialized as a collection)
-                cefValue.SetBinary(ToCefBinary(BinaryMagicBytes.Binary, byteArr));
+                using (var cefBinary = ToCefBinary(BinaryMagicBytes.Binary, byteArr))
+                {
+                    cefValue.SetBinary(cefBinary);
+                }
                 return;
             }
 
@@ -66,7 +69,10 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 case TypeCode.DateTime:
                     // datetime is serialized into a binary (cef value does not support datetime)
                     var dateBinary = BitConverter.GetBytes(((DateTime)value).Ticks);
-                    cefValue.SetBinary(ToCefBinary(BinaryMagicBytes.DateTime, dateBinary));
+                    using (var cefBinary = ToCefBinary(BinaryMagicBytes.DateTime, dateBinary))
+                    {
+                        cefValue.SetBinary(cefBinary);
+                    }
                     break;
                     
 
@@ -124,47 +130,53 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         {
             if (value is IDictionary dictionary)
             {
-                var cefDictionary = ValueServices.CreateDictionary();
-
-                foreach (var key in dictionary.Keys)
+                using (var cefDictionary = ValueServices.CreateDictionary())
                 {
-                    var keyText = key.ToString();
-                    Serialize(dictionary[key], visitedObjects, new CefDictionaryWrapper(cefDictionary, keyText));
-                }
 
-                cefValue.SetDictionary(cefDictionary);
+                    foreach (var key in dictionary.Keys)
+                    {
+                        var keyText = key.ToString();
+                        Serialize(dictionary[key], visitedObjects, new CefDictionaryWrapper(cefDictionary, keyText));
+                    }
+
+                    cefValue.SetDictionary(cefDictionary);
+                }
             }
             else if (value is IEnumerable enumerable)
             {
                 var i = 0;
-                var cefList = ValueServices.CreateList();
-                
-                foreach (var item in enumerable)
+                using (var cefList = ValueServices.CreateList())
                 {
-                    Serialize(item, visitedObjects, new CefListWrapper(cefList, i));
-                    i++;
-                }
 
-                cefValue.SetList(cefList);
+                    foreach (var item in enumerable)
+                    {
+                        Serialize(item, visitedObjects, new CefListWrapper(cefList, i));
+                        i++;
+                    }
+
+                    cefValue.SetList(cefList);
+                }
             }
             else
             {
                 var fields = value.GetType().GetFields();
                 var properties = value.GetType().GetProperties();
 
-                var cefDictionary = ValueServices.CreateDictionary();
-
-                foreach (var field in fields)
+                using (var cefDictionary = ValueServices.CreateDictionary())
                 {
-                    Serialize(field.GetValue(value), visitedObjects, new CefDictionaryWrapper(cefDictionary, field.Name));
-                }
 
-                foreach (var property in properties)
-                {
-                    Serialize(property.GetValue(value), visitedObjects, new CefDictionaryWrapper(cefDictionary, property.Name));
-                }
+                    foreach (var field in fields)
+                    {
+                        Serialize(field.GetValue(value), visitedObjects, new CefDictionaryWrapper(cefDictionary, field.Name));
+                    }
 
-                cefValue.SetDictionary(cefDictionary);
+                    foreach (var property in properties)
+                    {
+                        Serialize(property.GetValue(value), visitedObjects, new CefDictionaryWrapper(cefDictionary, property.Name));
+                    }
+
+                    cefValue.SetDictionary(cefDictionary);
+                }
             }
         }
 
@@ -173,27 +185,34 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             switch (cefValue.GetValueType())
             {
                 case CefValueType.Binary:
-                    return FromCefBinary(cefValue.GetBinary(), out var kind);
+                    using (var binary = cefValue.GetBinary())
+                    {
+                        return FromCefBinary(binary, out var kind);
+                    }
 
                 case CefValueType.Bool:
                     return cefValue.GetBool();
 
                 case CefValueType.Dictionary:
                     IDictionary<string, object> dictionary = new ExpandoObject();
-                    var cefDictionary = cefValue.GetDictionary();
-                    var keys = cefDictionary.GetKeys();
-                    foreach (var key in keys)
+                    using (var cefDictionary = cefValue.GetDictionary())
                     {
-                        dictionary[key] = DeserializeCefValue(new CefDictionaryWrapper(cefDictionary, key));
+                        var keys = cefDictionary.GetKeys();
+                        foreach (var key in keys)
+                        {
+                            dictionary[key] = DeserializeCefValue(new CefDictionaryWrapper(cefDictionary, key));
+                        }
+                        return dictionary;
                     }
-                    return dictionary;
 
                 case CefValueType.Double:
                     return cefValue.GetDouble();
 
                 case CefValueType.List:
-                    var cefList = cefValue.GetList();
-                    return DeserializeCefList<object>(cefList);
+                    using (var cefList = cefValue.GetList())
+                    {
+                        return DeserializeCefList<object>(cefList);
+                    }
 
                 case CefValueType.Int:
                     return cefValue.GetInt();
