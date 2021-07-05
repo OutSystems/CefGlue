@@ -1,16 +1,21 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using System;
 using System.Collections;
-using Xilium.CefGlue.Common;
+using System.Collections.Generic;
 
 namespace Xilium.CefGlue.Demo.Avalonia
 {
     public class MainWindow : Window
     {
+        private static bool IsChild = false;
+        private static bool IsChildrenVisible;
+        private static IList<MainWindow> ChildWindows = new List<MainWindow>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -28,6 +33,38 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
             var mainMenu = this.FindControl<Menu>("mainMenu");
             mainMenu.AttachedToVisualTree += MenuAttached;
+
+            if (!IsChild)
+            {
+                IsChild = true;
+                for (var i = 0; i < 2; i++)
+                {
+                    var w = new MainWindow();
+                    ChildWindows.Add(w);
+                }
+            }
+
+            var btn = this.Find<Button>("toggleWindows");
+            btn.Click += Btn_Click;
+        }
+
+        private void Btn_Click(object sender, global::Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (IsChildrenVisible)
+            {
+                foreach (var w in ChildWindows)
+                {
+                    w.Hide();
+                }
+            }
+            else
+            {
+                foreach (var w in ChildWindows)
+                {
+                    w.Show(this);
+                }
+            }
+            IsChildrenVisible = !IsChildrenVisible;
         }
 
         private void MenuAttached(object sender, VisualTreeAttachmentEventArgs e)
@@ -38,7 +75,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             }
         }
 
-        private BrowserView ActiveBrowserView => (BrowserView) this.FindControl<TabControl>("tabControl").SelectedContent;
+        private BrowserView ActiveBrowserView => (BrowserView)this.FindControl<TabControl>("tabControl").SelectedContent;
 
         private void CreateNewTab()
         {

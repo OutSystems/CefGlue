@@ -3,7 +3,7 @@
         x:Class="Xilium.CefGlue.Demo.Avalonia.MainWindow"
         MinWidth="500"
         MinHeight="300"
-        Title="Avalonia CefGlue Demo">
+        Title="Avalonia CefGlue Demo">    
     <NativeMenu.Menu>
         <NativeMenu>
             <NativeMenuItem Header="File">
@@ -20,6 +20,7 @@
     </NativeMenu.Menu>
     
     <DockPanel>
+        <Button DockPanel.Dock="Right" Background="Transparent" x:Name="toggleWindows" >Toggle Window Visibility</Button>
         <Menu Name="mainMenu" DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_New Tab" Click="OnNewTabMenuItemClick" />
