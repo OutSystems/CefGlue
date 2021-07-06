@@ -4,10 +4,9 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
-    using System.Text;
     using System.Threading;
     using System.Windows.Forms;
-    using MenuItemImpl = System.Windows.Forms.MenuItem;
+    using MenuItemImpl = System.Windows.Forms.ToolStripMenuItem;
 
     internal sealed class MainViewImpl : Form, IMainView
     {
@@ -38,6 +37,11 @@
             _tabs.Appearance = TabAppearance.Normal;
             _tabs.Padding = new Point(6, 6);
 
+            if (MainMenuStrip != null)
+            {
+                Controls.Add(MainMenuStrip);
+            }
+
             Visible = true;
         }
 
@@ -66,7 +70,10 @@
 
         private void CreateMenu(MenuItem[] items)
         {
-            Menu = new MainMenu(Map(items));
+            var menu = new MenuStrip();
+            menu.Items.AddRange(Map(items));
+            menu.Dock = DockStyle.Top;
+            MainMenuStrip = menu;
         }
 
         private MenuItemImpl[] Map(IEnumerable<MenuItem> items)
@@ -79,9 +86,9 @@
         private MenuItemImpl Map(MenuItem item)
         {
             if (item.Items != null)
-                return new MenuItemImpl(item.Text, Map(item.Items));
+                return new MenuItemImpl(item.Text, image: null, Map(item.Items));
             else if (item.Command != null)
-                return new MenuItemImpl(item.Text, (s, e) => { item.Command.Execute(); });
+                return new MenuItemImpl(item.Text, image: null, (s, e) => { item.Command.Execute(); });
             else return new MenuItemImpl(item.Text);
         }
 

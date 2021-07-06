@@ -331,7 +331,7 @@
         /// Call from CefClient::OnProcessMessageReceived. Returns true if the message
         /// is handled by this router or false otherwise.
         /// </summary>
-        public bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
+        public bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {
             Helpers.RequireUIThread();
 
@@ -341,7 +341,6 @@
                 var args = message.Arguments;
                 Debug.Assert(args.Count == 6);
 
-                var frameId = Helpers.Int64Set(args.GetInt(0), args.GetInt(1));
                 var contextId = args.GetInt(2);
                 var requestId = args.GetInt(3);
                 var request = args.GetString(4);
@@ -350,14 +349,13 @@
                 if (_handlerSet.Count == 0)
                 {
                     // No handlers so cancel the query.
-                    CancelUnhandledQuery(browser, contextId, requestId);
+                    CancelUnhandledQuery(frame, contextId, requestId);
                     return true;
                 }
 
                 var browserId = browser.Identifier;
                 var queryId = _queryIdGenerator.GetNextId();
 
-                var frame = browser.GetFrame(frameId);
                 var callback = new Callback(this, browserId, queryId, persistent);
 
                 // Make a copy of the handler list in case the user adds or removes a
@@ -391,7 +389,7 @@
                     var info = new QueryInfo
                     {
                         Browser = browser,
-                        FrameId = frameId,
+                        Frame = frame,
                         ContextId = contextId,
                         RequestId = requestId,
                         Persistent = persistent,
@@ -406,7 +404,7 @@
                     callback.Detach();
 
                     // No one chose to handle the query so cancel it.
-                    CancelUnhandledQuery(browser, contextId, requestId);
+                    CancelUnhandledQuery(frame, contextId, requestId);
                 }
 
                 return true;
@@ -433,7 +431,7 @@
         {
             // Browser and frame originated the query.
             public CefBrowser Browser;
-            public long FrameId;
+            public CefFrame Frame;
 
             // IDs that uniquely identify the query in the renderer process. These
             // values are opaque to the browser process but must be returned with the
@@ -511,29 +509,37 @@
 
         private void SendQuerySuccess(QueryInfo info, string response)
         {
-            SendQuerySuccess(info.Browser, info.ContextId, info.RequestId, response);
+            SendQuerySuccess(info.Frame, info.ContextId, info.RequestId, response);
         }
 
-        private void SendQuerySuccess(CefBrowser browser, int contextId, int requestId, string response)
+        private void SendQuerySuccess(CefFrame frame, int contextId, int requestId, string response)
         {
+            if (!frame.IsValid)
+                return;
+
             var message = CefProcessMessage.Create(_queryMessageName);
             var args = message.Arguments;
             args.SetInt(0, contextId);
             args.SetInt(1, requestId);
             args.SetBool(2, true);  // Indicates a success result.
             args.SetString(3, response);
-            browser.SendProcessMessage(CefProcessId.Renderer, message);
+
+            frame.SendProcessMessage(CefProcessId.Renderer, message);
+
             args.Dispose();
             message.Dispose();
         }
 
         private void SendQueryFailure(QueryInfo info, int errorCode, string errorMessage)
         {
-            SendQueryFailure(info.Browser, info.ContextId, info.RequestId, errorCode, errorMessage);
+            SendQueryFailure(info.Frame, info.ContextId, info.RequestId, errorCode, errorMessage);
         }
 
-        private void SendQueryFailure(CefBrowser browser, int contextId, int requestId, int errorCode, string errorMessage)
+        private void SendQueryFailure(CefFrame frame, int contextId, int requestId, int errorCode, string errorMessage)
         {
+            if (frame.IsValid)
+                return;
+
             var message = CefProcessMessage.Create(_queryMessageName);
             var args = message.Arguments;
             args.SetInt(0, contextId);
@@ -541,15 +547,18 @@
             args.SetBool(2, false);  // Indicates a failure result.
             args.SetInt(3, errorCode);
             args.SetString(4, errorMessage);
-            browser.SendProcessMessage(CefProcessId.Renderer, message);
+
+            
+            frame.SendProcessMessage(CefProcessId.Renderer, message);
+
             args.Dispose();
             message.Dispose();
         }
 
         // Cancel a query that has not been sent to a handler.
-        private void CancelUnhandledQuery(CefBrowser browser, int contextId, int requestId)
+        private void CancelUnhandledQuery(CefFrame frame, int contextId, int requestId)
         {
-            SendQueryFailure(browser, contextId, requestId, CefMessageRouter.CanceledErrorCode, CefMessageRouter.CanceledErrorMessage);
+            SendQueryFailure(frame, contextId, requestId, CefMessageRouter.CanceledErrorCode, CefMessageRouter.CanceledErrorMessage);
         }
 
         // Cancel a query that has already been sent to a handler.
@@ -558,8 +567,7 @@
             if (notifyRenderer)
                 SendQueryFailure(info, CefMessageRouter.CanceledErrorCode, CefMessageRouter.CanceledErrorMessage);
 
-            var frame = info.Browser.GetFrame(info.FrameId);
-            info.Handler.OnQueryCanceled(info.Browser, frame, queryId);
+            info.Handler.OnQueryCanceled(info.Browser, info.Frame, queryId);
 
             // Invalidate the callback.
             info.Callback.Detach();

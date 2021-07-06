@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -126,7 +126,7 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Returns the cookie manager for this object. If |callback| is non-NULL it
-        /// will be executed asnychronously on the IO thread after the manager's
+        /// will be executed asnychronously on the UI thread after the manager's
         /// storage has been initialized.
         /// </summary>
         public CefCookieManager GetCookieManager(CefCompletionCallback callback)
@@ -437,6 +437,18 @@ namespace Xilium.CefGlue
                 var n_result = cef_request_context_t.get_extension(_self, &n_extensionId);
                 return CefExtension.FromNativeOrNull(n_result);
             }
+        }
+
+        /// <summary>
+        /// Returns the MediaRouter object associated with this context. If |callback|
+        /// is non-NULL it will be executed asnychronously on the UI thread after the
+        /// manager's context has been initialized.
+        /// </summary>
+        public CefMediaRouter GetMediaRouter(CefCompletionCallback? callback)
+        {
+            var nCallback = callback != null ? callback.ToNative() : null;
+            var nResult = cef_request_context_t.get_media_router(_self, nCallback);
+            return CefMediaRouter.FromNative(nResult);
         }
     }
 }

@@ -1,11 +1,12 @@
 #
 # Copyright (C) Xilium CefGlue Project
 #
-
 from cef_parser import *
 import sys
 import schema
 import file_util
+import os
+from xml.dom.minidom import getDOMImplementation
 
 #
 # settings
@@ -751,7 +752,7 @@ def make_version_cs(content, api_hash_content):
     result.append('public const string CEF_API_HASH_UNIVERSAL = %s;' % __get_version_constant(api_hash_content, "CEF_API_HASH_UNIVERSAL"))
     result.append("");
     result.append('public const string CEF_API_HASH_PLATFORM_WIN = %s;' % __get_version_constant(api_hash_content, "CEF_API_HASH_PLATFORM", "WIN"))
-    result.append('public const string CEF_API_HASH_PLATFORM_MACOSX = %s;' % __get_version_constant(api_hash_content, "CEF_API_HASH_PLATFORM", "MACOSX"))
+    result.append('public const string CEF_API_HASH_PLATFORM_MACOS = %s;' % __get_version_constant(api_hash_content, "CEF_API_HASH_PLATFORM", "MAC"))
     result.append('public const string CEF_API_HASH_PLATFORM_LINUX = %s;' % __get_version_constant(api_hash_content, "CEF_API_HASH_PLATFORM", "LINUX"))
 
     body = []
@@ -794,6 +795,9 @@ def __get_version_constant(content, name, platform = None):
 def write_interop(header, filepath, backup, schema_name, cppheaderdir):
     writect = 0
 
+    project_props_filename = "CefGlue.g.props"
+    project_props_compile_items = []
+
     schema.load(schema_name, header)
 
     # validate: class role must be defined for all header classes
@@ -806,22 +810,22 @@ def write_interop(header, filepath, backup, schema_name, cppheaderdir):
     # structs
     for cls in header.get_classes():
         content = make_struct_file(cls)
-        writect += update_file(filepath + '/' + schema.struct_path, cls.get_capi_name() + ".g.cs", content, backup)
+        writect += update_file(project_props_compile_items, filepath + '/' + schema.struct_path, cls.get_capi_name() + ".g.cs", content, backup)
 
     # libcef.g.cs
-    writect += update_file(filepath + '/' + schema.libcef_path, schema.libcef_filename, make_libcef_file(header), backup)
+    writect += update_file(project_props_compile_items, filepath + '/' + schema.libcef_path, schema.libcef_filename, make_libcef_file(header), backup)
     
     # wrapper
     for cls in header.get_classes():
         content = make_wrapper_g_file(cls)
-        writect += update_file(filepath + '/' + schema.wrapper_g_path, schema.cpp2csname(cls.get_name()) + ".g.cs", content, backup)
+        writect += update_file(project_props_compile_items, filepath + '/' + schema.wrapper_g_path, schema.cpp2csname(cls.get_name()) + ".g.cs", content, backup)
 
     # userdata    
     userdatacls = obj_class(header, 'CefUserData', '', 'CefUserData', 'CefBaseRefCounted', '', '', '', [])
     content = make_struct_file(userdatacls)
-    writect += update_file(filepath + '/' + schema.struct_path, userdatacls.get_capi_name() + ".g.cs", content, backup)
+    writect += update_file(project_props_compile_items, filepath + '/' + schema.struct_path, userdatacls.get_capi_name() + ".g.cs", content, backup)
     content = make_wrapper_g_file(userdatacls)
-    writect += update_file(filepath + '/' + schema.wrapper_g_path, schema.cpp2csname(userdatacls.get_name()) + ".g.cs", content, backup)
+    writect += update_file(project_props_compile_items, filepath + '/' + schema.wrapper_g_path, schema.cpp2csname(userdatacls.get_name()) + ".g.cs", content, backup)
     
     # impl template
     for cls in header.get_classes():
@@ -829,23 +833,50 @@ def write_interop(header, filepath, backup, schema_name, cppheaderdir):
         tmplpath = schema.handler_tmpl_path
         if schema.is_proxy(cls):
             tmplpath = schema.proxy_tmpl_path
-        writect += update_file('./' + tmplpath, schema.cpp2csname(cls.get_name()) + ".tmpl.g.cs", content, backup)
+        writect += update_file(None, './' + tmplpath, schema.cpp2csname(cls.get_name()) + ".tmpl.g.cs", content, backup)
 
     # process cef_version.h and cef_api_hash.h
     content = make_version_cs(read_file(cppheaderdir + '/' + 'cef_version.h'), read_file(cppheaderdir + '/' + 'cef_api_hash.h'),)
-    writect += update_file(filepath + '/' + schema.libcef_path, schema.libcef_version_filename, content, backup)
+    writect += update_file(project_props_compile_items, filepath + '/' + schema.libcef_path, schema.libcef_version_filename, content, backup)
+
+    # make project props file
+    content = make_props_file(project_props_compile_items, filepath)
+    writect += update_file(None, filepath, project_props_filename, content, backup)
 
     return writect
 
 #
+# Generate "CefGlue.Generated.props" msbuild file.
+#
+def make_props_file(filelist, basedir):
+    document = getDOMImplementation().createDocument(None, None, None)
+    documentElement = document.createElementNS(None, "Project")
+    document.appendChild(documentElement)
+
+    itemGroupElement = document.createElementNS(None, "ItemGroup")
+    documentElement.appendChild(itemGroupElement)
+    for x in sorted([os.path.relpath(x, basedir) for x in filelist]):
+        compileElement = document.createElementNS(None, "Compile")
+        compileElement.setAttribute("Include", x)
+        itemGroupElement.appendChild(compileElement)
+      
+    return documentElement.toprettyxml(indent = "    ", newl = "\n", encoding = None)
+
+    # return "\n".join(list1)
+    # return "\n".join([Path(x).relative_to(basedir).str() for x in filelist])
+
+#
 # Utils
 #
-def update_file(dir, filename, content, backup):
+def update_file(filelist, dir, filename, content, backup):
     if not os.path.isdir(dir):
         os.makedirs(dir)
 
     sys.stdout.write(filename + "... ")
     filename = dir + "/" + filename
+
+    if filelist is not None:
+        filelist.append(filename)
 
     if path_exists(filename):
         oldcontent = read_file(filename)

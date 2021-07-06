@@ -15,8 +15,8 @@ namespace Xilium.CefGlue.Interop
         internal cef_base_ref_counted_t _base;
         internal IntPtr _on_context_initialized;
         internal IntPtr _on_before_child_process_launch;
-        internal IntPtr _get_print_handler;
         internal IntPtr _on_schedule_message_pump_work;
+        internal IntPtr _get_default_client;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -58,13 +58,13 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate cef_print_handler_t* get_print_handler_delegate(cef_browser_process_handler_t* self);
+        internal delegate void on_schedule_message_pump_work_delegate(cef_browser_process_handler_t* self, long delay_ms);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_schedule_message_pump_work_delegate(cef_browser_process_handler_t* self, long delay_ms);
+        internal delegate cef_client_t* get_default_client_delegate(cef_browser_process_handler_t* self);
         
         private static int _sizeof;
         

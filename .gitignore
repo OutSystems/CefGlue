@@ -6,6 +6,7 @@
 /obj/
 /out/
 /external/
+/packages/
 
 # Build Results
 [Bb]in/

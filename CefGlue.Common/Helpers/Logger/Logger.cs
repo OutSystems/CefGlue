@@ -1,23 +1,26 @@
+﻿// NLog dependency was removed.
+#if HAS_NLOG
+
 using System;
 using System.Diagnostics;
 using NLog;
 
-namespace Xilium.CefGlue.Common.Helpers.Logger
+namespace Xilium.CefGlue.Helpers.Log
 {
-    internal interface ILogInitializer
+    public interface ILogInitializer
     {
-        NLog.Logger CreateLogger();
+        Logger CreateLogger();
     }
 
-    public class Logger : ILogger
+    public class NLogLogger : ILogger
     {
         private readonly object _syncObject = new object();
         private readonly ILogInitializer _logInitializer;
-        private volatile NLog.Logger _log = null;
+        private volatile Logger _log = null;
 
         private class CurrentLogInitilizer : ILogInitializer
         {
-            public NLog.Logger CreateLogger()
+            public Logger CreateLogger()
             {
                 return GetCurrentLogger();
             }
@@ -32,7 +35,7 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
                 _loggerName = loggerName;
             }
 
-            public NLog.Logger CreateLogger()
+            public Logger CreateLogger()
             {
                 return LogManager.GetLogger(_loggerName);
             }
@@ -47,13 +50,13 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
                 _type = type;
             }
 
-            public NLog.Logger CreateLogger()
+            public Logger CreateLogger()
             {
                 return LogManager.GetCurrentClassLogger(_type);
             }
         }
 
-        private NLog.Logger Log
+        private Logger Log
         {
             get
             {
@@ -69,33 +72,33 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
             }
         }
 
-        private Logger(ILogInitializer logInitializer)
+        public NLogLogger(ILogInitializer logInitializer)
         {
             _logInitializer = logInitializer;
         }
 
-        public Logger()
+        public NLogLogger()
             : this(new CurrentLogInitilizer())
         {
         }
 
-        private Logger(NLog.Logger log)
+        public NLogLogger(Logger log)
         {
             _log = log;
             _logInitializer = null;
         }
 
-        public Logger(string loggerName)
+        public NLogLogger(string loggerName)
             : this(new NamedLogInitilizer(loggerName))
         {
         }
 
-        public Logger(Type type)
+        public NLogLogger(Type type)
             : this(new TypeLogInitilizer(type))
         {
         }
 
-        private static NLog.Logger GetCurrentLogger()
+        private static Logger GetCurrentLogger()
         {
             string loggerName;
             Type declaringType;
@@ -120,67 +123,67 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
 
         public static ILogger GetLogger()
         {
-            return new Logger(GetCurrentLogger());
+            return new NLogLogger(GetCurrentLogger());
         }
 
         public void TraceException(string message, Exception exception)
         {
-            Log.Trace(exception, message);
+            Log.TraceException(message, exception);
         }
 
-        public void Trace(string message)
+        public void Trace(string message, params object[] args)
         {
-            Log.Trace(message);
+            Log.Trace(message, args);
         }
 
         public void DebugException(string message, Exception exception)
         {
-            Log.Debug(exception, message);
+            Log.DebugException(message, exception);
         }
 
-        public void Debug(string message)
+        public void Debug(string message, params object[] args)
         {
-            Log.Debug(message);
+            Log.Debug(message, args);
         }
 
         public void ErrorException(string message, Exception exception)
         {
-            Log.Error(exception, message);
+            Log.ErrorException(message, exception);
         }
 
-        public void Error(string message)
+        public void Error(string message, params object[] args)
         {
-            Log.Error(message);
+            Log.Error(message, args);
         }
 
         public void FatalException(string message, Exception exception)
         {
-            Log.Fatal(exception, message);
+            Log.FatalException(message, exception);
         }
 
-        public void Fatal(string message)
+        public void Fatal(string message, params object[] args)
         {
-            Log.Fatal(message);
+            Log.Fatal(message, args);
         }
 
         public void InfoException(string message, Exception exception)
         {
-            Log.Info(exception, message);
+            Log.InfoException(message, exception);
         }
 
-        public void Info(string message)
+        public void Info(string message, params object[] args)
         {
-            Log.Info(message);
+            Log.Info(message, args);
         }
 
         public void WarnException(string message, Exception exception)
         {
-            Log.Warn(exception, message);
+            Log.WarnException(message, exception);
         }
 
-        public void Warn(string message)
+        public void Warn(string message, params object[] args)
         {
-            Log.Warn(message);
+            Log.Warn(message, args);
         }
 
         public bool IsTraceEnabled
@@ -232,3 +235,5 @@ namespace Xilium.CefGlue.Common.Helpers.Logger
         }
     }
 }
+
+#endif

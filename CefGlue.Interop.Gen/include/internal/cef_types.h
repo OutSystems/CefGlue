@@ -39,7 +39,7 @@
 // Bring in platform-specific definitions.
 #if defined(OS_WIN)
 #include "include/internal/cef_types_win.h"
-#elif defined(OS_MACOSX)
+#elif defined(OS_MAC)
 #include "include/internal/cef_types_mac.h"
 #elif defined(OS_LINUX)
 #include "include/internal/cef_types_linux.h"
@@ -242,7 +242,9 @@ typedef struct _cef_settings_t {
   // in-memory caches are used for storage and no data is persisted to disk.
   // HTML5 databases such as localStorage will only persist across sessions if a
   // cache path is specified. Can be overridden for individual CefRequestContext
-  // instances via the CefRequestContextSettings.cache_path value.
+  // instances via the CefRequestContextSettings.cache_path value. When using
+  // the Chrome runtime the "default" profile will be used if |cache_path| and
+  // |root_cache_path| have the same value.
   ///
   cef_string_t cache_path;
 
@@ -264,7 +266,8 @@ typedef struct _cef_settings_t {
   // directory on Linux, "~/Library/Application Support/CEF/User Data" directory
   // on Mac OS X, "Local Settings\Application Data\CEF\User Data" directory
   // under the user profile directory on Windows). If this value is non-empty
-  // then it must be an absolute path.
+  // then it must be an absolute path. When using the Chrome runtime this value
+  // will be ignored in favor of the |root_cache_path| value.
   ///
   cef_string_t user_data_path;
 
@@ -301,9 +304,9 @@ typedef struct _cef_settings_t {
   // Value that will be inserted as the product portion of the default
   // User-Agent string. If empty the Chromium product version will be used. If
   // |userAgent| is specified this value will be ignored. Also configurable
-  // using the "product-version" command-line switch.
+  // using the "user-agent-product" command-line switch.
   ///
-  cef_string_t product_version;
+  cef_string_t user_agent_product;
 
   ///
   // The locale string that will be passed to WebKit. If empty the default
@@ -342,10 +345,10 @@ typedef struct _cef_settings_t {
 
   ///
   // The fully qualified path for the resources directory. If this value is
-  // empty the cef.pak and/or devtools_resources.pak files must be located in
-  // the module directory on Windows/Linux or the app bundle Resources directory
-  // on Mac OS X. If this value is non-empty then it must be an absolute path.
-  // Also configurable using the "resources-dir-path" command-line switch.
+  // empty the *.pak files must be located in the module directory on
+  // Windows/Linux or the app bundle Resources directory on Mac OS X. If this
+  // value is non-empty then it must be an absolute path. Also configurable
+  // using the "resources-dir-path" command-line switch.
   ///
   cef_string_t resources_dir_path;
 
@@ -420,6 +423,20 @@ typedef struct _cef_settings_t {
   cef_string_t accept_language_list;
 
   ///
+  // Comma delimited list of schemes supported by the associated
+  // CefCookieManager. If |cookieable_schemes_exclude_defaults| is false (0) the
+  // default schemes ("http", "https", "ws" and "wss") will also be supported.
+  // Specifying a |cookieable_schemes_list| value and setting
+  // |cookieable_schemes_exclude_defaults| to true (1) will disable all loading
+  // and saving of cookies for this manager. Can be overridden
+  // for individual CefRequestContext instances via the
+  // CefRequestContextSettings.cookieable_schemes_list and
+  // CefRequestContextSettings.cookieable_schemes_exclude_defaults values.
+  ///
+  cef_string_t cookieable_schemes_list;
+  int cookieable_schemes_exclude_defaults;
+
+  ///
   // GUID string used for identifying the application. This is passed to the
   // system AV function for scanning downloaded files. By default, the GUID
   // will be an empty string and the file will be treated as an untrusted
@@ -487,6 +504,18 @@ typedef struct _cef_request_context_settings_t {
   // ignored if |cache_path| matches the CefSettings.cache_path value.
   ///
   cef_string_t accept_language_list;
+
+  ///
+  // Comma delimited list of schemes supported by the associated
+  // CefCookieManager. If |cookieable_schemes_exclude_defaults| is false (0) the
+  // default schemes ("http", "https", "ws" and "wss") will also be supported.
+  // Specifying a |cookieable_schemes_list| value and setting
+  // |cookieable_schemes_exclude_defaults| to true (1) will disable all loading
+  // and saving of cookies for this manager. These values will be ignored if
+  // |cache_path| matches the CefSettings.cache_path value.
+  ///
+  cef_string_t cookieable_schemes_list;
+  int cookieable_schemes_exclude_defaults;
 } cef_request_context_settings_t;
 
 ///
@@ -586,14 +615,6 @@ typedef struct _cef_browser_settings_t {
   cef_state_t file_access_from_file_urls;
 
   ///
-  // Controls whether web security restrictions (same-origin policy) will be
-  // enforced. Disabling this setting is not recommend as it will allow risky
-  // security behavior such as cross-site scripting (XSS). Also configurable
-  // using the "disable-web-security" command-line switch.
-  ///
-  cef_state_t web_security;
-
-  ///
   // Controls whether image URLs will be loaded from the network. A cached image
   // will still be rendered if requested. Also configurable using the
   // "disable-image-loading" command-line switch.
@@ -659,7 +680,7 @@ typedef struct _cef_browser_settings_t {
   ///
   // Comma delimited ordered list of language codes without any whitespace that
   // will be used in the "Accept-Language" HTTP header. May be set globally
-  // using the CefBrowserSettings.accept_language_list value. If both values are
+  // using the CefSettings.accept_language_list value. If both values are
   // empty then "en-US,en" will be used.
   ///
   cef_string_t accept_language_list;
@@ -1670,7 +1691,7 @@ typedef enum {
   MENU_ID_ADD_TO_DICTIONARY = 206,
 
   // Custom menu items originating from the renderer process. For example,
-  // plugin placeholder menu items or Flash menu items.
+  // plugin placeholder menu items.
   MENU_ID_CUSTOM_FIRST = 220,
   MENU_ID_CUSTOM_LAST = 250,
 
@@ -2366,22 +2387,6 @@ typedef enum {
   ///
   JSON_PARSER_ALLOW_TRAILING_COMMAS = 1 << 0,
 } cef_json_parser_options_t;
-
-///
-// Error codes that can be returned from CefParseJSONAndReturnError.
-///
-typedef enum {
-  JSON_NO_ERROR = 0,
-  JSON_INVALID_ESCAPE,
-  JSON_SYNTAX_ERROR,
-  JSON_UNEXPECTED_TOKEN,
-  JSON_TRAILING_COMMA,
-  JSON_TOO_MUCH_NESTING,
-  JSON_UNEXPECTED_DATA_AFTER_ROOT,
-  JSON_UNSUPPORTED_ENCODING,
-  JSON_UNQUOTED_DICTIONARY_KEY,
-  JSON_PARSE_ERROR_COUNT
-} cef_json_parser_error_t;
 
 ///
 // Options that can be passed to CefWriteJSON.
@@ -3155,8 +3160,9 @@ typedef enum {
   CEF_MRCR_NO_SUPPORTED_PROVIDER = 7,
   CEF_MRCR_CANCELLED = 8,
   CEF_MRCR_ROUTE_ALREADY_EXISTS = 9,
+  CEF_MRCR_ROUTE_ALREADY_TERMINATED = 11,
 
-  CEF_MRCR_TOTAL_COUNT = 11  // The total number of values.
+  CEF_MRCR_TOTAL_COUNT = 12  // The total number of values.
 } cef_media_route_create_result_t;
 
 ///
@@ -3207,6 +3213,15 @@ typedef enum {
   CEF_TFC_DELETE,
   CEF_TFC_SELECT_ALL,
 } cef_text_field_commands_t;
+
+///
+// Supported Chrome toolbar types.
+///
+typedef enum {
+  CEF_CTT_NONE = 1,
+  CEF_CTT_NORMAL,
+  CEF_CTT_LOCATION,
+} cef_chrome_toolbar_type_t;
 
 #ifdef __cplusplus
 }

@@ -50,23 +50,6 @@
         }
 
 
-        private cef_print_handler_t* get_print_handler(cef_browser_process_handler_t* self)
-        {
-            CheckSelf(self);
-            var result = GetPrintHandler();
-            return result != null ? result.ToNative() : null;
-        }
-
-        /// <summary>
-        /// Return the handler for printing on Linux. If a print handler is not
-        /// provided then printing will not be supported on the Linux platform.
-        /// </summary>
-        protected virtual CefPrintHandler GetPrintHandler()
-        {
-            return null;
-        }
-
-
         private void on_schedule_message_pump_work(cef_browser_process_handler_t* self, long delay_ms)
         {
             CheckSelf(self);
@@ -87,5 +70,24 @@
         /// cancelled.
         /// </summary>
         protected virtual void OnScheduleMessagePumpWork(long delayMs) { }
+
+
+        private cef_client_t* get_default_client(cef_browser_process_handler_t* self)
+        {
+            CheckSelf(self);
+
+            var m_client = GetDefaultClient();
+
+            return m_client != null ? m_client.ToNative() : null;
+        }
+
+        /// <summary>
+        /// Return the default client for use with a newly created browser window. If
+        /// null is returned the browser will be unmanaged (no callbacks will be
+        /// executed for that browser) and application shutdown will be blocked until
+        /// the browser window is closed manually. This method is currently only used
+        /// with the chrome runtime.
+        /// </summary>
+        protected virtual CefClient GetDefaultClient() => null;
     }
 }

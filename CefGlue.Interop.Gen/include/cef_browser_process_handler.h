@@ -39,8 +39,8 @@
 #pragma once
 
 #include "include/cef_base.h"
+#include "include/cef_client.h"
 #include "include/cef_command_line.h"
-#include "include/cef_print_handler.h"
 #include "include/cef_values.h"
 
 ///
@@ -69,13 +69,6 @@ class CefBrowserProcessHandler : public virtual CefBaseRefCounted {
       CefRefPtr<CefCommandLine> command_line) {}
 
   ///
-  // Return the handler for printing on Linux. If a print handler is not
-  // provided then printing will not be supported on the Linux platform.
-  ///
-  /*--cef()--*/
-  virtual CefRefPtr<CefPrintHandler> GetPrintHandler() { return nullptr; }
-
-  ///
   // Called from any thread when work has been scheduled for the browser process
   // main (UI) thread. This callback is used in combination with CefSettings.
   // external_message_pump and CefDoMessageLoopWork() in cases where the CEF
@@ -90,6 +83,16 @@ class CefBrowserProcessHandler : public virtual CefBaseRefCounted {
   ///
   /*--cef()--*/
   virtual void OnScheduleMessagePumpWork(int64 delay_ms) {}
+
+  ///
+  // Return the default client for use with a newly created browser window. If
+  // null is returned the browser will be unmanaged (no callbacks will be
+  // executed for that browser) and application shutdown will be blocked until
+  // the browser window is closed manually. This method is currently only used
+  // with the chrome runtime.
+  ///
+  /*--cef()--*/
+  virtual CefRefPtr<CefClient> GetDefaultClient() { return nullptr; }
 };
 
 #endif  // CEF_INCLUDE_CEF_BROWSER_PROCESS_HANDLER_H_

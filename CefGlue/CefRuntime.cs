@@ -25,11 +25,11 @@ namespace Xilium.CefGlue
             var platformId = Environment.OSVersion.Platform;
 
             if (platformId == PlatformID.MacOSX)
-                return CefRuntimePlatform.MacOSX;
+                return CefRuntimePlatform.MacOS;
 
             int p = (int)platformId;
             if ((p == 4) || (p == 128))
-                return IsRunningOnMac() ? CefRuntimePlatform.MacOSX : CefRuntimePlatform.Linux;
+                return IsRunningOnMac() ? CefRuntimePlatform.MacOS : CefRuntimePlatform.Linux;
 
             return CefRuntimePlatform.Windows;
         }
@@ -150,7 +150,7 @@ namespace Xilium.CefGlue
             switch (CefRuntime.Platform)
             {
                 case CefRuntimePlatform.Windows: expected = libcef.CEF_API_HASH_PLATFORM_WIN; break;
-                case CefRuntimePlatform.MacOSX: expected = libcef.CEF_API_HASH_PLATFORM_MACOSX; break;
+                case CefRuntimePlatform.MacOS: expected = libcef.CEF_API_HASH_PLATFORM_MACOS; break;
                 case CefRuntimePlatform.Linux: expected = libcef.CEF_API_HASH_PLATFORM_LINUX; break;
                 default: throw new PlatformNotSupportedException();
             }
@@ -743,21 +743,18 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Parses the specified |json_string| and returns a dictionary or list
         /// representation. If JSON parsing fails this method returns NULL and populates
-        /// |error_code_out| and |error_msg_out| with an error code and a formatted error
-        /// message respectively.
+        /// |error_msg_out| with a formatted error message.
         /// </summary>
-        public static CefValue ParseJsonAndReturnError(string value, CefJsonParserOptions options, out CefJsonParserError errorCode, out string errorMessage)
+        public static CefValue ParseJsonAndReturnError(string value, CefJsonParserOptions options, out string errorMessage)
         {
             fixed (char* value_str = value)
             {
                 var n_value = new cef_string_t(value_str, value != null ? value.Length : 0);
 
-                CefJsonParserError n_error_code;
                 cef_string_t n_error_msg;
-                var n_result = libcef.parse_jsonand_return_error(&n_value, options, &n_error_code, &n_error_msg);
+                var n_result = libcef.parse_jsonand_return_error(&n_value, options, &n_error_msg);
 
                 var result = CefValue.FromNativeOrNull(n_result);
-                errorCode = n_error_code;
                 errorMessage = cef_string_userfree.ToString((cef_string_userfree*)&n_error_msg);
                 return result;
             }
