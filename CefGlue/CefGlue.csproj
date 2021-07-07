@@ -3,11 +3,6 @@
   <PropertyGroup>
     <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
     <AssemblyName>Xilium.CefGlue</AssemblyName>
-    <Company>Xilium</Company>
-    <Authors>Xilium</Authors>
-    <PackageProjectUrl>https://gitlab.com/xiliumhq/chromiumembedded/cefglue</PackageProjectUrl>
-    <RepositoryUrl>https://gitlab.com/xiliumhq/chromiumembedded/cefglue</RepositoryUrl>
-    <Description>Xilium.CefGlue is a .NET/Mono binding for The Chromium Embedded Framework (CEF) by Marshall A. Greenblatt.</Description>
     <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>8.0</LangVersion>

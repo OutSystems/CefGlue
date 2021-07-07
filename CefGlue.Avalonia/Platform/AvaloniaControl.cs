@@ -130,13 +130,9 @@ namespace Xilium.CefGlue.Avalonia.Platform
                DispatcherPriority.Input);
         }
 
-        public bool SetCursor(IntPtr cursorHandle)
+        public virtual bool SetCursor(IntPtr cursorHandle)
         {
-            // TODO: review implementation jmn. check if browser can handle this.
-            var cursor = CursorsProvider.GetCursorFromHandle(cursorHandle);
-            Dispatcher.UIThread.Post(() => _control.Cursor = cursor);
-            
-            return true;
+            return false;
         }
 
         public void InitializeRender(IntPtr browserHandle)
