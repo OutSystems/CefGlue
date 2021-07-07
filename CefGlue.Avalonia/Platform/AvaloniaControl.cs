@@ -56,7 +56,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public virtual IntPtr? GetHostViewHandle(int initialWidth, int initialHeight)
         {
-            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX)
+            if (CefRuntime.Platform == CefRuntimePlatform.MacOS)
             {
                 if (_hostView == null)
                 {
@@ -128,6 +128,15 @@ namespace Xilium.CefGlue.Avalonia.Platform
                    _control.ContextMenu = null;
                },
                DispatcherPriority.Input);
+        }
+
+        public bool SetCursor(IntPtr cursorHandle)
+        {
+            // TODO: review implementation jmn. check if browser can handle this.
+            var cursor = CursorsProvider.GetCursorFromHandle(cursorHandle);
+            Dispatcher.UIThread.Post(() => _control.Cursor = cursor);
+            
+            return true;
         }
 
         public void InitializeRender(IntPtr browserHandle)

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
     <PropertyGroup> 
-        <CefRedistVersion>85.3.12</CefRedistVersion>
-        <CefRedistOSXVersion>85.3.14</CefRedistOSXVersion>
+        <CefRedistVersion>91.1.6</CefRedistVersion>
+        <CefRedistOSXVersion>91.1.6</CefRedistOSXVersion>
         <NLogVersion>4.6.2</NLogVersion>
         <TasksDataFlowVersion>4.11.1</TasksDataFlowVersion>
     </PropertyGroup>

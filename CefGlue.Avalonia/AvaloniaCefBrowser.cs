@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.VisualTree;
 using Xilium.CefGlue.Avalonia.Platform;
 using Xilium.CefGlue.Common;
@@ -13,7 +13,7 @@ namespace Xilium.CefGlue.Avalonia
     {
         static AvaloniaCefBrowser()
         {
-            if (CefRuntime.Platform == CefRuntimePlatform.MacOSX && !CefRuntimeLoader.IsLoaded)
+            if (CefRuntime.Platform == CefRuntimePlatform.MacOS && !CefRuntimeLoader.IsLoaded)
             {
                 CefRuntimeLoader.Load(new AvaloniaBrowserProcessHandler());
             }

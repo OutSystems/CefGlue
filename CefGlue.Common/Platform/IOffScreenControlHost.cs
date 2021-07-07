@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers;
 
@@ -31,7 +31,6 @@ namespace Xilium.CefGlue.Common.Platform
 
         void Focus();
         CefPoint PointToScreen(CefPoint point, float deviceScaleFactor);
-        void SetCursor(IntPtr cursorHandle);
 
         Task<CefDragOperationsMask> StartDrag(CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y);
         void UpdateDragCursor(CefDragOperationsMask allowedOps);

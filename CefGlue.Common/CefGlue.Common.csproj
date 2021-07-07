@@ -27,7 +27,7 @@
     <ItemGroup>
         <PackageReference Include="NLog" Version="$(NLogVersion)" />
         <PackageReference Include="System.Threading.Tasks.Dataflow" Version="$(TasksDataFlowVersion)" />
-        <PackageReference Include="cef.redist.x64" Version="$(CefRedistVersion)" />
+        <PackageReference Include="cef.redist.x64" Version="91.1.6" />
         <PackageReference Include="cef.redist.osx64" Version="$(CefRedistOSXVersion)" />
     </ItemGroup>
 

@@ -28,11 +28,6 @@ namespace Xilium.CefGlue.Common.InternalHandlers
             commandLine.AppendSwitch(CommandLineArgs.ParentProcessId, _currentProcessId);
         }
 
-        protected override CefPrintHandler GetPrintHandler()
-        {
-            return _handler?.HandleGetPrintHandler();
-        }
-
         protected override void OnContextInitialized()
         {
             _handler?.HandleContextInitialized();

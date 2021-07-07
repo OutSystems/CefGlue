@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Xilium.CefGlue.Common
 {
@@ -12,8 +12,6 @@ namespace Xilium.CefGlue.Common
         void HandlePopupSizeChange(CefRectangle rect);
 
         void HandleViewPaint(IntPtr buffer, int width, int height, CefRectangle[] dirtyRects, bool isPopup);
-        
-        void HandleCursorChange(IntPtr cursorHandle);
 
         void HandleStartDragging(CefBrowser browser, CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y);
         void HandleUpdateDragCursor(CefBrowser browser, CefDragOperationsMask operation);

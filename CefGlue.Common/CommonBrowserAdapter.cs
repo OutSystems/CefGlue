@@ -275,7 +275,7 @@ namespace Xilium.CefGlue.Common
         public void ShowDeveloperTools()
         {
             var windowInfo = CefWindowInfo.Create();
-            if (CefRuntime.Platform != CefRuntimePlatform.MacOSX)
+            if (CefRuntime.Platform != CefRuntimePlatform.MacOS)
             {
                 // don't know why but I can't do this on macosx
                 windowInfo.SetAsPopup(BrowserHost?.GetWindowHandle() ?? IntPtr.Zero, "DevTools");
@@ -607,6 +607,17 @@ namespace Xilium.CefGlue.Common
         void ICefBrowserHost.HandleException(Exception exception)
         {
             HandleException("Unknown", exception);
+        }
+
+        bool ICefBrowserHost.HandleCursorChange(IntPtr cursorHandle)
+        {
+            var result = false;
+            WithErrorHandling((nameof(ICefBrowserHost.HandleCursorChange)), () =>
+            {
+                result = Control.SetCursor(cursorHandle);
+            });
+
+            return result;
         }
 
         #endregion

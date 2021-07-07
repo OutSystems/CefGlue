@@ -1,13 +1,7 @@
-namespace Xilium.CefGlue.Common.Handlers
+﻿namespace Xilium.CefGlue.Common.Handlers
 {
     public class BrowserProcessHandler : CefBrowserProcessHandler
     {
-
-        internal CefPrintHandler HandleGetPrintHandler()
-        {
-            return GetPrintHandler();
-        }
-
         internal void HandleBeforeChildProcessLaunch(CefCommandLine commandLine)
         {
             OnBeforeChildProcessLaunch(commandLine);

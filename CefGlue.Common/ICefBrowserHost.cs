@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Xilium.CefGlue.Common.Handlers;
 
 namespace Xilium.CefGlue.Common
@@ -24,6 +24,8 @@ namespace Xilium.CefGlue.Common
         void HandleCloseContextMenu();
 
         void HandleException(Exception exception);
+
+        bool HandleCursorChange(IntPtr cursorHandle);
 
         ContextMenuHandler ContextMenuHandler { get; set; }
         DialogHandler DialogHandler { get; set; }

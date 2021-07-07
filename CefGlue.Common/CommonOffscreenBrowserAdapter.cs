@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Helpers.Logger;
@@ -387,14 +387,6 @@ namespace Xilium.CefGlue.Common
             {
                 Popup.RenderSurface.Resize(rect.Width, rect.Height);
                 Popup.MoveAndResize(rect.X, rect.Y, rect.Width, rect.Height);
-            });
-        }
-
-        void IOffscreenCefBrowserHost.HandleCursorChange(IntPtr cursorHandle)
-        {
-            WithErrorHandling((nameof(IOffscreenCefBrowserHost.HandleCursorChange)), () =>
-            {
-                Control.SetCursor(cursorHandle);
             });
         }
 

@@ -5,7 +5,7 @@ using System;
 using System.Diagnostics;
 using NLog;
 
-namespace Xilium.CefGlue.Helpers.Log
+namespace Xilium.CefGlue.Common.Helpers.Logger
 {
     public interface ILogInitializer
     {

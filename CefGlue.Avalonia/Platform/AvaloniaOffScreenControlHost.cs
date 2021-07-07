@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Collections;
@@ -226,12 +226,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 return macOSHandle.NSView;
             }
             return platformHandle?.Handle;
-        }
-
-        public void SetCursor(IntPtr cursorHandle)
-        {
-            var cursor = CursorsProvider.GetCursorFromHandle(cursorHandle);
-            Dispatcher.UIThread.Post(() => _control.Cursor = cursor);
         }
 
         public override void SetTooltip(string text)

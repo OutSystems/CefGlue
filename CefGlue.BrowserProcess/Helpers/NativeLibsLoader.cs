@@ -18,7 +18,7 @@ namespace Xilium.CefGlue.BrowserProcess.Helpers
 
             switch (CefRuntime.Platform)
             {
-                case CefRuntimePlatform.MacOSX:
+                case CefRuntimePlatform.MacOS:
                     extension = "dylib";
                     break;
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Xilium.CefGlue.Common.InternalHandlers
 {
@@ -59,6 +59,11 @@ namespace Xilium.CefGlue.Common.InternalHandlers
         protected override void OnLoadingProgressChange(CefBrowser browser, double progress)
         {
             _owner.DisplayHandler?.HandleLoadingProgressChange(browser, progress);
+        }
+
+        protected override bool OnCursorChange(CefBrowser browser, IntPtr cursorHandle, CefCursorType type, CefCursorInfo customCursorInfo)
+        {
+            return _owner.HandleCursorChange(cursorHandle);
         }
     }
 }

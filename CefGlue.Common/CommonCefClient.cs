@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Helpers.Logger;
 using Xilium.CefGlue.Common.InternalHandlers;

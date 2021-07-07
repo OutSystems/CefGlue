@@ -47,7 +47,7 @@ namespace Xilium.CefGlue.Common
                     settings.MultiThreadedMessageLoop = true;
                     break;
 
-                case CefRuntimePlatform.MacOSX:
+                case CefRuntimePlatform.MacOS:
                     var resourcesPath = Path.Combine(path, "Resources");
                     if (!Directory.Exists(resourcesPath))
                     {

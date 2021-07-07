@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Xilium.CefGlue.Common.Helpers;
 
@@ -20,5 +20,7 @@ namespace Xilium.CefGlue.Common.Platform
         void InitializeRender(IntPtr browserHandle);
 
         void DestroyRender();
+
+        bool SetCursor(IntPtr cursorHandle);
     }
 }

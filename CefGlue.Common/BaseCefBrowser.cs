@@ -25,7 +25,11 @@ namespace Xilium.CefGlue.Common
                 CefRuntimeLoader.Load();
             }
 
+#if HAS_NLOG
             _logger = new Logger(nameof(BaseCefBrowser));
+#else
+            _logger = new NullLogger(nameof(BaseCefBrowser));
+#endif
 
             if (CefRuntimeLoader.IsOSREnabled)
             {
@@ -53,7 +57,7 @@ namespace Xilium.CefGlue.Common
             _adapter?.Dispose(disposing);
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Creates the instance of the popup control that will host the browser popups.
