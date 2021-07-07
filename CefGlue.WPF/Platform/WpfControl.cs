@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using Microsoft.Win32.SafeHandles;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 
@@ -111,6 +112,19 @@ namespace Xilium.CefGlue.WPF.Platform
                     _control.ContextMenu = null;
                 })
             );
+        }
+
+        public bool SetCursor(IntPtr cursorHandle)
+        {
+            _control.Dispatcher.BeginInvoke(
+                DispatcherPriority.Normal,
+                new Action(() =>
+                {
+                    var cursor = CursorInteropHelper.Create(new SafeFileHandle(cursorHandle, false));
+                    _control.Cursor = cursor;
+                }));
+
+            return true;
         }
 
         public void InitializeRender(IntPtr browserHandle)
