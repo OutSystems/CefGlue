@@ -295,6 +295,13 @@ namespace Xilium.CefGlue.Avalonia.Platform
             _currentDragCursor = new Cursor(cursorType);
         }
 
+        public override bool SetCursor(IntPtr cursorHandle)
+        {
+            var cursor = CursorsProvider.GetCursorFromHandle(cursorHandle);
+            Dispatcher.UIThread.Post(() => _control.Cursor = cursor);
+            return true;
+        }
+
         /// <summary>
         /// Create an image that is used to render the browser frame and popups
         /// </summary>

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.Win32.SafeHandles;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Xilium.CefGlue.Common.Helpers;
@@ -229,6 +231,19 @@ namespace Xilium.CefGlue.WPF.Platform
             // since PointToScreen needs to be executed on the dispatcher thread
             // but calling Invoke at this stage can lead to dead locks
             return new CefPoint((int) (_browserScreenLocation.X + point.X * deviceScaleFactor), (int) (_browserScreenLocation.Y + point.Y * deviceScaleFactor));
+        }
+
+        public override bool SetCursor(IntPtr cursorHandle)
+        {
+            _control.Dispatcher.BeginInvoke(
+                DispatcherPriority.Normal,
+                new Action(() =>
+                {
+                    var cursor = CursorInteropHelper.Create(new SafeFileHandle(cursorHandle, false));
+                    _control.Cursor = cursor;
+                }));
+
+            return true;
         }
 
         public override void SetTooltip(string text)

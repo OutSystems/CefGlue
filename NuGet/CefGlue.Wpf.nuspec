@@ -16,9 +16,9 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\CefGlue.WPF\bin\$configuration$\Xilium.CefGlue.WPF.dll" target="lib\net472"/>
-    <file src="..\CefGlue.WPF\bin\$configuration$\Xilium.CefGlue.WPF.pdb" target="lib\net472"/>
-    <file src="..\CefGlue.WPF\bin\$configuration$\Xilium.CefGlue.WPF.xml" target="lib\net472"/>
+    <file src="..\CefGlue.WPF\bin\$configuration$\net472\Xilium.CefGlue.WPF.dll" target="lib\net472"/>
+    <file src="..\CefGlue.WPF\bin\$configuration$\net472\Xilium.CefGlue.WPF.pdb" target="lib\net472"/>
+    <file src="..\CefGlue.WPF\bin\$configuration$\net472\Xilium.CefGlue.WPF.xml" target="lib\net472"/>
   </files>
 </package>
 
