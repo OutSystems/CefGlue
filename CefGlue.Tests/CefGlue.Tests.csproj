@@ -41,8 +41,5 @@
 
   <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />
   <Import Project="$(ProjectDir)..\Nuget\CefGlue.Common.targets" />
-  <ItemGroup>
-    <PackageReference Update="cef.redist.x64" Version="91.1.6" />
-  </ItemGroup>
 
 </Project>
