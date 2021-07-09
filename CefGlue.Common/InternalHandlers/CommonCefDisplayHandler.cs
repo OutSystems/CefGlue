@@ -63,7 +63,7 @@ namespace Xilium.CefGlue.Common.InternalHandlers
 
         protected override bool OnCursorChange(CefBrowser browser, IntPtr cursorHandle, CefCursorType type, CefCursorInfo customCursorInfo)
         {
-            return _owner.HandleCursorChange(cursorHandle);
+            return _owner.HandleCursorChange(cursorHandle, type);
         }
     }
 }

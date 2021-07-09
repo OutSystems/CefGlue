@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Xilium.CefGlue.Avalonia.Platform.Windows
 {
-    internal class HostWindow : IHost
+    internal class HostWindow : IHandleHolder
     {
         [DllImport("user32.dll", EntryPoint = "DestroyWindow", CharSet = CharSet.Unicode)]
         private static extern bool DestroyWindow(IntPtr hwnd);

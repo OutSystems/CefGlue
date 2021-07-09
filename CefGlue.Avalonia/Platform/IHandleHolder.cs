@@ -2,7 +2,7 @@
 
 namespace Xilium.CefGlue.Avalonia.Platform
 {
-    internal interface IHost : IDisposable
+    internal interface IHandleHolder : IDisposable
     {
         IntPtr Handle { get; }
     }

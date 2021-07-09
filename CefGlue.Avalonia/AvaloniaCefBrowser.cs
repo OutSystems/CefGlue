@@ -1,6 +1,4 @@
-﻿using Avalonia.Controls;
-using Avalonia.VisualTree;
-using Xilium.CefGlue.Avalonia.Platform;
+﻿using Xilium.CefGlue.Avalonia.Platform;
 using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Platform;
 
@@ -21,12 +19,12 @@ namespace Xilium.CefGlue.Avalonia
 
         internal override Common.Platform.IControl CreateControl()
         {
-            return new AvaloniaControl(this, VisualChildren, GetHostingWindow);
+            return new AvaloniaControl(this, VisualChildren);
         }
 
         internal override IOffScreenControlHost CreateOffScreenControlHost()
         {
-            return new AvaloniaOffScreenControlHost(this, VisualChildren, GetHostingWindow);
+            return new AvaloniaOffScreenControlHost(this, VisualChildren);
         }
 
         internal override IOffScreenPopupHost CreatePopupHost()
@@ -35,12 +33,7 @@ namespace Xilium.CefGlue.Avalonia
             {
                 PlacementTarget = this
             };
-            return new AvaloniaPopup(popup, popup.VisualChildren, GetHostingWindow);
-        }
-
-        protected virtual WindowBase GetHostingWindow()
-        {
-            return this.GetVisualRoot() as WindowBase;
+            return new AvaloniaPopup(popup, popup.VisualChildren);
         }
     }
 }

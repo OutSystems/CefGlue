@@ -233,7 +233,7 @@ namespace Xilium.CefGlue.WPF.Platform
             return new CefPoint((int) (_browserScreenLocation.X + point.X * deviceScaleFactor), (int) (_browserScreenLocation.Y + point.Y * deviceScaleFactor));
         }
 
-        public override bool SetCursor(IntPtr cursorHandle)
+        public override bool SetCursor(IntPtr cursorHandle, CefCursorType cursorType)
         {
             _control.Dispatcher.BeginInvoke(
                 DispatcherPriority.Normal,

@@ -44,8 +44,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
         public event Action<float> ScreenInfoChanged;
         public event Action<bool> VisibilityChanged;
 
-        public AvaloniaOffScreenControlHost(Control control, IAvaloniaList<IVisual> visualChildren, Func<WindowBase> getHostingWindow) : 
-            base(control, visualChildren, getHostingWindow)
+        public AvaloniaOffScreenControlHost(Control control, IAvaloniaList<IVisual> visualChildren) : 
+            base(control, visualChildren)
         {
             DragDrop.SetAllowDrop(control, true);
 
@@ -220,7 +220,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public override IntPtr? GetHostViewHandle(int initialWidth, int initialHeight)
         {
-            var platformHandle = GetPlatformHandle();
+            var platformHandle = GetHostWindowPlatformHandle();
             if (platformHandle is IMacOSTopLevelPlatformHandle macOSHandle)
             {
                 return macOSHandle.NSView;
@@ -272,32 +272,12 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public void UpdateDragCursor(CefDragOperationsMask allowedOps)
         {
-            StandardCursorType cursorType;
-            switch (allowedOps)
-            {
-                case CefDragOperationsMask.Copy:
-                    cursorType = StandardCursorType.DragCopy;
-                    break;
-
-                case CefDragOperationsMask.Link:
-                    cursorType = StandardCursorType.DragLink;
-                    break;
-
-                case CefDragOperationsMask.Move:
-                    cursorType = StandardCursorType.DragMove;
-                    break;
-
-                default:
-                    cursorType = StandardCursorType.No;
-                    break;
-            }
-
-            _currentDragCursor = new Cursor(cursorType);
+            _currentDragCursor = CursorsProvider.GetCursorFromCefType(allowedOps);
         }
 
-        public override bool SetCursor(IntPtr cursorHandle)
+        public override bool SetCursor(IntPtr cursorHandle, CefCursorType cursorType)
         {
-            var cursor = CursorsProvider.GetCursorFromHandle(cursorHandle);
+            var cursor = CursorsProvider.GetCursorFromCefType(cursorType);
             Dispatcher.UIThread.Post(() => _control.Cursor = cursor);
             return true;
         }

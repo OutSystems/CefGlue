@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -48,7 +48,7 @@ namespace Xilium.CefGlue.Avalonia
         {
             // TODO handle transparency
             _bitmap?.Dispose();
-            _bitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(Dpi, Dpi), PixelFormat.Bgra8888);
+            _bitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(Dpi, Dpi), PixelFormat.Bgra8888, AlphaFormat.Opaque);
             Image.Source = _bitmap;
         }
 

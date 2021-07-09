@@ -113,7 +113,7 @@ namespace Xilium.CefGlue.WPF.Platform
             );
         }
 
-        public virtual bool SetCursor(IntPtr cursorHandle)
+        public virtual bool SetCursor(IntPtr cursorHandle, CefCursorType cursorType)
         {
             return false;
         }

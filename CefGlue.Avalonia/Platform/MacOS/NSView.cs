@@ -26,7 +26,7 @@ namespace Xilium.CefGlue.Avalonia.Platform.MacOS
         public CGSize Size;
     }
 
-    internal class NSView : IHost
+    internal class NSView : IHandleHolder
     {
         [DllImport("/System/Library/Frameworks/AppKit.framework/AppKit")]
         private static extern IntPtr objc_msgSend(IntPtr receiver, IntPtr selector);

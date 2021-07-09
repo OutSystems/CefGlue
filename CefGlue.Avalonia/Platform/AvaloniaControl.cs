@@ -20,8 +20,11 @@ namespace Xilium.CefGlue.Avalonia.Platform
     /// </summary>
     internal class AvaloniaControl : Common.Platform.IControl
     {
-        private IHost _hostView;
-        private Func<WindowBase> _getHostingWindow;
+        // on Windows all browsers will be hosted in the same long-lived window to prevent crashes
+        // during browser window creation, which could occur if the hosting window was closed
+        private static IPlatformHandle _hostWindowPlatformHandle;
+
+        private IHandleHolder _browserView;
         private readonly IAvaloniaList<IVisual> _controlVisualChildren;
 
         protected readonly Control _control;
@@ -29,11 +32,10 @@ namespace Xilium.CefGlue.Avalonia.Platform
         public event Action GotFocus;
         public event Action<CefSize> SizeChanged;
 
-        public AvaloniaControl(Control control, IAvaloniaList<IVisual> visualChildren, Func<WindowBase> getHostingWindow)
+        public AvaloniaControl(Control control, IAvaloniaList<IVisual> visualChildren)
         {
             _control = control;
             _controlVisualChildren = visualChildren;
-            _getHostingWindow = getHostingWindow;
 
             _control.GotFocus += OnGotFocus;
             _control.LayoutUpdated += OnLayoutUpdated;
@@ -49,25 +51,30 @@ namespace Xilium.CefGlue.Avalonia.Platform
             GotFocus?.Invoke();
         }
 
-        protected IPlatformHandle GetPlatformHandle()
+        protected IPlatformHandle GetHostWindowPlatformHandle()
         {
-            return _getHostingWindow()?.PlatformImpl.Handle;
+            Dispatcher.UIThread.VerifyAccess();
+            if (_hostWindowPlatformHandle == null)
+            {
+                _hostWindowPlatformHandle = new Window().PlatformImpl.Handle;
+            }
+            return _hostWindowPlatformHandle;
         }
 
         public virtual IntPtr? GetHostViewHandle(int initialWidth, int initialHeight)
         {
             if (CefRuntime.Platform == CefRuntimePlatform.MacOS)
             {
-                if (_hostView == null)
+                if (_browserView == null)
                 {
                     // create an host NSView to embed cef with current control dimensions
-                    _hostView = new NSView(initialWidth, initialHeight);
+                    _browserView = new NSView(initialWidth, initialHeight);
                 }
-                return _hostView.Handle;
+                return _browserView.Handle;
             }
 
             // return the window handle
-            return GetPlatformHandle()?.Handle;
+            return GetHostWindowPlatformHandle()?.Handle;
         }
 
         public void OpenContextMenu(IEnumerable<MenuEntry> menuEntries, int x, int y, CefRunContextMenuCallback callback)
@@ -130,7 +137,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
                DispatcherPriority.Input);
         }
 
-        public virtual bool SetCursor(IntPtr cursorHandle)
+        public virtual bool SetCursor(IntPtr cursorHandle, CefCursorType cursorType)
         {
             return false;
         }
@@ -140,20 +147,20 @@ namespace Xilium.CefGlue.Avalonia.Platform
             if (CefRuntime.Platform == CefRuntimePlatform.Windows)
             {
                 // store cef window handle, to dispose later
-                _hostView = new HostWindow(browserHandle);
+                _browserView = new HostWindow(browserHandle);
             }
 
             Dispatcher.UIThread.Post(() =>
             {
-                var hostView = _hostView;
-                if (hostView != null)
+                var browserView = _browserView;
+                if (browserView != null)
                 {
-                    // lock hostView to avoid race condition with Destroy
-                    lock (hostView)
+                    // lock browserView to avoid race condition with Destroy
+                    lock (browserView)
                     {
-                        if (_hostView != null)
+                        if (_browserView != null)
                         {
-                            SetContent(new ExtendedAvaloniaNativeControlHost(_hostView.Handle));
+                            SetContent(new ExtendedAvaloniaNativeControlHost(_browserView.Handle));
                         }
                     }
                 }
@@ -162,15 +169,15 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public void DestroyRender()
         {
-            var hostView = _hostView;
-            if (hostView != null)
+            var browserView = _browserView;
+            if (browserView != null)
             {
-                lock (hostView)
+                lock (browserView)
                 {
-                    if (_hostView != null)
+                    if (_browserView != null)
                     {
-                        _hostView.Dispose();
-                        _hostView = null;
+                        _browserView.Dispose();
+                        _browserView = null;
                     }
 
                 }
