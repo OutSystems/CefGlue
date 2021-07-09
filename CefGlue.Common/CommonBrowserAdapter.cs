@@ -15,13 +15,11 @@ namespace Xilium.CefGlue.Common
 {
     internal class CommonBrowserAdapter : ICefBrowserHost, IDisposable
     {
-        private const string DefaultUrl = "about:blank";
-
         private readonly object _eventsEmitter;
         private readonly string _name;
         protected readonly ILogger _logger;
 
-        private string _initialUrl = DefaultUrl;
+        private string _initialUrl;
         private string _title;
         private string _tooltip;
         private int _maxNativeMethodsParallelCalls = int.MaxValue;
@@ -186,30 +184,13 @@ namespace Xilium.CefGlue.Common
             /// otherwise the navigation will be aborted
             ActionTask.Run(() =>
             {
-                if (_browser != null)
+                if (IsInitialized)
                 {
                     _browser?.GetMainFrame()?.LoadUrl(url);
                 }
-                else if (!string.IsNullOrEmpty(url))
+                else
                 {
                     _initialUrl = url;
-
-                    if (IsBrowserCreated)
-                    {
-                        // browser was already created, but not completely initialized, we have to queue url load
-                        void OnBrowserInitialized()
-                        {
-                            Initialized -= OnBrowserInitialized;
-
-                            ActionTask.Run(() =>
-                            {
-                                _browser?.GetMainFrame()?.LoadUrl(_initialUrl);
-                                _initialUrl = null;
-                            });
-                        }
-
-                        Initialized += OnBrowserInitialized;
-                    }
                 }
             });
         }
@@ -333,7 +314,7 @@ namespace Xilium.CefGlue.Common
                 extraInfo.SetString(Constants.CrashPipeNameKey, _crashServerPipeName);
 
                 // This is the first time the window is being rendered, so create it.
-                CefBrowserHost.CreateBrowser(windowInfo, cefClient, Settings, _initialUrl, extraInfo);
+                CefBrowserHost.CreateBrowser(windowInfo, cefClient, Settings, "", extraInfo);
             }
 
             return true;
@@ -456,6 +437,12 @@ namespace Xilium.CefGlue.Common
 
                 OnBrowserHostCreated(browserHost);
 
+                if (!string.IsNullOrEmpty(_initialUrl))
+                {
+                    _browser?.GetMainFrame()?.LoadUrl(_initialUrl);
+                    _initialUrl = "";
+                }
+                
                 Initialized?.Invoke();
             });
         }
@@ -609,12 +596,12 @@ namespace Xilium.CefGlue.Common
             HandleException("Unknown", exception);
         }
 
-        bool ICefBrowserHost.HandleCursorChange(IntPtr cursorHandle)
+        bool ICefBrowserHost.HandleCursorChange(IntPtr cursorHandle, CefCursorType cursorType)
         {
             var result = false;
             WithErrorHandling((nameof(ICefBrowserHost.HandleCursorChange)), () =>
             {
-                result = Control.SetCursor(cursorHandle);
+                result = Control.SetCursor(cursorHandle, cursorType);
             });
 
             return result;

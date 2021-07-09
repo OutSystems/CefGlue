@@ -25,7 +25,7 @@ namespace Xilium.CefGlue.Common
 
         void HandleException(Exception exception);
 
-        bool HandleCursorChange(IntPtr cursorHandle);
+        bool HandleCursorChange(IntPtr cursorHandle, CefCursorType cursorType);
 
         ContextMenuHandler ContextMenuHandler { get; set; }
         DialogHandler DialogHandler { get; set; }

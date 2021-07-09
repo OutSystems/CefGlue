@@ -134,6 +134,7 @@ namespace CefGlue.Tests.Network
                 "   } catch {}" +
                 "   console.log(result.concat([ '' ]).join('|'));" +
                 "})";
+            Browser.LoadContent("<html/>");
             EvaluateJavascript<int>(script);
 
             return taskCompletion.Task.ContinueWith(t =>
@@ -183,7 +184,7 @@ namespace CefGlue.Tests.Network
                 {
                     handler.Response = StreamHelper.GetStream("ok");
                 }
-                else
+                else if (!request.Url.StartsWith("data:"))
                 {
                     handler.RedirectUrl = RedirectUrl;
                 }
