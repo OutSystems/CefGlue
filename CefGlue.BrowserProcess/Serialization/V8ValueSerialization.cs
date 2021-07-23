@@ -109,7 +109,12 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
             switch (cefValue.GetValueType())
             {
                 case CefValueType.Binary:
-                    var nativeValue = CefValueSerialization.FromCefBinary(cefValue.GetBinary(), out var kind);
+                    object nativeValue;
+                    CefValueSerialization.BinaryMagicBytes kind;
+                    using (var binaryValue = cefValue.GetBinary())
+                    {
+                        nativeValue = CefValueSerialization.FromCefBinary(cefValue.GetBinary(), out kind);
+                    }
                     switch(kind)
                     {
                         case CefValueSerialization.BinaryMagicBytes.Binary:
@@ -127,13 +132,15 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                     return CefV8Value.CreateBool(cefValue.GetBool());
 
                 case CefValueType.Dictionary:
-                    var dictionary = cefValue.GetDictionary();
-                    var v8Dictionary = CefV8Value.CreateObject();
-                    foreach (var key in dictionary.GetKeys())
+                    using (var dictionary = cefValue.GetDictionary())
                     {
-                        v8Dictionary.SetValue(key, SerializeCefValue(new CefDictionaryWrapper(dictionary, key)));
+                        var v8Dictionary = CefV8Value.CreateObject();
+                        foreach (var key in dictionary.GetKeys())
+                        {
+                            v8Dictionary.SetValue(key, SerializeCefValue(new CefDictionaryWrapper(dictionary, key)));
+                        }
+                        return v8Dictionary;
                     }
-                    return v8Dictionary;
                     
                 case CefValueType.Double:
                     return CefV8Value.CreateDouble(cefValue.GetDouble());
