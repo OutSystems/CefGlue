@@ -496,6 +496,8 @@ def make_handler_g_body(cls):
         result.append(indent + 'lock (_roots)')
         result.append(indent + '{')
         result.append(indent + indent + 'found = _roots.TryGetValue((IntPtr)ptr, out value);')
+        result.append(indent + indent + '// as we\'re getting the ref from the outside, it\'s our responsibility to decrement it')
+        result.append(indent + indent + 'value.release(ptr);')
         result.append(indent + '}')
         result.append(indent + 'return found ? value : null;')
         result.append('}')
