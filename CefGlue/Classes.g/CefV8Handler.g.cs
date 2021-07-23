@@ -25,6 +25,8 @@ namespace Xilium.CefGlue
             lock (_roots)
             {
                 found = _roots.TryGetValue((IntPtr)ptr, out value);
+                // as we're getting the ref from the outside, it's our responsibility to decrement it
+                value.release(ptr);
             }
             return found ? value : null;
         }
