@@ -20,7 +20,7 @@
         <!-- <PackageIcon></PackageIcon> -->
         <IncludeSymbols>false</IncludeSymbols>
         <IncludeSource>false</IncludeSource>
-        <RepositoryUrl>https://gitlab.com/xiliumhq/chromiumembedded/cefglue</RepositoryUrl>
+        <RepositoryUrl>https://github.com/OutSystems/CefGlue</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
