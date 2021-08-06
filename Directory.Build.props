@@ -8,13 +8,12 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Authors>XiliumHQ</Authors>
-        <Company>XiliumHQ</Company>
-        <Product>Xilium CefGlue</Product>
-        <AssemblyTitle>Xilium CefGlue</AssemblyTitle>
-        <Description>Xilium.CefGlue is a .NET/Mono binding for The Chromium Embedded Framework (CEF) by Marshall A. Greenblatt.</Description>
-        <Copyright>Copyright &#xA9; XiliumHQ 2021</Copyright>
-        <PackageDescription>XiliumHQ: ChromiumEmbedded. $(Description)</PackageDescription>
+        <Authors>XiliumHQ,OutSystems</Authors>
+        <Product>CefGlue</Product>
+        <AssemblyTitle>CefGlue</AssemblyTitle>
+        <Description>CefGlue is a .NET binding for The Chromium Embedded Framework (CEF) by Marshall A. Greenblatt.</Description>
+        <Copyright>Copyright &#xA9; XiliumHQ 2021. Copyright &#xA9; OutSystems 2021.</Copyright>
+        <PackageDescription>ChromiumEmbedded. $(Description)</PackageDescription>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <!-- <PackageIcon></PackageIcon> -->
