@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xilium.CefGlue.Common.Shared.Serialization;
@@ -113,7 +113,7 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                     CefValueSerialization.BinaryMagicBytes kind;
                     using (var binaryValue = cefValue.GetBinary())
                     {
-                        nativeValue = CefValueSerialization.FromCefBinary(cefValue.GetBinary(), out kind);
+                        nativeValue = CefValueSerialization.FromCefBinary(binaryValue, out kind);
                     }
                     switch(kind)
                     {
