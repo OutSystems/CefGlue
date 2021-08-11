@@ -40,6 +40,6 @@
   </ItemGroup>
 
   <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />
-  <Import Project="$(ProjectDir)..\Nuget\CefGlue.Common.targets" />
+  <Import Project="$(ProjectDir)..\CefGlue.Common\build\CefGlue.Common.targets" />
 
 </Project>
