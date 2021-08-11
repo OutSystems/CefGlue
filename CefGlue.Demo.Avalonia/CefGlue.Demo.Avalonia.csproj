@@ -54,6 +54,6 @@
     <ProjectReference Include="..\CefGlue\CefGlue.csproj" />  
   </ItemGroup>
 
-  <Import Project="$(ProjectDir)..\Nuget\CefGlue.Common.targets" />
+  <Import Project="$(ProjectDir)..\CefGlue.Common\build\\CefGlue.Common.targets" />
 
 </Project>
