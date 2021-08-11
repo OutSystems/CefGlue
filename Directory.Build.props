@@ -25,6 +25,7 @@
         <RepositoryUrl>https://github.com/OutSystems/CefGlue</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <NoWarn>$(NoWarn);NU5100;NU5118;CS1591</NoWarn>
+        <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
     </PropertyGroup>
 
     <!-- Generate documentation in Release builds. -->
