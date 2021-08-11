@@ -18,6 +18,7 @@
         <PackageDescription>ChromiumEmbedded. $(Description)</PackageDescription>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>cef, chromium, chrome browser, cefglue</PackageTags>
         <!-- <PackageIcon></PackageIcon> -->
         <IncludeSymbols>false</IncludeSymbols>
         <IncludeSource>false</IncludeSource>
