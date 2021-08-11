@@ -6,9 +6,9 @@
     <AssemblyName>Xilium.CefGlue.Avalonia</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
-    <NuspecFile>..\Nuget\CefGlue.Avalonia.nuspec</NuspecFile>
-    <NuspecProperties>$(NuspecProperties);version=$(Version)</NuspecProperties>
-    <NuspecProperties>$(NuspecProperties);Configuration=$(Configuration)</NuspecProperties>
+    <PackageId>CefGlue.Avalonia</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_WindowlessRender|AnyCPU'">

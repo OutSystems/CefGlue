@@ -8,6 +8,8 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <PackageOutputPath>$(MSBuildProjectDirectory)\..\Nuget\output</PackageOutputPath>
+        <Version>91.4472.5</Version>
         <Authors>XiliumHQ,OutSystems</Authors>
         <Product>CefGlue</Product>
         <AssemblyTitle>CefGlue</AssemblyTitle>
@@ -21,6 +23,7 @@
         <IncludeSource>false</IncludeSource>
         <RepositoryUrl>https://github.com/OutSystems/CefGlue</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <NoWarn>$(NoWarn);NU5100;NU5118;CS1591</NoWarn>
     </PropertyGroup>
 
     <!-- Generate documentation in Release builds. -->
