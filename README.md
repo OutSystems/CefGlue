@@ -7,6 +7,8 @@ The Avalonia implementation runs on Windows and macOS. Linux is not supported ye
 
 ## Releases
 Stable binaries are released on NuGet, and contain everything you need to embed Chromium in your .NET/CLR application. 
+- [CefGlue.Avalonia](https://www.nuget.org/packages/CefGlue.Avalonia/)
+- [CefGlue.WPF](https://www.nuget.org/packages/CefGlue.WPF/)
 
 ## Documentation 
 See the [Avalonia sample](CefGlue.Demo.Avalonia) or [WPF sample](CefGlue.Demo.WPF) projects for example web browsers built with CefGlue. They demo some of the available features.
