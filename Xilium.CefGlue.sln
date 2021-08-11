@@ -10,6 +10,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Avalonia", "CefGlue.Avalonia\CefGlue.Avalonia.csproj", "{635D19FD-D761-476B-9B7A-F8AC5F925FF0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Common", "CefGlue.Common\CefGlue.Common.csproj", "{F8F4D0B8-5777-41A1-AB3C-0E324E61FAF9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1E60FB67-049E-4877-92A9-D5480F81A324} = {1E60FB67-049E-4877-92A9-D5480F81A324}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Demo.Avalonia", "CefGlue.Demo.Avalonia\CefGlue.Demo.Avalonia.csproj", "{A2ED7050-B778-46F7-8777-C2E2467A7A59}"
 	ProjectSection(ProjectDependencies) = postProject
