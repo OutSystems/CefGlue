@@ -53,7 +53,9 @@
   </ItemGroup>
     
   <ItemGroup>
-    <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj" />
+    <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj">
+      <PrivateAssets>none</PrivateAssets>
+    </ProjectReference>
     <ProjectReference Include="..\CefGlue\CefGlue.csproj">
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
