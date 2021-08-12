@@ -20,12 +20,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.6" />
+    <PackageReference PrivateAssets="all" Include="Avalonia" Version="0.10.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj" />
-    <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
+    <ProjectReference Include="..\CefGlue\CefGlue.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>

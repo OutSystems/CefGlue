@@ -54,10 +54,12 @@
     
   <ItemGroup>
     <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj" />
-    <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
+    <ProjectReference Include="..\CefGlue\CefGlue.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
   </ItemGroup>
     
   <ItemGroup>
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference PrivateAssets="all" Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
 </Project>
