@@ -472,6 +472,8 @@ namespace Xilium.CefGlue.Common
 
             browser.Dispose();
 
+            _javascriptExecutionEngine.Dispose();
+
             BrowserHost = null;
             _cefClient = null;
             _browser = null;
