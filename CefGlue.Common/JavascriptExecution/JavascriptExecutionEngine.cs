@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers;
@@ -11,7 +12,7 @@ using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.Common.JavascriptExecution
 {
-    internal class JavascriptExecutionEngine
+    internal class JavascriptExecutionEngine : IDisposable
     {
         private static volatile int lastTaskId;
 
@@ -126,6 +127,17 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             {
                 _pendingTasks.TryRemove(taskId, out var _);
                 throw;
+            }
+        }
+
+        public void Dispose()
+        {
+            ContextCreated = null;
+            ContextReleased = null;
+            UncaughtException = null;
+            foreach (var task in _pendingTasks)
+            {
+                task.Value.TrySetCanceled();
             }
         }
     }
