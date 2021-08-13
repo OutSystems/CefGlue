@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xilium.CefGlue.Common.Events;
@@ -5,7 +6,7 @@ using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
-    internal class NativeObjectRegistry
+    internal class NativeObjectRegistry : IDisposable
     {
         private CefBrowser _browser;
         private readonly Dictionary<string, NativeObject> _registeredObjects = new Dictionary<string, NativeObject>();
@@ -96,6 +97,11 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             var cefMessage = message.ToCefProcessMessage();
             // TODO target main frame?
             _browser.GetMainFrame().SendProcessMessage(CefProcessId.Browser, cefMessage);
+        }
+
+        public void Dispose()
+        {
+            _browser = null;
         }
     }
 }
