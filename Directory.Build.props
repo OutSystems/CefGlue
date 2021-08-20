@@ -9,7 +9,10 @@
 
     <PropertyGroup>
         <PackageOutputPath>$(MSBuildProjectDirectory)\..\Nuget\output</PackageOutputPath>
-        <Version>91.4472.9</Version>
+        <VersionPatchNumber Condition="'$(Build_BuildId)' != ''">$(Build_BuildId)</VersionPatchNumber>
+        <VersionPatchNumber Condition="'$(VersionPatchNumber)' == ''">0</VersionPatchNumber>
+        <!-- CefMajor.CefRevision.OurVersion -->
+        <Version>91.4472.$(VersionPatchNumber)</Version>
         <Authors>XiliumHQ,OutSystems</Authors>
         <Product>CefGlue</Product>
         <AssemblyTitle>CefGlue</AssemblyTitle>
