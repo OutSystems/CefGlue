@@ -32,8 +32,10 @@ namespace Xilium.CefGlue.Common
             {
                 // The executing DLL might not be in the current domain directory (plugins scenario)
                 path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                if(!TryGetSubprocessPath(path, out subprocessPath))
+                if (!TryGetSubprocessPath(path, out subprocessPath))
+                {
                     throw new FileNotFoundException($"Unable to find \"{subprocessPath}\"");
+                }
             }
 
             settings.BrowserSubprocessPath = subprocessPath;
