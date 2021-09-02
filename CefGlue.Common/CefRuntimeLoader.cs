@@ -11,15 +11,12 @@ namespace Xilium.CefGlue.Common
     {
         private static Action<BrowserProcessHandler> _delayedInitialization;
 
-        public static void Initialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null,
-            CustomScheme[] customSchemes = null)
+        public static void Initialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null)
         {
-            _delayedInitialization = (browserProcessHandler) =>
-                InternalInitialize(settings, flags, customSchemes, browserProcessHandler);
+            _delayedInitialization = (browserProcessHandler) => InternalInitialize(settings, flags, customSchemes, browserProcessHandler);
         }
 
-        private static void InternalInitialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null,
-            CustomScheme[] customSchemes = null, BrowserProcessHandler browserProcessHandler = null)
+        private static void InternalInitialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null, BrowserProcessHandler browserProcessHandler = null)
         {
             CefRuntime.Load();
 
@@ -68,15 +65,13 @@ namespace Xilium.CefGlue.Common
             AppDomain.CurrentDomain.ProcessExit += delegate { CefRuntime.Shutdown(); };
 
             IsOSREnabled = settings.WindowlessRenderingEnabled;
-            CefRuntime.Initialize(new CefMainArgs(new string[0]), settings,
-                new BrowserCefApp(customSchemes, flags, browserProcessHandler), IntPtr.Zero);
+            CefRuntime.Initialize(new CefMainArgs(new string[0]), settings, new BrowserCefApp(customSchemes, flags, browserProcessHandler), IntPtr.Zero);
 
             if (customSchemes != null)
             {
                 foreach (var scheme in customSchemes)
                 {
-                    CefRuntime.RegisterSchemeHandlerFactory(scheme.SchemeName, scheme.DomainName,
-                        scheme.SchemeHandlerFactory);
+                    CefRuntime.RegisterSchemeHandlerFactory(scheme.SchemeName, scheme.DomainName, scheme.SchemeHandlerFactory);
                 }
             }
         }
@@ -114,10 +109,8 @@ namespace Xilium.CefGlue.Common
 
         internal static bool IsOSREnabled { get; private set; }
 
-        private static string BrowserProcessFileName
-        {
-            get
-            {
+        private static string BrowserProcessFileName {
+            get {
                 const string Filename = "Xilium.CefGlue.BrowserProcess";
                 switch (CefRuntime.Platform)
                 {
