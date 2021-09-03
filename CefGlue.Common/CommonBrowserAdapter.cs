@@ -232,22 +232,22 @@ namespace Xilium.CefGlue.Common
             _browser?.GetMainFrame().ExecuteJavaScript(code, url, line);
         }
 
-        public Task<T> EvaluateJavaScript<T>(string code, string url, int line, string frameName = null, TimeSpan? timeout = null, bool forceExecute = false)
+        public Task<T> EvaluateJavaScript<T>(string code, string url, int line, string frameName = null, TimeSpan? timeout = null)
         {
             var frame = frameName != null ? _browser?.GetFrame(frameName) : _browser?.GetMainFrame();
             if (frame != null)
             {
-                return EvaluateJavaScript<T>(code, url, line, frame, timeout, forceExecute);
+                return EvaluateJavaScript<T>(code, url, line, frame, timeout);
             }
 
             return Task.FromResult<T>(default);
         }
 
-        public Task<T> EvaluateJavaScript<T>(string code, string url, int line, CefFrame frame, TimeSpan? timeout = null, bool forceExecute = false)
+        public Task<T> EvaluateJavaScript<T>(string code, string url, int line, CefFrame frame, TimeSpan? timeout = null)
         {
             if (frame.IsValid && _javascriptExecutionEngine != null)
             {
-                return _javascriptExecutionEngine.Evaluate<T>(code, url, line, frame, timeout, forceExecute);
+                return _javascriptExecutionEngine.Evaluate<T>(code, url, line, frame, timeout);
             }
 
             return Task.FromResult<T>(default);
