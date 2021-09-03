@@ -32,18 +32,27 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
         public event Action<CefFrame> ContextReleased;
         public event Action<JavascriptUncaughtExceptionEventArgs> UncaughtException;
 
+        private void LogMessage(string message)
+        {
+            System.Diagnostics.Debug.WriteLine($"Thread[{Thread.CurrentThread.ManagedThreadId}]-{DateTime.Now.ToString("mm':'ss.ffff")}####{message}");
+        }
+
         private void HandleScriptEvaluationResultMessage(MessageReceivedEventArgs args)
         {
             var message = Messages.JsEvaluationResult.FromCefMessage(args.Message);
+
+            LogMessage($"JavascriptExecutionEngine#HandleScriptEvaluationResultMessage#TaskId{message.TaskId}");
 
             if (_pendingTasks.TryRemove(message.TaskId, out var pendingTask))
             {
                 if (message.Success)
                 {
                     pendingTask.SetResult(CefValueSerialization.DeserializeCefValue(message.Result));
+                    LogMessage($"JavascriptExecutionEngine#HandleScriptEvaluationResultMessage#TaskId{message.TaskId}#GotPendingTask#Success#SettingResult[Ended]");
                 }
                 else
                 {
+                    LogMessage($"JavascriptExecutionEngine#HandleScriptEvaluationResultMessage#TaskId{message.TaskId}#GotPendingTask#Failed");
                     pendingTask.SetException(new Exception(message.Exception));
                 }
             }
@@ -51,6 +60,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         private void HandleContextCreatedMessage(MessageReceivedEventArgs args)
         {
+            //LogMessage("JavascriptExecutionEngine#HandleContextCreatedMessage");
             var message = Messages.JsContextCreated.FromCefMessage(args.Message);
             if (args.Frame.IsMain)
             {
@@ -61,6 +71,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         private void HandleContextReleasedMessage(MessageReceivedEventArgs args)
         {
+            //LogMessage("JavascriptExecutionEngine#HandleContextReleasedMessage");
             var message = Messages.JsContextReleased.FromCefMessage(args.Message);
             if (args.Frame.IsMain)
             {
@@ -71,12 +82,13 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         private void HandleUncaughtExceptionMessage(MessageReceivedEventArgs args)
         {
+            //LogMessage("JavascriptExecutionEngine#HandleUncaughtExceptionMessage");
             var message = Messages.JsUncaughtException.FromCefMessage(args.Message);
             var stackFrames = message.StackFrames.Select(f => new JavascriptStackFrame(f.FunctionName, f.ScriptNameOrSourceUrl, f.Column, f.LineNumber));
             UncaughtException?.Invoke(new JavascriptUncaughtExceptionEventArgs(args.Frame, message.Message, stackFrames.ToArray()));
         }
 
-        public async Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame, TimeSpan? timeout = null)
+        public async Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame, TimeSpan? timeout = null, bool forceExecute = false)
         {
             var taskId = lastTaskId++;
             var message = new Messages.JsEvaluationRequest()
@@ -86,15 +98,19 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 Url = url,
                 Line = line
             };
-
-            var messageReceiveCompletionSource = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var c = forceExecute ? TaskCreationOptions.None : TaskCreationOptions.RunContinuationsAsynchronously;
+            var messageReceiveCompletionSource = new TaskCompletionSource<object>(c);
 
             _pendingTasks.TryAdd(taskId, messageReceiveCompletionSource);
+
+            LogMessage($"JavascriptExecutionEngine#Evaluate#TaskId[{taskId}]#code[{script}]");
 
             try
             {
                 var cefMessage = message.ToCefProcessMessage();
                 frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
+
+                LogMessage($"JavascriptExecutionEngine#Evaluate#TaskId[{taskId}]#MessageSent");
 
                 if (timeout.HasValue)
                 {
@@ -113,18 +129,21 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 }
                 else
                 {
+                    LogMessage($"JavascriptExecutionEngine#Evaluate#TaskId[{taskId}]#MessageSent#AwaitingResult");
                     await messageReceiveCompletionSource.Task;
+                    LogMessage($"JavascriptExecutionEngine#Evaluate#TaskId[{taskId}]#MessageSent#Continued...");
                 }
 
                 if (messageReceiveCompletionSource.Task.IsFaulted)
                 {
                     throw messageReceiveCompletionSource.Task.Exception.InnerException;
                 }
-
+                
                 return JavascriptToNativeTypeConverter.ConvertToNative<T>(messageReceiveCompletionSource.Task.Result);
             }
             catch
             {
+                //System.Diagnostics.Debugger.Launch();
                 _pendingTasks.TryRemove(taskId, out var _);
                 throw;
             }
