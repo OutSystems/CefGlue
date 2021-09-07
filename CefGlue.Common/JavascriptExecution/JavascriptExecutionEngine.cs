@@ -97,49 +97,32 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
             _pendingTasks.TryAdd(taskId, messageReceiveCompletionSource);
 
-            LogMessage($"JavascriptExecutionEngine#Evaluate#TaskId[{taskId}]#code[{script}]");
-
             try
             {
                 var cefMessage = message.ToCefProcessMessage();
                 frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
 
-                LogMessage($"JavascriptExecutionEngine#Evaluate#TaskId[{taskId}]#MessageSent");
+                var tasks = new Task[] { messageReceiveCompletionSource.Task };
 
-                //if (timeout.HasValue)
-                //{
-                //    var tasks = new Task[]
-                //    {
-                //        messageReceiveCompletionSource.Task,
-                //        Task.Delay(timeout.Value)
-                //    };
+                if (timeout.HasValue)
+                {
+                    tasks = tasks.Append(Task.Delay(timeout.Value)).ToArray();
+                }
 
-                //    LogMessage($"JavascriptExecutionEngine#Evaluate#TaskId[{taskId}]#MessageSent#Timeout[{timeout.Value}]#AwaitingResult");
-                //    var resultTask = await Task.WhenAny((tasks).ConfigureAwait(false);
-                //    LogMessage($"JavascriptExecutionEngine#Evaluate#TaskId[{taskId}]#MessageSent#Timeout[{timeout.Value}]#Continued...");
-
-                //    if (resultTask != messageReceiveCompletionSource.Task)
-                //    {
-                //        // task evaluation timeout
-                //        throw new TaskCanceledException();
-                //    }
-                //}
-                //else
-                //{
-
-                return messageReceiveCompletionSource.Task.ContinueWith(task => {
-                    LogMessage($"JavascriptExecutionEngine#Evaluate#TaskId[{taskId}]#MessageSent#Continued...");
+                return Task.WhenAny(tasks).ContinueWith(resultTask => {
+                    if (resultTask.Result != messageReceiveCompletionSource.Task)
+                    {
+                        // task evaluation timeout
+                        throw new TaskCanceledException();
+                    }
+                    if (messageReceiveCompletionSource.Task.IsFaulted)
+                    {
+                        throw messageReceiveCompletionSource.Task.Exception.InnerException;
+                    }
                     return JavascriptToNativeTypeConverter.ConvertToNative<T>(messageReceiveCompletionSource.Task.Result);
                 }, TaskContinuationOptions.ExecuteSynchronously);
-                    
-                //}
 
-                //if (messageReceiveCompletionSource.Task.IsFaulted)
-                //{
-                //    throw messageReceiveCompletionSource.Task.Exception.InnerException;
-                //}
-            }
-            catch
+            } catch
             {
                 _pendingTasks.TryRemove(taskId, out var _);
                 throw;
