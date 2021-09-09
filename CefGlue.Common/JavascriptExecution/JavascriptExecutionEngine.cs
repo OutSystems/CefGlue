@@ -32,11 +32,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
         public event Action<CefFrame> ContextReleased;
         public event Action<JavascriptUncaughtExceptionEventArgs> UncaughtException;
 
-        private void LogMessage(string message)
-        {
-            System.Diagnostics.Debug.WriteLine($"Thread[{Thread.CurrentThread.ManagedThreadId}]-{DateTime.Now.ToString("mm':'ss.ffff")}####{message}");
-        }
-
         private void HandleScriptEvaluationResultMessage(MessageReceivedEventArgs args)
         {
             var message = Messages.JsEvaluationResult.FromCefMessage(args.Message);
@@ -46,7 +41,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 if (message.Success)
                 {
                     pendingTask.SetResult(CefValueSerialization.DeserializeCefValue(message.Result));
-                    LogMessage($"JavascriptExecutionEngine#HandleScriptEvaluationResultMessage#TaskId{message.TaskId}#SettingResult[Ended]");
                 }
                 else
                 {
@@ -110,16 +104,25 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 }
 
                 return Task.WhenAny(tasks).ContinueWith(resultTask => {
-                    if (resultTask.Result != messageReceiveCompletionSource.Task)
+                    try
                     {
-                        // task evaluation timeout
-                        throw new TaskCanceledException();
-                    }
-                    if (messageReceiveCompletionSource.Task.IsFaulted)
+                        if (resultTask.Result != messageReceiveCompletionSource.Task)
+                        {
+                            // task evaluation timeout
+                            throw new TaskCanceledException();
+                        }
+                        if (messageReceiveCompletionSource.Task.IsFaulted)
+                        {
+                            throw messageReceiveCompletionSource.Task.Exception.InnerException;
+                        }
+                        return JavascriptToNativeTypeConverter.ConvertToNative<T>(messageReceiveCompletionSource.Task.Result);
+
+                    } catch
                     {
-                        throw messageReceiveCompletionSource.Task.Exception.InnerException;
+                        _pendingTasks.TryRemove(taskId, out var _);
+                        throw;
                     }
-                    return JavascriptToNativeTypeConverter.ConvertToNative<T>(messageReceiveCompletionSource.Task.Result);
+
                 }, TaskContinuationOptions.ExecuteSynchronously);
 
             } catch
