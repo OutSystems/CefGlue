@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers;
@@ -78,6 +76,8 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         public Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame, TimeSpan? timeout = null)
         {
+            const TaskContinuationOptions EvaluationTaskOptions = TaskContinuationOptions.ExecuteSynchronously;
+
             var taskId = lastTaskId++;
             var message = new Messages.JsEvaluationRequest()
             {
@@ -101,17 +101,15 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 if (timeout.HasValue)
                 {
                     var tasks = Task.WhenAny(new[] {
-                            evaluationTask,
-                            Task.Delay(timeout.Value)
+                        evaluationTask,
+                        Task.Delay(timeout.Value)
                     });
 
-                    return tasks.ContinueWith(resultTask => ProcessResult<T,Task>(task: resultTask, taskId: taskId, timedOut: resultTask.Result != evaluationTask), TaskContinuationOptions.ExecuteSynchronously);
-
+                    return tasks.ContinueWith(resultTask => ProcessResult<T>(evaluationTask, taskId, timedOut: resultTask.Result != evaluationTask), EvaluationTaskOptions);
                 }
                 else
                 {
-                    return evaluationTask.ContinueWith(t => ProcessResult<T,object>(task: t, taskId: taskId), TaskContinuationOptions.ExecuteSynchronously);
-
+                    return evaluationTask.ContinueWith(task => ProcessResult<T>(task, taskId), EvaluationTaskOptions);
                 }
             }
             catch
@@ -132,7 +130,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             }
         }
 
-        private T ProcessResult<T, R>(Task<R> task, int taskId, bool timedOut = false)
+        private T ProcessResult<T>(Task<object> task, int taskId, bool timedOut = false)
         {
             try
             {
@@ -141,12 +139,13 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                     // task evaluation timeout
                     throw new TaskCanceledException();
                 }
+
                 if (task.IsFaulted)
                 {
                     throw task.Exception.InnerException;
                 }
-                return JavascriptToNativeTypeConverter.ConvertToNative<T>(task.Result);
 
+                return JavascriptToNativeTypeConverter.ConvertToNative<T>(task.Result);
             }
             catch
             {
