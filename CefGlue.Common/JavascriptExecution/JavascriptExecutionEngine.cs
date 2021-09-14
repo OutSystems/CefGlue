@@ -17,7 +17,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
         private static volatile int lastTaskId;
 
         private readonly ConcurrentDictionary<int, TaskCompletionSource<object>> _pendingTasks = new ConcurrentDictionary<int, TaskCompletionSource<object>>();
-        
+
         public JavascriptExecutionEngine(MessageDispatcher dispatcher)
         {
             dispatcher.RegisterMessageHandler(Messages.JsEvaluationResult.Name, HandleScriptEvaluationResultMessage);
@@ -96,36 +96,25 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 var cefMessage = message.ToCefProcessMessage();
                 frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
 
-                var tasks = new Task[] { messageReceiveCompletionSource.Task };
+                var evaluationTask = messageReceiveCompletionSource.Task;
 
                 if (timeout.HasValue)
                 {
-                    tasks = tasks.Append(Task.Delay(timeout.Value)).ToArray();
+                    var tasks = Task.WhenAny(new[] {
+                            evaluationTask,
+                            Task.Delay(timeout.Value)
+                    });
+
+                    return tasks.ContinueWith(resultTask => ProcessResult<T,Task>(task: resultTask, taskId: taskId, timedOut: resultTask.Result != evaluationTask), TaskContinuationOptions.ExecuteSynchronously);
+
                 }
+                else
+                {
+                    return evaluationTask.ContinueWith(t => ProcessResult<T,object>(task: t, taskId: taskId), TaskContinuationOptions.ExecuteSynchronously);
 
-                return Task.WhenAny(tasks).ContinueWith(resultTask => {
-                    try
-                    {
-                        if (resultTask.Result != messageReceiveCompletionSource.Task)
-                        {
-                            // task evaluation timeout
-                            throw new TaskCanceledException();
-                        }
-                        if (messageReceiveCompletionSource.Task.IsFaulted)
-                        {
-                            throw messageReceiveCompletionSource.Task.Exception.InnerException;
-                        }
-                        return JavascriptToNativeTypeConverter.ConvertToNative<T>(messageReceiveCompletionSource.Task.Result);
-
-                    } catch
-                    {
-                        _pendingTasks.TryRemove(taskId, out var _);
-                        throw;
-                    }
-
-                }, TaskContinuationOptions.ExecuteSynchronously);
-
-            } catch
+                }
+            }
+            catch
             {
                 _pendingTasks.TryRemove(taskId, out var _);
                 throw;
@@ -140,6 +129,29 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             foreach (var task in _pendingTasks)
             {
                 task.Value.TrySetCanceled();
+            }
+        }
+
+        private T ProcessResult<T, R>(Task<R> task, int taskId, bool timedOut = false)
+        {
+            try
+            {
+                if (timedOut)
+                {
+                    // task evaluation timeout
+                    throw new TaskCanceledException();
+                }
+                if (task.IsFaulted)
+                {
+                    throw task.Exception.InnerException;
+                }
+                return JavascriptToNativeTypeConverter.ConvertToNative<T>(task.Result);
+
+            }
+            catch
+            {
+                _pendingTasks.TryRemove(taskId, out var _);
+                throw;
             }
         }
     }
