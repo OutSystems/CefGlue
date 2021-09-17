@@ -125,7 +125,11 @@
         }
 
         /// <summary>
-        /// Returns the main (top-level) frame for the browser window.
+        /// Returns the main (top-level) frame for the browser window. In the browser
+        /// process this will return a valid object until after
+        /// CefLifeSpanHandler::OnBeforeClose is called. In the renderer process this
+        /// will return NULL if the main frame is hosted in a different renderer
+        /// process (e.g. for cross-origin sub-frames).
         /// </summary>
         public CefFrame GetMainFrame()
         {
