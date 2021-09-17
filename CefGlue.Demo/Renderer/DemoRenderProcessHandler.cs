@@ -2,13 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Text;
     using Xilium.CefGlue;
     //using Xilium.CefGlue.Wrapper;
 
     class DemoRenderProcessHandler : CefRenderProcessHandler
     {
-        internal static bool DumpProcessMessages { get; private set; }
+        internal static bool DumpProcessMessages { get; private set; } = true;
 
         public DemoRenderProcessHandler()
         {
@@ -39,8 +40,8 @@
         {
             if (DumpProcessMessages)
             {
-                Console.WriteLine("Render::OnProcessMessageReceived: SourceProcess={0}", sourceProcess);
-                Console.WriteLine("Message Name={0} IsValid={1} IsReadOnly={2}", message.Name, message.IsValid, message.IsReadOnly);
+                Debug.Print("Render::OnProcessMessageReceived: SourceProcess={0}", sourceProcess);
+                Debug.Print("Message Name={0} IsValid={1} IsReadOnly={2}", message.Name, message.IsValid, message.IsReadOnly);
                 var arguments = message.Arguments;
                 for (var i = 0; i < arguments.Count; i++)
                 {
@@ -56,7 +57,7 @@
                         default: value = null; break;
                     }
 
-                    Console.WriteLine("  [{0}] ({1}) = {2}", i, type, value);
+                    Debug.Print("  [{0}] ({1}) = {2}", i, type, value);
                 }
             }
 
@@ -65,13 +66,14 @@
 
             if (message.Name == "myMessage2") return true;
 
-            var message2 = CefProcessMessage.Create("myMessage2");
-            frame.SendProcessMessage(CefProcessId.Renderer, message2);
-            Console.WriteLine("Sending myMessage2 to renderer process = {0}");
+            // Sending renderer->renderer is not supported.
+            //var message2 = CefProcessMessage.Create("myMessage2");
+            //frame.SendProcessMessage(CefProcessId.Renderer, message2);
+            //Console.WriteLine("Sending myMessage2 to renderer process = {0}");
 
             var message3 = CefProcessMessage.Create("myMessage3");
             frame.SendProcessMessage(CefProcessId.Browser, message3);
-            Console.WriteLine("Sending myMessage3 to browser process = {0}");
+            Debug.Print("Sending myMessage3 to browser process");
 
             return false;
         }

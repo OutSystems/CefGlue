@@ -66,11 +66,11 @@ class CefRenderProcessHandler : public virtual CefBaseRefCounted {
   ///
   // Called after a browser has been created. When browsing cross-origin a new
   // browser will be created before the old browser with the same identifier is
-  // destroyed. |extra_info| is a read-only value originating from
+  // destroyed. |extra_info| is an optional read-only value originating from
   // CefBrowserHost::CreateBrowser(), CefBrowserHost::CreateBrowserSync(),
   // CefLifeSpanHandler::OnBeforePopup() or CefBrowserView::CreateBrowserView().
   ///
-  /*--cef()--*/
+  /*--cef(optional_param=extra_info)--*/
   virtual void OnBrowserCreated(CefRefPtr<CefBrowser> browser,
                                 CefRefPtr<CefDictionaryValue> extra_info) {}
 
@@ -134,8 +134,8 @@ class CefRenderProcessHandler : public virtual CefBaseRefCounted {
 
   ///
   // Called when a new message is received from a different process. Return true
-  // if the message was handled or false otherwise. Do not keep a reference to
-  // or attempt to access the message outside of this callback.
+  // if the message was handled or false otherwise. It is safe to keep a
+  // reference to |message| outside of this callback.
   ///
   /*--cef()--*/
   virtual bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,

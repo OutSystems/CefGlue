@@ -9,7 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 
-    <Version>91.1.23</Version>
+    <Version>92.0.27</Version>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
@@ -37,6 +37,7 @@
     <Compile Include="Classes.Handlers\CefExtensionHandler.cs" />
     <Compile Include="Classes.Handlers\CefFindHandler.cs" />
     <Compile Include="Classes.Handlers\CefFocusHandler.cs" />
+    <Compile Include="Classes.Handlers\CefFrameHandler.cs" />
     <Compile Include="Classes.Handlers\CefJSDialogHandler.cs" />
     <Compile Include="Classes.Handlers\CefKeyboardHandler.cs" />
     <Compile Include="Classes.Handlers\CefLifeSpanHandler.cs" />

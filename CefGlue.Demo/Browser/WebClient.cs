@@ -11,6 +11,7 @@
 
         private readonly WebBrowser _core;
         private readonly WebLifeSpanHandler _lifeSpanHandler;
+        private readonly WebFrameHandler _frameHandler;
         private readonly WebDisplayHandler _displayHandler;
         private readonly WebLoadHandler _loadHandler;
 
@@ -18,6 +19,7 @@
         {
             _core = core;
             _lifeSpanHandler = new WebLifeSpanHandler(_core);
+            _frameHandler = new WebFrameHandler(_core);
             _displayHandler = new WebDisplayHandler(_core);
             _loadHandler = new WebLoadHandler(_core);
         }
@@ -26,6 +28,8 @@
         {
             return _lifeSpanHandler;
         }
+
+        protected override CefFrameHandler GetFrameHandler() => _frameHandler;
 
         protected override CefDisplayHandler GetDisplayHandler()
         {
