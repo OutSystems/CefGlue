@@ -68,7 +68,6 @@
         <Compile Include="Classes.g\CefPrintSettings.g.cs"/>
         <Compile Include="Classes.g\CefProcessMessage.g.cs"/>
         <Compile Include="Classes.g\CefReadHandler.g.cs"/>
-        <Compile Include="Classes.g\CefRegisterCdmCallback.g.cs"/>
         <Compile Include="Classes.g\CefRegistration.g.cs"/>
         <Compile Include="Classes.g\CefRenderHandler.g.cs"/>
         <Compile Include="Classes.g\CefRenderProcessHandler.g.cs"/>
@@ -190,7 +189,6 @@
         <Compile Include="Interop\Classes.g\cef_print_settings_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_process_message_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_read_handler_t.g.cs"/>
-        <Compile Include="Interop\Classes.g\cef_register_cdm_callback_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_registration_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_render_handler_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_render_process_handler_t.g.cs"/>

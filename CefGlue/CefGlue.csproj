@@ -9,7 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 
-    <Version>92.0.27</Version>
+    <Version>93.1.14</Version>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
@@ -50,7 +50,6 @@
     <Compile Include="Classes.Handlers\CefPdfPrintCallback.cs" />
     <Compile Include="Classes.Handlers\CefPrintHandler.cs" />
     <Compile Include="Classes.Handlers\CefReadHandler.cs" />
-    <Compile Include="Classes.Handlers\CefRegisterCdmCallback.cs" />
     <Compile Include="Classes.Handlers\CefRenderHandler.cs" />
     <Compile Include="Classes.Handlers\CefRenderProcessHandler.cs" />
     <Compile Include="Classes.Handlers\CefRequestContextHandler.cs" />
@@ -139,7 +138,6 @@
     <Compile Include="Classes.Proxies\CefXmlReader.cs" />
     <Compile Include="Classes.Proxies\CefZipReader.cs" />
     <Compile Include="Enums\CefAlphaType.cs" />
-    <Compile Include="Enums\CefCdmRegistrationError.cs" />
     <Compile Include="Enums\CefCertStatus.cs" />
     <Compile Include="Enums\CefChannelLayout.cs" />
     <Compile Include="Enums\CefChromeToolbarType.cs" />
