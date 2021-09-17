@@ -14,6 +14,7 @@
         private readonly WebFrameHandler _frameHandler;
         private readonly WebDisplayHandler _displayHandler;
         private readonly WebLoadHandler _loadHandler;
+        private readonly WebKeyboardHandler _keyboardHandler;
 
         public WebClient(WebBrowser core)
         {
@@ -22,6 +23,7 @@
             _frameHandler = new WebFrameHandler(_core);
             _displayHandler = new WebDisplayHandler(_core);
             _loadHandler = new WebLoadHandler(_core);
+            _keyboardHandler = new WebKeyboardHandler(_core);
         }
 
         protected override CefLifeSpanHandler GetLifeSpanHandler()
@@ -40,6 +42,8 @@
         {
             return _loadHandler;
         }
+
+        protected override CefKeyboardHandler GetKeyboardHandler() => _keyboardHandler;
 
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {

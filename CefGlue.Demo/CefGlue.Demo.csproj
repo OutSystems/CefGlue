@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Browser\WebKeyboardHandler.cs" />
     <Compile Include="Browser\WebFrameHandler.cs" />
     <Compile Include="Browser\WebLoadHandler.cs" />
     <Compile Include="Browser\EventArgs\AddressChangedEventArgs.cs" />
