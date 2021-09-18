@@ -28,7 +28,12 @@ namespace Xilium.CefGlue.Common
             settings.UncaughtExceptionStackSize = 100; // for uncaught exception event work properly
 
             var path = AppDomain.CurrentDomain.BaseDirectory;
-            if (!TryGetSubprocessPath(path, out string subprocessPath))
+            var subProcessPaths = GetSubProcessPaths();
+            var subProcessPath = subProcessPaths.FirstOrDefault(path => File.Exists(path));
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new FileNotFoundException($"Unable to find SubProcess. Probed locations: {string.Join(", ", "\" + subProcessPaths + \"}");
+            }
             {
                 // The executing DLL might not be in the current domain directory (plugins scenario)
                 path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
