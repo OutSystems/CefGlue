@@ -76,20 +76,16 @@ namespace Xilium.CefGlue.Common
             }
         }
 
-        private static bool TryGetSubprocessPath(string baseDirectory, out string subprocessPath)
+        private static IEnumerable<string> GetSubProcessPaths()
         {
-            subprocessPath = Path.Combine(baseDirectory, BrowserProcessFileName);
-            if (!File.Exists(subprocessPath))
-            {
-                subprocessPath = Path.Combine(baseDirectory, "CefGlueBrowserProcess", BrowserProcessFileName);
-
-                if (!File.Exists(subprocessPath))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            yield return Path.Combine(baseDirectory, BrowserProcessFileName);
+            yield return Path.Combine(baseDirectory, CefGlueBrowserProcessDirName, BrowserProcessFileName);
+        
+            // The executing DLL might not be in the current domain directory (plugins scenario)
+            baseDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            yield return Path.Combine(baseDirectory, BrowserProcessFileName);
+            yield return Path.Combine(baseDirectory, CefGlueBrowserProcessDirName, BrowserProcessFileName);
         }
 
         internal static void Load(BrowserProcessHandler browserProcessHandler = null)
