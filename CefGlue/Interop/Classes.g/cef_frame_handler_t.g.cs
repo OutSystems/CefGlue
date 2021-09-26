@@ -52,7 +52,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_frame_attached_delegate(cef_frame_handler_t* self, cef_browser_t* browser, cef_frame_t* frame);
+        internal delegate void on_frame_attached_delegate(cef_frame_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, int reattached);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

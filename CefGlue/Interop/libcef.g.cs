@@ -81,6 +81,10 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_load_crlsets_file", CallingConvention = libcef.CEF_CALL)]
         public static extern void load_crlsets_file(cef_string_t* path);
         
+        // CefIsRTL
+        [DllImport(libcef.DllName, EntryPoint = "cef_is_rtl", CallingConvention = libcef.CEF_CALL)]
+        public static extern int is_rtl();
+        
         // CefAddCrossOriginWhitelistEntry
         [DllImport(libcef.DllName, EntryPoint = "cef_add_cross_origin_whitelist_entry", CallingConvention = libcef.CEF_CALL)]
         public static extern int add_cross_origin_whitelist_entry(cef_string_t* source_origin, cef_string_t* target_protocol, cef_string_t* target_domain, int allow_target_subdomains);

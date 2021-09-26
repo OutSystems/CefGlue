@@ -1159,6 +1159,16 @@ typedef enum {
   // A resource that a plugin requested.
   ///
   RT_PLUGIN_RESOURCE,
+
+  ///
+  // A main-frame service worker navigation preload request.
+  ///
+  RT_NAVIGATION_PRELOAD_MAIN_FRAME = 19,
+
+  ///
+  // A sub-frame service worker navigation preload request.
+  ///
+  RT_NAVIGATION_PRELOAD_SUB_FRAME,
 } cef_resource_type_t;
 
 ///
@@ -3197,6 +3207,27 @@ typedef enum {
   CEF_CTT_NORMAL,
   CEF_CTT_LOCATION,
 } cef_chrome_toolbar_type_t;
+
+///
+// Docking modes supported by CefWindow::AddOverlay.
+///
+typedef enum {
+  CEF_DOCKING_MODE_TOP_LEFT = 1,
+  CEF_DOCKING_MODE_TOP_RIGHT,
+  CEF_DOCKING_MODE_BOTTOM_LEFT,
+  CEF_DOCKING_MODE_BOTTOM_RIGHT,
+  CEF_DOCKING_MODE_CUSTOM,
+} cef_docking_mode_t;
+
+///
+// Show states supported by CefWindowDelegate::GetInitialShowState.
+///
+typedef enum {
+  CEF_SHOW_STATE_NORMAL = 1,
+  CEF_SHOW_STATE_MINIMIZED,
+  CEF_SHOW_STATE_MAXIMIZED,
+  CEF_SHOW_STATE_FULLSCREEN,
+} cef_show_state_t;
 
 #ifdef __cplusplus
 }

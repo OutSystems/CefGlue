@@ -20,9 +20,9 @@
             Debug.Print($"{nameof(WebFrameHandler)}::{nameof(OnFrameCreated)}: BID={browser.Identifier} FID={frame.Identifier}");
         }
 
-        protected override void OnFrameAttached(CefBrowser browser, CefFrame frame)
+        protected override void OnFrameAttached(CefBrowser browser, CefFrame frame, bool reattached)
         {
-            Debug.Print($"{nameof(WebFrameHandler)}::{nameof(OnFrameAttached)}: BID={browser.Identifier} FID={frame.Identifier}");
+            Debug.Print($"{nameof(WebFrameHandler)}::{nameof(OnFrameAttached)}: BID={browser.Identifier} FID={frame.Identifier} Reattached={reattached}");
         }
 
         protected override void OnFrameDetached(CefBrowser browser, CefFrame frame)

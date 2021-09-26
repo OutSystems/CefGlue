@@ -93,20 +93,22 @@
         { }
 
 
-        private void on_frame_attached(cef_frame_handler_t* self, cef_browser_t* browser, cef_frame_t* frame)
+        private void on_frame_attached(cef_frame_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, int reattached)
         {
             CheckSelf(self);
 
             var mBrowser = CefBrowser.FromNative(browser);
             var mFrame = CefFrame.FromNative(frame);
-            OnFrameAttached(mBrowser, mFrame);
+            OnFrameAttached(mBrowser, mFrame, reattached != 0);
         }
-        
+
         /// <summary>
         /// Called when a frame can begin routing commands to/from the associated
-        /// renderer process. Any commands that were queued have now been dispatched.
+        /// renderer process. |reattached| will be true if the frame was re-attached
+        /// after exiting the BackForwardCache. Any commands that were queued have now
+        /// been dispatched.
         /// </summary>
-        protected virtual void OnFrameAttached(CefBrowser browser, CefFrame frame)
+        protected virtual void OnFrameAttached(CefBrowser browser, CefFrame frame, bool reattached)
         { }
 
 

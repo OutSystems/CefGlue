@@ -1122,6 +1122,15 @@
 
         #endregion
 
+        #region i18n
+
+        /// <summary>
+        /// Returns true if the application text direction is right-to-left.
+        /// </summary>
+        public static bool IsRtl() => libcef.is_rtl() != 0;
+
+        #endregion
+
         private static void LoadIfNeed()
         {
             if (!_loaded) Load();
