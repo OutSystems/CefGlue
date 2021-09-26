@@ -3,9 +3,7 @@
     <EnableDefaultItems>false</EnableDefaultItems>
 
     <!-- For CefGlue nullable support will not be enabled for a while. This option for vNext. -->
-    <!--
     <Nullable>enable</Nullable>
-    -->
 
     <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
 
