@@ -537,7 +537,7 @@
 
         private void SendQueryFailure(CefFrame frame, int contextId, int requestId, int errorCode, string errorMessage)
         {
-            if (frame.IsValid)
+            if (!frame.IsValid)
                 return;
 
             var message = CefProcessMessage.Create(_queryMessageName);
