@@ -9,18 +9,7 @@
     <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-  
-  <!-- using this custom command instead of a target because the target hangs the build on OSX -->
-  <PropertyGroup>
-    <CustomCommands>
-      <CustomCommands>
-        <Command>
-          <type>AfterBuild</type>
-          <command>dotnet publish --framework net5.0 --runtime osx-x64 -p:IsPublishing=True -p:PublishTrimmed=true</command>
-        </Command>
-      </CustomCommands>
-    </CustomCommands>
+    <IsWindows Condition="$([MSBuild]::IsOSPlatform('Windows'))">True</IsWindows> 
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,12 +21,10 @@
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
     
-  <Target Name="PublishAppWin" AfterTargets="PostBuildEvent" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and $(TargetFramework.StartsWith('net5')) and '$(IsPublishing)' != 'True' and $([MSBuild]::IsOSPlatform('Windows'))">
-      
+  <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and $(TargetFramework.StartsWith('net5')) and '$(IsPublishing)' != 'True'"> 
     <!-- Publish both platforms on Windows for packaging -->
     <Message Text="Publishing..." Importance="High" />
-    <Exec Command="dotnet publish --framework $(TargetFramework) --configuration $(Configuration) -p:IsPublishing=True -p:PublishTrimmed=true --runtime win-x64" />
-    <Exec Command="dotnet publish --framework $(TargetFramework) --configuration $(Configuration) -p:IsPublishing=True -p:PublishTrimmed=true --runtime osx-x64" />
+    <MSBuild Condition="$(IsWindows) == 'True'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=win-x64"/>
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=osx-x64"/>
   </Target>
-
 </Project>
