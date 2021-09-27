@@ -8,7 +8,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
     {
         public static IDictionary<string, MethodInfo> AnalyseObjectMembers(object obj)
         {
-            var methods = obj.GetType().GetMethods();
+            var methods = obj.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public).Where(m => !m.IsSpecialName);
             return methods.Select(m => new { Member = m, JavascriptName = m.Name.Substring(0, 1).ToLowerInvariant() + m.Name.Substring(1) })
                           .ToDictionary(m => m.JavascriptName, m => m.Member);
         }
