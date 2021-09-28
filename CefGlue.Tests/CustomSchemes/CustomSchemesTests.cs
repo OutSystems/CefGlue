@@ -33,7 +33,6 @@ namespace CefGlue.Tests.CustomSchemes
                 }
             });
 
-
             // Act
             var t2 = Task.Run(() => Browser.Dispose());
             Task.WaitAll(t1, t2);
