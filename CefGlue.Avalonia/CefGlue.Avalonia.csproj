@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference PrivateAssets="all" Include="Avalonia" Version="0.10.7" />
+    <PackageReference PrivateAssets="all" Include="Avalonia" Version="0.10.6" />
   </ItemGroup>
 
   <ItemGroup>
