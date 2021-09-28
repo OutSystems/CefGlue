@@ -150,8 +150,9 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             catch (Exception e)
             {
                 _pendingTasks.TryRemove(taskId, out var _);
-                
-                if (e is AggregateException && e.InnerException is TaskCanceledException) {
+
+                if (e is AggregateException && e.InnerException is TaskCanceledException)
+                {
                     return default;
                 }
                 throw;
