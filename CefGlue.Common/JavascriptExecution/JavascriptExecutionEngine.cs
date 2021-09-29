@@ -147,9 +147,14 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
                 return JavascriptToNativeTypeConverter.ConvertToNative<T>(task.Result);
             }
-            catch
+            catch (Exception e)
             {
                 _pendingTasks.TryRemove(taskId, out var _);
+
+                if (e is AggregateException && e.InnerException is TaskCanceledException)
+                {
+                    return default;
+                }
                 throw;
             }
         }

@@ -79,5 +79,26 @@ namespace CefGlue.Tests.Javascript
             var result = await EvaluateJavascript<int>($"return 1;", timeout);
             Assert.AreEqual(1, result);
         }
+
+        [Test]
+        public async Task DisposeBrowserShouldHandleInnerTaskCanceledExceptions()
+        {
+            // Arrange
+            var evalTask = EvaluateJavascript<int>("const finishTime = new Date().getTime() + 10000; while(new Date().getTime() < finishTime); return 10;");
+            
+            // Act
+            Browser.Dispose();
+            
+            // Assert
+            try
+            {
+                var result = await evalTask;
+                Assert.AreEqual(0, result);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
     }
 }
