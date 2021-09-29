@@ -84,28 +84,21 @@ namespace CefGlue.Tests.Javascript
         public async Task DisposeBrowserShouldHandleInnerTaskCanceledExceptions()
         {
             // Arrange
-            var result = "Not set";
-            Exception exception = null;
-            var t = EvaluateJavascript<string>("const finishTime = new Date().getTime() + 10000; while(new Date().getTime() < finishTime); return 10;");
-
-            var t1 = Task.Run(async () => {
-                try
-                {
-                    result = await t;
-                }
-                catch (Exception e)
-                {
-                    exception = e;
-                }
-            });
-
+            var evalTask = EvaluateJavascript<int>("const finishTime = new Date().getTime() + 10000; while(new Date().getTime() < finishTime); return 10;");
+            
             // Act
             Browser.Dispose();
-            t1.Wait();
-
+            
             // Assert
-            Assert.IsNull(exception);
-            Assert.AreEqual(default, result);
+            try
+            {
+                var result = await evalTask;
+                Assert.AreEqual(0, result);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
         }
     }
 }
