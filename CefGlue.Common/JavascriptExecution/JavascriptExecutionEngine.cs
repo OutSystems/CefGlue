@@ -76,8 +76,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         public Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame, TimeSpan? timeout = null)
         {
-            const TaskContinuationOptions EvaluationTaskOptions = TaskContinuationOptions.ExecuteSynchronously;
-
             var taskId = lastTaskId++;
             var message = new Messages.JsEvaluationRequest()
             {
@@ -87,7 +85,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 Line = line
             };
 
-            var messageReceiveCompletionSource = new TaskCompletionSource<object>();
+            var messageReceiveCompletionSource = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
 
             _pendingTasks.TryAdd(taskId, messageReceiveCompletionSource);
 
@@ -105,11 +103,11 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                         Task.Delay(timeout.Value)
                     });
 
-                    return tasks.ContinueWith(resultTask => ProcessResult<T>(evaluationTask, taskId, timedOut: resultTask.Result != evaluationTask), EvaluationTaskOptions);
+                    return tasks.ContinueWith(resultTask => ProcessResult<T>(evaluationTask, taskId, timedOut: resultTask.Result != evaluationTask));
                 }
                 else
                 {
-                    return evaluationTask.ContinueWith(task => ProcessResult<T>(task, taskId), EvaluationTaskOptions);
+                    return evaluationTask.ContinueWith(task => ProcessResult<T>(task, taskId));
                 }
             }
             catch
