@@ -382,5 +382,14 @@ namespace Xilium.CefGlue.Common
         {
             return _adapter.CreateBrowser(width, height);
         }
+
+        /// <summary>
+        /// Sends the text to the browser window
+        /// </summary>
+        /// <param name="text"></param>
+        public void SendText(string text)
+        {
+            _adapter.SendText(text);
+        }
     }
 }
