@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Xilium.CefGlue.Common.Handlers;
 using Xilium.CefGlue.Common.Shared;
 
@@ -26,8 +27,7 @@ namespace Xilium.CefGlue.Common
 
             settings.UncaughtExceptionStackSize = 100; // for uncaught exception event work properly
 
-            var path = AppDomain.CurrentDomain.BaseDirectory;
-
+            var path = GetBaseDirectory();
             var subprocessPath = Path.Combine(path, BrowserProcessFileName);
             if (!File.Exists(subprocessPath))
             {
@@ -105,6 +105,12 @@ namespace Xilium.CefGlue.Common
                         return Filename;
                 }
             }
+        }
+
+        private static string GetBaseDirectory()
+        {
+            var baseDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            return baseDirectory;
         }
     }
 }
