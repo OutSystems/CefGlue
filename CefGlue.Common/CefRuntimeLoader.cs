@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -10,6 +11,7 @@ namespace Xilium.CefGlue.Common
     public static class CefRuntimeLoader
     {
         private static Action<BrowserProcessHandler> _delayedInitialization;
+        private static readonly string DefaultBrowserProcessDirectory = "CefGlueBrowserProcess";
 
         public static void Initialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null)
         {
@@ -27,19 +29,12 @@ namespace Xilium.CefGlue.Common
 
             settings.UncaughtExceptionStackSize = 100; // for uncaught exception event work properly
 
-            var path = GetBaseDirectory();
-            var subprocessPath = Path.Combine(path, BrowserProcessFileName);
-            if (!File.Exists(subprocessPath))
-            {
-                subprocessPath = Path.Combine(path, "CefGlueBrowserProcess", BrowserProcessFileName);
-                
-                if (!File.Exists(subprocessPath))
-                {
-                    throw new FileNotFoundException($"Unable to find \"{subprocessPath}\"");
-                }
-            }
-            
-            settings.BrowserSubprocessPath = subprocessPath;
+            var paths = GetSubProcessPaths();
+            var path = paths.FirstOrDefault(r => File.Exists(r));
+            if(path == null)
+                throw new FileNotFoundException($"Unable to find SubProcess. Probed locations: {string.Join(Environment.NewLine, paths)}");
+
+            settings.BrowserSubprocessPath = path;
 
             switch (CefRuntime.Platform)
             {
@@ -75,6 +70,18 @@ namespace Xilium.CefGlue.Common
                     CefRuntime.RegisterSchemeHandlerFactory(scheme.SchemeName, scheme.DomainName, scheme.SchemeHandlerFactory);
                 }
             }
+        }
+
+        private static IEnumerable<string> GetSubProcessPaths()
+        {
+            var baseDirectory = AppContext.BaseDirectory;
+            yield return Path.Combine(baseDirectory, BrowserProcessFileName);
+            yield return Path.Combine(baseDirectory, DefaultBrowserProcessDirectory, BrowserProcessFileName);
+
+            // The executing DLL might not be in the current domain directory (plugins scenario)
+            baseDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            yield return Path.Combine(baseDirectory, BrowserProcessFileName);
+            yield return Path.Combine(baseDirectory, DefaultBrowserProcessDirectory, BrowserProcessFileName);
         }
 
         internal static void Load(BrowserProcessHandler browserProcessHandler = null)

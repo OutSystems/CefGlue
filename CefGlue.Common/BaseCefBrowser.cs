@@ -286,6 +286,14 @@ namespace Xilium.CefGlue.Common
         }
 
         /// <summary>
+        /// Send a key event to the browser.
+        /// </summary>
+        public void SendKeyEvent(CefKeyEvent keyEvent)
+        {
+            _adapter.SendKeyEvent(keyEvent);
+        }
+
+        /// <summary>
         /// Executes the specified javascript snippet.
         /// </summary>
         /// <param name="code">The javascript snippet.</param>
