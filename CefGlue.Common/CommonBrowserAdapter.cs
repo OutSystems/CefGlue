@@ -325,21 +325,6 @@ namespace Xilium.CefGlue.Common
             return true;
         }
 
-        public void SendText(string text)
-        {
-            foreach (var c in text)
-            {
-                var keyEvent = new CefKeyEvent()
-                {
-                    EventType = CefKeyEventType.Char,
-                    WindowsKeyCode = c,
-                    Character = c
-                };
-
-                BrowserHost?.SendKeyEvent(keyEvent);
-            }
-        }
-
         protected virtual CommonCefClient CreateCefClient()
         {
             return new CommonCefClient(this, null, _logger);
