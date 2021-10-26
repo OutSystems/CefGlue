@@ -227,6 +227,11 @@ namespace Xilium.CefGlue.Common
             }
         }
 
+        public void SendKeyEvent(CefKeyEvent keyEvent)
+        {
+            BrowserHost?.SendKeyEvent(keyEvent);
+        }
+
         public void ExecuteJavaScript(string code, string url, int line)
         {
             _browser?.GetMainFrame().ExecuteJavaScript(code, url, line);
