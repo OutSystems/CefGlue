@@ -33,7 +33,7 @@ namespace Xilium.CefGlue.Common
             var probingPaths = GetSubProcessPaths();
             var path = probingPaths.FirstOrDefault(p => File.Exists(p));
             if (path == null)
-                throw new FileNotFoundException($"Unable to find SubProcess. Probed locations: {string.Join(Environment.NewLine, paths)}");
+                throw new FileNotFoundException($"Unable to find SubProcess. Probed locations: {string.Join(Environment.NewLine, probingPaths)}");
 
             settings.BrowserSubprocessPath = path;
 
