@@ -30,9 +30,9 @@ namespace Xilium.CefGlue.Common
 
             settings.UncaughtExceptionStackSize = 100; // for uncaught exception event work properly
 
-            var paths = GetSubProcessPaths();
-            var path = paths.FirstOrDefault(r => File.Exists(r));
-            if(path == null)
+            var probingPaths = GetSubProcessPaths();
+            var path = probingPaths.FirstOrDefault(p => File.Exists(p));
+            if (path == null)
                 throw new FileNotFoundException($"Unable to find SubProcess. Probed locations: {string.Join(Environment.NewLine, paths)}");
 
             settings.BrowserSubprocessPath = path;
