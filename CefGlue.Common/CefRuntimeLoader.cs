@@ -10,8 +10,9 @@ namespace Xilium.CefGlue.Common
 {
     public static class CefRuntimeLoader
     {
+        private const string DefaultBrowserProcessDirectory = "CefGlueBrowserProcess";
+        
         private static Action<BrowserProcessHandler> _delayedInitialization;
-        private static readonly string DefaultBrowserProcessDirectory = "CefGlueBrowserProcess";
 
         public static void Initialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null)
         {
