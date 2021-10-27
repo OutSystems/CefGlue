@@ -114,11 +114,5 @@ namespace Xilium.CefGlue.Common
                 }
             }
         }
-
-        private static string GetBaseDirectory()
-        {
-            var baseDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            return baseDirectory;
-        }
     }
 }
