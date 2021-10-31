@@ -72,7 +72,6 @@
         <Compile Include="Classes.g\CefRenderHandler.g.cs"/>
         <Compile Include="Classes.g\CefRenderProcessHandler.g.cs"/>
         <Compile Include="Classes.g\CefRequest.g.cs"/>
-        <Compile Include="Classes.g\CefRequestCallback.g.cs"/>
         <Compile Include="Classes.g\CefRequestContext.g.cs"/>
         <Compile Include="Classes.g\CefRequestContextHandler.g.cs"/>
         <Compile Include="Classes.g\CefRequestHandler.g.cs"/>
@@ -192,7 +191,6 @@
         <Compile Include="Interop\Classes.g\cef_registration_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_render_handler_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_render_process_handler_t.g.cs"/>
-        <Compile Include="Interop\Classes.g\cef_request_callback_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_request_context_handler_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_request_context_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_request_handler_t.g.cs"/>

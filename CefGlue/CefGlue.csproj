@@ -9,7 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 
-    <Version>94.4.1</Version>
+    <Version>95.7.14</Version>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
@@ -110,7 +110,6 @@
     <Compile Include="Classes.Proxies\CefProcessMessage.cs" />
     <Compile Include="Classes.Proxies\CefRegistration.cs" />
     <Compile Include="Classes.Proxies\CefRequest.cs" />
-    <Compile Include="Classes.Proxies\CefRequestCallback.cs" />
     <Compile Include="Classes.Proxies\CefRequestContext.cs" />
     <Compile Include="Classes.Proxies\CefResourceBundle.cs" />
     <Compile Include="Classes.Proxies\CefResourceReadCallback.cs" />
@@ -213,6 +212,7 @@
     <Compile Include="Exceptions\CefRuntimeException.cs" />
     <Compile Include="Exceptions\CefVersionMismatchException.cs" />
     <Compile Include="Extensions\CefBrowserHostExtensions.cs" />
+    <Compile Include="Interop\Structs\cef_insets_t.cs" />
     <Compile Include="Interop\_Platform\NativeMethods.cs" />
     <Compile Include="Interop\_Platform\RECT.cs" />
     <Compile Include="Interop\Base\cef_base_ref_counted_t.cs" />

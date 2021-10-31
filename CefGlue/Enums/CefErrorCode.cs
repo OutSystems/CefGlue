@@ -1454,7 +1454,7 @@ namespace Xilium.CefGlue
         /// Error should be handled as if an HTTP redirect was received to redirect to
         /// https or wss.
         /// </summary>
-        DNS_NAME_HTTPS_ONLY = 809,
+        DNS_NAME_HTTPS_ONLY = -809,
 
         // CefGlue backward compatiblity.
         // Generally we prefer .NET naming rules, but will care about later.

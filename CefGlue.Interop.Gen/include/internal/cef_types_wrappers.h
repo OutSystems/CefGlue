@@ -594,7 +594,6 @@ struct CefSettingsTraits {
     target->pack_loading_disabled = src->pack_loading_disabled;
     target->remote_debugging_port = src->remote_debugging_port;
     target->uncaught_exception_stack_size = src->uncaught_exception_stack_size;
-    target->ignore_certificate_errors = src->ignore_certificate_errors;
     target->background_color = src->background_color;
 
     cef_string_set(src->accept_language_list.str,
@@ -636,7 +635,6 @@ struct CefRequestContextSettingsTraits {
                    &target->cache_path, copy);
     target->persist_session_cookies = src->persist_session_cookies;
     target->persist_user_preferences = src->persist_user_preferences;
-    target->ignore_certificate_errors = src->ignore_certificate_errors;
     cef_string_set(src->accept_language_list.str,
                    src->accept_language_list.length,
                    &target->accept_language_list, copy);
@@ -707,9 +705,6 @@ struct CefBrowserSettingsTraits {
     target->javascript_access_clipboard = src->javascript_access_clipboard;
     target->javascript_dom_paste = src->javascript_dom_paste;
     target->plugins = src->plugins;
-    target->universal_access_from_file_urls =
-        src->universal_access_from_file_urls;
-    target->file_access_from_file_urls = src->file_access_from_file_urls;
     target->image_loading = src->image_loading;
     target->image_shrink_standalone_to_fit =
         src->image_shrink_standalone_to_fit;
@@ -717,7 +712,6 @@ struct CefBrowserSettingsTraits {
     target->tab_to_links = src->tab_to_links;
     target->local_storage = src->local_storage;
     target->databases = src->databases;
-    target->application_cache = src->application_cache;
     target->webgl = src->webgl;
 
     target->background_color = src->background_color;

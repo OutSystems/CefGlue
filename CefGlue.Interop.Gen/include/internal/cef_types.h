@@ -35,6 +35,7 @@
 #include "include/internal/cef_string.h"
 #include "include/internal/cef_string_list.h"
 #include "include/internal/cef_time.h"
+#include "include/internal/cef_types_geometry.h"
 
 // Bring in platform-specific definitions.
 #if defined(OS_WIN)
@@ -390,17 +391,6 @@ typedef struct _cef_settings_t {
   int uncaught_exception_stack_size;
 
   ///
-  // Set to true (1) to ignore errors related to invalid SSL certificates.
-  // Enabling this setting can lead to potential security vulnerabilities like
-  // "man in the middle" attacks. Applications that load content from the
-  // internet should not enable this setting. Also configurable using the
-  // "ignore-certificate-errors" command-line switch. Can be overridden for
-  // individual CefRequestContext instances via the
-  // CefRequestContextSettings.ignore_certificate_errors value.
-  ///
-  int ignore_certificate_errors;
-
-  ///
   // Background color used for the browser before a document is loaded and when
   // no document color is specified. The alpha component must be either fully
   // opaque (0xFF) or fully transparent (0x00). If the alpha component is fully
@@ -484,16 +474,6 @@ typedef struct _cef_request_context_settings_t {
   // |cache_path| is empty or if it matches the CefSettings.cache_path value.
   ///
   int persist_user_preferences;
-
-  ///
-  // Set to true (1) to ignore errors related to invalid SSL certificates.
-  // Enabling this setting can lead to potential security vulnerabilities like
-  // "man in the middle" attacks. Applications that load content from the
-  // internet should not enable this setting. Can be set globally using the
-  // CefSettings.ignore_certificate_errors value. This value will be ignored if
-  // |cache_path| matches the CefSettings.cache_path value.
-  ///
-  int ignore_certificate_errors;
 
   ///
   // Comma delimited ordered list of language codes without any whitespace that
@@ -603,18 +583,6 @@ typedef struct _cef_browser_settings_t {
   cef_state_t plugins;
 
   ///
-  // Controls whether file URLs will have access to all URLs. Also configurable
-  // using the "allow-universal-access-from-files" command-line switch.
-  ///
-  cef_state_t universal_access_from_file_urls;
-
-  ///
-  // Controls whether file URLs will have access to other file URLs. Also
-  // configurable using the "allow-access-from-files" command-line switch.
-  ///
-  cef_state_t file_access_from_file_urls;
-
-  ///
   // Controls whether image URLs will be loaded from the network. A cached image
   // will still be rendered if requested. Also configurable using the
   // "disable-image-loading" command-line switch.
@@ -651,12 +619,6 @@ typedef struct _cef_browser_settings_t {
   // "disable-databases" command-line switch.
   ///
   cef_state_t databases;
-
-  ///
-  // Controls whether the application cache can be used. Also configurable using
-  // the "disable-application-cache" command-line switch.
-  ///
-  cef_state_t application_cache;
 
   ///
   // Controls whether WebGL can be used. Note that WebGL requires hardware
@@ -1372,51 +1334,6 @@ typedef enum {
   UR_FAILED,
 } cef_urlrequest_status_t;
 
-///
-// Structure representing a point.
-///
-typedef struct _cef_point_t {
-  int x;
-  int y;
-} cef_point_t;
-
-///
-// Structure representing a rectangle.
-///
-typedef struct _cef_rect_t {
-  int x;
-  int y;
-  int width;
-  int height;
-} cef_rect_t;
-
-///
-// Structure representing a size.
-///
-typedef struct _cef_size_t {
-  int width;
-  int height;
-} cef_size_t;
-
-///
-// Structure representing a range.
-///
-typedef struct _cef_range_t {
-  int from;
-  int to;
-} cef_range_t;
-
-///
-// Structure representing insets.
-///
-typedef struct _cef_insets_t {
-  int top;
-  int left;
-  int bottom;
-  int right;
-} cef_insets_t;
-
-///
 // Structure representing a draggable region.
 ///
 typedef struct _cef_draggable_region_t {
@@ -2957,6 +2874,14 @@ typedef enum {
   ///
   CEF_SCHEME_OPTION_FETCH_ENABLED = 1 << 6,
 } cef_scheme_options_t;
+
+///
+// Structure representing a range.
+///
+typedef struct _cef_range_t {
+  int from;
+  int to;
+} cef_range_t;
 
 ///
 // Composition underline style.

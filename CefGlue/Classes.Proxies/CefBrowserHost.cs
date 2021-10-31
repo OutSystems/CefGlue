@@ -593,14 +593,6 @@
         }
 
         /// <summary>
-        /// Send a focus event to the browser.
-        /// </summary>
-        public void SendFocusEvent(bool setFocus)
-        {
-            cef_browser_host_t.send_focus_event(_self, setFocus ? 1 : 0);
-        }
-
-        /// <summary>
         /// Send a capture lost event to the browser.
         /// </summary>
         public void SendCaptureLostEvent()

@@ -1,4 +1,4 @@
-// Copyright (c) 2011 Marshall A. Greenblatt. All rights reserved.
+// Copyright (c) 2014 Marshall A. Greenblatt. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -26,38 +26,53 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// ---------------------------------------------------------------------------
-//
-// The contents of this file must follow a specific format in order to
-// support the CEF translator tool. See the translator.README.txt file in the
-// tools directory for more information.
-//
 
-#ifndef CEF_INCLUDE_CEF_REQUEST_CALLBACK_H_
-#define CEF_INCLUDE_CEF_REQUEST_CALLBACK_H_
+#ifndef CEF_INCLUDE_INTERNAL_CEF_TYPES_GEOMETRY_H_
+#define CEF_INCLUDE_INTERNAL_CEF_TYPES_GEOMETRY_H_
 #pragma once
 
-#include "include/cef_base.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 ///
-// Callback interface used for asynchronous continuation of url requests.
+// Structure representing a point.
 ///
-/*--cef(source=library)--*/
-class CefRequestCallback : public virtual CefBaseRefCounted {
- public:
-  ///
-  // Continue the url request. If |allow| is true the request will be continued.
-  // Otherwise, the request will be canceled.
-  ///
-  /*--cef(capi_name=cont)--*/
-  virtual void Continue(bool allow) = 0;
+typedef struct _cef_point_t {
+  int x;
+  int y;
+} cef_point_t;
 
-  ///
-  // Cancel the url request.
-  ///
-  /*--cef()--*/
-  virtual void Cancel() = 0;
-};
+///
+// Structure representing a rectangle.
+///
+typedef struct _cef_rect_t {
+  int x;
+  int y;
+  int width;
+  int height;
+} cef_rect_t;
 
-#endif  // CEF_INCLUDE_CEF_REQUEST_CALLBACK_H_
+///
+// Structure representing a size.
+///
+typedef struct _cef_size_t {
+  int width;
+  int height;
+} cef_size_t;
+
+///
+// Structure representing insets.
+///
+typedef struct _cef_insets_t {
+  int top;
+  int left;
+  int bottom;
+  int right;
+} cef_insets_t;
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif  // CEF_INCLUDE_INTERNAL_CEF_TYPES_GEOMETRY_H_

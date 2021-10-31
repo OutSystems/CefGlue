@@ -266,7 +266,7 @@ namespace Xilium.CefGlue.WPF
                 {
                     if (_browserHost != null)
                     {
-                        _browserHost.SendFocusEvent(true);
+                        _browserHost.SetFocus(true);
                     }
                 }
                 catch (Exception ex)
@@ -281,7 +281,7 @@ namespace Xilium.CefGlue.WPF
                 {
                     if (_browserHost != null)
                     {
-                        _browserHost.SendFocusEvent(false);
+                        _browserHost.SetFocus(false);
                     }
                 }
                 catch (Exception ex)
