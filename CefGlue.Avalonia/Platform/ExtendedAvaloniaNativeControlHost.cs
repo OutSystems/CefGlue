@@ -1,13 +1,8 @@
 using System;
 using Avalonia;
-// using System.Collections.Generic;
-// using System.Diagnostics;
 using Avalonia.Controls;
-// using Avalonia.Controls.Platform;
 using Avalonia.Platform;
 using Avalonia.Threading;
-
-// using Avalonia.VisualTree;
 
 namespace Xilium.CefGlue.Avalonia.Platform
 {
