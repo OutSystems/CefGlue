@@ -30,12 +30,13 @@ namespace Xilium.CefGlue.Common
 
             settings.UncaughtExceptionStackSize = 100; // for uncaught exception event work properly
 
-            var probingPaths = GetSubProcessPaths();
-            var path = probingPaths.FirstOrDefault(p => File.Exists(p));
-            if (path == null)
+            var basePath = AppContext.BaseDirectory;
+            var probingPaths = GetSubProcessPaths(basePath);
+            var subProcessPath = probingPaths.FirstOrDefault(p => File.Exists(p));
+            if (subProcessPath == null)
                 throw new FileNotFoundException($"Unable to find SubProcess. Probed locations: {string.Join(Environment.NewLine, probingPaths)}");
 
-            settings.BrowserSubprocessPath = path;
+            settings.BrowserSubprocessPath = subProcessPath;
 
             switch (CefRuntime.Platform)
             {
@@ -44,7 +45,7 @@ namespace Xilium.CefGlue.Common
                     break;
 
                 case CefRuntimePlatform.MacOS:
-                    var resourcesPath = Path.Combine(path, "Resources");
+                    var resourcesPath = Path.Combine(basePath, "Resources");
                     if (!Directory.Exists(resourcesPath))
                     {
                         throw new FileNotFoundException($"Unable to find Resources folder");
@@ -53,8 +54,8 @@ namespace Xilium.CefGlue.Common
                     settings.NoSandbox = true;
                     settings.MultiThreadedMessageLoop = false;
                     settings.ExternalMessagePump = true;
-                    settings.MainBundlePath = path;
-                    settings.FrameworkDirPath = path;
+                    settings.MainBundlePath = basePath;
+                    settings.FrameworkDirPath = basePath;
                     settings.ResourcesDirPath = resourcesPath;
                     break;
             }
@@ -73,9 +74,8 @@ namespace Xilium.CefGlue.Common
             }
         }
 
-        private static IEnumerable<string> GetSubProcessPaths()
+        private static IEnumerable<string> GetSubProcessPaths(string baseDirectory)
         {
-            var baseDirectory = AppContext.BaseDirectory;
             yield return Path.Combine(baseDirectory, BrowserProcessFileName);
             yield return Path.Combine(baseDirectory, DefaultBrowserProcessDirectory, BrowserProcessFileName);
 
