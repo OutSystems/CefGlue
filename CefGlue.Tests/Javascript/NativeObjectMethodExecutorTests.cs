@@ -79,7 +79,7 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public void AsyncMethod()
+        public void AsyncMethodIsExecuted()
         {
             var token = new Token();
             var result = ExecuteAsyncMethod("asyncMethod", new [] { token });
@@ -88,7 +88,7 @@ namespace CefGlue.Tests.Javascript
         }
         
         [Test]
-        public void AsyncMethodWithReturn()
+        public void AsyncMethodWithReturnIsExecuted()
         {
             var result = ExecuteAsyncMethod("asyncMethodWithReturn", new object[0]);
             Assert.AreEqual(nativeTestObject.AsyncMethodWithReturn().Result, result());
