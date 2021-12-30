@@ -42,7 +42,7 @@ namespace CefGlue.Tests.Javascript
         private object ExecuteMethod(string name, object[] args)
         {
             var method = nativeObjectInfo.GetNativeMethod(name);
-            return NativeObjectMethodExecutor.ExecuteMethod(nativeTestObject, method, args);
+            return method.Execute(nativeTestObject, args);
         }
 
         [Test]
