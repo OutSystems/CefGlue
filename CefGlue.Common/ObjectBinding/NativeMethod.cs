@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers;
 
@@ -10,9 +11,9 @@ namespace Xilium.CefGlue.Common.ObjectBinding
     internal class NativeMethod
     {
         private readonly MethodInfo _method;
-        private readonly Func<object, object> _asyncResultWaiter;
+        private readonly Func<Task, object> _asyncResultWaiter;
         
-        public NativeMethod(MethodInfo method, Func<object, object> asyncResultWaiter)
+        public NativeMethod(MethodInfo method, Func<Task, object> asyncResultWaiter)
         {
             _method = method;
             _asyncResultWaiter = asyncResultWaiter;
@@ -33,9 +34,9 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             return _method.Invoke(targetObj, convertedArgs);
         }
 
-        public Func<object> GetResultWaiter(object result)
+        public Func<object> GetResultWaiter(Task task)
         {
-            return () => _asyncResultWaiter(result);
+            return () => _asyncResultWaiter(task);
         }
 
         private static object[] ConvertArguments(MethodInfo method, object[] args)

@@ -28,13 +28,13 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         }
 
         private readonly NativeObjectRegistry _objectRegistry;
-        private readonly ActionBlock<AsyncMethodExecutionResult> _executionDispatcher;
+        private readonly ActionBlock<AsyncMethodExecutionResult> _asyncExecutionDispatcher;
 
         public NativeObjectMethodDispatcher(MessageDispatcher dispatcher, NativeObjectRegistry objectRegistry, int maxDegreeOfParallelism)
         {
             _objectRegistry = objectRegistry;
 
-            _executionDispatcher = new ActionBlock<AsyncMethodExecutionResult>(
+            _asyncExecutionDispatcher = new ActionBlock<AsyncMethodExecutionResult>(
                 DispatchAsyncMethodCall, 
                 new ExecutionDataflowBlockOptions() { 
                     MaxDegreeOfParallelism = maxDegreeOfParallelism,
@@ -69,10 +69,12 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             try
             {
                 result = nativeMethod.Execute(nativeObject.Target, message.ArgumentsOut, nativeObject.MethodHandler);
-                if (nativeMethod.IsAsync)
+                if (result != null && nativeMethod.IsAsync)
                 {
-                    var awaiter = nativeMethod.GetResultWaiter(result);
-                    _executionDispatcher.Post(new AsyncMethodExecutionResult(callId, awaiter, args.Frame));
+                    // if the method is async (ie returns a task), lets wait on the dispatcher thread
+                    // and free the current (single) thread for other calls
+                    var awaiter = nativeMethod.GetResultWaiter((Task) result);
+                    _asyncExecutionDispatcher.Post(new AsyncMethodExecutionResult(callId, awaiter, args.Frame));
                     return;
                 }
             }
@@ -138,7 +140,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
         public void Dispose()
         {
-            _executionDispatcher.Complete();
+            _asyncExecutionDispatcher.Complete();
         }
     }
 }

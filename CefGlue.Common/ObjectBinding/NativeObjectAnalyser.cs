@@ -15,20 +15,25 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                           .ToDictionary(m => m.JavascriptName, m => new NativeMethod(m.Member, GetAsyncResultWaiter(m.Member)));
         }
 
-        private static Func<object, object> GetAsyncResultWaiter(MethodInfo method)
+        /// <summary>
+        /// Create an helper function to obtain the result from Tasks.
+        /// </summary>
+        private static Func<Task, object> GetAsyncResultWaiter(MethodInfo method)
         {
             var returnType = method.ReturnType;
             if (typeof(Task).IsAssignableFrom(returnType))
             {
                 if (returnType.IsGenericType)
                 {
+                    // generic Task<T>
                     var resultGetter = returnType.GetProperty(nameof(Task<object>.Result));
-                    return (result) => resultGetter.GetValue(result);
+                    return (task) => resultGetter.GetValue(task);
                 }
                 
-                return (result) =>
+                // non-generic Task
+                return (task) =>
                 {
-                    ((Task) result).Wait();
+                    task.Wait();
                     return null;
                 };
             }
