@@ -7,7 +7,7 @@ using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
-    public class NativeMethod
+    internal class NativeMethod
     {
         private readonly MethodInfo _method;
         private readonly Func<object, object> _asyncResultWaiter;
