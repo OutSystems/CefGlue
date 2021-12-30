@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,19 +7,35 @@ using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
-    internal static class NativeObjectMethodExecutor
+    public class NativeMethod
     {
-        public static object ExecuteMethod(object targetObj, MethodInfo method, object[] args, JavascriptObjectMethodCallHandler methodHandler = null)
+        private readonly MethodInfo _method;
+        private readonly Func<object, object> _asyncResultWaiter;
+        
+        public NativeMethod(MethodInfo method, Func<object, object> asyncResultWaiter)
         {
-            var convertedArgs = ConvertArguments(method, args);
+            _method = method;
+            _asyncResultWaiter = asyncResultWaiter;
+        }
+
+        public bool IsAsync => _asyncResultWaiter != null;
+        
+        public object Execute(object targetObj, object[] args, JavascriptObjectMethodCallHandler methodHandler = null)
+        {
+            var convertedArgs = ConvertArguments(_method, args);
 
             if (methodHandler != null)
             {
-                return methodHandler(() => method.Invoke(targetObj, convertedArgs));
+                return methodHandler(() => _method.Invoke(targetObj, convertedArgs));
             }
 
             // TODO improve call perf
-            return method.Invoke(targetObj, convertedArgs);
+            return _method.Invoke(targetObj, convertedArgs);
+        }
+
+        public Func<object> GetResultWaiter(object result)
+        {
+            return () => _asyncResultWaiter(result);
         }
 
         private static object[] ConvertArguments(MethodInfo method, object[] args)
