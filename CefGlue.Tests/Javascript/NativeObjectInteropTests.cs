@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -40,8 +41,13 @@ namespace CefGlue.Tests.Javascript
             }
 
 
-            public Task<string> AsyncMethod()
+            public event Func<int, Task<string>> AsyncMethodCalled;
+
+            public Task<string> AsyncMethod(int arg)
             {
+                if (AsyncMethodCalled != null) {
+                    return AsyncMethodCalled(arg);
+                }
                 return Task.FromResult("this is the result");
             }
             
@@ -137,16 +143,40 @@ namespace CefGlue.Tests.Javascript
         }
         
         [Test]
+        public async Task NativeObjectAsyncMethodsCanExecuteSimultaneously()
+        {
+            var taskCompletionSource = new TaskCompletionSource<string>();
+            var calls = new List<int>();
+            nativeObject.AsyncMethodCalled += (arg) =>
+            {
+                calls.Add(arg);
+                if (calls.Count >= 2)
+                {
+                    taskCompletionSource.SetResult("done");
+                }
+
+                return taskCompletionSource.Task;
+            };
+            
+            Execute($"{ObjName}.asyncMethod(1); {ObjName}.asyncMethod(2);");
+
+            var result = await taskCompletionSource.Task;
+            Assert.AreEqual(2, calls.Count);
+            Assert.AreEqual(1, calls[0]);
+            Assert.AreEqual(2, calls[1]);
+        }
+        
+        [Test]
         public async Task NativeObjectAsyncMethodResultIsReturned()
         {
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
-            
+
             Execute($"{ObjName}.asyncMethod().then(r => {ObjName}.methodWithParams(r, 0));");
 
             var result = await taskCompletionSource.Task;
 
-            Assert.AreEqual(nativeObject.AsyncMethod().Result, result[0]);
+            Assert.AreEqual(nativeObject.AsyncMethod(0).Result, result[0]);
         }
     }
 }
