@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using Xilium.CefGlue.Common.ObjectBinding;
 
@@ -15,6 +16,16 @@ namespace CefGlue.Tests.Javascript
                 MethodWithParamsCalled?.Invoke(new object[] { param1, param2 });
             }
 
+            public Task<string> AsyncGenericMethod()
+            {
+                return Task.FromResult(string.Empty);
+            }
+            
+            public Task AsyncMethod()
+            {
+                return Task.CompletedTask;
+            }
+            
             public static void StaticMethod()
             {
             }
@@ -44,12 +55,23 @@ namespace CefGlue.Tests.Javascript
         {
             var members = NativeObjectAnalyser.AnalyseObjectMembers(new CustomObject());
 
-            Assert.AreEqual(5, members.Count); // object members + 1 public method
-            Assert.IsTrue(members.ContainsKey("methodWithParams"));
+            Assert.AreEqual(7, members.Count); // object members + 3 public methods
             Assert.IsTrue(members.ContainsKey("toString"));
             Assert.IsTrue(members.ContainsKey("getHashCode"));
             Assert.IsTrue(members.ContainsKey("getType"));
             Assert.IsTrue(members.ContainsKey("equals"));
+            
+            members.TryGetValue("methodWithParams", out var method);
+            Assert.IsNotNull(method);
+            Assert.IsFalse(method.IsAsync);
+            
+            members.TryGetValue("asyncMethod", out var asyncMethod);
+            Assert.IsNotNull(asyncMethod);
+            Assert.IsTrue(asyncMethod.IsAsync);
+            
+            members.TryGetValue("asyncGenericMethod", out var asyncGenericMethod);
+            Assert.IsNotNull(asyncGenericMethod);
+            Assert.IsTrue(asyncGenericMethod.IsAsync);
         }
     }
 }

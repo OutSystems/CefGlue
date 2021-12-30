@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using Xilium.CefGlue.Common.ObjectBinding;
 
@@ -6,6 +8,11 @@ namespace CefGlue.Tests.Javascript
 {
     public class NativeObjectMethodExecutorTests
     {
+        class Token
+        {
+            public bool Executed;
+        }
+        
         class NativeTestObject
         {
             public object MethodWithParams(string param1, int param2)
@@ -16,6 +23,17 @@ namespace CefGlue.Tests.Javascript
             public string MethodWithReturn()
             {
                 return "this is the result";
+            }
+            
+            public Task AsyncMethod(Token token)
+            {
+                token.Executed = true;
+                return Task.CompletedTask;
+            }
+            
+            public Task<string> AsyncMethodWithReturn()
+            {
+                return Task.FromResult("this is the result");
             }
 
             public object[] MethodWithOptionalParams(params string[] optionalParams)
@@ -44,12 +62,36 @@ namespace CefGlue.Tests.Javascript
             var method = nativeObjectInfo.GetNativeMethod(name);
             return method.Execute(nativeTestObject, args);
         }
+        
+        private Func<object> ExecuteAsyncMethod(string name, object[] args)
+        {
+            var method = nativeObjectInfo.GetNativeMethod(name);
+            var result = method.Execute(nativeTestObject, args);
+            Assert.IsInstanceOf<Task>(result);
+            return method.GetResultWaiter((Task) result);
+        }
 
         [Test]
         public void MethodWithReturnIsExecuted()
         {
             var result = ExecuteMethod("methodWithReturn", new object[0]);
             Assert.AreEqual(nativeTestObject.MethodWithReturn(), result);
+        }
+
+        [Test]
+        public void AsyncMethod()
+        {
+            var token = new Token();
+            var result = ExecuteAsyncMethod("asyncMethod", new [] { token });
+            Assert.IsNull(result());
+            Assert.IsTrue(token.Executed);
+        }
+        
+        [Test]
+        public void AsyncMethodWithReturn()
+        {
+            var result = ExecuteAsyncMethod("asyncMethodWithReturn", new object[0]);
+            Assert.AreEqual(nativeTestObject.AsyncMethodWithReturn().Result, result());
         }
 
         [Test]
@@ -65,7 +107,7 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public void MethodWithOptionalParams()
+        public void MethodWithOptionalParamsIsExecuted()
         {
             const string Arg1 = "arg1";
             const string Arg2 = "arg2";
@@ -81,7 +123,7 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public void MethodWithFixedAndOptionalParams()
+        public void MethodWithFixedAndOptionalParamsIsExecuted()
         {
             const string Arg1 = "arg1";
             var arg2 = new int[] { 1, 2 , 3 };
