@@ -1,4 +1,6 @@
 using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
@@ -8,33 +10,32 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 {
     internal class NativeObjectMethodDispatcher : IDisposable
     {
-        private class MethodExecutionContext
+        private class AsyncMethodExecutionResult
         {
             public readonly int CallId;
-            public readonly string ObjectName;
-            public readonly string MemberName;
-            public readonly object[] Arguments;
             public readonly CefFrame Frame;
+            
+            private readonly Func<object> _awaiter;
 
-            public MethodExecutionContext(int callId, string objectName, string memberName, object[] arguments, CefFrame frame)
+            public AsyncMethodExecutionResult(int callId, Func<object> awaiter, CefFrame frame)
             {
                 CallId = callId;
-                ObjectName = objectName;
-                MemberName = memberName;
-                Arguments = arguments;
+                _awaiter = awaiter;
                 Frame = frame;
             }
+
+            public object GetResult() => _awaiter();
         }
 
         private readonly NativeObjectRegistry _objectRegistry;
-        private readonly ActionBlock<MethodExecutionContext> _executionDispatcher;
+        private readonly ActionBlock<AsyncMethodExecutionResult> _executionDispatcher;
 
         public NativeObjectMethodDispatcher(MessageDispatcher dispatcher, NativeObjectRegistry objectRegistry, int maxDegreeOfParallelism)
         {
             _objectRegistry = objectRegistry;
 
-            _executionDispatcher = new ActionBlock<MethodExecutionContext>(
-                DispatchNativeObjectCall, 
+            _executionDispatcher = new ActionBlock<AsyncMethodExecutionResult>(
+                DispatchAsyncMethodCall, 
                 new ExecutionDataflowBlockOptions() { 
                     MaxDegreeOfParallelism = maxDegreeOfParallelism,
                     EnsureOrdered = true
@@ -47,55 +48,91 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         {
             // message and arguments must be deserialized at this point because it will be disposed after
             var message = Messages.NativeObjectCallRequest.FromCefMessage(args.Message);
+            var callId = message.CallId;
+            
+            var nativeObject = _objectRegistry.Get(message.ObjectName ?? "");
+            if (nativeObject == null)
+            {
+                SendResult(callId, null, $"Object named {message.ObjectName} was not found. Make sure it was registered before.", args.Frame);
+                return;
+            }
+            
+            var nativeMethod = nativeObject.GetNativeMethod(message.MemberName ?? "");
+            if (nativeMethod == null)
+            {
+                SendResult(callId, null, $"Object does not have a {message.MemberName} method.", args.Frame);
+                return;
+            }
 
-            _executionDispatcher.Post(new MethodExecutionContext(message.CallId, message.ObjectName, message.MemberName, message.ArgumentsOut, args.Frame));
+            object result = null;
+            Exception exception = null;
+            try
+            {
+                result = nativeMethod.Execute(nativeObject.Target, message.ArgumentsOut, nativeObject.MethodHandler);
+                if (nativeMethod.IsAsync)
+                {
+                    var awaiter = nativeMethod.GetResultWaiter(result);
+                    _executionDispatcher.Post(new AsyncMethodExecutionResult(callId, awaiter, args.Frame));
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                exception = e;
+            }
+            
+            SendResult(callId, result, exception?.Message, args.Frame);
         }
 
-        private void DispatchNativeObjectCall(MethodExecutionContext context) 
+        private static void DispatchAsyncMethodCall(AsyncMethodExecutionResult context)
         {
             using (CefObjectTracker.StartTracking())
             {
-                var resultMessage = new Messages.NativeObjectCallResult()
-                {
-                    CallId = context.CallId,
-                    Result = new CefValueHolder(),
-                };
-
+                object result = null;
+                Exception exception = null;
                 try
                 {
-                    var targetObj = _objectRegistry.Get(context.ObjectName);
-                    if (targetObj != null)
-                    {
-                        var nativeMethod = targetObj.GetNativeMethod(context.MemberName);
-                        if (nativeMethod != null)
-                        {
-                            var result = NativeObjectMethodExecutor.ExecuteMethod(targetObj.Target, nativeMethod, context.Arguments, targetObj.MethodHandler);
-                            CefValueSerialization.Serialize(result, resultMessage.Result);
-                            resultMessage.Success = true;
-                        }
-                        else
-                        {
-                            resultMessage.Success = false;
-                            resultMessage.Exception = $"Object does not have a {context.ObjectName} method.";
-                        }
-                    }
-                    else
-                    {
-                        resultMessage.Success = false;
-                        resultMessage.Exception = $"Object named {context.ObjectName} was not found. Make sure it was registered before.";
-                    }
+                    result = context.GetResult();
                 }
                 catch (Exception e)
                 {
-                    resultMessage.Success = false;
+                    exception = e;
+                }
+                
+                SendResult(context.CallId, result, exception?.Message, context.Frame);
+            }
+        }
+        
+        private static void SendResult(int callId, object result, string exceptionMessage, CefFrame frame) 
+        {
+            var resultMessage = new Messages.NativeObjectCallResult()
+            {
+                CallId = callId,
+                Result = new CefValueHolder(),
+            };
+
+            if (exceptionMessage != null)
+            {
+                resultMessage.Exception = exceptionMessage;
+            }
+            else
+            {
+                try
+                {
+                    CefValueSerialization.Serialize(result, resultMessage.Result);
+                }
+                catch (Exception e)
+                {
                     resultMessage.Exception = e.Message;
                 }
+            }
 
-                var cefMessage = resultMessage.ToCefProcessMessage();
-                if (context.Frame.IsValid)
-                {
-                    context.Frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
-                }
+            resultMessage.Success = resultMessage.Exception == null;
+            
+            var cefMessage = resultMessage.ToCefProcessMessage();
+            if (frame.IsValid)
+            {
+                frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
             }
         }
 
