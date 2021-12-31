@@ -1,46 +1,19 @@
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
-    internal class NativeObjectMethodDispatcher : IDisposable
+    internal class NativeObjectMethodDispatcher
     {
-        private class AsyncMethodExecutionResult
-        {
-            public readonly int CallId;
-            public readonly CefFrame Frame;
-            
-            private readonly Func<object> _awaiter;
-
-            public AsyncMethodExecutionResult(int callId, Func<object> awaiter, CefFrame frame)
-            {
-                CallId = callId;
-                _awaiter = awaiter;
-                Frame = frame;
-            }
-
-            public object GetResult() => _awaiter();
-        }
-
         private readonly NativeObjectRegistry _objectRegistry;
-        private readonly ActionBlock<AsyncMethodExecutionResult> _asyncExecutionDispatcher;
-
-        public NativeObjectMethodDispatcher(MessageDispatcher dispatcher, NativeObjectRegistry objectRegistry, int maxDegreeOfParallelism)
+        
+        public NativeObjectMethodDispatcher(MessageDispatcher dispatcher, NativeObjectRegistry objectRegistry)
         {
             _objectRegistry = objectRegistry;
-
-            _asyncExecutionDispatcher = new ActionBlock<AsyncMethodExecutionResult>(
-                DispatchAsyncMethodCall, 
-                new ExecutionDataflowBlockOptions() { 
-                    MaxDegreeOfParallelism = maxDegreeOfParallelism,
-                    EnsureOrdered = true
-                });
-
+                
             dispatcher.RegisterMessageHandler(Messages.NativeObjectCallRequest.Name, HandleNativeObjectCallRequest);
         }
 
@@ -63,7 +36,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 SendResult(callId, null, $"Object does not have a {message.MemberName} method.", args.Frame);
                 return;
             }
-
+            
             object result = null;
             Exception exception = null;
             try
@@ -71,10 +44,17 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 result = nativeMethod.Execute(nativeObject.Target, message.ArgumentsOut, nativeObject.MethodHandler);
                 if (result != null && nativeMethod.IsAsync)
                 {
-                    // if the method is async (ie returns a task), lets wait on the dispatcher thread
-                    // and free the current (single) thread for other calls
-                    var awaiter = nativeMethod.GetResultWaiter((Task) result);
-                    _asyncExecutionDispatcher.Post(new AsyncMethodExecutionResult(callId, awaiter, args.Frame));
+                    // if the method is async (ie returns a task), the following continuation
+                    // will execute on another thread, and the current (single) thread will be freed
+                    // for other calls
+                    ((Task) result).ContinueWith(t =>
+                    {
+                        using (CefObjectTracker.StartTracking())
+                        {
+                            var taskResult = t.IsFaulted ? null : nativeMethod.GetResult(t);
+                            SendResult(callId, taskResult, t.Exception?.Message, args.Frame);
+                        }
+                    });
                     return;
                 }
             }
@@ -86,25 +66,6 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             SendResult(callId, result, exception?.Message, args.Frame);
         }
 
-        private static void DispatchAsyncMethodCall(AsyncMethodExecutionResult context)
-        {
-            using (CefObjectTracker.StartTracking())
-            {
-                object result = null;
-                Exception exception = null;
-                try
-                {
-                    result = context.GetResult();
-                }
-                catch (Exception e)
-                {
-                    exception = e;
-                }
-                
-                SendResult(context.CallId, result, exception?.Message, context.Frame);
-            }
-        }
-        
         private static void SendResult(int callId, object result, string exceptionMessage, CefFrame frame) 
         {
             var resultMessage = new Messages.NativeObjectCallResult()
@@ -136,11 +97,6 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 frame.SendProcessMessage(CefProcessId.Renderer, cefMessage);
             }
-        }
-
-        public void Dispose()
-        {
-            _asyncExecutionDispatcher.Complete();
         }
     }
 }

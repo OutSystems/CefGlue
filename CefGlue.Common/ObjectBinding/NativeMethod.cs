@@ -11,15 +11,15 @@ namespace Xilium.CefGlue.Common.ObjectBinding
     internal class NativeMethod
     {
         private readonly MethodInfo _method;
-        private readonly Func<Task, object> _asyncResultWaiter;
+        private readonly Func<Task, object> _asyncResultGetter;
         
-        public NativeMethod(MethodInfo method, Func<Task, object> asyncResultWaiter)
+        public NativeMethod(MethodInfo method, Func<Task, object> asyncResultGetter)
         {
             _method = method;
-            _asyncResultWaiter = asyncResultWaiter;
+            _asyncResultGetter = asyncResultGetter;
         }
 
-        public bool IsAsync => _asyncResultWaiter != null;
+        public bool IsAsync => _asyncResultGetter != null;
         
         public object Execute(object targetObj, object[] args, JavascriptObjectMethodCallHandler methodHandler = null)
         {
@@ -34,9 +34,9 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             return _method.Invoke(targetObj, convertedArgs);
         }
 
-        public Func<object> GetResultWaiter(Task task)
+        public object GetResult(Task task)
         {
-            return () => _asyncResultWaiter(task);
+            return _asyncResultGetter(task);
         }
 
         private static object[] ConvertArguments(MethodInfo method, object[] args)
