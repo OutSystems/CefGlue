@@ -24,15 +24,15 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             var frame = args.Frame;
             var callId = message.CallId;
             
-            var nativeObject = _objectRegistry.Get(message.ObjectName ?? "");
-            if (nativeObject == null)
+            var nativeObjectInfo = _objectRegistry.Get(message.ObjectName ?? "");
+            if (nativeObjectInfo == null)
             {
                 SendResult(callId, null, $"Object named {message.ObjectName} was not found. Make sure it was registered before.", frame);
                 return;
             }
             
-            var nativeMethod = nativeObject.GetNativeMethod(message.MemberName ?? "");
-            if (nativeMethod == null)
+            var nativeMethodInfo = nativeObjectInfo.GetNativeMethod(message.MemberName ?? "");
+            if (nativeMethodInfo == null)
             {
                 SendResult(callId, null, $"Object does not have a {message.MemberName} method.", frame);
                 return;
@@ -42,8 +42,25 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             Exception exception = null;
             try
             {
-                result = nativeMethod.Execute(nativeObject.Target, message.ArgumentsOut, nativeObject.MethodHandler);
-                if (result != null && nativeMethod.IsAsync)
+                NativeMethod actualNativeMethodCalled;
+                var targetObject = nativeObjectInfo.Target;
+                var methodArgs = message.ArgumentsOut;
+                 
+                if (nativeObjectInfo.MethodHandler != null)
+                {
+                    // execute the interceptor method and pass the call to the original method as argument
+                    var methodCall = nativeMethodInfo.MakeDelegate(targetObject, methodArgs);
+                    result = nativeObjectInfo.MethodHandler(methodCall);
+                    actualNativeMethodCalled = nativeObjectInfo.MethodHandlerInfo;
+                }
+                else
+                {
+                    // execute the target method
+                    result = nativeMethodInfo.Execute(targetObject, methodArgs);
+                    actualNativeMethodCalled = nativeMethodInfo;
+                }
+                
+                if (result != null && actualNativeMethodCalled.IsAsync)
                 {
                     // if the method is async (ie returns a task), the following continuation
                     // will execute on another thread, and the current (single) thread will be freed
@@ -52,7 +69,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                     {
                         using (CefObjectTracker.StartTracking())
                         {
-                            var taskResult = t.IsFaulted ? null : nativeMethod.GetResult(t);
+                            var taskResult = t.IsFaulted ? null : actualNativeMethodCalled.GetResult(t);
                             SendResult(callId, taskResult, t.Exception?.Message, frame);
                         }
                     });

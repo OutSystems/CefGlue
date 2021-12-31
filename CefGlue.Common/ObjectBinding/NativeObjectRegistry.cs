@@ -18,7 +18,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         /// <param name="obj"></param>
         /// <param name="name"></param>
         /// <returns>True if the object was successfully registered, false if the object was already registered before.</returns>
-        public bool Register(object obj, string name, JavascriptObjectMethodCallHandler methodHandler = null)
+        public bool Register(object obj, string name, MethodCallHandler methodHandler = null)
         {
             if (_registeredObjects.ContainsKey(name))
             {
@@ -26,8 +26,9 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             }
 
             var objectMembers = NativeObjectAnalyser.AnalyseObjectMembers(obj);
-
-            var nativeObj = new NativeObject(name, obj, objectMembers, methodHandler);
+            var methodHandlerNativeMethod = methodHandler != null ? NativeObjectAnalyser.ToNativeMethod(methodHandler) : null;
+            
+            var nativeObj = new NativeObject(name, obj, objectMembers, (methodHandlerNativeMethod, methodHandler));
 
             lock (_registrationSyncRoot)
             {

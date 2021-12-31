@@ -3,35 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
     internal class NativeMethod
     {
-        private readonly MethodInfo _method;
+        private readonly MethodInfo _methodInfo;
         private readonly Func<Task, object> _asyncResultGetter;
         
-        public NativeMethod(MethodInfo method, Func<Task, object> asyncResultGetter)
+        public NativeMethod(MethodInfo methodInfo, Func<Task, object> asyncResultGetter)
         {
-            _method = method;
+            _methodInfo = methodInfo;
             _asyncResultGetter = asyncResultGetter;
         }
 
         public bool IsAsync => _asyncResultGetter != null;
         
-        public object Execute(object targetObj, object[] args, JavascriptObjectMethodCallHandler methodHandler = null)
+        public Func<object> MakeDelegate(object targetObj, object[] args)
         {
-            var convertedArgs = ConvertArguments(_method, args);
+            var convertedArgs = ConvertArguments(_methodInfo, args);
 
-            if (methodHandler != null)
-            {
-                return methodHandler(() => _method.Invoke(targetObj, convertedArgs));
-            }
+            return () => _methodInfo.Invoke(targetObj, convertedArgs);
+        }
+        
+        public object Execute(object targetObj, object[] args)
+        {
+            var convertedArgs = ConvertArguments(_methodInfo, args);
 
             // TODO improve call perf
-            return _method.Invoke(targetObj, convertedArgs);
+            return _methodInfo.Invoke(targetObj, convertedArgs);
         }
 
         public object GetResult(Task task)

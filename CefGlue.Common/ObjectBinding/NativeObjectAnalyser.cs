@@ -15,6 +15,12 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                           .ToDictionary(m => m.JavascriptName, m => new NativeMethod(m.Member, GetAsyncResultGetter(m.Member)));
         }
 
+        public static NativeMethod ToNativeMethod(Delegate @delegate)
+        {
+            var method = @delegate.Method;
+            return new NativeMethod(method, GetAsyncResultGetter(method));
+        }
+
         /// <summary>
         /// Create an helper function to obtain the result from Tasks.
         /// </summary>

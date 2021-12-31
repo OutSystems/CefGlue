@@ -7,6 +7,7 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Xilium.CefGlue.Avalonia;
 
 namespace Xilium.CefGlue.Demo.Avalonia
@@ -27,6 +28,25 @@ namespace Xilium.CefGlue.Demo.Avalonia
             browser.LoadStart += OnBrowserLoadStart;
             browser.TitleChanged += OnBrowserTitleChanged;
             browserWrapper.Child = browser;
+        }
+
+        static Task<object> AsyncCallNativeMethod(Func<object> nativeMethod)
+        {
+            return Task.Run(() =>
+            {
+                var result = nativeMethod.Invoke();
+                if (result is Task task)
+                {
+                    if (task.GetType().IsGenericType)
+                    {
+                        return ((dynamic) task).Result;
+                    }
+
+                    return task;
+                }
+
+                return result;
+            });
         }
 
         public event Action<string> TitleChanged;
@@ -87,7 +107,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             const string TestObject = "dotNetObject";
 
             var obj = new BindingTestClass();
-            browser.RegisterJavascriptObject(obj, "dotNetObject");
+            browser.RegisterJavascriptObject(obj, TestObject, AsyncCallNativeMethod);
 
             var methods = obj.GetType().GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public)
                                        .Where(m => m.GetParameters().Length == 0)
