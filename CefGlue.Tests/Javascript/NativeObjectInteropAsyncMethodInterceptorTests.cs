@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace CefGlue.Tests.Javascript
 {
-    public class NativeObjectInteropAsyncMethodInterceptorTests : NativeObjectInteropTests
+    /*public class NativeObjectInteropAsyncMethodInterceptorTests : NativeObjectInteropTests
     {
         protected override void RegisterObject()
         {
@@ -15,5 +15,5 @@ namespace CefGlue.Tests.Javascript
         {
             return Task.Run(originalMethod);
         }
-    }
+    }*/
 }
