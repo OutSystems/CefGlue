@@ -63,12 +63,12 @@ namespace CefGlue.Tests.Javascript
             return method.Execute(nativeTestObject, args);
         }
         
-        private Func<object> ExecuteAsyncMethod(string name, object[] args)
+        private object ExecuteAsyncMethod(string name, object[] args)
         {
             var method = nativeObjectInfo.GetNativeMethod(name);
             var result = method.Execute(nativeTestObject, args);
             Assert.IsInstanceOf<Task>(result);
-            return method.GetResultWaiter((Task) result);
+            return method.GetResult((Task) result);
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace CefGlue.Tests.Javascript
         {
             var token = new Token();
             var result = ExecuteAsyncMethod("asyncMethod", new [] { token });
-            Assert.IsNull(result());
+            Assert.IsNull(result);
             Assert.IsTrue(token.Executed);
         }
         
@@ -91,7 +91,7 @@ namespace CefGlue.Tests.Javascript
         public void AsyncMethodWithReturnIsExecuted()
         {
             var result = ExecuteAsyncMethod("asyncMethodWithReturn", new object[0]);
-            Assert.AreEqual(nativeTestObject.AsyncMethodWithReturn().Result, result());
+            Assert.AreEqual(nativeTestObject.AsyncMethodWithReturn().Result, result);
         }
 
         [Test]

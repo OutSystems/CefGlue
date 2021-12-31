@@ -12,13 +12,13 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         {
             var methods = obj.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public).Where(m => !m.IsSpecialName);
             return methods.Select(m => new { Member = m, JavascriptName = m.Name.Substring(0, 1).ToLowerInvariant() + m.Name.Substring(1) })
-                          .ToDictionary(m => m.JavascriptName, m => new NativeMethod(m.Member, GetAsyncResultWaiter(m.Member)));
+                          .ToDictionary(m => m.JavascriptName, m => new NativeMethod(m.Member, GetAsyncResultGetter(m.Member)));
         }
 
         /// <summary>
         /// Create an helper function to obtain the result from Tasks.
         /// </summary>
-        private static Func<Task, object> GetAsyncResultWaiter(MethodInfo method)
+        private static Func<Task, object> GetAsyncResultGetter(MethodInfo method)
         {
             var returnType = method.ReturnType;
             if (typeof(Task).IsAssignableFrom(returnType))
@@ -31,11 +31,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 }
                 
                 // non-generic Task
-                return (task) =>
-                {
-                    task.Wait();
-                    return null;
-                };
+                return (task) => null;
             }
 
             return null;

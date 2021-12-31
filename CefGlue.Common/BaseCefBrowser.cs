@@ -234,13 +234,6 @@ namespace Xilium.CefGlue.Common
         public CefBrowserSettings Settings => _adapter.Settings;
 
         /// <summary>
-        /// Specifies the maximium number of calls that can be made simultaneously to native object async methods.
-        /// Note: Sync method calls cannot be parallelized, only methods that return Task or Task<>. 
-        /// Defaults to the int.MaxValue.
-        /// </summary>
-        public int MaxNativeMethodsParallelCalls { get => _adapter.MaxNativeMethodsParallelCalls; set => _adapter.MaxNativeMethodsParallelCalls = value; }
-
-        /// <summary>
         /// Get or set the current zoom level. The default zoom level is 0.0.
         /// </summary>
         public double ZoomLevel { get => _adapter.ZoomLevel; set => _adapter.ZoomLevel = value; }
