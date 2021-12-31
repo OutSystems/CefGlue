@@ -52,6 +52,11 @@ namespace CefGlue.Tests.Javascript
                 return Task.FromResult("this is the result");
             }
             
+            public Task AsyncMethodReturnException()
+            {
+                return Task.FromException(new Exception("error"));
+            }
+            
             public string MethodWithReturn()
             {
                 return "this is the result";
@@ -174,7 +179,7 @@ namespace CefGlue.Tests.Javascript
 
             waitHandle.WaitOne();
             Assert.AreEqual(CallsCount, calls.Count, "Number of calls dont match");
-            for (int i = 1; i <= CallsCount; i++)
+            for (var i = 1; i <= CallsCount; i++)
             {
                 Assert.AreEqual(i, calls[i-1], "Call order failed");
             }
@@ -191,6 +196,19 @@ namespace CefGlue.Tests.Javascript
             var result = await taskCompletionSource.Task;
 
             Assert.AreEqual(nativeObject.AsyncMethod(0).Result, result[0]);
+        }
+        
+        [Test]
+        public async Task NativeObjectAsyncMethodExceptionIsReturned()
+        {
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
+
+            Execute($"{ObjName}.asyncMethodReturnException().catch(r => {ObjName}.methodWithParams(r, 0));");
+
+            var result = await taskCompletionSource.Task;
+
+            Assert.AreEqual(nativeObject.AsyncMethodReturnException().Exception.Message, result[0]);
         }
     }
 }
