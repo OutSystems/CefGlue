@@ -14,26 +14,27 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         {
             _objectRegistry = objectRegistry;
                 
-            dispatcher.RegisterMessageHandler(Messages.NativeObjectCallRequest.Name, HandleNativeObjectCallRequest);
+            dispatcher.RegisterMessageHandler(Messages.NativeObjectCallRequest.Name, HandleNativeObjectCall);
         }
 
-        private void HandleNativeObjectCallRequest(MessageReceivedEventArgs args)
+        private void HandleNativeObjectCall(MessageReceivedEventArgs args)
         {
             // message and arguments must be deserialized at this point because it will be disposed after
             var message = Messages.NativeObjectCallRequest.FromCefMessage(args.Message);
+            var frame = args.Frame;
             var callId = message.CallId;
             
             var nativeObject = _objectRegistry.Get(message.ObjectName ?? "");
             if (nativeObject == null)
             {
-                SendResult(callId, null, $"Object named {message.ObjectName} was not found. Make sure it was registered before.", args.Frame);
+                SendResult(callId, null, $"Object named {message.ObjectName} was not found. Make sure it was registered before.", frame);
                 return;
             }
             
             var nativeMethod = nativeObject.GetNativeMethod(message.MemberName ?? "");
             if (nativeMethod == null)
             {
-                SendResult(callId, null, $"Object does not have a {message.MemberName} method.", args.Frame);
+                SendResult(callId, null, $"Object does not have a {message.MemberName} method.", frame);
                 return;
             }
             
@@ -52,7 +53,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                         using (CefObjectTracker.StartTracking())
                         {
                             var taskResult = t.IsFaulted ? null : nativeMethod.GetResult(t);
-                            SendResult(callId, taskResult, t.Exception?.Message, args.Frame);
+                            SendResult(callId, taskResult, t.Exception?.Message, frame);
                         }
                     });
                     return;
@@ -63,7 +64,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 exception = e;
             }
             
-            SendResult(callId, result, exception?.Message, args.Frame);
+            SendResult(callId, result, exception?.Message, frame);
         }
 
         private static void SendResult(int callId, object result, string exceptionMessage, CefFrame frame) 

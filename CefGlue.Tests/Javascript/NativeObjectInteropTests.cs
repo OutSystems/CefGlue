@@ -173,10 +173,10 @@ namespace CefGlue.Tests.Javascript
             Execute(script);
 
             waitHandle.WaitOne();
-            Assert.AreEqual(CallsCount, calls.Count);
+            Assert.AreEqual(CallsCount, calls.Count, "Number of calls dont match");
             for (int i = 1; i <= CallsCount; i++)
             {
-                Assert.AreEqual(i, calls[i]);
+                Assert.AreEqual(i, calls[i-1], "Call order failed");
             }
         }
         
@@ -186,7 +186,7 @@ namespace CefGlue.Tests.Javascript
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
 
-            Execute($"{ObjName}.asyncMethod().then(r => {ObjName}.methodWithParams(r, 0));");
+            Execute($"{ObjName}.asyncMethod(0).then(r => {ObjName}.methodWithParams(r, 0));");
 
             var result = await taskCompletionSource.Task;
 
