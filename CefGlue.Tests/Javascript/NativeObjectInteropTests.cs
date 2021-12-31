@@ -9,17 +9,17 @@ namespace CefGlue.Tests.Javascript
 {
     public class NativeObjectInteropTests : TestBase
     {
-        const string ObjName = "nativeObj";
+        protected const string ObjName = "nativeObj";
 
-        private NativeObject nativeObject;
+        protected NativeObject nativeObject;
 
-        class Person
+        protected class Person
         {
             public string Name = null;
             public int Age = 0;
         }
 
-        class NativeObject
+        protected class NativeObject
         {
             public event Action TestCalled;
 
@@ -73,13 +73,18 @@ namespace CefGlue.Tests.Javascript
         {
             Browser.ExecuteJavaScript("(function() { " + script + " })()");
         }
+        
+        protected override async Task ExtraSetup()
+        {
+            RegisterObject();
+            await Load();
+            await base.ExtraSetup();
+        }
 
-        protected async override Task ExtraSetup()
+        protected virtual void RegisterObject()
         {
             nativeObject = new NativeObject();
             Browser.RegisterJavascriptObject(nativeObject, ObjName);
-            await Load();
-            await base.ExtraSetup();
         }
 
         [Test]
