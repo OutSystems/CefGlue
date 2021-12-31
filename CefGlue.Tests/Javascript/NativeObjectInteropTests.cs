@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -144,25 +146,38 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public async Task NativeObjectAsyncMethodsCanExecuteSimultaneously()
         {
-            var taskCompletionSource = new TaskCompletionSource<string>();
+            const int CallsCount = 10;
+
+            var waitHandle = new ManualResetEvent(false);
             var calls = new List<int>();
             nativeObject.AsyncMethodCalled += (arg) =>
             {
                 calls.Add(arg);
-                if (calls.Count >= 2)
+
+                return Task.Run(() =>
                 {
-                    taskCompletionSource.SetResult("done");
-                }
+                    if (calls.Count < CallsCount)
+                    {
+                        waitHandle.WaitOne();
+                    }
+                    else
+                    {
+                        waitHandle.Set();
+                    }
 
-                return taskCompletionSource.Task;
+                    return "done";
+                });
             };
-            
-            Execute($"{ObjName}.asyncMethod(1); {ObjName}.asyncMethod(2);");
 
-            var result = await taskCompletionSource.Task;
-            Assert.AreEqual(2, calls.Count);
-            Assert.AreEqual(1, calls[0]);
-            Assert.AreEqual(2, calls[1]);
+            var script = string.Join("", Enumerable.Range(1, CallsCount).Select(i => $"{ObjName}.asyncMethod({i});"));
+            Execute(script);
+
+            waitHandle.WaitOne();
+            Assert.AreEqual(CallsCount, calls.Count);
+            for (int i = 1; i <= CallsCount; i++)
+            {
+                Assert.AreEqual(i, calls[i]);
+            }
         }
         
         [Test]
