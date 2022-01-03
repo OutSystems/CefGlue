@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Xilium.CefGlue.Common.ObjectBinding;
@@ -42,36 +43,33 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public void CRLObjectInstanceMethodsAreCaptured()
         {
-            var members = NativeObjectAnalyser.AnalyseObjectMembers(new object());
+            var members = new HashSet<string>(new NativeObject("", new object()).MethodsNames);
 
-            Assert.IsTrue(members.ContainsKey("toString"));
-            Assert.IsTrue(members.ContainsKey("getHashCode"));
-            Assert.IsTrue(members.ContainsKey("getType"));
-            Assert.IsTrue(members.ContainsKey("equals"));
+            Assert.IsTrue(members.Contains("toString"));
+            Assert.IsTrue(members.Contains("getHashCode"));
+            Assert.IsTrue(members.Contains("getType"));
+            Assert.IsTrue(members.Contains("equals"));
         }
         
         [Test]
         public void CustomObjectInstanceMethodsAreCaptured()
         {
-            var members = NativeObjectAnalyser.AnalyseObjectMembers(new CustomObject());
+            var members = new HashSet<string>(new NativeObject("", new CustomObject()).MethodsNames);
 
             Assert.AreEqual(7, members.Count); // object members + 3 public methods
-            Assert.IsTrue(members.ContainsKey("toString"));
-            Assert.IsTrue(members.ContainsKey("getHashCode"));
-            Assert.IsTrue(members.ContainsKey("getType"));
-            Assert.IsTrue(members.ContainsKey("equals"));
+            Assert.IsTrue(members.Contains("toString"));
+            Assert.IsTrue(members.Contains("getHashCode"));
+            Assert.IsTrue(members.Contains("getType"));
+            Assert.IsTrue(members.Contains("equals"));
             
             members.TryGetValue("methodWithParams", out var method);
             Assert.IsNotNull(method);
-            Assert.IsFalse(method.IsAsync);
             
             members.TryGetValue("asyncMethod", out var asyncMethod);
             Assert.IsNotNull(asyncMethod);
-            Assert.IsTrue(asyncMethod.IsAsync);
             
             members.TryGetValue("asyncGenericMethod", out var asyncGenericMethod);
             Assert.IsNotNull(asyncGenericMethod);
-            Assert.IsTrue(asyncGenericMethod.IsAsync);
         }
     }
 }

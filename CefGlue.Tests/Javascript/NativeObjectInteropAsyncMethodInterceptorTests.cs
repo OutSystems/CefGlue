@@ -13,21 +13,10 @@ namespace CefGlue.Tests.Javascript
 
         private Task<object> Intercept(Func<object> originalMethod)
         {
-            return Task.Run(() =>
-            {
-                var result = originalMethod.Invoke();
-                if (result is Task task)
-                {
-                    if (task.GetType().IsGenericType)
-                    {
-                        return ((dynamic) task).Result;
-                    }
+            var result = originalMethod.Invoke();
 
-                    return task;
-                }
-
-                return result;
-            });
+            // simulate an async interceptor
+            return Task.Run(() => result);
         }
     }
 }

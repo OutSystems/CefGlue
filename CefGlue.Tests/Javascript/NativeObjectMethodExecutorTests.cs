@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -48,27 +48,45 @@ namespace CefGlue.Tests.Javascript
         }
 
         private NativeTestObject nativeTestObject = new NativeTestObject();
-        private NativeObject nativeObjectInfo;
+        private NativeObject nativeObject;
 
         [OneTimeSetUp]
         protected void Setup()
         {
-            var objectMembers = NativeObjectAnalyser.AnalyseObjectMembers(nativeTestObject);
-            nativeObjectInfo = new NativeObject("test", nativeTestObject, objectMembers);
+            nativeObject = new NativeObject("test", nativeTestObject);
         }
 
         private object ExecuteMethod(string name, object[] args)
         {
-            var method = nativeObjectInfo.GetNativeMethod(name);
-            return method.Execute(nativeTestObject, args);
+            object result = null;
+            Exception exception = null;
+            nativeObject.ExecuteMethod(name, args, (r, e) =>
+            {
+                result = r;
+                exception = e;
+            });
+            if (exception != null)
+            {
+                throw exception;
+            }
+            return result;
         }
         
-        private object ExecuteAsyncMethod(string name, object[] args)
+        private Task<object> ExecuteAsyncMethod(string name, object[] args)
         {
-            var method = nativeObjectInfo.GetNativeMethod(name);
-            var result = method.Execute(nativeTestObject, args);
-            Assert.IsInstanceOf<Task>(result);
-            return method.GetResult((Task) result);
+            var tcs = new TaskCompletionSource<object>();
+            nativeObject.ExecuteMethod(name, args, (r, e) =>
+            {
+                if (e != null)
+                {
+                    tcs.SetException(e);
+                } 
+                else
+                {
+                    tcs.SetResult(r);
+                }
+            });
+            return tcs.Task;
         }
 
         [Test]
@@ -83,7 +101,7 @@ namespace CefGlue.Tests.Javascript
         {
             var token = new Token();
             var result = ExecuteAsyncMethod("asyncMethod", new [] { token });
-            Assert.IsNull(result);
+            Assert.IsNull(result.Result);
             Assert.IsTrue(token.Executed);
         }
         
@@ -91,7 +109,7 @@ namespace CefGlue.Tests.Javascript
         public void AsyncMethodWithReturnIsExecuted()
         {
             var result = ExecuteAsyncMethod("asyncMethodWithReturn", new object[0]);
-            Assert.AreEqual(nativeTestObject.AsyncMethodWithReturn().Result, result);
+            Assert.AreEqual(nativeTestObject.AsyncMethodWithReturn().Result, result.Result);
         }
 
         [Test]
