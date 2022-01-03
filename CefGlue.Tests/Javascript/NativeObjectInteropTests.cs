@@ -52,7 +52,12 @@ namespace CefGlue.Tests.Javascript
                 }
                 return Task.FromResult("this is the result");
             }
-            
+
+            public object MethodReturnException()
+            {
+                throw new Exception("error");
+            }
+
             public Task AsyncMethodReturnException()
             {
                 return Task.FromException(new Exception("error"));
@@ -98,7 +103,7 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public async Task NativeObjectMethodIsCalled()
+        public async Task MethodIsCalled()
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             nativeObject.TestCalled += () => taskCompletionSource.SetResult(true);
@@ -107,7 +112,7 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public async Task NativeObjectMethodParamsArePassed()
+        public async Task MethodParamsArePassed()
         {
             const string Arg1 = "test";
             const int Arg2 = 5;
@@ -125,7 +130,7 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public async Task NativeObjectMethodWithObjectParamIsPassed()
+        public async Task MethodWithObjectParamIsPassed()
         {
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithObjectParamCalled += (args) => taskCompletionSource.SetResult(args);
@@ -155,7 +160,7 @@ namespace CefGlue.Tests.Javascript
         }
         
         [Test]
-        public void NativeObjectAsyncMethodsCanExecuteSimultaneously()
+        public void AsyncMethodsCanExecuteSimultaneously()
         {
             const int CallsCount = 10;
 
@@ -192,7 +197,7 @@ namespace CefGlue.Tests.Javascript
         }
         
         [Test]
-        public async Task NativeObjectAsyncMethodResultIsReturned()
+        public async Task AsyncMethodResultIsReturned()
         {
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
@@ -203,9 +208,23 @@ namespace CefGlue.Tests.Javascript
 
             Assert.AreEqual(nativeObject.AsyncMethod(0).Result, result[0]);
         }
-        
+
         [Test]
-        public async Task NativeObjectAsyncMethodExceptionIsReturned()
+        public async Task MethodExceptionIsReturned()
+        {
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
+
+            Execute($"{ObjName}.methodReturnException().catch(r => {ObjName}.methodWithParams(r, 0));");
+
+            var result = await taskCompletionSource.Task;
+
+            var msg = Assert.Throws<Exception>(() => nativeObject.MethodReturnException()).Message;
+            Assert.AreEqual(msg, result[0]);
+        }
+
+        [Test]
+        public async Task AsyncMethodExceptionIsReturned()
         {
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);

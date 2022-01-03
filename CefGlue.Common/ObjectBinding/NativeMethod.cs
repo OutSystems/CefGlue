@@ -37,7 +37,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 var convertedArgs = ConvertArguments(args);
                 result = ExecuteMethod(targetObj, convertedArgs);
-            }
+            } 
             catch (Exception e)
             {
                 exception = e;
@@ -59,8 +59,15 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
         private object ExecuteMethod(object targetObj, object[] args)
         {
-            // TODO improve call perf
-            return _methodInfo.Invoke(targetObj, args);
+            try
+            {
+                // TODO improve call perf
+                return _methodInfo.Invoke(targetObj, args);
+            }
+            catch (TargetInvocationException e)
+            {
+                throw e.InnerException ?? e;
+            }
         }
 
         private object[] ConvertArguments(object[] args)
