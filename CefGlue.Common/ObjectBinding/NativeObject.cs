@@ -23,7 +23,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             if (methodHandler != null)
             {
                 _methodHandler = new NativeMethod(methodHandler.Method);
-                _methodHandlerTarget = methodHandler?.Target;
+                _methodHandlerTarget = methodHandler.Target;
             }
         }
 

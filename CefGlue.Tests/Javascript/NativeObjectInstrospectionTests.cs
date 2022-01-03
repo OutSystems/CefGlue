@@ -12,28 +12,13 @@ namespace CefGlue.Tests.Javascript
         {
             public event Action<object[]> MethodWithParamsCalled;
 
-            public void MethodWithParams(string param1, int param2)
-            {
-                MethodWithParamsCalled?.Invoke(new object[] { param1, param2 });
-            }
-
-            public Task<string> AsyncGenericMethod()
-            {
-                return Task.FromResult(string.Empty);
-            }
+            public void MethodWithParams(string param1, int param2) => MethodWithParamsCalled?.Invoke(new object[] { param1, param2 });
             
-            public Task AsyncMethod()
-            {
-                return Task.CompletedTask;
-            }
+            public Task AsyncMethod() => Task.CompletedTask;
             
-            public static void StaticMethod()
-            {
-            }
+            public static void StaticMethod() { }
 
-            private void PrivateMethod()
-            {
-            }
+            private void PrivateMethod() { }
 
             public string PublicProperty => "";
             
@@ -56,20 +41,13 @@ namespace CefGlue.Tests.Javascript
         {
             var members = new HashSet<string>(new NativeObject("", new CustomObject()).MethodsNames);
 
-            Assert.AreEqual(7, members.Count); // object members + 3 public methods
+            Assert.AreEqual(6, members.Count); // object members + 2 public methods
             Assert.IsTrue(members.Contains("toString"));
             Assert.IsTrue(members.Contains("getHashCode"));
             Assert.IsTrue(members.Contains("getType"));
             Assert.IsTrue(members.Contains("equals"));
-            
-            members.TryGetValue("methodWithParams", out var method);
-            Assert.IsNotNull(method);
-            
-            members.TryGetValue("asyncMethod", out var asyncMethod);
-            Assert.IsNotNull(asyncMethod);
-            
-            members.TryGetValue("asyncGenericMethod", out var asyncGenericMethod);
-            Assert.IsNotNull(asyncGenericMethod);
+            Assert.IsTrue(members.Contains("methodWithParams"));
+            Assert.IsTrue(members.Contains("asyncMethod"));
         }
     }
 }
