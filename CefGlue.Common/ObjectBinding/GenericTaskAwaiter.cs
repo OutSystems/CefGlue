@@ -7,10 +7,11 @@ namespace Xilium.CefGlue.Common.ObjectBinding
     internal static class GenericTaskAwaiter
     {
         private static readonly ConcurrentDictionary<Type, Func<Task, object>> _taskResultMethods = new ConcurrentDictionary<Type, Func<Task, object>>();
+        private static readonly Func<Task, object> _noop = t => null;
 
         static GenericTaskAwaiter()
         {
-            _taskResultMethods.TryAdd(Task.CompletedTask.GetType(), t => null);
+            _taskResultMethods.TryAdd(Task.CompletedTask.GetType(), _noop);
         }
 
         public static (object Result, Exception Exception) GetResultFrom(Task task)
@@ -47,7 +48,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 }
 
                 // non-generic Task
-                return (task) => null;
+                return _noop;
             }
 
             throw new ArgumentException("Expected a Task type", nameof(taskType));
