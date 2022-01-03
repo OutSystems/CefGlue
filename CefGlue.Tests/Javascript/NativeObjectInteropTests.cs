@@ -154,7 +154,7 @@ namespace CefGlue.Tests.Javascript
         }
         
         [Test]
-        public async Task NativeObjectAsyncMethodsCanExecuteSimultaneously()
+        public void NativeObjectAsyncMethodsCanExecuteSimultaneously()
         {
             const int CallsCount = 10;
 

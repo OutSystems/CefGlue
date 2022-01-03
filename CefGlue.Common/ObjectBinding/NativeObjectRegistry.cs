@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xilium.CefGlue.Common.Events;
@@ -24,11 +24,8 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 return false;
             }
-
-            var objectMembers = NativeObjectAnalyser.AnalyseObjectMembers(obj);
-            var methodHandlerNativeMethod = methodHandler != null ? NativeObjectAnalyser.ToNativeMethod(methodHandler) : null;
             
-            var nativeObj = new NativeObject(name, obj, objectMembers, (methodHandlerNativeMethod, methodHandler));
+            var nativeObj = new NativeObject(name, obj, methodHandler);
 
             lock (_registrationSyncRoot)
             {
