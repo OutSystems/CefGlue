@@ -14,7 +14,12 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             "        " + PromiseFactoryFunctionName + ": function() {" +
             "            let result = {};" +
             "            let promise = new Promise(function(resolve, reject) {" +
-            "                result.resolve = resolve;" +
+            "                result.resolve = function(result) {" +
+            "                    console.time('parse');" +          
+            "                    let innerResult = (result === undefined || result === null) ? result : JSON.parse(result);" +
+            "                    console.timeEnd('parse');" +    
+            "                    resolve(innerResult);" +
+            "                };" +
             "                result.reject = reject;" +
             "            });" +
             "            result.promise = promise;" +

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization
 {
@@ -37,6 +38,13 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 return;
             }
 
+            var json = JsonSerializer.Serialize(value, new JsonSerializerOptions()
+            {
+             IncludeFields   = true
+            });
+            cefValue.SetString(json);
+            return;
+            
             var typeCode = Type.GetTypeCode(value.GetType());
 
             switch (typeCode)

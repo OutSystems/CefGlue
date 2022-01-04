@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
@@ -18,6 +19,15 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         }
 
         private void HandleNativeObjectCall(MessageReceivedEventArgs args)
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            InnerHandleNativeObjectCall(args);
+            stopwatch.Stop();
+            Console.WriteLine("HandleNativeObjectCall: " + stopwatch.ElapsedMilliseconds);
+        }
+        
+        private void InnerHandleNativeObjectCall(MessageReceivedEventArgs args)
         {
             // message and arguments must be deserialized at this point because it will be disposed after
             var message = Messages.NativeObjectCallRequest.FromCefMessage(args.Message);
@@ -100,7 +110,11 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 try
                 {
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
                     CefValueSerialization.Serialize(result, resultMessage.Result);
+                    stopwatch.Stop();
+                    Console.WriteLine("serialization: " + stopwatch.ElapsedMilliseconds);
                 }
                 catch (Exception e)
                 {

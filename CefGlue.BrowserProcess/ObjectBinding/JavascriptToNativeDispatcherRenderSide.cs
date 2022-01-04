@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.Shared.Helpers;
@@ -103,6 +104,9 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         private void HandleNativeObjectCallResult(MessageReceivedEventArgs args)
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            
             var message = Messages.NativeObjectCallResult.FromCefMessage(args.Message);
             if (_pendingCalls.TryRemove(message.CallId, out var promiseHolder))
             {
@@ -113,7 +117,11 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     {
                         if (message.Success)
                         {
+                            var innerstopwatch = new Stopwatch();
+                            innerstopwatch.Start();
                             var value = V8ValueSerialization.SerializeCefValue(message.Result);
+                            innerstopwatch.Stop();
+                            System.IO.File.AppendAllText("/Users/jmn/Temp/cefglue.txt", "SerializeCefValue:  " + innerstopwatch.ElapsedMilliseconds + Environment.NewLine);
                             resolve(value);
                         }
                         else
@@ -124,6 +132,9 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     });
                 }
             }
+            
+            stopwatch.Stop();
+            System.IO.File.AppendAllText("/Users/jmn/Temp/cefglue.txt", "HandleNativeObjectCallResult: " + stopwatch.ElapsedMilliseconds + Environment.NewLine);
         }
 
         public void HandleContextCreated(CefV8Context context, bool isMain)
