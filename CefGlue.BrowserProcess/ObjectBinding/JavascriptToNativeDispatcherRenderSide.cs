@@ -121,7 +121,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                             innerstopwatch.Start();
                             var value = V8ValueSerialization.SerializeCefValue(message.Result);
                             innerstopwatch.Stop();
-                            System.IO.File.AppendAllText("/Users/jmn/Temp/cefglue.txt", "SerializeCefValue:  " + innerstopwatch.ElapsedMilliseconds + Environment.NewLine);
+                            System.IO.File.AppendAllText("cefglue.txt", "SerializeCefValue:  " + innerstopwatch.ElapsedMilliseconds + Environment.NewLine);
                             resolve(value);
                         }
                         else
@@ -134,7 +134,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             }
             
             stopwatch.Stop();
-            System.IO.File.AppendAllText("/Users/jmn/Temp/cefglue.txt", "HandleNativeObjectCallResult: " + stopwatch.ElapsedMilliseconds + Environment.NewLine);
+            System.IO.File.AppendAllText("cefglue.txt", "HandleNativeObjectCallResult: " + stopwatch.ElapsedMilliseconds + Environment.NewLine);
         }
 
         public void HandleContextCreated(CefV8Context context, bool isMain)
