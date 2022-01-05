@@ -15,6 +15,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             {
                 items[i] = new InnerObject()
                 {
+                    Date = DateTime.Now,
                     Name = "random string " + i, Value = i,
                     Name1 = "random string " + i, Value1 = i,
                     Name2 = "random string " + i, Value2 = i,
@@ -31,6 +32,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
         
         public class InnerObject
         {
+            public DateTime Date;
             public string Name;
             public int Value;
             public string Name1;

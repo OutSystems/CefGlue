@@ -7,12 +7,12 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
 {
     internal static class V8ValueSerialization
     {
-        public static void SerializeV8Object(CefV8Value obj, CefValueWrapper cefValue)
+        public static void SerializeV8ObjectToCefValue(CefV8Value obj, CefValueWrapper cefValue)
         {
-            SerializeV8Object(obj, cefValue, new Stack<CefV8Value>());
+            SerializeV8ObjectToCefValue(obj, cefValue, new Stack<CefV8Value>());
         }
 
-        private static void SerializeV8Object(CefV8Value obj, CefValueWrapper cefValue, Stack<CefV8Value> visitedObjects)
+        private static void SerializeV8ObjectToCefValue(CefV8Value obj, CefValueWrapper cefValue, Stack<CefV8Value> visitedObjects)
         {
             if (visitedObjects.Any(o => o.IsSame(obj)))
             {
@@ -60,7 +60,7 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                     {
                         for (var i = 0; i < arrLength; i++)
                         {
-                            SerializeV8Object(obj.GetValue(keys[i]), new CefListWrapper(cefList, i), visitedObjects);
+                            SerializeV8ObjectToCefValue(obj.GetValue(keys[i]), new CefListWrapper(cefList, i), visitedObjects);
                         }
 
                         cefValue.SetList(cefList);
@@ -89,7 +89,7 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                         {
                             if (obj.HasValue(key))
                             {
-                                SerializeV8Object(obj.GetValue(key), new CefDictionaryWrapper(cefDictionary, key), visitedObjects);
+                                SerializeV8ObjectToCefValue(obj.GetValue(key), new CefDictionaryWrapper(cefDictionary, key), visitedObjects);
                             }
                         }
                         cefValue.SetDictionary(cefDictionary);
