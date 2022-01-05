@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization
 {
@@ -14,12 +15,13 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             Binary
         }
 
-        public static void Serialize(object value, CefValueWrapper cefValue)
+        private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
         {
-            Serialize(value, new Stack<object>(), cefValue);
-        }
-
-        private static void Serialize(object value, Stack<object> visitedObjects, CefValueWrapper cefValue)
+            Converters = { new StringJsonConverter(), new DateTimeJsonConverter() },
+            IncludeFields = true
+        };
+        
+        public static void Serialize(object value, CefValueWrapper cefValue)
         {
             if (value == null)
             {
@@ -42,16 +44,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             switch (typeCode)
             {
                 case TypeCode.Object:
-                    if (visitedObjects.Any(o => o == value))
-                    {
-                        throw new InvalidOperationException("Cycle found in result");
-                    }
-
-                    visitedObjects.Push(value);
-
-                    SerializeComplexObject(value, visitedObjects, cefValue);
-
-                    visitedObjects.Pop();
+                case TypeCode.String: // string and objects are handled as json
+                    SerializeComplexObject(value, cefValue);
                     break;
 
                 case TypeCode.Boolean:
@@ -85,7 +79,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     break;
 
                 case TypeCode.Single:
-                    cefValue.SetDouble((double)(float)value);
+                    cefValue.SetDouble((float)value);
                     break;
 
                 case TypeCode.Empty:
@@ -93,7 +87,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     break;
 
                 case TypeCode.Int16:
-                    cefValue.SetInt((int)(short)value);
+                    cefValue.SetInt((short)value);
                     break;
 
                 case TypeCode.Int32:
@@ -101,11 +95,11 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     break;
 
                 case TypeCode.Int64:
-                    cefValue.SetDouble((double)(long)value);
+                    cefValue.SetDouble((long)value);
                     break;
 
                 case TypeCode.UInt16:
-                    cefValue.SetInt((int)(ushort)value);
+                    cefValue.SetInt((ushort)value);
                     break;
 
                 case TypeCode.UInt32:
@@ -113,22 +107,22 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     break;
 
                 case TypeCode.UInt64:
-                    cefValue.SetDouble((double)(ulong)value);
+                    cefValue.SetDouble((ulong)value);
                     break;
 
                 case TypeCode.SByte:
                     cefValue.SetInt((sbyte)value);
                     break;
-
-                case TypeCode.String:
-                    cefValue.SetString((string)value);
-                    break;
             }
         }
 
-        private static void SerializeComplexObject(object value, Stack<object> visitedObjects, CefValueWrapper cefValue)
+        private static void SerializeComplexObject(object value, CefValueWrapper cefValue)
         {
-            if (value is IDictionary dictionary)
+            var json = JsonSerializer.Serialize(value, _jsonSerializerOptions);
+            cefValue.SetString(json);
+            
+            return;
+            /*if (value is IDictionary dictionary)
             {
                 using (var cefDictionary = ValueServices.CreateDictionary())
                 {
@@ -136,7 +130,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     foreach (var key in dictionary.Keys)
                     {
                         var keyText = key.ToString();
-                        Serialize(dictionary[key], visitedObjects, new CefDictionaryWrapper(cefDictionary, keyText));
+                        Serialize(dictionary[key], new CefDictionaryWrapper(cefDictionary, keyText));
                     }
 
                     cefValue.SetDictionary(cefDictionary);
@@ -177,7 +171,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
                     cefValue.SetDictionary(cefDictionary);
                 }
-            }
+            }*/
         }
 
         public static object DeserializeCefValue(CefValueWrapper cefValue)

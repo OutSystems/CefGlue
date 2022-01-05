@@ -1,3 +1,5 @@
+using Xilium.CefGlue.Common.Shared.Serialization;
+
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
     internal static partial class JavascriptHelper
@@ -10,27 +12,46 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         private static readonly string CefGlueGlobal =
             "var " + GlobalObjectName + ";" +
             "if (!" + GlobalObjectName + ")" +
-            "    " + GlobalObjectName + " = {" +
-            "        " + PromiseFactoryFunctionName + ": function() {" +
-            "            let result = {};" +
-            "            let promise = new Promise(function(resolve, reject) {" +
-            "                result.resolve = resolve;" +
-            "                result.reject = reject;" +
-            "            });" +
-            "            result.promise = promise;" +
-            "            return result;" +
-            "        }," +
-            "        checkObjectBound: function(objName) {" +
-            "            native function " + BindNativeFunctionName + "();" +
-            "            if (window.hasOwnProperty(objName))" + // quick check
-            "                return Promise.resolve(true);" +
-            "            return " + BindNativeFunctionName + "(objName);" +
-            "        }," +
-            "        deleteObjectBound: function(objName) {" +
-            "            native function " + UnbindNativeFunctionName + "();" +
-            "            " + UnbindNativeFunctionName + "(objName);" +
+            "    " + GlobalObjectName + " = (function() {" +
+            "        function isString(value) {" +
+            "            return typeof value === 'string';" +
             "        }" +
-            "    };";
+            "        function revive(name, value) {" +
+            "            if (isString(value)) {" +
+            "                if (value.startsWith(\"" + DataMarkers.StringMarker +"\"))" +
+            "                    return value.substring(" + DataMarkers.StringMarker.Length + ");" +
+            "                if (value.startsWith(\"" + DataMarkers.DateTimeMarker +"\"))" +
+            "                    return new Date(JSON.parse(value.substring(" + DataMarkers.DateTimeMarker.Length + ")));" +
+            "            }" +
+            "            return value;" +
+            "        }" +
+            "        function parseResult(result) {" +
+            "            return isString(result) ? JSON.parse(result, revive) : result;"+
+            "        }" +
+            "        return {" +
+            "            " + PromiseFactoryFunctionName + ": function() {" +
+            "                let result = {};" +
+            "                let promise = new Promise(function(resolve, reject) {" +
+            "                    result.resolve = function(result) {" +
+            "                        resolve(parseResult(result));" +
+            "                    };" +
+            "                    result.reject = reject;" +
+            "                });" +
+            "                result.promise = promise;" +
+            "                return result;" +
+            "            }," +
+            "            checkObjectBound: function(objName) {" +
+            "                native function " + BindNativeFunctionName + "();" +
+            "                if (window.hasOwnProperty(objName))" + // quick check
+            "                    return Promise.resolve(true);" +
+            "                return " + BindNativeFunctionName + "(objName);" +
+            "            }," +
+            "            deleteObjectBound: function(objName) {" +
+            "                native function " + UnbindNativeFunctionName + "();" +
+            "                " + UnbindNativeFunctionName + "(objName);" +
+            "            }" +
+            "        };" +
+            "    })();";
 
         public static void Register(INativeObjectRegistry nativeObjectRegistry)
         {
