@@ -13,14 +13,17 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             "var " + GlobalObjectName + ";" +
             "if (!" + GlobalObjectName + ")" +
             "    " + GlobalObjectName + " = (function() {" +
+            "        const stringMarker = \"" + DataMarkers.StringMarker +"\";" +
+            "        const dateTimeMarker = \"" + DataMarkers.DateTimeMarker +"\";" +
+            "        const stringTypeName = \"string\";" + 
             "        function isString(value) {" +
-            "            return typeof value === 'string';" +
+            "            return typeof value === stringTypeName;" +
             "        }" +
             "        function revive(name, value) {" +
             "            if (isString(value)) {" +
-            "                if (value.startsWith(\"" + DataMarkers.StringMarker +"\"))" +
+            "                if (value.startsWith(stringMarker))" +
             "                    return value.substring(" + DataMarkers.StringMarker.Length + ");" +
-            "                if (value.startsWith(\"" + DataMarkers.DateTimeMarker +"\"))" +
+            "                if (value.startsWith(dateTimeMarker))" +
             "                    return new Date(JSON.parse(value.substring(" + DataMarkers.DateTimeMarker.Length + ")));" +
             "            }" +
             "            return value;" +
@@ -30,8 +33,8 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             "        }" +
             "        return {" +
             "            " + PromiseFactoryFunctionName + ": function() {" +
-            "                let result = {};" +
-            "                let promise = new Promise(function(resolve, reject) {" +
+            "                const result = {};" +
+            "                const promise = new Promise(function(resolve, reject) {" +
             "                    result.resolve = function(result) {" +
             "                        resolve(parseResult(result));" +
             "                    };" +
