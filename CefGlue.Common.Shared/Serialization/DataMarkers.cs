@@ -5,5 +5,11 @@
         // special data markers used for distinguish the several string types
         public const string DateTimeMarker = "#d#";
         public const string StringMarker = "#s#";
+        
+        public enum BinaryMagicBytes : byte
+        {
+            DateTime,
+            Binary
+        }
     }
 }

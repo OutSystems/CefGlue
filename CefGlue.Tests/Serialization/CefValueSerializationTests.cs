@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using Xilium.CefGlue;
 using Xilium.CefGlue.Common.Shared.Serialization;
 using static Xilium.CefGlue.Common.Shared.Serialization.CefValueSerialization;
+using static Xilium.CefGlue.Common.Shared.Serialization.DataMarkers;
 
 namespace CefGlue.Tests.Serialization
 {
