@@ -159,6 +159,8 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                     arguments.SetString(1, ObjectName);
                     arguments.SetString(2, MemberName);
                     arguments.SetList(3, ArgumentsIn);
+                    ArgumentsIn.Dispose();
+                    ArgumentsIn = null;
                 }
                 return message;
             }
