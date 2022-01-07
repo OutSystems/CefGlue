@@ -6,6 +6,8 @@ namespace CefGlue.Tests.Javascript
 {
     public class NativeObjectInteropTests : TestBase
     {
+        const string Date = "1995-12-17T03:24:00Z";
+
         const string ObjName = "nativeObj";
 
         private NativeObject nativeObject;
@@ -36,11 +38,16 @@ namespace CefGlue.Tests.Javascript
                 _tcs.SetResult(result);
             }
 
+            public void SetPersonResult(Person result)
+            {
+                _tcs.SetResult(result);
+            }
+
             public event Action<object[]> MethodWithParamsCalled;
 
-            public void MethodWithParams(string param1, int param2)
+            public void MethodWithParams(string param1, int param2, DateTime param3, bool param4)
             {
-                MethodWithParamsCalled?.Invoke(new object[] { param1, param2 });
+                MethodWithParamsCalled?.Invoke(new object[] { param1, param2, param3, param4 });
             }
 
             public event Action<object[]> MethodWithObjectParamCalled;
@@ -57,7 +64,7 @@ namespace CefGlue.Tests.Javascript
             
             public Person MethodWithObjectReturn()
             {
-                return new Person() {Name = "John", Age = 30, BirthDate = DateTime.Now};
+                return new Person() {Name = "John", Age = 30, BirthDate = DateTime.Parse(Date)};
             }
         }
 
@@ -107,13 +114,15 @@ namespace CefGlue.Tests.Javascript
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
 
-            Execute($"{ObjName}.methodWithParams('{Arg1}', {Arg2})");
+            Execute($"{ObjName}.methodWithParams('{Arg1}', {Arg2}, new Date('{Date}'), true)");
             
             var result = await taskCompletionSource.Task;
 
-            Assert.AreEqual(2, result.Length);
+            Assert.AreEqual(4, result.Length);
             Assert.AreEqual(Arg1, result[0]);
             Assert.AreEqual(Arg2, result[1]);
+            Assert.AreEqual(DateTime.Parse(Date), result[2]);
+            Assert.AreEqual(true, result[3]);
         }
 
         [Test]
@@ -122,7 +131,7 @@ namespace CefGlue.Tests.Javascript
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithObjectParamCalled += (args) => taskCompletionSource.SetResult(args);
 
-            Execute($"{ObjName}.methodWithObjectParam({{'Name': 'cef', 'Age': 10 }})");
+            Execute($"{ObjName}.methodWithObjectParam({{'Name': 'cef', 'Age': 10, 'BirthDate': new Date('{Date}') }})");
 
             var result = await taskCompletionSource.Task;
             Assert.AreEqual(1, result.Length);
@@ -131,6 +140,7 @@ namespace CefGlue.Tests.Javascript
             var arg = (Person) result[0];
             Assert.AreEqual("cef", arg.Name);
             Assert.AreEqual(10, arg.Age);
+            Assert.AreEqual(DateTime.Parse(Date), arg.BirthDate);
         }
 
         [Test]
@@ -146,13 +156,13 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public async Task NativeObjectMethodObjectResultIsReturned()
         {
-            Execute($"{ObjName}.methodWithReturn().then(r => {ObjName}.setResult(r));");
+            Execute($"{ObjName}.methodWithObjectReturn().then(r => {ObjName}.setPersonResult(r));");
 
             var result = (Person) await nativeObject.ResultTask;
 
             var expected = nativeObject.MethodWithObjectReturn();
             Assert.AreEqual(expected.Name, result.Name);
-            Assert.AreEqual(expected.Age, result.Name);
+            Assert.AreEqual(expected.Age, result.Age);
             Assert.AreEqual(expected.BirthDate, result.BirthDate);
             Assert.AreEqual(expected.Photo, result.Photo);
         }
