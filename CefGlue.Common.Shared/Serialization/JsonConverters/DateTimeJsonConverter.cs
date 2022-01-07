@@ -13,7 +13,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(DataMarkers.DateTimeMarker + JsonSerializer.Serialize(value));
+            // write date time with a special marker and the date value without quotes
+            writer.WriteStringValue(DataMarkers.DateTimeMarker + JsonSerializer.SerializeToNode(value));
         }
     }
 }
