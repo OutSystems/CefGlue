@@ -1,4 +1,6 @@
-﻿namespace CefGlue.Tests.Serialization
+﻿using System;
+
+namespace CefGlue.Tests.Serialization
 {
     public struct ParentObj
     {
@@ -18,10 +20,16 @@
             stringField = null;
             intField = 0;
             boolField = false;
+            dateField = default;
+            binaryField = default;
+            doubleField = default;
         }
         
         public string stringField;
         public int intField;
         public bool boolField;
+        public DateTime dateField;
+        public byte[] binaryField;
+        public double doubleField;
     }
 }

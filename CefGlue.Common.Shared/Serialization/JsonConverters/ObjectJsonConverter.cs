@@ -38,10 +38,10 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                                 return value.Substring(DataMarkers.MarkerLength);
                             
                             case DataMarkers.DateTimeMarker:
-                                return JsonSerializer.Deserialize<DateTime>(value.Substring(DataMarkers.MarkerLength));
+                                return JsonSerializer.Deserialize<DateTime>("\"" + value.Substring(DataMarkers.MarkerLength) + "\"");
                             
                             case DataMarkers.BinaryMarker:
-                                throw new InvalidOperationException();
+                                return Convert.FromBase64String(value.Substring(DataMarkers.MarkerLength));
                         }
                     }
                     return value;

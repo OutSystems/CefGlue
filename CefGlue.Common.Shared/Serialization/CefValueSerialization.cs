@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
 using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization
@@ -62,7 +61,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     break;
 
                 case TypeCode.Char:
-                    cefValue.SetString(((char)value).ToString());
+                    SerializeAsJson(((char)value).ToString(), cefValue);
                     break;
                 
                 case TypeCode.Decimal:
@@ -132,7 +131,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 case CefValueType.Binary:
                     using (var binary = cefValue.GetBinary())
                     {
-                        return binary;
+                        return binary.ToArray();
                     }
 
                 case CefValueType.Bool:
@@ -163,7 +162,12 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     return cefValue.GetInt();
 
                 case CefValueType.String:
-                    return DeserializeAsJson(cefValue.GetString() ?? ""); // default to "", because cef converts "" to null, and when null it will fall on the Null case
+                    var value = cefValue.GetString() ?? ""; // default to "", because cef converts "" to null, and when null it will fall on the Null case
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        return value;
+                    }
+                    return DeserializeAsJson(value); 
 
                 case CefValueType.Null:
                     return null;
