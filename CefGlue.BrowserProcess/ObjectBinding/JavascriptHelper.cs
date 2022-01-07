@@ -13,12 +13,8 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             "var " + GlobalObjectName + ";" +
             "if (!" + GlobalObjectName + ")" +
             "    " + GlobalObjectName + " = (function() {" +
-            "        const stringMarker = \"" + DataMarkers.StringMarker + "\";" +
-            "        const dateTimeMarker = \"" + DataMarkers.DateTimeMarker + "\";" +
-            "        const binaryMarker = \"" + DataMarkers.BinaryMarker +" \";" +
-            "        const stringTypeName = \"string\";" + 
             "        function isString(value) {" +
-            "            return typeof value === stringTypeName;" +
+            "            return typeof value === \"string\";" +
             "        }" +
             "        function convertBase64ToBinary(value) {" +
             "            const byteCharacters = atob(value);" +
@@ -29,12 +25,14 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             "        }" +
             "        function revive(name, value) {" +
             "            if (isString(value)) {" +
-            "                if (value.startsWith(stringMarker))" +
-            "                    return value.substring(" + DataMarkers.StringMarker.Length + ");" +
-            "                if (value.startsWith(dateTimeMarker))" +
-            "                    return new Date(value.substring(" + DataMarkers.DateTimeMarker.Length + "));" +
-            "                if (value.startsWith(binaryMarker))" +
-            "                    return convertBase64ToBinary(value.substring(" + DataMarkers.BinaryMarker.Length + "));" +
+            "                switch (value.substring(0, " + DataMarkers.MarkerLength + ")) {" +
+            "                    case \"" + DataMarkers.StringMarker + "\":" +
+            "                        return value.substring(" + DataMarkers.MarkerLength + ");" +
+            "                    case \"" + DataMarkers.DateTimeMarker + "\":" +
+            "                        return new Date(value.substring(" + DataMarkers.MarkerLength + "));" +
+            "                    case \"" + DataMarkers.BinaryMarker + "\":" +
+            "                        return convertBase64ToBinary(value.substring(" + DataMarkers.MarkerLength + "));" +
+            "                }" +
             "            }" +
             "            return value;" +
             "        }" +
