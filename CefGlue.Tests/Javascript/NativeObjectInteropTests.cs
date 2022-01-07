@@ -9,20 +9,31 @@ namespace CefGlue.Tests.Javascript
         const string ObjName = "nativeObj";
 
         private NativeObject nativeObject;
-
+        
         class Person
         {
             public string Name = null;
             public int Age = 0;
+            public DateTime BirthDate = default;
+            public byte[] Photo = default;
         }
 
         class NativeObject
         {
+            private readonly TaskCompletionSource<object> _tcs = new TaskCompletionSource<object>();
+
+            public Task<object> ResultTask => _tcs.Task;
+                
             public event Action TestCalled;
 
             public void Test()
             {
                 TestCalled?.Invoke();
+            }
+
+            public void SetResult(object result)
+            {
+                _tcs.SetResult(result);
             }
 
             public event Action<object[]> MethodWithParamsCalled;
@@ -42,6 +53,11 @@ namespace CefGlue.Tests.Javascript
             public string MethodWithReturn()
             {
                 return "this is the result";
+            }
+            
+            public Person MethodWithObjectReturn()
+            {
+                return new Person() {Name = "John", Age = 30, BirthDate = DateTime.Now};
             }
         }
 
@@ -120,14 +136,25 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public async Task NativeObjectMethodResultIsReturned()
         {
-            var taskCompletionSource = new TaskCompletionSource<object[]>();
-            nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
-            
-            Execute($"{ObjName}.methodWithReturn().then(r => {ObjName}.methodWithParams(r, 0));");
+            Execute($"{ObjName}.methodWithReturn().then(r => {ObjName}.setResult(r));");
 
-            var result = await taskCompletionSource.Task;
+            var result = await nativeObject.ResultTask;
 
-            Assert.AreEqual(nativeObject.MethodWithReturn(), result[0]);
+            Assert.AreEqual(nativeObject.MethodWithReturn(), result);
+        }
+        
+        [Test]
+        public async Task NativeObjectMethodObjectResultIsReturned()
+        {
+            Execute($"{ObjName}.methodWithReturn().then(r => {ObjName}.setResult(r));");
+
+            var result = (Person) await nativeObject.ResultTask;
+
+            var expected = nativeObject.MethodWithObjectReturn();
+            Assert.AreEqual(expected.Name, result.Name);
+            Assert.AreEqual(expected.Age, result.Name);
+            Assert.AreEqual(expected.BirthDate, result.BirthDate);
+            Assert.AreEqual(expected.Photo, result.Photo);
         }
     }
 }
