@@ -43,8 +43,7 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
             }
             else if (obj.IsDate)
             {
-                var date = obj.GetDateValue();
-                CefValueSerialization.Serialize(date, cefValue);
+                CefValueSerialization.Serialize(obj.GetDateValue(), cefValue);
             }
             else if (obj.IsArray)
             {
@@ -105,7 +104,8 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
             switch (cefValue.GetValueType())
             {
                 case CefValueType.Binary:
-                    throw new NotImplementedException("Cannot serialize a Binary into a v8 object");
+                    // binaries are serialized as base64
+                    throw new InvalidOperationException("Cannot serialize a Binary into a v8 object");
 
                 case CefValueType.Bool:
                     return CefV8Value.CreateBool(cefValue.GetBool());
