@@ -30,19 +30,21 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
                 case JsonTokenType.String:
                     var value = reader.GetString();
-                    if (value.StartsWith(DataMarkers.StringMarker))
+                    if (value.Length >= DataMarkers.MarkerLength)
                     {
-                        return value.Substring(DataMarkers.StringMarker.Length);
+                        switch (value.Substring(0, DataMarkers.MarkerLength))
+                        {
+                            case DataMarkers.StringMarker:
+                                return value.Substring(DataMarkers.MarkerLength);
+                            
+                            case DataMarkers.DateTimeMarker:
+                                return JsonSerializer.Deserialize<DateTime>(value.Substring(DataMarkers.MarkerLength));
+                            
+                            case DataMarkers.BinaryMarker:
+                                throw new InvalidOperationException();
+                        }
                     }
-                    if (value.StartsWith(DataMarkers.DateTimeMarker))
-                    {
-                        return JsonSerializer.Deserialize<DateTime>(value);
-                    }
-                    //if (value.StartsWith(DataMarkers.BinaryMarker))
-                    {
-                        throw new InvalidOperationException();
-                    }
-                    break;
+                    return value;
                 
                 case JsonTokenType.StartArray:
                     return JsonDocument.ParseValue(ref reader).Deserialize<object[]>(options);
