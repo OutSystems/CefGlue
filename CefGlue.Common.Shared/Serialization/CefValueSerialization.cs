@@ -13,7 +13,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             {
                 new StringJsonConverter(), 
                 new DateTimeJsonConverter(), 
-                new BinaryTimeJsonConverter()
+                new BinaryJsonConverter()
             },
             IncludeFields = true
         };

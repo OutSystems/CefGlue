@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization
 {
-    internal class BinaryTimeJsonConverter : JsonConverter<byte[]>
+    internal class BinaryJsonConverter : JsonConverter<byte[]>
     {
         public override byte[] Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
