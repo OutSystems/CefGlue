@@ -110,6 +110,12 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             }
         }
 
+        /// <summary>
+        /// Using JSON serialization is usually faster than using CefList and CefDictionary.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="cefValue"></param>
+        /// <exception cref="InvalidOperationException"></exception>
         private static void SerializeAsJson(object value, CefValueWrapper cefValue)
         {
             try

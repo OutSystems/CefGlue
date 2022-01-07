@@ -7,6 +7,11 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
 {
     internal static class V8ValueSerialization
     {
+        /// <summary>
+        /// Converts a V8Value to a CefValue (used when sending values from the browser process to the main process)
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="cefValue"></param>
         public static void SerializeV8ObjectToCefValue(CefV8Value obj, CefValueWrapper cefValue)
         {
             SerializeV8ObjectToCefValue(obj, cefValue, new Stack<CefV8Value>());
@@ -99,6 +104,12 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
             visitedObjects.Pop();
         }
 
+        /// <summary>
+        /// Converts a CefValue to V8Value (used when sending values to the JS context)
+        /// </summary>
+        /// <param name="cefValue"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public static CefV8Value SerializeCefValue(CefValueWrapper cefValue)
         {
             switch (cefValue.GetValueType())
