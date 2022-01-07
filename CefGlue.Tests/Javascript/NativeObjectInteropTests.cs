@@ -57,11 +57,21 @@ namespace CefGlue.Tests.Javascript
                 MethodWithObjectParamCalled?.Invoke(new object[] { param });
             }
 
-            public string MethodWithReturn()
+            public object MethodWithNullReturn()
+            {
+                return null;
+            }
+
+            public string MethodWithStringReturn()
             {
                 return "this is the result";
             }
-            
+
+            public DateTime MethodWithDateTimeReturn()
+            {
+                return DateTime.Parse(Date);
+            }
+
             public Person MethodWithObjectReturn()
             {
                 return new Person() {Name = "John", Age = 30, BirthDate = DateTime.Parse(Date)};
@@ -144,15 +154,35 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public async Task NativeObjectMethodResultIsReturned()
+        public async Task NativeObjectMethodNullResultIsReturned()
         {
-            Execute($"{ObjName}.methodWithReturn().then(r => {ObjName}.setResult(r));");
+            Execute($"{ObjName}.methodWithNullReturn().then(r => {ObjName}.setResult(r));");
 
             var result = await nativeObject.ResultTask;
 
-            Assert.AreEqual(nativeObject.MethodWithReturn(), result);
+            Assert.AreEqual(nativeObject.MethodWithNullReturn(), result);
         }
-        
+
+        [Test]
+        public async Task NativeObjectMethodStringResultIsReturned()
+        {
+            Execute($"{ObjName}.methodWithStringReturn().then(r => {ObjName}.setResult(r));");
+
+            var result = await nativeObject.ResultTask;
+
+            Assert.AreEqual(nativeObject.MethodWithStringReturn(), result);
+        }
+
+        [Test]
+        public async Task NativeObjectMethodDateTimeResultIsReturned()
+        {
+            Execute($"{ObjName}.methodWithDateTimeReturn().then(r => {ObjName}.setResult(r));");
+
+            var result = await nativeObject.ResultTask;
+
+            Assert.AreEqual(nativeObject.MethodWithDateTimeReturn(), result);
+        }
+
         [Test]
         public async Task NativeObjectMethodObjectResultIsReturned()
         {
