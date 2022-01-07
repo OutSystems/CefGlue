@@ -2,9 +2,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using Xilium.CefGlue;
 using Xilium.CefGlue.Common.Shared.Serialization;
 using static Xilium.CefGlue.Common.Shared.Serialization.CefValueSerialization;
 using static Xilium.CefGlue.Common.Shared.Serialization.DataMarkers;
@@ -19,14 +17,7 @@ namespace CefGlue.Tests.Serialization
         private void AssertSerialization<T1, T2>(T1 value, Expression<Action<CefValueWrapper>> setValue, Func<T1, T2> convertType = null)
         {
             var cefValue = new Mock<CefValueWrapper>();
-            if (convertType == null)
-            {
-                cefValue.Setup(setValue).Callback<T2>((data) => Assert.AreEqual(value, data));
-            }
-            else
-            {
-                cefValue.Setup(setValue).Callback<T2>((data) => Assert.AreEqual(convertType(value), data));
-            }
+            cefValue.Setup(setValue).Callback<T2>((data) => Assert.AreEqual(convertType == null ? value : convertType.Invoke(value), data));
             Serialize(value, cefValue.Object);
             cefValue.Verify(setValue, Times.Once());
         }
@@ -90,7 +81,7 @@ namespace CefGlue.Tests.Serialization
         [Test]
         public void Serialize_HandlesStrings()
         {
-            AssertSerialization<string, string>("this is a string", v => v.SetString(It.IsAny<string>()));
+            AssertSerialization<string, string>("this is a string", v => v.SetString(It.IsAny<string>()), input => $"\"{StringMarker + input}\"");
         }
 
         [Test]
@@ -120,28 +111,17 @@ namespace CefGlue.Tests.Serialization
         [Test]
         public void Serialize_HandlesBinaries()
         {
-            var cefValue = new Mock<CefValueWrapper>();
-            var expectedValue = new byte[] { 100, 12, 254 };
-            var valueProxy = new Mock<IValueProvider>();
-            valueProxy.Setup(v => v.CreateBinary(It.IsAny<byte[]>())).Callback<byte[]>((data) => CollectionAssert.AreEqual(new byte[] { (byte)BinaryMagicBytes.Binary }.Concat(expectedValue), data));
-            ValueServices.ValueProxy = valueProxy.Object;
-            Serialize(expectedValue, cefValue.Object);
-            valueProxy.Verify(v => v.CreateBinary(It.IsAny<byte[]>()), Times.Once());
-            cefValue.Verify(v => v.SetBinary(It.IsAny<ICefBinaryValue>()), Times.Once());
+            var byteArray = new byte[] { 0, 1, 2, 3 };
+            const string ExpectedJson = "AAECAw==";
+            AssertSerialization(byteArray, v => v.SetString(It.IsAny<string>()), input => $"\"{BinaryMarker + ExpectedJson}\"");
         }
 
         [Test]
         public void Serialize_HandlesDateTimes()
         {
-            var cefValue = new Mock<CefValueWrapper>();
-            var dateTime = DateTime.Now;
-            var expectedValue = BitConverter.GetBytes(dateTime.Ticks);
-            var valueProxy = new Mock<IValueProvider>();
-            valueProxy.Setup(v => v.CreateBinary(It.IsAny<byte[]>())).Callback<byte[]>((data) => CollectionAssert.AreEqual(new byte[] { (byte)BinaryMagicBytes.DateTime }.Concat(expectedValue), data));
-            ValueServices.ValueProxy = valueProxy.Object;
-            Serialize(dateTime, cefValue.Object);
-            valueProxy.Verify(v => v.CreateBinary(It.IsAny<byte[]>()), Times.Once());
-            cefValue.Verify(v => v.SetBinary(It.IsAny<ICefBinaryValue>()), Times.Once());
+            var date = new DateTime(2000, 1, 31, 15, 00, 10);
+            const string ExpectedJson = "2000-01-31T15:00:10";
+            AssertSerialization(date, v => v.SetString(It.IsAny<string>()), input => $"\"{DateTimeMarker + ExpectedJson}\"");
         }
 
         [Test]
@@ -150,8 +130,6 @@ namespace CefGlue.Tests.Serialization
             var dict = new Dictionary<string, object>();
             dict.Add("first", dict);
             var cefValue = new Mock<CefValueWrapper>();
-            var valueProxy = new Mock<IValueProvider>();
-            ValueServices.ValueProxy = valueProxy.Object;
             Assert.Throws<InvalidOperationException>(() => Serialize(dict, cefValue.Object));
         }
 
@@ -161,37 +139,26 @@ namespace CefGlue.Tests.Serialization
             var list = new List<object>();
             list.Add(list);
             var cefValue = new Mock<CefValueWrapper>();
-            var valueProxy = new Mock<IValueProvider>();
-            ValueServices.ValueProxy = valueProxy.Object;
             Assert.Throws<InvalidOperationException>(() => Serialize(list, cefValue.Object));
         }
 
         [Test]
         public void Serialize_HandlesSimpleDictionaries()
         {
-            var returnValue = new Dictionary<string, int>()
+            var dict = new Dictionary<string, int>()
             {
                 { "first", 1 },
                 { "second", 2 },
                 { "third", 3 }
             };
-            var compareValue = new Dictionary<string, int>();
-            var cefValue = new Mock<CefValueWrapper>();
-            var valueProxy = new Mock<IValueProvider>();
-            var dictionaryValue = new Mock<ICefDictionaryValue>();
-            dictionaryValue.Setup(v => v.SetInt(It.IsAny<string>(), It.IsAny<int>())).Callback<string, int>((key, value) => compareValue[key] = value);
-            valueProxy.Setup(v => v.CreateDictionary()).Returns(dictionaryValue.Object);
-            ValueServices.ValueProxy = valueProxy.Object;
-            cefValue.Setup(v => v.SetDictionary(It.IsAny<ICefDictionaryValue>())).Callback<ICefDictionaryValue>((data) => Assert.AreSame(dictionaryValue.Object, data));
-            Serialize(returnValue, cefValue.Object);
-            cefValue.Verify(v => v.SetDictionary(It.IsAny<ICefDictionaryValue>()), Times.Once());
-            CollectionAssert.AreEqual(returnValue, compareValue);
+            const string ExpectedJson = "{\"first\":1,\"second\":2,\"third\":3}";
+            AssertSerialization(dict, v => v.SetString(It.IsAny<string>()), input => ExpectedJson);
         }
 
         [Test]
         public void Serialize_HandlesNestedDictionaries()
         {
-            var returnValue = new Dictionary<string, Dictionary<string, double>>()
+            var dict = new Dictionary<string, Dictionary<string, double>>()
             {
                 { "first", new Dictionary<string, double>() {
                     { "first_first", 1d },
@@ -209,56 +176,25 @@ namespace CefGlue.Tests.Serialization
                     { "third_third", 9d },
                 }}
             };
-            var cefValue = new Mock<CefValueWrapper>();
-            var valueProxy = new Mock<IValueProvider>();
-
-            var outerDictionary = new Dictionary<string, Dictionary<string, double>>();
-            Dictionary<string, double> innerDictionary = null;
-
-            int currentIndex = 0;
-            var outerDictionaryValue = new Mock<ICefDictionaryValue>();
-            outerDictionaryValue.Setup(v => v.SetDictionary(It.IsAny<string>(), It.IsAny<ICefDictionaryValue>())).Callback<string, ICefDictionaryValue>((key, value) => {
-                currentIndex++;
-                outerDictionary[key] = innerDictionary;
-            });
-
-            var innerDictionaryValues = new Mock<ICefDictionaryValue>[returnValue.Count];
-            var innerDictionaries = new Dictionary<string, double>[returnValue.Count];
-
-            for (int iter = 0; iter < returnValue.Count(); iter++)
-            {
-                if (innerDictionaryValues[iter] == null)
-                {
-                    innerDictionaryValues[iter] = new Mock<ICefDictionaryValue>();
-                }
-                innerDictionaryValues[iter].Setup(v => v.SetDouble(It.IsAny<string>(), It.IsAny<double>())).Callback<string, double>((key, value) =>
-                {
-                    if (innerDictionaries[currentIndex] == null)
-                    {
-                        innerDictionaries[currentIndex] = new Dictionary<string, double>();
-                    }
-                    innerDictionary = innerDictionaries[currentIndex];
-                    innerDictionaries[currentIndex][key] = value;
-                });
-            }
-
-            var sequence = valueProxy.SetupSequence(v => v.CreateDictionary()).Returns(outerDictionaryValue.Object);
-            for (int i = 0; i < returnValue.Count; i++)
-            {
-                sequence.Returns(innerDictionaryValues[i].Object);
-            }
-
-            ValueServices.ValueProxy = valueProxy.Object;
-            cefValue.Setup(v => v.SetDictionary(It.IsAny<ICefDictionaryValue>())).Callback<ICefDictionaryValue>((data) => Assert.AreSame(outerDictionaryValue.Object, data));
-            Serialize(returnValue, cefValue.Object);
-            cefValue.Verify(v => v.SetDictionary(It.IsAny<ICefDictionaryValue>()), Times.Once());
-            CollectionAssert.AreEqual(returnValue, outerDictionary);
+            const string ExpectedJson = "{\"first\":{\"first_first\":1,\"first_second\":2,\"first_third\":3},\"second\":{\"second_first\":4,\"second_second\":5,\"second_third\":6},\"third\":{\"third_first\":7,\"third_second\":8,\"third_third\":9}}";
+            AssertSerialization(dict, v => v.SetString(It.IsAny<string>()), input => ExpectedJson);
         }
-
-        [OneTimeTearDown]
-        public void ClassTearDown()
+        
+        [Test]
+        public void Serialize_HandlesObjects()
         {
-            ValueServices.Reset();
+            var obj = new ParentObj()
+            {
+                stringField = "parent",
+                childObj = new ChildObj()
+                {
+                    stringField = "child",
+                    intField = 1,
+                    boolField = true
+                }
+            };
+            const string ExpectedJson = "{\"stringField\":\"S#parent\",\"childObj\":{\"stringField\":\"S#child\",\"intField\":1,\"boolField\":true}}";
+            AssertSerialization(obj, v => v.SetString(It.IsAny<string>()), input => ExpectedJson);
         }
 
         #endregion

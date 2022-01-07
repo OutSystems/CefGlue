@@ -10,8 +10,21 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
     {
         private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
         {
-            Converters = { new StringJsonConverter(), new DateTimeJsonConverter() },
+            Converters =
+            {
+                new StringJsonConverter(), 
+                new DateTimeJsonConverter(), 
+                new BinaryTimeJsonConverter()
+            },
             IncludeFields = true
+        };
+        
+        private static readonly JsonSerializerOptions _jsonDeserializerOptions = new JsonSerializerOptions()
+        {
+            Converters =
+            {
+                new ObjectJsonConverter()
+            }
         };
         
         public static void Serialize(object value, CefValueWrapper cefValue)
@@ -25,10 +38,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             if (value is byte[] byteArr)
             {
                 // handle binaries in a special way (otherwise it will fall on object and be serialized as a collection)
-                using (var cefBinary = ToCefBinary(DataMarkers.BinaryMagicBytes.Binary, byteArr))
-                {
-                    cefValue.SetBinary(cefBinary);
-                }
+                SerializeAsJson(byteArr, cefValue);
                 return;
             }
 
@@ -38,8 +48,9 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             {
                 case TypeCode.Object:
                 case TypeCode.DateTime:
-                case TypeCode.String: // string and objects are handled as json
-                    SerializeComplexObject(value, cefValue);
+                case TypeCode.String:
+                    // string, datetime, and object are handled as json
+                    SerializeAsJson(value, cefValue);
                     break;
 
                 case TypeCode.Boolean:
@@ -100,10 +111,18 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             }
         }
 
-        private static void SerializeComplexObject(object value, CefValueWrapper cefValue)
+        private static void SerializeAsJson(object value, CefValueWrapper cefValue)
         {
-            var json = JsonSerializer.Serialize(value, _jsonSerializerOptions);
-            cefValue.SetString(json);
+            try
+            {
+                var json = JsonSerializer.Serialize(value, _jsonSerializerOptions);
+                cefValue.SetString(json);
+            }
+            catch (JsonException e)
+            {
+                // wrap the json exception
+                throw new InvalidOperationException(e.Message);
+            }
         }
 
         public static object DeserializeCefValue(CefValueWrapper cefValue)
@@ -113,7 +132,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 case CefValueType.Binary:
                     using (var binary = cefValue.GetBinary())
                     {
-                        return FromCefBinary(binary, out var kind);
+                        return binary;
                     }
 
                 case CefValueType.Bool:
@@ -144,7 +163,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     return cefValue.GetInt();
 
                 case CefValueType.String:
-                    return cefValue.GetString() ?? ""; // default to "", because cef converts "" to null, and when null it will fall on the Null case
+                    return DeserializeAsJson(cefValue.GetString() ?? ""); // default to "", because cef converts "" to null, and when null it will fall on the Null case
 
                 case CefValueType.Null:
                     return null;
@@ -152,49 +171,28 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
             return null;
         }
-
-        public static ListElementType[] DeserializeCefList<ListElementType>(ICefListValue cefList)
+        
+        private static object DeserializeAsJson(string value)
         {
-            var array = new ListElementType[cefList.Count];
+            try
+            {
+                return JsonSerializer.Deserialize<object>(value, _jsonDeserializerOptions);
+            }
+            catch (JsonException e)
+            {
+                // wrap the json exception
+                throw new InvalidOperationException(e.Message);
+            }
+        }
+
+        public static TListElementType[] DeserializeCefList<TListElementType>(ICefListValue cefList)
+        {
+            var array = new TListElementType[cefList.Count];
             for (var i = 0; i < cefList.Count; i++)
             {
-                array[i] = (ListElementType)DeserializeCefValue(new CefListWrapper(cefList, i));
+                array[i] = (TListElementType)DeserializeCefValue(new CefListWrapper(cefList, i));
             }
             return array;
-        }
-
-        internal static ICefBinaryValue ToCefBinary(DataMarkers.BinaryMagicBytes kind, byte[] originalBinary)
-        {
-            var binary = new byte[originalBinary.Length + 1]; // alloc space for the magic byte
-            binary[0] = (byte)kind;
-            originalBinary.CopyTo(binary, 1);
-
-            return ValueServices.CreateBinary(binary);
-        }
-
-        internal static object FromCefBinary(ICefBinaryValue value, out DataMarkers.BinaryMagicBytes kind)
-        {
-            var binary = value.ToArray();
-            if (binary.Length > 0)
-            {
-                var rest = binary.Skip(1).ToArray();
-                kind = (DataMarkers.BinaryMagicBytes)binary[0];
-                switch (kind)
-                {
-                    case DataMarkers.BinaryMagicBytes.Binary:
-                        return rest;
-
-                    case DataMarkers.BinaryMagicBytes.DateTime:
-                        var binaryDate = BitConverter.ToInt64(rest, 0);
-                        return DateTime.FromBinary(binaryDate);
-
-                    default:
-                        throw new InvalidOperationException("Unrecognized binary type: " + binary[0]);
-                }
-            }
-
-            kind = DataMarkers.BinaryMagicBytes.Binary;
-            return new byte[0];
         }
     }
 }

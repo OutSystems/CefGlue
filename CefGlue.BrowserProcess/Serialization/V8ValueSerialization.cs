@@ -39,16 +39,12 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
             }
             else if (obj.IsString)
             {
-                cefValue.SetString(obj.GetStringValue());
+                CefValueSerialization.Serialize(obj.GetStringValue(), cefValue);
             }
             else if (obj.IsDate)
             {
-                // TODO time returned is UTC
                 var date = obj.GetDateValue();
-                using (var binary = CefValueSerialization.ToCefBinary(DataMarkers.BinaryMagicBytes.DateTime, BitConverter.GetBytes(date.ToBinary())))
-                {
-                    cefValue.SetBinary(binary);
-                }
+                CefValueSerialization.Serialize(date, cefValue);
             }
             else if (obj.IsArray)
             {

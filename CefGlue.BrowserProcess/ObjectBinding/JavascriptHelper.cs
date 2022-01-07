@@ -13,18 +13,28 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             "var " + GlobalObjectName + ";" +
             "if (!" + GlobalObjectName + ")" +
             "    " + GlobalObjectName + " = (function() {" +
-            "        const stringMarker = \"" + DataMarkers.StringMarker +"\";" +
-            "        const dateTimeMarker = \"" + DataMarkers.DateTimeMarker +"\";" +
+            "        const stringMarker = \"" + DataMarkers.StringMarker + "\";" +
+            "        const dateTimeMarker = \"" + DataMarkers.DateTimeMarker + "\";" +
+            "        const binaryMarker = \"" + DataMarkers.BinaryMarker +" \";" +
             "        const stringTypeName = \"string\";" + 
             "        function isString(value) {" +
             "            return typeof value === stringTypeName;" +
+            "        }" +
+            "        function convertBase64ToBinary(value) {" +
+            "            const byteCharacters = atob(value);" +
+            "            const byteArray = new Array(byteCharacters.length);" +
+            "            for (let i = 0; i < byteCharacters.length; i++)" +
+            "                byteArray[i] = byteCharacters.charCodeAt(i);" +
+            "            return byteArray;" +
             "        }" +
             "        function revive(name, value) {" +
             "            if (isString(value)) {" +
             "                if (value.startsWith(stringMarker))" +
             "                    return value.substring(" + DataMarkers.StringMarker.Length + ");" +
             "                if (value.startsWith(dateTimeMarker))" +
-            "                    return new Date(JSON.parse(value.substring(" + DataMarkers.DateTimeMarker.Length + ")));" +
+            "                    return new Date(value.substring(" + DataMarkers.DateTimeMarker.Length + "));" +
+            "                if (value.startsWith(binaryMarker))" +
+            "                    return convertBase64ToBinary(value.substring(" + DataMarkers.BinaryMarker.Length + "));" +
             "            }" +
             "            return value;" +
             "        }" +

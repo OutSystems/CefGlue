@@ -3,13 +3,8 @@
     public class DataMarkers
     {
         // special data markers used to distinguish the several string types
-        public const string DateTimeMarker = "#d#";
-        public const string StringMarker = "#s#";
-        
-        public enum BinaryMagicBytes : byte
-        {
-            DateTime,
-            Binary
-        }
+        public const string DateTimeMarker = "D#";
+        public const string StringMarker = "S#";
+        public const string BinaryMarker = "B#";
     }
 }

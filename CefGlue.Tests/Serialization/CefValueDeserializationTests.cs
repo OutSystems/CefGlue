@@ -310,7 +310,7 @@ namespace CefGlue.Tests.Serialization
         #endregion
 
         #region FromCefBinary
-        [Test]
+        /*[Test]
         public void FromCefBinary_HandlesEmptyByteArrays()
         {
             var returnValue = new byte[0];
@@ -348,7 +348,7 @@ namespace CefGlue.Tests.Serialization
             byteArray.Setup(c => c.ToArray()).Returns((new byte[] { 0 }.Concat(returnValue)).ToArray());
             Assert.AreEqual(dateTime, CefValueSerialization.FromCefBinary(byteArray.Object, out var kind));
             Assert.AreEqual(BinaryMagicBytes.DateTime, kind);
-        }
+        }*/
         #endregion
     }
 }
