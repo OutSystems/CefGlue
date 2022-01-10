@@ -62,11 +62,13 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             });
         }
 
-        protected static IDictionary<string, NativeMethod> GetObjectMembers(object obj)
+        private static IDictionary<string, NativeMethod> GetObjectMembers(object obj)
         {
             var methods = obj.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public).Where(m => !m.IsSpecialName);
-            return methods.Select(m => new { Member = m, JavascriptName = m.Name.Substring(0, 1).ToLowerInvariant() + m.Name.Substring(1) })
-                          .ToDictionary(m => m.JavascriptName, m => new NativeMethod(m.Member));
+            return methods.ToDictionary(m => ToJavascriptMemberName(m.Name), m => new NativeMethod(m));
         }
+
+        private static string ToJavascriptMemberName(string name) =>
+            name.Substring(0, 1).ToLowerInvariant() + name.Substring(1);
     }
 }
