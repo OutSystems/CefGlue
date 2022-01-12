@@ -23,6 +23,7 @@
 
     <ItemGroup>
         <PackageReference Include="NLog" Version="$(NLogVersion)" />
+        <PackageReference Include="System.Text.Json" Version="6.0.1" />
         <PackageReference Include="System.Threading.Tasks.Dataflow" Version="$(TasksDataFlowVersion)" />
         <PackageReference PrivateAssets="None" Include="cef.redist.x64" Version="$(CefRedistVersion)" />
         <PackageReference PrivateAssets="None" Include="cef.redist.osx64" Version="$(CefRedistOSXVersion)" />
