@@ -1,32 +1,25 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Text.Json;
+using System.Linq;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal static class CefValueSerialization
     {
-        private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
+        public enum BinaryMagicBytes : byte
         {
-            Converters =
-            {
-                new StringJsonConverter(), 
-                new DateTimeJsonConverter(), 
-                new BinaryJsonConverter()
-            },
-            IncludeFields = true
-        };
-        
-        private static readonly JsonSerializerOptions _jsonDeserializerOptions = new JsonSerializerOptions()
-        {
-            Converters =
-            {
-                new ObjectJsonConverter()
-            }
-        };
-        
+            DateTime,
+            Binary
+        }
+
         public static void Serialize(object value, CefValueWrapper cefValue)
+        {
+            Serialize(value, new Stack<object>(), cefValue);
+        }
+
+        private static void Serialize(object value, Stack<object> visitedObjects, CefValueWrapper cefValue)
         {
             if (value == null)
             {
@@ -37,7 +30,10 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             if (value is byte[] byteArr)
             {
                 // handle binaries in a special way (otherwise it will fall on object and be serialized as a collection)
-                SerializeAsJson(byteArr, cefValue);
+                using (var cefBinary = ToCefBinary(BinaryMagicBytes.Binary, byteArr))
+                {
+                    cefValue.SetBinary(cefBinary);
+                }
                 return;
             }
 
@@ -46,10 +42,16 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             switch (typeCode)
             {
                 case TypeCode.Object:
-                case TypeCode.DateTime:
-                case TypeCode.String:
-                    // string, datetime, and object are handled as json
-                    SerializeAsJson(value, cefValue);
+                    if (visitedObjects.Any(o => o == value))
+                    {
+                        throw new InvalidOperationException("Cycle found in result");
+                    }
+
+                    visitedObjects.Push(value);
+
+                    SerializeComplexObject(value, visitedObjects, cefValue);
+
+                    visitedObjects.Pop();
                     break;
 
                 case TypeCode.Boolean:
@@ -61,9 +63,19 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     break;
 
                 case TypeCode.Char:
-                    SerializeAsJson(((char)value).ToString(), cefValue);
+                    cefValue.SetString(((char)value).ToString());
                     break;
-                
+
+                case TypeCode.DateTime:
+                    // datetime is serialized into a binary (cef value does not support datetime)
+                    var dateBinary = BitConverter.GetBytes(((DateTime)value).Ticks);
+                    using (var cefBinary = ToCefBinary(BinaryMagicBytes.DateTime, dateBinary))
+                    {
+                        cefValue.SetBinary(cefBinary);
+                    }
+                    break;
+                    
+
                 case TypeCode.Decimal:
                     cefValue.SetDouble((double)(decimal)value);
                     break;
@@ -73,7 +85,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     break;
 
                 case TypeCode.Single:
-                    cefValue.SetDouble((float)value);
+                    cefValue.SetDouble((double)(float)value);
                     break;
 
                 case TypeCode.Empty:
@@ -81,7 +93,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     break;
 
                 case TypeCode.Int16:
-                    cefValue.SetInt((short)value);
+                    cefValue.SetInt((int)(short)value);
                     break;
 
                 case TypeCode.Int32:
@@ -89,11 +101,11 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     break;
 
                 case TypeCode.Int64:
-                    cefValue.SetDouble((long)value);
+                    cefValue.SetDouble((double)(long)value);
                     break;
 
                 case TypeCode.UInt16:
-                    cefValue.SetInt((ushort)value);
+                    cefValue.SetInt((int)(ushort)value);
                     break;
 
                 case TypeCode.UInt32:
@@ -101,32 +113,70 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     break;
 
                 case TypeCode.UInt64:
-                    cefValue.SetDouble((ulong)value);
+                    cefValue.SetDouble((double)(ulong)value);
                     break;
 
                 case TypeCode.SByte:
                     cefValue.SetInt((sbyte)value);
                     break;
+
+                case TypeCode.String:
+                    cefValue.SetString((string)value);
+                    break;
             }
         }
 
-        /// <summary>
-        /// Using JSON serialization is usually faster than using CefList and CefDictionary.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="cefValue"></param>
-        /// <exception cref="InvalidOperationException"></exception>
-        private static void SerializeAsJson(object value, CefValueWrapper cefValue)
+        private static void SerializeComplexObject(object value, Stack<object> visitedObjects, CefValueWrapper cefValue)
         {
-            try
+            if (value is IDictionary dictionary)
             {
-                var json = JsonSerializer.Serialize(value, _jsonSerializerOptions);
-                cefValue.SetString(json);
+                using (var cefDictionary = ValueServices.CreateDictionary())
+                {
+
+                    foreach (var key in dictionary.Keys)
+                    {
+                        var keyText = key.ToString();
+                        Serialize(dictionary[key], visitedObjects, new CefDictionaryWrapper(cefDictionary, keyText));
+                    }
+
+                    cefValue.SetDictionary(cefDictionary);
+                }
             }
-            catch (JsonException e)
+            else if (value is IEnumerable enumerable)
             {
-                // wrap the json exception
-                throw new InvalidOperationException(e.Message);
+                var i = 0;
+                using (var cefList = ValueServices.CreateList())
+                {
+
+                    foreach (var item in enumerable)
+                    {
+                        Serialize(item, visitedObjects, new CefListWrapper(cefList, i));
+                        i++;
+                    }
+
+                    cefValue.SetList(cefList);
+                }
+            }
+            else
+            {
+                var fields = value.GetType().GetFields();
+                var properties = value.GetType().GetProperties();
+
+                using (var cefDictionary = ValueServices.CreateDictionary())
+                {
+
+                    foreach (var field in fields)
+                    {
+                        Serialize(field.GetValue(value), visitedObjects, new CefDictionaryWrapper(cefDictionary, field.Name));
+                    }
+
+                    foreach (var property in properties)
+                    {
+                        Serialize(property.GetValue(value), visitedObjects, new CefDictionaryWrapper(cefDictionary, property.Name));
+                    }
+
+                    cefValue.SetDictionary(cefDictionary);
+                }
             }
         }
 
@@ -137,7 +187,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 case CefValueType.Binary:
                     using (var binary = cefValue.GetBinary())
                     {
-                        return binary.ToArray();
+                        return FromCefBinary(binary, out var kind);
                     }
 
                 case CefValueType.Bool:
@@ -168,12 +218,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     return cefValue.GetInt();
 
                 case CefValueType.String:
-                    var value = cefValue.GetString() ?? ""; // default to "", because cef converts "" to null, and when null it will fall on the Null case
-                    if (string.IsNullOrEmpty(value))
-                    {
-                        return value;
-                    }
-                    return DeserializeAsJson(value); 
+                    return cefValue.GetString() ?? ""; // default to "", because cef converts "" to null, and when null it will fall on the Null case
 
                 case CefValueType.Null:
                     return null;
@@ -181,28 +226,49 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
             return null;
         }
-        
-        private static object DeserializeAsJson(string value)
-        {
-            try
-            {
-                return JsonSerializer.Deserialize<object>(value, _jsonDeserializerOptions);
-            }
-            catch (JsonException e)
-            {
-                // wrap the json exception
-                throw new InvalidOperationException(e.Message);
-            }
-        }
 
-        public static TListElementType[] DeserializeCefList<TListElementType>(ICefListValue cefList)
+        public static ListElementType[] DeserializeCefList<ListElementType>(ICefListValue cefList)
         {
-            var array = new TListElementType[cefList.Count];
+            var array = new ListElementType[cefList.Count];
             for (var i = 0; i < cefList.Count; i++)
             {
-                array[i] = (TListElementType)DeserializeCefValue(new CefListWrapper(cefList, i));
+                array[i] = (ListElementType)DeserializeCefValue(new CefListWrapper(cefList, i));
             }
             return array;
+        }
+
+        internal static ICefBinaryValue ToCefBinary(BinaryMagicBytes kind, byte[] originalBinary)
+        {
+            var binary = new byte[originalBinary.Length + 1]; // alloc space for the magic byte
+            binary[0] = (byte)kind;
+            originalBinary.CopyTo(binary, 1);
+
+            return ValueServices.CreateBinary(binary);
+        }
+
+        internal static object FromCefBinary(ICefBinaryValue value, out BinaryMagicBytes kind)
+        {
+            var binary = value.ToArray();
+            if (binary.Length > 0)
+            {
+                var rest = binary.Skip(1).ToArray();
+                kind = (BinaryMagicBytes)binary[0];
+                switch (kind)
+                {
+                    case BinaryMagicBytes.Binary:
+                        return rest;
+
+                    case BinaryMagicBytes.DateTime:
+                        var binaryDate = BitConverter.ToInt64(rest, 0);
+                        return DateTime.FromBinary(binaryDate);
+
+                    default:
+                        throw new InvalidOperationException("Unrecognized binary type: " + binary[0]);
+                }
+            }
+
+            kind = BinaryMagicBytes.Binary;
+            return new byte[0];
         }
     }
 }

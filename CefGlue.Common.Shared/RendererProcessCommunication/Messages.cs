@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
@@ -93,7 +92,16 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 using (var arguments = message.Arguments)
                 {
                     arguments.SetString(0, ObjectName);
-                    CefValueSerialization.Serialize(MethodsNames, new CefListWrapper(arguments, 1));
+
+                    using (var methods = CefListValue.Create())
+                    {
+                        for (var i = 0; i < MethodsNames.Length; i++)
+                        {
+                            methods.SetString(i, MethodsNames[i]);
+                        }
+
+                        arguments.SetList(1, methods);
+                    }
                 }
                 return message;
             }
@@ -101,12 +109,12 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
             public static NativeObjectRegistrationRequest FromCefMessage(CefProcessMessage message)
             {
                 using (var arguments = message.Arguments)
+                using (var methodsNames = arguments.GetList(1))
                 {
-                    var methodsNames = new CefListWrapper(arguments, 1);
                     return new NativeObjectRegistrationRequest()
                     {
                         ObjectName = arguments.GetString(0),
-                        MethodsNames = ((object[]) CefValueSerialization.DeserializeCefValue(methodsNames)).Cast<string>().ToArray()
+                        MethodsNames = CefValueSerialization.DeserializeCefList<string>(methodsNames)
                     };
                 }
             }

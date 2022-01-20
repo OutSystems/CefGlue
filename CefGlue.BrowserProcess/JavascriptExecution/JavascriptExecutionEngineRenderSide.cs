@@ -32,7 +32,7 @@ namespace Xilium.CefGlue.BrowserProcess.JavascriptExecution
 
                 if (value != null)
                 {
-                    V8ValueSerialization.SerializeV8ObjectToCefValue(value, response.Result);
+                    V8ValueSerialization.SerializeV8Object(value, response.Result);
                 }
 
                 var cefResponseMessage = response.ToCefProcessMessage();

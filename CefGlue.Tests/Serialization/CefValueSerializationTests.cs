@@ -1,7 +1,11 @@
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using Xilium.CefGlue;
+using Xilium.CefGlue.Common.Shared.Serialization;
 using static Xilium.CefGlue.Common.Shared.Serialization.CefValueSerialization;
 
 namespace CefGlue.Tests.Serialization
@@ -9,215 +13,184 @@ namespace CefGlue.Tests.Serialization
     [TestFixture]
     public class SerializationTests
     {
-        private static object SerializeAndDeserialize(object value, out CefValueType valueType)
+        #region Serialize
+
+        private void AssertSerialization<T1, T2>(T1 value, Expression<Action<CefValueWrapper>> setValue, Func<T1, T2> convertType = null)
         {
-            var cefValue = new CefTestValue();
-            Serialize(value, cefValue);
-            var result = DeserializeCefValue(cefValue);
-            valueType = cefValue.GetValueType();
-            return result;
-        }
-        
-        private static void AssertSerialization(object value, CefValueType valueType)
-        {
-            var obtainedValue = SerializeAndDeserialize(value, out var obtainedValueType);
-            Assert.AreEqual(value, obtainedValue);
-            Assert.AreEqual(valueType, obtainedValueType);
+            var cefValue = new Mock<CefValueWrapper>();
+            if (convertType == null)
+            {
+                cefValue.Setup(setValue).Callback<T2>((data) => Assert.AreEqual(value, data));
+            }
+            else
+            {
+                cefValue.Setup(setValue).Callback<T2>((data) => Assert.AreEqual(convertType(value), data));
+            }
+            Serialize(value, cefValue.Object);
+            cefValue.Verify(setValue, Times.Once());
         }
 
         [Test]
-        public void HandlesNullObject()
+        public void Serialize_HandlesNullObject()
         {
-            AssertSerialization(null, CefValueType.Null);
+            var cefValue = new Mock<CefValueWrapper>();
+            Serialize(null, cefValue.Object);
+            cefValue.Verify(v => v.SetNull(), Times.Once());
         }
 
         [Test]
-        public void HandlesBooleans()
+        public void Serialize_HandlesBooleans()
         {
-            AssertSerialization(true, CefValueType.Bool);
-            AssertSerialization(false, CefValueType.Bool);
+            AssertSerialization<bool, bool>(true, v => v.SetBool(It.IsAny<bool>()));
         }
 
         [Test]
-        public void HandlesSignedIntegers16()
+        public void Serialize_HandlesSignedIntegers16()
         {
-            AssertSerialization(Int16.MaxValue, CefValueType.Int);
+            AssertSerialization<short, int>(Int16.MaxValue, v => v.SetInt(It.IsAny<int>()));
         }
 
         [Test]
-        public void HandlesSignedIntegers32()
+        public void Serialize_HandlesSignedIntegers32()
         {
-            AssertSerialization(Int32.MaxValue, CefValueType.Int);
+            AssertSerialization<int, int>(Int32.MaxValue, v => v.SetInt(It.IsAny<int>()));
         }
 
         [Test]
-        public void HandlesSignedIntegers64()
+        public void Serialize_HandlesSignedIntegers64()
         {
-            AssertSerialization(Int64.MaxValue, CefValueType.Double);
+            AssertSerialization<long, double>(Int64.MaxValue, v => v.SetDouble(It.IsAny<double>()));
         }
 
         [Test]
-        public void HandlesUnsignedIntegers16()
+        public void Serialize_HandlesUnsignedIntegers16()
         {
-            AssertSerialization(UInt16.MinValue, CefValueType.Int);
+            AssertSerialization<ushort, int>(UInt16.MinValue, v => v.SetInt(It.IsAny<int>()));
         }
 
         [Test]
-        public void HandlesUnsignedIntegers32()
+        public void Serialize_HandlesUnsignedIntegers32()
         {
-            AssertSerialization(UInt32.MinValue, CefValueType.Int);
+            AssertSerialization<uint, int>(UInt32.MinValue, v => v.SetInt(It.IsAny<int>()));
         }
 
         [Test]
-        public void HandlesUnsignedIntegers64()
+        public void Serialize_HandlesUnsignedIntegers64()
         {
-            AssertSerialization(UInt64.MinValue, CefValueType.Double);
+            AssertSerialization<ulong, double>(UInt64.MinValue, v => v.SetDouble(It.IsAny<double>()));
         }
 
         [Test]
-        public void HandlesBytes()
+        public void Serialize_HandlesBytes()
         {
-            AssertSerialization((byte)12, CefValueType.Int);
+            AssertSerialization<byte, int>((byte)12, v => v.SetInt(It.IsAny<int>()));
         }
 
         [Test]
-        public void HandlesStrings()
+        public void Serialize_HandlesStrings()
         {
-            AssertSerialization("this is a string", CefValueType.String);
-            AssertSerialization("", CefValueType.String);
-        }
-        
-        [Test]
-        public void HandlesStringsWithSpecialChars()
-        {
-            AssertSerialization("日本語組版処理の", CefValueType.String);
+            AssertSerialization<string, string>("this is a string", v => v.SetString(It.IsAny<string>()));
         }
 
         [Test]
-        public void HandlesChars()
+        public void Serialize_HandlesChars()
         {
-            var value = SerializeAndDeserialize('c', out var valueType);
-            Assert.AreEqual("c", value);
-            Assert.AreEqual(CefValueType.String, valueType);
+            AssertSerialization<char, string>('c', v => v.SetString(It.IsAny<string>()), (char expectedValue) => expectedValue.ToString());
         }
 
         [Test]
-        public void HandlesDoubles()
+        public void Serialize_HandlesDoubles()
         {
-            AssertSerialization(10.5d, CefValueType.Double);
+            AssertSerialization<double, double>(10.5d, v => v.SetDouble(It.IsAny<double>()));
         }
 
         [Test]
-        public void HandlesFloats()
+        public void Serialize_HandlesFloats()
         {
-            AssertSerialization(10.5f, CefValueType.Double);
+            AssertSerialization<float, double>(10.5f, v => v.SetDouble(It.IsAny<double>()));
         }
 
         [Test]
-        public void HandlesDecimals()
+        public void Serialize_HandlesDecimals()
         {
-            AssertSerialization(10.5m, CefValueType.Double);
+            AssertSerialization<decimal, double>(10.5m, v => v.SetDouble(It.IsAny<double>()));
         }
 
         [Test]
-        public void HandlesBinaries()
+        public void Serialize_HandlesBinaries()
         {
-            AssertSerialization(new byte[] { 0, 1, 2, 3 }, CefValueType.String);
-            AssertSerialization(new byte[0], CefValueType.String);
+            var cefValue = new Mock<CefValueWrapper>();
+            var expectedValue = new byte[] { 100, 12, 254 };
+            var valueProxy = new Mock<IValueProvider>();
+            valueProxy.Setup(v => v.CreateBinary(It.IsAny<byte[]>())).Callback<byte[]>((data) => CollectionAssert.AreEqual(new byte[] { (byte)BinaryMagicBytes.Binary }.Concat(expectedValue), data));
+            ValueServices.ValueProxy = valueProxy.Object;
+            Serialize(expectedValue, cefValue.Object);
+            valueProxy.Verify(v => v.CreateBinary(It.IsAny<byte[]>()), Times.Once());
+            cefValue.Verify(v => v.SetBinary(It.IsAny<ICefBinaryValue>()), Times.Once());
         }
 
         [Test]
-        public void HandlesDateTimes()
+        public void Serialize_HandlesDateTimes()
         {
-            var date = new DateTime(2000, 1, 31, 15, 00, 10);
-            AssertSerialization(date, CefValueType.String);
+            var cefValue = new Mock<CefValueWrapper>();
+            var dateTime = DateTime.Now;
+            var expectedValue = BitConverter.GetBytes(dateTime.Ticks);
+            var valueProxy = new Mock<IValueProvider>();
+            valueProxy.Setup(v => v.CreateBinary(It.IsAny<byte[]>())).Callback<byte[]>((data) => CollectionAssert.AreEqual(new byte[] { (byte)BinaryMagicBytes.DateTime }.Concat(expectedValue), data));
+            ValueServices.ValueProxy = valueProxy.Object;
+            Serialize(dateTime, cefValue.Object);
+            valueProxy.Verify(v => v.CreateBinary(It.IsAny<byte[]>()), Times.Once());
+            cefValue.Verify(v => v.SetBinary(It.IsAny<ICefBinaryValue>()), Times.Once());
         }
 
         [Test]
-        public void HandlesCyclicDictionaryReferencesWithException()
+        public void Serialize_HandlesCyclicDictionaryReferencesWithException()
         {
             var dict = new Dictionary<string, object>();
             dict.Add("first", dict);
-            
-            var cefValue = new CefTestValue();
-            Assert.Throws<InvalidOperationException>(() => Serialize(dict, cefValue));
+            var cefValue = new Mock<CefValueWrapper>();
+            var valueProxy = new Mock<IValueProvider>();
+            ValueServices.ValueProxy = valueProxy.Object;
+            Assert.Throws<InvalidOperationException>(() => Serialize(dict, cefValue.Object));
         }
 
         [Test]
-        public void HandlesLists()
-        {
-            var list = new List<string>() { "1", "2" };
-            AssertSerialization(list, CefValueType.String);
-            AssertSerialization(new List<string>(), CefValueType.String);
-        }
-        
-        [Test]
-        public void HandlesNestedLists()
-        {
-            var list = new List<List<string>>()
-            {
-                new List<string> { "1" , "2" },
-                new List<string> { "3" , "4" }
-            };
-            AssertSerialization(list, CefValueType.String);
-        }
-        
-        [Test]
-        public void HandlesListsOfObjects()
-        {
-            var list = new List<object>()
-            {
-                new Dictionary<string, object>() {
-                    { "first" , "1" },
-                    { "second" , "2" },
-                },
-                new Dictionary<string, object>() {
-                    { "third" , "3" },
-                    { "fourth" , "4" },
-                },
-            };
-            AssertSerialization(list, CefValueType.String);
-        }
-        
-        [Test]
-        public void HandlesArrays()
-        {
-            var list = new string[] { "1", "2" };
-            AssertSerialization(list, CefValueType.String);
-            AssertSerialization(new string[0], CefValueType.String);
-        }
-        
-        [Test]
-        public void HandlesCyclicListReferencesWithException()
+        public void Serialize_HandlesCyclicListReferencesWithException()
         {
             var list = new List<object>();
             list.Add(list);
-            
-            var cefValue = new CefTestValue();
-            Assert.Throws<InvalidOperationException>(() => Serialize(list, cefValue));
+            var cefValue = new Mock<CefValueWrapper>();
+            var valueProxy = new Mock<IValueProvider>();
+            ValueServices.ValueProxy = valueProxy.Object;
+            Assert.Throws<InvalidOperationException>(() => Serialize(list, cefValue.Object));
         }
 
         [Test]
-        public void HandlesSimpleDictionaries()
+        public void Serialize_HandlesSimpleDictionaries()
         {
-            var dict = new Dictionary<string, object>()
+            var returnValue = new Dictionary<string, int>()
             {
                 { "first", 1 },
-                { "second", "string" },
-                { "third", true },
-                { "fourth", new DateTime() },
-                { "fifth", new byte[] { 0 , 1, 2 } },
-                { "sixth", null },
-                { "seventh", 7.0 }
+                { "second", 2 },
+                { "third", 3 }
             };
-            
-            AssertSerialization(dict, CefValueType.String);
+            var compareValue = new Dictionary<string, int>();
+            var cefValue = new Mock<CefValueWrapper>();
+            var valueProxy = new Mock<IValueProvider>();
+            var dictionaryValue = new Mock<ICefDictionaryValue>();
+            dictionaryValue.Setup(v => v.SetInt(It.IsAny<string>(), It.IsAny<int>())).Callback<string, int>((key, value) => compareValue[key] = value);
+            valueProxy.Setup(v => v.CreateDictionary()).Returns(dictionaryValue.Object);
+            ValueServices.ValueProxy = valueProxy.Object;
+            cefValue.Setup(v => v.SetDictionary(It.IsAny<ICefDictionaryValue>())).Callback<ICefDictionaryValue>((data) => Assert.AreSame(dictionaryValue.Object, data));
+            Serialize(returnValue, cefValue.Object);
+            cefValue.Verify(v => v.SetDictionary(It.IsAny<ICefDictionaryValue>()), Times.Once());
+            CollectionAssert.AreEqual(returnValue, compareValue);
         }
 
         [Test]
-        public void HandlesNestedDictionaries()
+        public void Serialize_HandlesNestedDictionaries()
         {
-            var dict = new Dictionary<string, Dictionary<string, double>>()
+            var returnValue = new Dictionary<string, Dictionary<string, double>>()
             {
                 { "first", new Dictionary<string, double>() {
                     { "first_first", 1d },
@@ -235,37 +208,58 @@ namespace CefGlue.Tests.Serialization
                     { "third_third", 9d },
                 }}
             };
-            AssertSerialization(dict, CefValueType.String);
-        }
+            var cefValue = new Mock<CefValueWrapper>();
+            var valueProxy = new Mock<IValueProvider>();
 
-        [Test]
-        public void HandlesObjects()
-        {
-            var obj = new ParentObj()
+            var outerDictionary = new Dictionary<string, Dictionary<string, double>>();
+            Dictionary<string, double> innerDictionary = null;
+
+            int currentIndex = 0;
+            var outerDictionaryValue = new Mock<ICefDictionaryValue>();
+            outerDictionaryValue.Setup(v => v.SetDictionary(It.IsAny<string>(), It.IsAny<ICefDictionaryValue>())).Callback<string, ICefDictionaryValue>((key, value) => {
+                currentIndex++;
+                outerDictionary[key] = innerDictionary;
+            });
+
+            var innerDictionaryValues = new Mock<ICefDictionaryValue>[returnValue.Count];
+            var innerDictionaries = new Dictionary<string, double>[returnValue.Count];
+
+            for (int iter = 0; iter < returnValue.Count(); iter++)
             {
-                stringField = "parent",
-                childObj = new ChildObj()
+                if (innerDictionaryValues[iter] == null)
                 {
-                    stringField = "child",
-                    intField = 1,
-                    boolField = true,
-                    dateField = DateTime.Now,
-                    doubleField = 5.5,
-                    binaryField = new byte[] {0, 1, 2}
+                    innerDictionaryValues[iter] = new Mock<ICefDictionaryValue>();
                 }
-            };
+                innerDictionaryValues[iter].Setup(v => v.SetDouble(It.IsAny<string>(), It.IsAny<double>())).Callback<string, double>((key, value) =>
+                {
+                    if (innerDictionaries[currentIndex] == null)
+                    {
+                        innerDictionaries[currentIndex] = new Dictionary<string, double>();
+                    }
+                    innerDictionary = innerDictionaries[currentIndex];
+                    innerDictionaries[currentIndex][key] = value;
+                });
+            }
 
-            var obtainedValue = (Dictionary<string, object>) SerializeAndDeserialize(obj, out var valueType);
-            Assert.AreEqual(CefValueType.String, valueType);
-            Assert.AreEqual(obj.stringField, obtainedValue[nameof(ParentObj.stringField)]);
-            var child = obj.childObj;
-            var obtainedChild = (Dictionary<string, object>) obtainedValue[nameof(ParentObj.childObj)];
-            Assert.AreEqual(child.binaryField, obtainedChild[nameof(ChildObj.binaryField)]);
-            Assert.AreEqual(child.boolField, obtainedChild[nameof(ChildObj.boolField)]);
-            Assert.AreEqual(child.dateField, obtainedChild[nameof(ChildObj.dateField)]);
-            Assert.AreEqual(child.doubleField, obtainedChild[nameof(ChildObj.doubleField)]);
-            Assert.AreEqual(child.intField, obtainedChild[nameof(ChildObj.intField)]);
-            Assert.AreEqual(child.stringField, obtainedChild[nameof(ChildObj.stringField)]);
+            var sequence = valueProxy.SetupSequence(v => v.CreateDictionary()).Returns(outerDictionaryValue.Object);
+            for (int i = 0; i < returnValue.Count; i++)
+            {
+                sequence.Returns(innerDictionaryValues[i].Object);
+            }
+
+            ValueServices.ValueProxy = valueProxy.Object;
+            cefValue.Setup(v => v.SetDictionary(It.IsAny<ICefDictionaryValue>())).Callback<ICefDictionaryValue>((data) => Assert.AreSame(outerDictionaryValue.Object, data));
+            Serialize(returnValue, cefValue.Object);
+            cefValue.Verify(v => v.SetDictionary(It.IsAny<ICefDictionaryValue>()), Times.Once());
+            CollectionAssert.AreEqual(returnValue, outerDictionary);
         }
+
+        [OneTimeTearDown]
+        public void ClassTearDown()
+        {
+            ValueServices.Reset();
+        }
+
+        #endregion
     }
 }
