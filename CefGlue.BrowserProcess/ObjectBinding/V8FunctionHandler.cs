@@ -22,13 +22,13 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             // create a copy of the args to pass to the browser process
             for (var i = 0; i < arguments.Length; i++)
             {
-                V8ValueSerialization.SerializeV8Object(arguments[i], new CefListWrapper(cefArgs, i));
+                V8ValueSerialization.SerializeV8ObjectToCefValue(arguments[i], new CefListWrapper(cefArgs, i));
             }
 
             var message = new Messages.NativeObjectCallRequest()
             {
-                ObjectName = _objectName,
-                MemberName = name,
+                ObjectName = _objectName, 
+                MemberName = name, 
                 ArgumentsIn = cefArgs
             };
 
@@ -38,7 +38,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 returnValue = promiseHolder.Promise;
                 exception = null;
-            } 
+            }
             else
             {
                 returnValue = null;
