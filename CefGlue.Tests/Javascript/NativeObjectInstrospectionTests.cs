@@ -12,11 +12,6 @@ namespace CefGlue.Tests.Javascript
         {
             public event Action<object[]> MethodWithParamsCalled;
 
-            public void MethodWithParams(string param1, int param2)
-            {
-                MethodWithParamsCalled?.Invoke(new object[] { param1, param2 });
-            }
-
             public Task<string> AsyncGenericMethod()
             {
                 return Task.FromResult(string.Empty);
