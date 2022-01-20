@@ -12,6 +12,18 @@ namespace CefGlue.Tests.Serialization
             OptionB
         }
 
+        private struct ParentHelperStructure
+        {
+            public string stringTest;
+            public HelperStructure child;
+        }
+
+        private struct HelperStructure
+        {
+            public string stringTest;
+            public int intTest;
+        }
+
         [Test]
         public void BasicTypes()
         {
@@ -45,7 +57,7 @@ namespace CefGlue.Tests.Serialization
             Assert.AreEqual(default(int), JavascriptToNativeTypeConverter.ConvertToNative<int>(null));
             Assert.AreEqual(default(bool), JavascriptToNativeTypeConverter.ConvertToNative<bool>(null));
             Assert.AreEqual(default(TestEnum), JavascriptToNativeTypeConverter.ConvertToNative<TestEnum>(null));
-            Assert.AreEqual(default(ChildObj), JavascriptToNativeTypeConverter.ConvertToNative<ChildObj>(null));
+            Assert.AreEqual(default(HelperStructure), JavascriptToNativeTypeConverter.ConvertToNative<HelperStructure>(null));
             Assert.AreEqual(default(int[]), JavascriptToNativeTypeConverter.ConvertToNative<int[]>(null));
         }
 
@@ -62,33 +74,25 @@ namespace CefGlue.Tests.Serialization
         [Test]
         public void Objects()
         {
-            var obj = new Dictionary<string, object>()
-            {
-                {nameof(ChildObj.stringField), "test1"}, {nameof(ChildObj.intField), 1}
-            };
-            Assert.AreEqual(new ChildObj() {stringField = "test1", intField = 1},
-                JavascriptToNativeTypeConverter.ConvertToNative<ChildObj>(obj));
-        }
+            var obj = new Dictionary<string, object>() { { "stringTest", "test1" }, { "intTest", 1 } };
+            Assert.AreEqual(new HelperStructure() { stringTest = "test1", intTest = 1 }, JavascriptToNativeTypeConverter.ConvertToNative<HelperStructure>(obj));
 
-        [Test] 
-        public void NestedObjects()
-        {
             // struct with nested struct
-            var obj = new Dictionary<string, object> 
+            obj = new Dictionary<string, object> 
             {
-                { nameof(ParentObj.stringField), "parent" },
-                { nameof(ParentObj.childObj), new Dictionary<string, object>() { { nameof(ChildObj.stringField), "child" }, { nameof(ChildObj.intField), 2 } } },
+                { "stringTest", "parent" },
+                { "child", new Dictionary<string, object>() { { "stringTest", "child" }, { "intTest", 2 } } },
             };
-            var expected = new ParentObj()
+            var expected = new ParentHelperStructure()
             {
-                stringField = "parent",
-                childObj = new ChildObj()
+                stringTest = "parent",
+                child = new HelperStructure()
                 {
-                    stringField = "child",
-                    intField = 2
+                    stringTest = "child",
+                    intTest = 2
                 }
             };
-            Assert.AreEqual(expected, JavascriptToNativeTypeConverter.ConvertToNative<ParentObj>(obj));
+            Assert.AreEqual(expected, JavascriptToNativeTypeConverter.ConvertToNative<ParentHelperStructure>(obj));
         }
 
         [Test]
@@ -120,15 +124,15 @@ namespace CefGlue.Tests.Serialization
 
             var structList = new dynamic[] 
             {
-               new Dictionary<string, object>() { { nameof(ChildObj.stringField), "test1" }, { nameof(ChildObj.intField), 1 } },
-               new Dictionary<string, object>() { { nameof(ChildObj.stringField), "test2" }, { nameof(ChildObj.intField), 2 } },
+               new Dictionary<string, object>() { { "stringTest", "test1" }, { "intTest", 1 } },
+               new Dictionary<string, object>() { { "stringTest", "test2" }, { "intTest", 2 } },
             };
-            var expectedStructList = new[]
+            var expectedStructList = new HelperStructure[]
             {
-                new ChildObj() { stringField = "test1", intField = 1 },
-                new ChildObj() { stringField = "test2", intField = 2 },
+                new HelperStructure() { stringTest = "test1", intTest = 1 },
+                new HelperStructure() { stringTest = "test2", intTest = 2 },
             };
-            CollectionAssert.AreEqual(expectedStructList, JavascriptToNativeTypeConverter.ConvertToNative<ChildObj[]>(structList));
+            CollectionAssert.AreEqual(expectedStructList, JavascriptToNativeTypeConverter.ConvertToNative<HelperStructure[]>(structList));
         }
     }
 }

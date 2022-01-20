@@ -8,13 +8,20 @@ namespace CefGlue.Tests.Javascript
     {
         class CustomObject
         {
-            public event Action<object[]> Event;
+            public event Action<object[]> MethodWithParamsCalled;
 
-            public void MethodWithParams(string param1, int param2) { }
+            public void MethodWithParams(string param1, int param2)
+            {
+                MethodWithParamsCalled?.Invoke(new object[] { param1, param2 });
+            }
 
-            public static void StaticMethod() { }
+            public static void StaticMethod()
+            {
+            }
 
-            private void PrivateMethod() { }
+            private void PrivateMethod()
+            {
+            }
 
             public string PublicProperty => "";
             

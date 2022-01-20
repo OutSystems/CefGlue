@@ -6,26 +6,18 @@ namespace CefGlue.Tests.Javascript
 {
     public class NativeObjectInteropTests : TestBase
     {
-        const string Date = "1995-12-17T03:24:00Z";
-
         const string ObjName = "nativeObj";
 
         private NativeObject nativeObject;
-        
+
         class Person
         {
             public string Name = null;
             public int Age = 0;
-            public DateTime BirthDate = default;
-            public byte[] Photo = default;
         }
 
         class NativeObject
         {
-            private readonly TaskCompletionSource<object> _tcs = new TaskCompletionSource<object>();
-
-            public Task<object> ResultTask => _tcs.Task;
-                
             public event Action TestCalled;
 
             public void Test()
@@ -33,21 +25,11 @@ namespace CefGlue.Tests.Javascript
                 TestCalled?.Invoke();
             }
 
-            public void SetResult(object result)
-            {
-                _tcs.SetResult(result);
-            }
-
-            public void SetPersonResult(Person result)
-            {
-                _tcs.SetResult(result);
-            }
-
             public event Action<object[]> MethodWithParamsCalled;
 
-            public void MethodWithParams(string param1, int param2, DateTime param3, bool param4)
+            public void MethodWithParams(string param1, int param2)
             {
-                MethodWithParamsCalled?.Invoke(new object[] { param1, param2, param3, param4 });
+                MethodWithParamsCalled?.Invoke(new object[] { param1, param2 });
             }
 
             public event Action<object[]> MethodWithObjectParamCalled;
@@ -57,24 +39,9 @@ namespace CefGlue.Tests.Javascript
                 MethodWithObjectParamCalled?.Invoke(new object[] { param });
             }
 
-            public object MethodWithNullReturn()
-            {
-                return null;
-            }
-
-            public string MethodWithStringReturn()
+            public string MethodWithReturn()
             {
                 return "this is the result";
-            }
-
-            public DateTime MethodWithDateTimeReturn()
-            {
-                return DateTime.Parse(Date);
-            }
-
-            public Person MethodWithObjectReturn()
-            {
-                return new Person() {Name = "John", Age = 30, BirthDate = DateTime.Parse(Date)};
             }
         }
 
@@ -124,15 +91,13 @@ namespace CefGlue.Tests.Javascript
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
 
-            Execute($"{ObjName}.methodWithParams('{Arg1}', {Arg2}, new Date('{Date}'), true)");
+            Execute($"{ObjName}.methodWithParams('{Arg1}', {Arg2})");
             
             var result = await taskCompletionSource.Task;
 
-            Assert.AreEqual(4, result.Length);
+            Assert.AreEqual(2, result.Length);
             Assert.AreEqual(Arg1, result[0]);
             Assert.AreEqual(Arg2, result[1]);
-            Assert.AreEqual(DateTime.Parse(Date), result[2]);
-            Assert.AreEqual(true, result[3]);
         }
 
         [Test]
@@ -141,7 +106,7 @@ namespace CefGlue.Tests.Javascript
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithObjectParamCalled += (args) => taskCompletionSource.SetResult(args);
 
-            Execute($"{ObjName}.methodWithObjectParam({{'Name': 'cef', 'Age': 10, 'BirthDate': new Date('{Date}') }})");
+            Execute($"{ObjName}.methodWithObjectParam({{'Name': 'cef', 'Age': 10 }})");
 
             var result = await taskCompletionSource.Task;
             Assert.AreEqual(1, result.Length);
@@ -150,51 +115,19 @@ namespace CefGlue.Tests.Javascript
             var arg = (Person) result[0];
             Assert.AreEqual("cef", arg.Name);
             Assert.AreEqual(10, arg.Age);
-            Assert.AreEqual(DateTime.Parse(Date), arg.BirthDate);
         }
 
         [Test]
-        public async Task NativeObjectMethodNullResultIsReturned()
+        public async Task NativeObjectMethodResultIsReturned()
         {
-            Execute($"{ObjName}.methodWithNullReturn().then(r => {ObjName}.setResult(r));");
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
+            
+            Execute($"{ObjName}.methodWithReturn().then(r => {ObjName}.methodWithParams(r, 0));");
 
-            var result = await nativeObject.ResultTask;
+            var result = await taskCompletionSource.Task;
 
-            Assert.AreEqual(nativeObject.MethodWithNullReturn(), result);
-        }
-
-        [Test]
-        public async Task NativeObjectMethodStringResultIsReturned()
-        {
-            Execute($"{ObjName}.methodWithStringReturn().then(r => {ObjName}.setResult(r));");
-
-            var result = await nativeObject.ResultTask;
-
-            Assert.AreEqual(nativeObject.MethodWithStringReturn(), result);
-        }
-
-        [Test]
-        public async Task NativeObjectMethodDateTimeResultIsReturned()
-        {
-            Execute($"{ObjName}.methodWithDateTimeReturn().then(r => {ObjName}.setResult(r));");
-
-            var result = await nativeObject.ResultTask;
-
-            Assert.AreEqual(nativeObject.MethodWithDateTimeReturn(), result);
-        }
-
-        [Test]
-        public async Task NativeObjectMethodObjectResultIsReturned()
-        {
-            Execute($"{ObjName}.methodWithObjectReturn().then(r => {ObjName}.setPersonResult(r));");
-
-            var result = (Person) await nativeObject.ResultTask;
-
-            var expected = nativeObject.MethodWithObjectReturn();
-            Assert.AreEqual(expected.Name, result.Name);
-            Assert.AreEqual(expected.Age, result.Age);
-            Assert.AreEqual(expected.BirthDate, result.BirthDate);
-            Assert.AreEqual(expected.Photo, result.Photo);
+            Assert.AreEqual(nativeObject.MethodWithReturn(), result[0]);
         }
     }
 }
