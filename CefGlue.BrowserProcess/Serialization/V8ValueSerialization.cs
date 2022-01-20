@@ -7,12 +7,17 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
 {
     internal static class V8ValueSerialization
     {
-        public static void SerializeV8Object(CefV8Value obj, CefValueWrapper cefValue)
+        /// <summary>
+        /// Converts a V8Value to a CefValue (used when sending values from the browser process to the main process)
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="cefValue"></param>
+        public static void SerializeV8ObjectToCefValue(CefV8Value obj, CefValueWrapper cefValue)
         {
-            SerializeV8Object(obj, cefValue, new Stack<CefV8Value>());
+            SerializeV8ObjectToCefValue(obj, cefValue, new Stack<CefV8Value>());
         }
 
-        private static void SerializeV8Object(CefV8Value obj, CefValueWrapper cefValue, Stack<CefV8Value> visitedObjects)
+        private static void SerializeV8ObjectToCefValue(CefV8Value obj, CefValueWrapper cefValue, Stack<CefV8Value> visitedObjects)
         {
             if (visitedObjects.Any(o => o.IsSame(obj)))
             {
@@ -39,16 +44,11 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
             }
             else if (obj.IsString)
             {
-                cefValue.SetString(obj.GetStringValue());
+                CefValueSerialization.Serialize(obj.GetStringValue(), cefValue);
             }
             else if (obj.IsDate)
             {
-                // TODO time returned is UTC
-                var date = obj.GetDateValue();
-                using (var binary = CefValueSerialization.ToCefBinary(CefValueSerialization.BinaryMagicBytes.DateTime, BitConverter.GetBytes(date.ToBinary())))
-                {
-                    cefValue.SetBinary(binary);
-                }
+                CefValueSerialization.Serialize(obj.GetDateValue(), cefValue);
             }
             else if (obj.IsArray)
             {
@@ -60,7 +60,7 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                     {
                         for (var i = 0; i < arrLength; i++)
                         {
-                            SerializeV8Object(obj.GetValue(keys[i]), new CefListWrapper(cefList, i), visitedObjects);
+                            SerializeV8ObjectToCefValue(obj.GetValue(keys[i]), new CefListWrapper(cefList, i), visitedObjects);
                         }
 
                         cefValue.SetList(cefList);
@@ -89,7 +89,7 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                         {
                             if (obj.HasValue(key))
                             {
-                                SerializeV8Object(obj.GetValue(key), new CefDictionaryWrapper(cefDictionary, key), visitedObjects);
+                                SerializeV8ObjectToCefValue(obj.GetValue(key), new CefDictionaryWrapper(cefDictionary, key), visitedObjects);
                             }
                         }
                         cefValue.SetDictionary(cefDictionary);
@@ -104,57 +104,33 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
             visitedObjects.Pop();
         }
 
+        /// <summary>
+        /// Converts a CefValue to V8Value (used when sending values to the JS context)
+        /// </summary>
+        /// <param name="cefValue"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public static CefV8Value SerializeCefValue(CefValueWrapper cefValue)
         {
             switch (cefValue.GetValueType())
             {
                 case CefValueType.Binary:
-                    object nativeValue;
-                    CefValueSerialization.BinaryMagicBytes kind;
-                    using (var binaryValue = cefValue.GetBinary())
-                    {
-                        nativeValue = CefValueSerialization.FromCefBinary(binaryValue, out kind);
-                    }
-                    switch(kind)
-                    {
-                        case CefValueSerialization.BinaryMagicBytes.Binary:
-                            // TODO not supported yet
-                            throw new NotImplementedException("Cannot serialize a binary into a v8 object");
-
-                        case CefValueSerialization.BinaryMagicBytes.DateTime:
-                            return CefV8Value.CreateDate((DateTime)nativeValue);
-
-                        default:
-                            throw new NotImplementedException("Cannot serialize an unknown binary format into a v8 object");
-                    }
+                    // binaries are serialized as base64
+                    throw new InvalidOperationException("Cannot serialize a Binary into a v8 object");
 
                 case CefValueType.Bool:
                     return CefV8Value.CreateBool(cefValue.GetBool());
 
                 case CefValueType.Dictionary:
-                    using (var dictionary = cefValue.GetDictionary())
-                    {
-                        var v8Dictionary = CefV8Value.CreateObject();
-                        foreach (var key in dictionary.GetKeys())
-                        {
-                            v8Dictionary.SetValue(key, SerializeCefValue(new CefDictionaryWrapper(dictionary, key)));
-                        }
-                        return v8Dictionary;
-                    }
-                    
+                    // dictionaries are serialized as json
+                    throw new InvalidOperationException("Cannot serialize a Dictionary into a v8 object");
+
                 case CefValueType.Double:
                     return CefV8Value.CreateDouble(cefValue.GetDouble());
 
                 case CefValueType.List:
-                    using (var list = cefValue.GetList())
-                    {
-                        var v8List = CefV8Value.CreateArray(list.Count);
-                        for (var i = 0; i < list.Count; i++)
-                        {
-                            v8List.SetValue(i, SerializeCefValue(new CefListWrapper(list, i)));
-                        }
-                        return v8List;
-                    }
+                    // lists are serialized as json
+                    throw new InvalidOperationException("Cannot serialize a List into a v8 object");
 
                 case CefValueType.Int:
                     return CefV8Value.CreateInt(cefValue.GetInt());
