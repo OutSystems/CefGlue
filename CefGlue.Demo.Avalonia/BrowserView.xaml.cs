@@ -7,6 +7,7 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Xilium.CefGlue.Avalonia;
 
 namespace Xilium.CefGlue.Demo.Avalonia
@@ -27,6 +28,25 @@ namespace Xilium.CefGlue.Demo.Avalonia
             browser.LoadStart += OnBrowserLoadStart;
             browser.TitleChanged += OnBrowserTitleChanged;
             browserWrapper.Child = browser;
+        }
+
+        static Task<object> AsyncCallNativeMethod(Func<object> nativeMethod)
+        {
+            return Task.Run(() =>
+            {
+                var result = nativeMethod.Invoke();
+                if (result is Task task)
+                {
+                    if (task.GetType().IsGenericType)
+                    {
+                        return ((dynamic) task).Result;
+                    }
+
+                    return task;
+                }
+
+                return result;
+            });
         }
 
         public event Action<string> TitleChanged;
@@ -87,7 +107,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             const string TestObject = "dotNetObject";
 
             var obj = new BindingTestClass();
-            browser.RegisterJavascriptObject(obj, "dotNetObject");
+            browser.RegisterJavascriptObject(obj, TestObject, AsyncCallNativeMethod);
 
             var methods = obj.GetType().GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public)
                                        .Where(m => m.GetParameters().Length == 0)
@@ -95,7 +115,8 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
             var script = "(function () {" +
                 "let calls = [];" +
-                //string.Join("", methods.Select(m => $"calls.push({{ name: '{m}', promise: {TestObject}.{m}() }});")) +
+                string.Join("", methods.Select(m => $"calls.push({{ name: '{m}', promise: {TestObject}.{m}() }});")) +
+                $"calls.push({{ name: 'asyncGetObjectWithParams', promise: {TestObject}.asyncGetObjectWithParams('a string') }});" +
                 $"calls.push({{ name: 'getObjectWithParams', promise: {TestObject}.getObjectWithParams(5, 'a string', {{ Name: 'obj name', Value: 10 }}, [ 1, 2 ]) }});" +
                 "calls.forEach(c => c.promise.then(r => console.log(c.name + ': ' + JSON.stringify(r))).catch(e => console.log(e)));" +
                 "})()";

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using Xilium.CefGlue.Common.ObjectBinding;
 
@@ -10,8 +12,10 @@ namespace CefGlue.Tests.Javascript
         {
             public event Action<object[]> Event;
 
-            public void MethodWithParams(string param1, int param2) { }
-
+            public void MethodWithParams(string param1, int param2) => MethodWithParamsCalled?.Invoke(new object[] { param1, param2 });
+            
+            public Task AsyncMethod() => Task.CompletedTask;
+            
             public static void StaticMethod() { }
 
             private void PrivateMethod() { }
@@ -24,25 +28,26 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public void CRLObjectInstanceMethodsAreCaptured()
         {
-            var members = NativeObjectAnalyser.AnalyseObjectMembers(new object());
+            var members = new HashSet<string>(new NativeObject("", new object()).MethodsNames);
 
-            Assert.IsTrue(members.ContainsKey("toString"));
-            Assert.IsTrue(members.ContainsKey("getHashCode"));
-            Assert.IsTrue(members.ContainsKey("getType"));
-            Assert.IsTrue(members.ContainsKey("equals"));
+            Assert.IsTrue(members.Contains("toString"));
+            Assert.IsTrue(members.Contains("getHashCode"));
+            Assert.IsTrue(members.Contains("getType"));
+            Assert.IsTrue(members.Contains("equals"));
         }
         
         [Test]
         public void CustomObjectInstanceMethodsAreCaptured()
         {
-            var members = NativeObjectAnalyser.AnalyseObjectMembers(new CustomObject());
+            var members = new HashSet<string>(new NativeObject("", new CustomObject()).MethodsNames);
 
-            Assert.AreEqual(5, members.Count); // object members + 1 public method
-            Assert.IsTrue(members.ContainsKey("methodWithParams"));
-            Assert.IsTrue(members.ContainsKey("toString"));
-            Assert.IsTrue(members.ContainsKey("getHashCode"));
-            Assert.IsTrue(members.ContainsKey("getType"));
-            Assert.IsTrue(members.ContainsKey("equals"));
+            Assert.AreEqual(6, members.Count); // object members + 2 public methods
+            Assert.IsTrue(members.Contains("toString"));
+            Assert.IsTrue(members.Contains("getHashCode"));
+            Assert.IsTrue(members.Contains("getType"));
+            Assert.IsTrue(members.Contains("equals"));
+            Assert.IsTrue(members.Contains("methodWithParams"));
+            Assert.IsTrue(members.Contains("asyncMethod"));
         }
     }
 }
