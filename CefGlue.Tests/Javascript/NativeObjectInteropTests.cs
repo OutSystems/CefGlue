@@ -265,41 +265,32 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public async Task AsyncMethodResultIsReturned()
         {
-            var taskCompletionSource = new TaskCompletionSource<object[]>();
-            nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
+            Execute($"{ObjName}.asyncMethod(0).then(r => {ObjName}.setResult(r));");
 
-            Execute($"{ObjName}.asyncMethod(0).then(r => {ObjName}.methodWithParams(r, 0));");
+            var result = await nativeObject.ResultTask; ;
 
-            var result = await taskCompletionSource.Task;
-
-            Assert.AreEqual(nativeObject.AsyncMethod(0).Result, result[0]);
+            Assert.AreEqual(nativeObject.AsyncMethod(0).Result, result);
         }
 
         [Test]
         public async Task MethodExceptionIsReturned()
         {
-            var taskCompletionSource = new TaskCompletionSource<object[]>();
-            nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
+            Execute($"{ObjName}.methodReturnException().catch(r => {ObjName}.setResult(r));");
 
-            Execute($"{ObjName}.methodReturnException().catch(r => {ObjName}.methodWithParams(r, 0));");
-
-            var result = await taskCompletionSource.Task;
+            var result = await nativeObject.ResultTask;
 
             var msg = Assert.Throws<Exception>(() => nativeObject.MethodReturnException()).Message;
-            Assert.AreEqual(msg, result[0]);
+            Assert.AreEqual(msg, result);
         }
 
         [Test]
         public async Task AsyncMethodExceptionIsReturned()
         {
-            var taskCompletionSource = new TaskCompletionSource<object[]>();
-            nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
+            Execute($"{ObjName}.asyncMethodReturnException().catch(r => {ObjName}.setResult(r));");
 
-            Execute($"{ObjName}.asyncMethodReturnException().catch(r => {ObjName}.methodWithParams(r, 0));");
+            var result = await nativeObject.ResultTask;
 
-            var result = await taskCompletionSource.Task;
-
-            Assert.AreEqual(nativeObject.AsyncMethodReturnException().Exception.Message, result[0]);
+            Assert.AreEqual(nativeObject.AsyncMethodReturnException().Exception.Message, result);
         }
     }
 }
