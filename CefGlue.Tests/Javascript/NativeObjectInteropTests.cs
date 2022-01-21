@@ -11,9 +11,9 @@ namespace CefGlue.Tests.Javascript
     {
         const string Date = "1995-12-17T03:24:00Z";
 
-        const string ObjName = "nativeObj";
+        protected const string ObjName = "nativeObj";
 
-        private NativeObject nativeObject;
+        protected NativeObject nativeObject;
 
         protected class Person
         {

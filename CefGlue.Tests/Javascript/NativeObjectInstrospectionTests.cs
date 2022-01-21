@@ -10,10 +10,15 @@ namespace CefGlue.Tests.Javascript
     {
         class CustomObject
         {
-            public event Action<object[]> Event;
+            private Action<object[]> _event;
+            public event Action<object[]> Event
+            {
+                add => _event += value;
+                remove => _event -= value;
+            }
 
-            public void MethodWithParams(string param1, int param2) => MethodWithParamsCalled?.Invoke(new object[] { param1, param2 });
-            
+            public void MethodWithParams(string param1, int param2) { }
+
             public Task AsyncMethod() => Task.CompletedTask;
             
             public static void StaticMethod() { }
