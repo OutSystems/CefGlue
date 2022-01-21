@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -6,17 +9,17 @@ namespace CefGlue.Tests.Javascript
 {
     public class NativeObjectInteropTests : TestBase
     {
-        const string ObjName = "nativeObj";
+        protected const string ObjName = "nativeObj";
 
-        private NativeObject nativeObject;
+        protected NativeObject nativeObject;
 
-        class Person
+        protected class Person
         {
             public string Name = null;
             public int Age = 0;
         }
 
-        class NativeObject
+        protected class NativeObject
         {
             public event Action TestCalled;
 
@@ -39,6 +42,26 @@ namespace CefGlue.Tests.Javascript
                 MethodWithObjectParamCalled?.Invoke(new object[] { param });
             }
 
+            public event Func<int, Task<string>> AsyncMethodCalled;
+
+            public Task<string> AsyncMethod(int arg)
+            {
+                if (AsyncMethodCalled != null) {
+                    return AsyncMethodCalled(arg);
+                }
+                return Task.FromResult("this is the result");
+            }
+
+            public object MethodReturnException()
+            {
+                throw new Exception("error");
+            }
+
+            public Task AsyncMethodReturnException()
+            {
+                return Task.FromException(new Exception("error"));
+            }
+            
             public string MethodWithReturn()
             {
                 return "this is the result";
@@ -54,13 +77,18 @@ namespace CefGlue.Tests.Javascript
         {
             Browser.ExecuteJavaScript("(function() { " + script + " })()");
         }
+        
+        protected override async Task ExtraSetup()
+        {
+            RegisterObject();
+            await Load();
+            await base.ExtraSetup();
+        }
 
-        protected async override Task ExtraSetup()
+        protected virtual void RegisterObject()
         {
             nativeObject = new NativeObject();
             Browser.RegisterJavascriptObject(nativeObject, ObjName);
-            await Load();
-            await base.ExtraSetup();
         }
 
         [Test]
@@ -74,7 +102,7 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public async Task NativeObjectMethodIsCalled()
+        public async Task MethodIsCalled()
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             nativeObject.TestCalled += () => taskCompletionSource.SetResult(true);
@@ -83,7 +111,7 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public async Task NativeObjectMethodParamsArePassed()
+        public async Task MethodParamsArePassed()
         {
             const string Arg1 = "test";
             const int Arg2 = 5;
@@ -101,7 +129,7 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public async Task NativeObjectMethodWithObjectParamIsPassed()
+        public async Task MethodWithObjectParamIsPassed()
         {
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithObjectParamCalled += (args) => taskCompletionSource.SetResult(args);
@@ -128,6 +156,83 @@ namespace CefGlue.Tests.Javascript
             var result = await taskCompletionSource.Task;
 
             Assert.AreEqual(nativeObject.MethodWithReturn(), result[0]);
+        }
+        
+        [Test]
+        public void AsyncMethodsCanExecuteSimultaneously()
+        {
+            const int CallsCount = 10;
+
+            var waitHandle = new ManualResetEvent(false);
+            var calls = new List<int>();
+            nativeObject.AsyncMethodCalled += (arg) =>
+            {
+                calls.Add(arg);
+
+                return Task.Run(() =>
+                {
+                    if (calls.Count < CallsCount)
+                    {
+                        waitHandle.WaitOne();
+                    }
+                    else
+                    {
+                        waitHandle.Set();
+                    }
+
+                    return "done";
+                });
+            };
+
+            var script = string.Join("", Enumerable.Range(1, CallsCount).Select(i => $"{ObjName}.asyncMethod({i});"));
+            Execute(script);
+
+            waitHandle.WaitOne();
+            Assert.AreEqual(CallsCount, calls.Count, "Number of calls dont match");
+            for (var i = 1; i <= CallsCount; i++)
+            {
+                Assert.AreEqual(i, calls[i-1], "Call order failed");
+            }
+        }
+        
+        [Test]
+        public async Task AsyncMethodResultIsReturned()
+        {
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
+
+            Execute($"{ObjName}.asyncMethod(0).then(r => {ObjName}.methodWithParams(r, 0));");
+
+            var result = await taskCompletionSource.Task;
+
+            Assert.AreEqual(nativeObject.AsyncMethod(0).Result, result[0]);
+        }
+
+        [Test]
+        public async Task MethodExceptionIsReturned()
+        {
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
+
+            Execute($"{ObjName}.methodReturnException().catch(r => {ObjName}.methodWithParams(r, 0));");
+
+            var result = await taskCompletionSource.Task;
+
+            var msg = Assert.Throws<Exception>(() => nativeObject.MethodReturnException()).Message;
+            Assert.AreEqual(msg, result[0]);
+        }
+
+        [Test]
+        public async Task AsyncMethodExceptionIsReturned()
+        {
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
+
+            Execute($"{ObjName}.asyncMethodReturnException().catch(r => {ObjName}.methodWithParams(r, 0));");
+
+            var result = await taskCompletionSource.Task;
+
+            Assert.AreEqual(nativeObject.AsyncMethodReturnException().Exception.Message, result[0]);
         }
     }
 }

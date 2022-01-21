@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xilium.CefGlue.Common.Events;
@@ -18,16 +18,14 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         /// <param name="obj"></param>
         /// <param name="name"></param>
         /// <returns>True if the object was successfully registered, false if the object was already registered before.</returns>
-        public bool Register(object obj, string name, JavascriptObjectMethodCallHandler methodHandler = null)
+        public bool Register(object obj, string name, MethodCallHandler methodHandler = null)
         {
             if (_registeredObjects.ContainsKey(name))
             {
                 return false;
             }
-
-            var objectMembers = NativeObjectAnalyser.AnalyseObjectMembers(obj);
-
-            var nativeObj = new NativeObject(name, obj, objectMembers, methodHandler);
+            
+            var nativeObj = new NativeObject(name, obj, methodHandler);
 
             lock (_registrationSyncRoot)
             {

@@ -1,4 +1,6 @@
+﻿using System;
 using System.Collections;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using Xilium.CefGlue.Common.ObjectBinding;
 
@@ -6,6 +8,11 @@ namespace CefGlue.Tests.Javascript
 {
     public class NativeObjectMethodExecutorTests
     {
+        class Token
+        {
+            public bool Executed;
+        }
+        
         class NativeTestObject
         {
             public object MethodWithParams(string param1, int param2)
@@ -16,6 +23,17 @@ namespace CefGlue.Tests.Javascript
             public string MethodWithReturn()
             {
                 return "this is the result";
+            }
+            
+            public Task AsyncMethod(Token token)
+            {
+                token.Executed = true;
+                return Task.CompletedTask;
+            }
+            
+            public Task<string> AsyncMethodWithReturn()
+            {
+                return Task.FromResult("this is the result");
             }
 
             public object[] MethodWithOptionalParams(params string[] optionalParams)
@@ -30,19 +48,45 @@ namespace CefGlue.Tests.Javascript
         }
 
         private NativeTestObject nativeTestObject = new NativeTestObject();
-        private NativeObject nativeObjectInfo;
+        private NativeObject nativeObject;
 
         [OneTimeSetUp]
         protected void Setup()
         {
-            var objectMembers = NativeObjectAnalyser.AnalyseObjectMembers(nativeTestObject);
-            nativeObjectInfo = new NativeObject("test", nativeTestObject, objectMembers);
+            nativeObject = new NativeObject("test", nativeTestObject);
         }
 
         private object ExecuteMethod(string name, object[] args)
         {
-            var method = nativeObjectInfo.GetNativeMethod(name);
-            return NativeObjectMethodExecutor.ExecuteMethod(nativeTestObject, method, args);
+            object result = null;
+            Exception exception = null;
+            nativeObject.ExecuteMethod(name, args, (r, e) =>
+            {
+                result = r;
+                exception = e;
+            });
+            if (exception != null)
+            {
+                throw exception;
+            }
+            return result;
+        }
+        
+        private Task<object> ExecuteAsyncMethod(string name, object[] args)
+        {
+            var tcs = new TaskCompletionSource<object>();
+            nativeObject.ExecuteMethod(name, args, (r, e) =>
+            {
+                if (e != null)
+                {
+                    tcs.SetException(e);
+                } 
+                else
+                {
+                    tcs.SetResult(r);
+                }
+            });
+            return tcs.Task;
         }
 
         [Test]
@@ -50,6 +94,22 @@ namespace CefGlue.Tests.Javascript
         {
             var result = ExecuteMethod("methodWithReturn", new object[0]);
             Assert.AreEqual(nativeTestObject.MethodWithReturn(), result);
+        }
+
+        [Test]
+        public void AsyncMethodIsExecuted()
+        {
+            var token = new Token();
+            var result = ExecuteAsyncMethod("asyncMethod", new [] { token });
+            Assert.IsNull(result.Result);
+            Assert.IsTrue(token.Executed);
+        }
+        
+        [Test]
+        public void AsyncMethodWithReturnIsExecuted()
+        {
+            var result = ExecuteAsyncMethod("asyncMethodWithReturn", new object[0]);
+            Assert.AreEqual(nativeTestObject.AsyncMethodWithReturn().Result, result.Result);
         }
 
         [Test]
@@ -65,7 +125,7 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public void MethodWithOptionalParams()
+        public void MethodWithOptionalParamsIsExecuted()
         {
             const string Arg1 = "arg1";
             const string Arg2 = "arg2";
@@ -81,7 +141,7 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public void MethodWithFixedAndOptionalParams()
+        public void MethodWithFixedAndOptionalParamsIsExecuted()
         {
             const string Arg1 = "arg1";
             var arg2 = new int[] { 1, 2 , 3 };

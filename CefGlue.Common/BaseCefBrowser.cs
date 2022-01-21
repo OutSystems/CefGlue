@@ -234,12 +234,6 @@ namespace Xilium.CefGlue.Common
         public CefBrowserSettings Settings => _adapter.Settings;
 
         /// <summary>
-        /// Specifies the maximium number of calls that can be made simultaneously to native object methods. 
-        /// Defaults to the int.MaxValue.
-        /// </summary>
-        public int MaxNativeMethodsParallelCalls { get => _adapter.MaxNativeMethodsParallelCalls; set => _adapter.MaxNativeMethodsParallelCalls = value; }
-
-        /// <summary>
         /// Get or set the current zoom level. The default zoom level is 0.0.
         /// </summary>
         public double ZoomLevel { get => _adapter.ZoomLevel; set => _adapter.ZoomLevel = value; }
@@ -356,7 +350,7 @@ namespace Xilium.CefGlue.Common
         /// <param name="targetObject">The object to be made accessible to Javascript</param>
         /// <param name="name">The name of the object. (e.g. "potatoes", if you want the object to be accessible as window.potatoes).</param>
         /// <param name="methodHandler">Optional handler to be executed before the target object method is called. You may use this for instance to log calls.</param>
-        public void RegisterJavascriptObject(object targetObject, string name, JavascriptObjectMethodCallHandler methodHandler = null)
+        public void RegisterJavascriptObject(object targetObject, string name, MethodCallHandler methodHandler = null)
         {
             _adapter.RegisterJavascriptObject(targetObject, name, methodHandler);
         }

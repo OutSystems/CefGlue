@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Xilium.CefGlue.Demo.Avalonia
 {
@@ -58,6 +59,14 @@ namespace Xilium.CefGlue.Demo.Avalonia
         public object GetObjectWithParams(int anIntParam, string aStringParam, InnerObject anObjectParam, int[] intArrayParam)
         {
             return new InnerObject { Name = "This is an object", Value = 5 };
+        }
+        
+        public async Task<bool> AsyncGetObjectWithParams(string aStringParam)
+        {
+            Console.WriteLine(DateTime.Now + ": Called " + nameof(AsyncGetObjectWithParams));
+            await Task.Delay(5000).ConfigureAwait(false);
+            Console.WriteLine(DateTime.Now + ":  Continuing " + nameof(AsyncGetObjectWithParams));
+            return true;
         }
 
         public string[] GetObjectWithParamArray(int anIntParam, params string[] paramWithParamArray)
