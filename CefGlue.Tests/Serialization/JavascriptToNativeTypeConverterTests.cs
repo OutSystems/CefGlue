@@ -24,6 +24,7 @@ namespace CefGlue.Tests.Serialization
             Assert.AreEqual(TestEnum.OptionB, JavascriptToNativeTypeConverter.ConvertToNative<TestEnum>(1));
 
             Assert.AreEqual("this is a string", JavascriptToNativeTypeConverter.ConvertToNative<string>("this is a string"));
+            Assert.AreEqual("", JavascriptToNativeTypeConverter.ConvertToNative<string>(""));
         }
 
         [Test]
