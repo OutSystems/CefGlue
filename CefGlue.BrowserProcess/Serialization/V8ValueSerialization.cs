@@ -44,7 +44,7 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
             }
             else if (obj.IsString)
             {
-                CefValueSerialization.Serialize(obj.GetStringValue(), cefValue);
+                CefValueSerialization.Serialize(obj.GetStringValue() ?? "", cefValue);
             }
             else if (obj.IsDate)
             {
