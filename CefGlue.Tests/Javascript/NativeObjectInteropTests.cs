@@ -52,6 +52,13 @@ namespace CefGlue.Tests.Javascript
             {
                 MethodWithParamsCalled?.Invoke(new object[] { param1, param2, param3, param4 });
             }
+            
+            public event Action<object[]> MethodWithStringParamCalled;
+
+            public void MethodWithStringParam(string param1)
+            {
+                MethodWithStringParamCalled?.Invoke(new object[] { param1 });
+            }
 
             public event Action<object[]> MethodWithObjectParamCalled;
 
@@ -148,22 +155,35 @@ namespace CefGlue.Tests.Javascript
         {
             const string Arg1 = "test";
             const int Arg2 = 5;
-            const string Arg3 = "";
-
+            
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
 
-            Execute($"{ObjName}.methodWithParams('{Arg1}', {Arg2}, '{Arg3}', new Date('{Date}'), true)");
+            Execute($"{ObjName}.methodWithParams('{Arg1}', {Arg2}, new Date('{Date}'), true)");
 
             var result = await taskCompletionSource.Task;
 
-            Assert.AreEqual(5, result.Length);
+            Assert.AreEqual(4, result.Length);
             Assert.AreEqual(Arg1, result[0]);
             Assert.AreEqual(Arg2, result[1]);
-            Assert.AreEqual(Arg3, result[2]);
-            Assert.AreEqual(DateTime.Parse(Date), result[3]);
-            Assert.AreEqual(true, result[4]);
+            Assert.AreEqual(DateTime.Parse(Date), result[2]);
+            Assert.AreEqual(true, result[3]);
+        }
+        
+        [Test]
+        public async Task MethodEmptyStringParamIsPassed()
+        {
+            const string Arg1 = "";
+            
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithStringParamCalled += (args) => taskCompletionSource.SetResult(args);
 
+            Execute($"{ObjName}.methodWithStringParam('{Arg1}')");
+
+            var result = await taskCompletionSource.Task;
+
+            Assert.AreEqual(1, result.Length);
+            Assert.AreEqual(Arg1, result[0]);
         }
 
         [Test]
