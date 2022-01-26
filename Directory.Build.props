@@ -4,11 +4,12 @@
         <CefRedistVersion>91.1.6</CefRedistVersion>
         <CefRedistOSXVersion>91.1.6</CefRedistOSXVersion>
         <NLogVersion>4.6.2</NLogVersion>
+        <JsonVersion>6.0.1</JsonVersion>
     </PropertyGroup>
 
     <PropertyGroup>
         <PackageOutputPath>$(MSBuildProjectDirectory)\..\Nuget\output</PackageOutputPath>
-        <Version>91.4472.22</Version>
+        <Version>91.4472.26</Version>
         <Authors>XiliumHQ,OutSystems</Authors>
         <Product>CefGlue</Product>
         <AssemblyTitle>CefGlue</AssemblyTitle>

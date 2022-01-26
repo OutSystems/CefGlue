@@ -11,4 +11,8 @@
     <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="$(JsonVersion)" />
+  </ItemGroup>
+
 </Project>
