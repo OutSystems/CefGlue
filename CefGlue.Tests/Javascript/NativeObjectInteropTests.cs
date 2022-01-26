@@ -148,19 +148,22 @@ namespace CefGlue.Tests.Javascript
         {
             const string Arg1 = "test";
             const int Arg2 = 5;
+            const string Arg3 = "";
 
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
 
-            Execute($"{ObjName}.methodWithParams('{Arg1}', {Arg2}, new Date('{Date}'), true)");
-            
+            Execute($"{ObjName}.methodWithParams('{Arg1}', {Arg2}, '{Arg3}', new Date('{Date}'), true)");
+
             var result = await taskCompletionSource.Task;
 
-            Assert.AreEqual(4, result.Length);
+            Assert.AreEqual(5, result.Length);
             Assert.AreEqual(Arg1, result[0]);
             Assert.AreEqual(Arg2, result[1]);
-            Assert.AreEqual(DateTime.Parse(Date), result[2]);
-            Assert.AreEqual(true, result[3]);
+            Assert.AreEqual(Arg3, result[2]);
+            Assert.AreEqual(DateTime.Parse(Date), result[3]);
+            Assert.AreEqual(true, result[4]);
+
         }
 
         [Test]
