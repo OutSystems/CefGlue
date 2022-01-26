@@ -189,17 +189,15 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public async Task MethodNullStringParamIsPassed()
         {
-            const string Arg1 = null;
-            
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithStringParamCalled += (args) => taskCompletionSource.SetResult(args);
 
-            Execute($"{ObjName}.methodWithStringParam({Arg1})");
+            Execute($"{ObjName}.methodWithStringParam(null)");
 
             var result = await taskCompletionSource.Task;
 
             Assert.AreEqual(1, result.Length);
-            Assert.AreEqual(Arg1, result[0]);
+            Assert.AreEqual(null, result[0]);
         }
 
         [Test]
