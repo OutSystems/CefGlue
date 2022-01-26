@@ -44,6 +44,7 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
             }
             else if (obj.IsString)
             {
+                // default to "", because cef converts "" to null, and when null it will fall on the Null case
                 CefValueSerialization.Serialize(obj.GetStringValue() ?? "", cefValue);
             }
             else if (obj.IsDate)
