@@ -196,6 +196,23 @@ namespace CefGlue.Tests.Serialization
             var cefValue = new CefTestValue();
             Assert.Throws<InvalidOperationException>(() => Serialize(list, cefValue));
         }
+        
+        [Test]
+        public void HandlesDeepStructuresWith250Levels()
+        {
+            var list = new List<object>();
+            var child = new List<object>();
+            list.Add(child);
+
+            for (var i = 0; i < 250; i++)
+            {
+                var nestedChild = new List<object>();
+                child.Add(nestedChild);
+                child = nestedChild;
+            }
+
+            AssertSerialization(list, CefValueType.String);
+        }
 
         [Test]
         public void HandlesSimpleDictionaries()

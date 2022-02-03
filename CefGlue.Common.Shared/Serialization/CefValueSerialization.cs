@@ -7,6 +7,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal static class CefValueSerialization
     {
+        private const int SerializerMaxDepth = byte.MaxValue;
+        
         private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
         {
             Converters =
@@ -15,7 +17,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 new DateTimeJsonConverter(), 
                 new BinaryJsonConverter()
             },
-            IncludeFields = true
+            IncludeFields = true,
+            MaxDepth = SerializerMaxDepth
         };
         
         private static readonly JsonSerializerOptions _jsonDeserializerOptions = new JsonSerializerOptions()
@@ -23,7 +26,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             Converters =
             {
                 new ObjectJsonConverter()
-            }
+            },
+            MaxDepth = SerializerMaxDepth
         };
         
         public static void Serialize(object value, CefValueWrapper cefValue)
