@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers;
 
@@ -66,7 +67,8 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             }
             catch (TargetInvocationException e)
             {
-                throw e.InnerException ?? e;
+                ExceptionDispatchInfo.Capture(e.InnerException ?? e).Throw();
+                return null;
             }
         }
 
