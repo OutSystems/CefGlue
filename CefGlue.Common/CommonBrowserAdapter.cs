@@ -451,6 +451,8 @@ namespace Xilium.CefGlue.Common
                 return false; 
             }
 
+            Control.GotFocus -= HandleGotFocus;
+            Control.SizeChanged -= HandleControlSizeChanged;
             Control.DestroyRender();
             Cleanup(browser);
 
@@ -459,6 +461,11 @@ namespace Xilium.CefGlue.Common
 
         protected void Cleanup(CefBrowser browser)
         {
+            if (_crashServerPipe != null)
+            {
+                _crashServerPipe.MessageReceived -= OnChildProcessCrashed;    
+            }
+            
             _crashServerPipe?.Dispose();
 
             browser.Dispose();
