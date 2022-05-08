@@ -2237,26 +2237,6 @@ typedef enum {
   // already exists.
   ///
   FILE_DIALOG_SAVE,
-
-  ///
-  // General mask defining the bits used for the type values.
-  ///
-  FILE_DIALOG_TYPE_MASK = 0xFF,
-
-  // Qualifiers.
-  // Any of the type values above can be augmented by one or more qualifiers.
-  // These qualifiers further define the dialog behavior.
-
-  ///
-  // Prompt to overwrite if the user selects an existing file with the Save
-  // dialog.
-  ///
-  FILE_DIALOG_OVERWRITEPROMPT_FLAG = 0x01000000,
-
-  ///
-  // Do not display read-only files.
-  ///
-  FILE_DIALOG_HIDEREADONLY_FLAG = 0x02000000,
 } cef_file_dialog_mode_t;
 
 ///
@@ -3122,8 +3102,14 @@ typedef enum {
   // pass-through mode).
   CEF_CHANNEL_LAYOUT_BITSTREAM = 32,
 
+  // Front L, Front R, Front C, LFE, Side L, Side R,
+  // Front Height L, Front Height R, Rear Height L, Rear Height R
+  // Will be represented as six channels (5.1) due to eight channel limit
+  // kMaxConcurrentChannels
+  CEF_CHANNEL_LAYOUT_5_1_4_DOWNMIX = 33,
+
   // Max value, must always equal the largest entry ever logged.
-  CEF_CHANNEL_LAYOUT_MAX = CEF_CHANNEL_LAYOUT_BITSTREAM
+  CEF_CHANNEL_LAYOUT_MAX = CEF_CHANNEL_LAYOUT_5_1_4_DOWNMIX
 } cef_channel_layout_t;
 
 ///

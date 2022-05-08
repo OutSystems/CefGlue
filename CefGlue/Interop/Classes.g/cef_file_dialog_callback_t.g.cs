@@ -44,7 +44,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void cont_delegate(cef_file_dialog_callback_t* self, int selected_accept_filter, cef_string_list* file_paths);
+        private delegate void cont_delegate(cef_file_dialog_callback_t* self, cef_string_list* file_paths);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -124,7 +124,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p4;
         private static cont_delegate _d4;
         
-        public static void cont(cef_file_dialog_callback_t* self, int selected_accept_filter, cef_string_list* file_paths)
+        public static void cont(cef_file_dialog_callback_t* self, cef_string_list* file_paths)
         {
             cont_delegate d;
             var p = self->_cont;
@@ -134,7 +134,7 @@ namespace Xilium.CefGlue.Interop
                 d = (cont_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(cont_delegate));
                 if (_p4 == IntPtr.Zero) { _d4 = d; _p4 = p; }
             }
-            d(self, selected_accept_filter, file_paths);
+            d(self, file_paths);
         }
         
         // Cancel

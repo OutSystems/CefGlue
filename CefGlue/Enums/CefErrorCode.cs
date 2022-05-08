@@ -1168,6 +1168,13 @@ namespace Xilium.CefGlue
         TOO_MANY_ACCEPT_CH_RESTARTS = -382,
 
         /// <summary>
+        /// The IP address space of the remote endpoint differed from the previous
+        /// observed value during the same request. Any cache entry for the affected
+        /// request should be invalidated.
+        /// </summary>
+        INCONSISTENT_IP_ADDRESS_SPACE = -383,
+
+        /// <summary>
         /// The cache does not have the requested entry.
         /// </summary>
         CACHE_MISS = -400,
