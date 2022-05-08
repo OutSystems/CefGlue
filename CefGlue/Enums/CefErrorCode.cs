@@ -635,6 +635,18 @@ namespace Xilium.CefGlue
         /// </summary>
         INVALID_ECH_CONFIG_LIST = -182,
 
+        /// <summary>
+        /// ECH was enabled, but the server was unable to decrypt the encrypted
+        /// ClientHello.
+        /// </summary>
+        ECH_NOT_NEGOTIATED = -183,
+
+        /// <summary>
+        /// ECH was enabled, the server was unable to decrypt the encrypted ClientHello,
+        /// and additionally did not present a certificate valid for the public name.
+        /// </summary>
+        ECH_FALLBACK_CERTIFICATE_INVALID = -184,
+
         // Certificate error codes
         //
         // The values of certificate error codes must be consecutive.
