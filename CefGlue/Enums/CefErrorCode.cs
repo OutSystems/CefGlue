@@ -273,14 +273,7 @@ namespace Xilium.CefGlue
         /// </summary>
         PROXY_AUTH_UNSUPPORTED = -115,
 
-        /// <summary>
-        /// During SSL renegotiation (rehandshake), the server sent a certificate with
-        /// an error.
-        ///
-        /// Note: this error is not in the -2xx range so that it won't be handled as a
-        /// certificate error.
-        /// </summary>
-        CERT_ERROR_IN_SSL_RENEGOTIATION = -116,
+        // Error -116 was removed (CERT_ERROR_IN_SSL_RENEGOTIATION)
 
         /// <summary>
         /// The SSL handshake failed because of a bad or missing client certificate.
@@ -791,10 +784,8 @@ namespace Xilium.CefGlue
         /// </summary>
         CERT_KNOWN_INTERCEPTION_BLOCKED = -217,
 
-        /// <summary>
-        /// The connection uses an obsolete version of SSL/TLS.
-        /// </summary>
-        SSL_OBSOLETE_VERSION = -218,
+        // -218 was SSL_OBSOLETE_VERSION which is not longer used. TLS 1.0/1.1 instead
+        // cause SSL_VERSION_OR_CIPHER_MISMATCH now.
 
         // Add new certificate error codes here.
         //
@@ -1472,6 +1463,11 @@ namespace Xilium.CefGlue
         /// https or wss.
         /// </summary>
         DNS_NAME_HTTPS_ONLY = -809,
+
+        /// <summary>
+        /// All DNS requests associated with this job have been cancelled.
+        /// </summary>
+        DNS_REQUEST_CANCELLED = -810,
 
         // CefGlue backward compatiblity.
         // Generally we prefer .NET naming rules, but will care about later.
