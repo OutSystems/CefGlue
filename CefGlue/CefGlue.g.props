@@ -11,6 +11,7 @@
         <Compile Include="Classes.g\CefBrowserProcessHandler.g.cs"/>
         <Compile Include="Classes.g\CefCallback.g.cs"/>
         <Compile Include="Classes.g\CefClient.g.cs"/>
+        <Compile Include="Classes.g\CefCommandHandler.g.cs"/>
         <Compile Include="Classes.g\CefCommandLine.g.cs"/>
         <Compile Include="Classes.g\CefCompletionCallback.g.cs"/>
         <Compile Include="Classes.g\CefContextMenuHandler.g.cs"/>
@@ -128,6 +129,7 @@
         <Compile Include="Interop\Classes.g\cef_browser_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_callback_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_client_t.g.cs"/>
+        <Compile Include="Interop\Classes.g\cef_command_handler_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_command_line_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_completion_callback_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_context_menu_handler_t.g.cs"/>

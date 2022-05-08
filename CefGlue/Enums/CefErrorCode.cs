@@ -1163,6 +1163,11 @@ namespace Xilium.CefGlue
         QUIC_GOAWAY_REQUEST_CAN_BE_RETRIED = -381,
 
         /// <summary>
+        /// The ACCEPT_CH restart has been triggered too many times
+        /// </summary>
+        TOO_MANY_ACCEPT_CH_RESTARTS = -382,
+
+        /// <summary>
         /// The cache does not have the requested entry.
         /// </summary>
         CACHE_MISS = -400,

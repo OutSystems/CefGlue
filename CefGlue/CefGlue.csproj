@@ -9,7 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 
-    <Version>100.0.24</Version>
+    <Version>101.0.15</Version>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
@@ -21,6 +21,7 @@
     <Compile Include="Classes.Handlers\CefAudioHandler.cs" />
     <Compile Include="Classes.Handlers\CefBrowserProcessHandler.cs" />
     <Compile Include="Classes.Handlers\CefClient.cs" />
+    <Compile Include="Classes.Handlers\CefCommandHandler.cs" />
     <Compile Include="Classes.Handlers\CefCompletionCallback.cs" />
     <Compile Include="Classes.Handlers\CefContextMenuHandler.cs" />
     <Compile Include="Classes.Handlers\CefCookieAccessFilter.cs" />

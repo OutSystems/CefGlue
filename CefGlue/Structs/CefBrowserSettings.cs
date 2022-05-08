@@ -48,7 +48,7 @@
             set { _self->windowless_frame_rate = value; }
         }
 
-        // The below values map to WebPreferences settings.
+        // BEGIN values that map to WebPreferences settings.
 
         #region Font Settings
 
@@ -254,6 +254,8 @@
             set { _self->webgl = value; }
         }
 
+        // END values that map to WebPreferences settings.
+
         /// <summary>
         /// Background color used for the browser before a document is loaded and when
         /// no document color is specified. The alpha component must be either fully
@@ -280,6 +282,17 @@
         {
             get { return cef_string_t.ToString(&_self->accept_language_list); }
             set { cef_string_t.Copy(value, &_self->accept_language_list); }
+        }
+
+        /// <summary>
+        /// Controls whether the Chrome status bubble will be used. Only supported with
+        /// the Chrome runtime. For details about the status bubble see
+        /// https://www.chromium.org/user-experience/status-bubble/
+        /// </summary>
+        public CefState ChromeStatusBubble
+        {
+            get { return _self->chrome_status_bubble; }
+            set { _self->chrome_status_bubble = value; }
         }
     }
 }

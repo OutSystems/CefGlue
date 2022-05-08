@@ -287,14 +287,6 @@
 
         public bool CookieableSchemesExcludeDefaults { get; set; }
 
-        /// <summary>
-        /// GUID string used for identifying the application. This is passed to the
-        /// system AV function for scanning downloaded files. By default, the GUID
-        /// will be an empty string and the file will be treated as an untrusted
-        /// file when the GUID is empty.
-        /// </summary>
-        public string ApplicationClientIdForFileScanning { get; set; }
-
         internal cef_settings_t* ToNative()
         {
             var ptr = cef_settings_t.Alloc();
@@ -327,7 +319,6 @@
             cef_string_t.Copy(AcceptLanguageList, &ptr->accept_language_list);
             cef_string_t.Copy(CookieableSchemesList, &ptr->cookieable_schemes_list);
             ptr->cookieable_schemes_exclude_defaults = CookieableSchemesExcludeDefaults ? 1 : 0;
-            cef_string_t.Copy(ApplicationClientIdForFileScanning, &ptr->application_client_id_for_file_scanning);
             return ptr;
         }
 
@@ -348,7 +339,6 @@
             libcef.string_clear(&ptr->locales_dir_path);
             libcef.string_clear(&ptr->accept_language_list);
             libcef.string_clear(&ptr->cookieable_schemes_list);
-            libcef.string_clear(&ptr->application_client_id_for_file_scanning);
         }
 
         internal static void Free(cef_settings_t* ptr)

@@ -426,14 +426,6 @@ typedef struct _cef_settings_t {
   ///
   cef_string_t cookieable_schemes_list;
   int cookieable_schemes_exclude_defaults;
-
-  ///
-  // GUID string used for identifying the application. This is passed to the
-  // system AV function for scanning downloaded files. By default, the GUID
-  // will be an empty string and the file will be treated as an untrusted
-  // file when the GUID is empty.
-  ///
-  cef_string_t application_client_id_for_file_scanning;
 } cef_settings_t;
 
 ///
@@ -520,7 +512,7 @@ typedef struct _cef_browser_settings_t {
   ///
   int windowless_frame_rate;
 
-  // The below values map to WebPreferences settings.
+  // BEGIN values that map to WebPreferences settings.
 
   ///
   // Font settings.
@@ -622,6 +614,8 @@ typedef struct _cef_browser_settings_t {
   ///
   cef_state_t webgl;
 
+  // END values that map to WebPreferences settings.
+
   ///
   // Background color used for the browser before a document is loaded and when
   // no document color is specified. The alpha component must be either fully
@@ -641,6 +635,13 @@ typedef struct _cef_browser_settings_t {
   // empty then "en-US,en" will be used.
   ///
   cef_string_t accept_language_list;
+
+  ///
+  // Controls whether the Chrome status bubble will be used. Only supported with
+  // the Chrome runtime. For details about the status bubble see
+  // https://www.chromium.org/user-experience/status-bubble/
+  ///
+  cef_state_t chrome_status_bubble;
 } cef_browser_settings_t;
 
 ///
@@ -946,15 +947,66 @@ typedef enum {
 ///
 typedef enum {
   WOD_UNKNOWN,
+
+  ///
+  // Current tab. This is the default in most cases.
+  ///
   WOD_CURRENT_TAB,
+
+  ///
+  // Indicates that only one tab with the url should exist in the same window.
+  ///
   WOD_SINGLETON_TAB,
+
+  ///
+  // Shift key + Middle mouse button or meta/ctrl key while clicking.
+  ///
   WOD_NEW_FOREGROUND_TAB,
+
+  ///
+  // Middle mouse button or meta/ctrl key while clicking.
+  ///
   WOD_NEW_BACKGROUND_TAB,
+
+  ///
+  // New popup window.
+  ///
   WOD_NEW_POPUP,
+
+  ///
+  // Shift key while clicking.
+  ///
   WOD_NEW_WINDOW,
+
+  ///
+  // Alt key while clicking.
+  ///
   WOD_SAVE_TO_DISK,
+
+  ///
+  // New off-the-record (incognito) window.
+  ///
   WOD_OFF_THE_RECORD,
-  WOD_IGNORE_ACTION
+
+  ///
+  // Special case error condition from the renderer.
+  ///
+  WOD_IGNORE_ACTION,
+
+  ///
+  // Activates an existing tab containing the url, rather than navigating.
+  // This is similar to SINGLETON_TAB, but searches across all windows from
+  // the current profile and anonymity (instead of just the current one);
+  // closes the current tab on switching if the current tab was the NTP with
+  // no session history; and behaves like CURRENT_TAB instead of
+  // NEW_FOREGROUND_TAB when no existing tab is found.
+  ///
+  WOD_SWITCH_TO_TAB,
+
+  ///
+  // Creates a new document picture-in-picture window showing a child WebView.
+  ///
+  WOD_NEW_PICTURE_IN_PICTURE,
 } cef_window_open_disposition_t;
 
 ///
@@ -1148,6 +1200,12 @@ typedef enum {
   TT_EXPLICIT = 1,
 
   ///
+  // User got to this page through a suggestion in the UI (for example, via the
+  // destinations page). Chrome runtime only.
+  ///
+  TT_AUTO_BOOKMARK = 2,
+
+  ///
   // Source is a subframe navigation. This is any content that is automatically
   // loaded in a non-toplevel frame. For example, if a page consists of several
   // frames containing ads, those ad URLs will have this transition type.
@@ -1166,6 +1224,25 @@ typedef enum {
   TT_MANUAL_SUBFRAME = 4,
 
   ///
+  // User got to this page by typing in the URL bar and selecting an entry
+  // that did not look like a URL.  For example, a match might have the URL
+  // of a Google search result page, but appear like "Search Google for ...".
+  // These are not quite the same as EXPLICIT navigations because the user
+  // didn't type or see the destination URL. Chrome runtime only.
+  // See also TT_KEYWORD.
+  ///
+  TT_GENERATED = 5,
+
+  ///
+  // This is a toplevel navigation. This is any content that is automatically
+  // loaded in a toplevel frame.  For example, opening a tab to show the ASH
+  // screen saver, opening the devtools window, opening the NTP after the safe
+  // browsing warning, opening web-based dialog boxes are examples of
+  // AUTO_TOPLEVEL navigations. Chrome runtime only.
+  ///
+  TT_AUTO_TOPLEVEL = 6,
+
+  ///
   // Source is a form submission by the user. NOTE: In some situations
   // submitting a form does not result in this transition type. This can happen
   // if the form uses a script to submit the contents.
@@ -1178,6 +1255,25 @@ typedef enum {
   // particular load uses "reload semantics" (i.e. bypasses cached data).
   ///
   TT_RELOAD = 8,
+
+  ///
+  // The url was generated from a replaceable keyword other than the default
+  // search provider. If the user types a keyword (which also applies to
+  // tab-to-search) in the omnibox this qualifier is applied to the transition
+  // type of the generated url. TemplateURLModel then may generate an
+  // additional visit with a transition type of TT_KEYWORD_GENERATED against the
+  // url 'http://' + keyword. For example, if you do a tab-to-search against
+  // wikipedia the generated url has a transition qualifer of TT_KEYWORD, and
+  // TemplateURLModel generates a visit for 'wikipedia.org' with a transition
+  // type of TT_KEYWORD_GENERATED. Chrome runtime only.
+  ///
+  TT_KEYWORD = 9,
+
+  ///
+  // Corresponds to a visit generated for a keyword. See description of
+  // TT_KEYWORD for more details. Chrome runtime only.
+  ///
+  TT_KEYWORD_GENERATED = 10,
 
   ///
   // General mask defining the bits used for the source values.
@@ -1203,6 +1299,18 @@ typedef enum {
   // Loaded a URL directly via CreateBrowser, LoadURL or LoadRequest.
   ///
   TT_DIRECT_LOAD_FLAG = 0x02000000,
+
+  ///
+  // User is navigating to the home page. Chrome runtime only.
+  ///
+  TT_HOME_PAGE_FLAG = 0x04000000,
+
+  ///
+  // The transition originated from an external application; the exact
+  // definition of this is embedder dependent. Chrome runtime and
+  // extension system only.
+  ///
+  TT_FROM_API_FLAG = 0x08000000,
 
   ///
   // The beginning of a navigation chain.

@@ -173,4 +173,6 @@ classdef = {
     'CefMediaSinkDeviceInfoCallback': { 'role': ROLE_HANDLER, 'autodispose': True },
     # 92
     'CefFrameHandler': { 'role': ROLE_HANDLER },
+    # 101
+    'CefCommandHandler': { 'role': ROLE_HANDLER },
     }
