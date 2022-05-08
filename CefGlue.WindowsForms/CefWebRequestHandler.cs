@@ -14,11 +14,6 @@
             return null;
         }
 
-        protected override void OnPluginCrashed(CefBrowser browser, string pluginPath)
-        {
-            _core.InvokeIfRequired(() => _core.OnPluginCrashed(new PluginCrashedEventArgs(pluginPath)));
-        }
-
         protected override void OnRenderProcessTerminated(CefBrowser browser, CefTerminationStatus status)
         {
             _core.InvokeIfRequired(() => _core.OnRenderProcessTerminated(new RenderProcessTerminatedEventArgs(status)));

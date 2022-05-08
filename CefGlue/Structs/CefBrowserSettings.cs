@@ -182,16 +182,6 @@
         }
 
         /// <summary>
-        /// Controls whether any plugins will be loaded. Also configurable using the
-        /// "disable-plugins" command-line switch.
-        /// </summary>
-        public CefState Plugins
-        {
-            get { return _self->plugins; }
-            set { _self->plugins = value; }
-        }
-
-        /// <summary>
         /// Controls whether image URLs will be loaded from the network. A cached image
         /// will still be rendered if requested. Also configurable using the
         /// "disable-image-loading" command-line switch.

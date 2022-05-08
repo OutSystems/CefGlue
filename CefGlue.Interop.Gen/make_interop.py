@@ -38,9 +38,11 @@ def get_func_parts(func, slot, is_global = False):
 
     csn_args = []
     for carg in capi_parts['args']:
-        type = schema.c2cs_type( carg[:carg.rindex(' ')] )
-        name = schema.quote_name( carg[carg.rindex(' ')+1:] )
-        csn_args.append({'name' : name, 'type' : type})
+        # C Function prototype: some_name(void) is function without arguments for us
+        if carg != "void":
+          type = schema.c2cs_type( carg[:carg.rindex(' ')] )
+          name = schema.quote_name( carg[carg.rindex(' ')+1:] )
+          csn_args.append({'name' : name, 'type' : type})
 
     iname = ''
     if virtual:

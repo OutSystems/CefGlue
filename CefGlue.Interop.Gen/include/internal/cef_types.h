@@ -202,7 +202,7 @@ typedef struct _cef_settings_t {
 
   ///
   // Set to true (1) to have the browser process message loop run in a separate
-  // thread. If false (0) than the CefDoMessageLoopWork() function must be
+  // thread. If false (0) then the CefDoMessageLoopWork() function must be
   // called from your application message loop. This option is only supported on
   // Windows and Linux.
   ///
@@ -374,10 +374,11 @@ typedef struct _cef_settings_t {
 
   ///
   // Set to a value between 1024 and 65535 to enable remote debugging on the
-  // specified port. For example, if 8080 is specified the remote debugging URL
-  // will be http://localhost:8080. CEF can be remotely debugged from any CEF or
-  // Chrome browser window. Also configurable using the "remote-debugging-port"
-  // command-line switch.
+  // specified port. Also configurable using the "remote-debugging-port"
+  // command-line switch. Remote debugging can be accessed by loading the
+  // chrome://inspect page in Google Chrome. Port numbers 9222 and 9229 are
+  // discoverable by default. Other port numbers may need to be configured via
+  // "Discover network targets" on the Devices tab.
   ///
   int remote_debugging_port;
 
@@ -575,12 +576,6 @@ typedef struct _cef_browser_settings_t {
   // command-line switch.
   ///
   cef_state_t javascript_dom_paste;
-
-  ///
-  // Controls whether any plugins will be loaded. Also configurable using the
-  // "disable-plugins" command-line switch.
-  ///
-  cef_state_t plugins;
 
   ///
   // Controls whether image URLs will be loaded from the network. A cached image
@@ -1028,7 +1023,8 @@ typedef enum {
 } cef_postdataelement_type_t;
 
 ///
-// Resource type for a request.
+// Resource type for a request. These constants match their equivalents in
+// Chromium's ResourceType and should not be renumbered.
 ///
 typedef enum {
   ///
@@ -1616,8 +1612,7 @@ typedef enum {
   MENU_ID_NO_SPELLING_SUGGESTIONS = 205,
   MENU_ID_ADD_TO_DICTIONARY = 206,
 
-  // Custom menu items originating from the renderer process. For example,
-  // plugin placeholder menu items.
+  // Custom menu items originating from the renderer process.
   MENU_ID_CUSTOM_FIRST = 220,
   MENU_ID_CUSTOM_LAST = 250,
 
@@ -1819,7 +1814,8 @@ typedef enum {
 } cef_context_menu_type_flags_t;
 
 ///
-// Supported context menu media types.
+// Supported context menu media types. These constants match their equivalents
+// in Chromium's ContextMenuDataMediaType and should not be renumbered.
 ///
 typedef enum {
   ///
@@ -1839,6 +1835,10 @@ typedef enum {
   ///
   CM_MEDIATYPE_AUDIO,
   ///
+  // An canvas node is selected.
+  ///
+  CM_MEDIATYPE_CANVAS,
+  ///
   // A file node is selected.
   ///
   CM_MEDIATYPE_FILE,
@@ -1849,24 +1849,31 @@ typedef enum {
 } cef_context_menu_media_type_t;
 
 ///
-// Supported context menu media state bit flags.
+// Supported context menu media state bit flags. These constants match their
+// equivalents in Chromium's ContextMenuData::MediaFlags and should not be
+// renumbered.
 ///
 typedef enum {
   CM_MEDIAFLAG_NONE = 0,
-  CM_MEDIAFLAG_ERROR = 1 << 0,
+  CM_MEDIAFLAG_IN_ERROR = 1 << 0,
   CM_MEDIAFLAG_PAUSED = 1 << 1,
   CM_MEDIAFLAG_MUTED = 1 << 2,
   CM_MEDIAFLAG_LOOP = 1 << 3,
   CM_MEDIAFLAG_CAN_SAVE = 1 << 4,
   CM_MEDIAFLAG_HAS_AUDIO = 1 << 5,
-  CM_MEDIAFLAG_HAS_VIDEO = 1 << 6,
-  CM_MEDIAFLAG_CONTROL_ROOT_ELEMENT = 1 << 7,
+  CM_MEDIAFLAG_CAN_TOGGLE_CONTROLS = 1 << 6,
+  CM_MEDIAFLAG_CONTROLS = 1 << 7,
   CM_MEDIAFLAG_CAN_PRINT = 1 << 8,
   CM_MEDIAFLAG_CAN_ROTATE = 1 << 9,
+  CM_MEDIAFLAG_CAN_PICTURE_IN_PICTURE = 1 << 10,
+  CM_MEDIAFLAG_PICTURE_IN_PICTURE = 1 << 11,
+  CM_MEDIAFLAG_CAN_LOOP = 1 << 12,
 } cef_context_menu_media_state_flags_t;
 
 ///
-// Supported context menu edit state bit flags.
+// Supported context menu edit state bit flags. These constants match their
+// equivalents in Chromium's ContextMenuDataEditFlags and should not be
+// renumbered.
 ///
 typedef enum {
   CM_EDITFLAG_NONE = 0,
@@ -1878,6 +1885,7 @@ typedef enum {
   CM_EDITFLAG_CAN_DELETE = 1 << 5,
   CM_EDITFLAG_CAN_SELECT_ALL = 1 << 6,
   CM_EDITFLAG_CAN_TRANSLATE = 1 << 7,
+  CM_EDITFLAG_CAN_EDIT_RICHLY = 1 << 8,
 } cef_context_menu_edit_state_flags_t;
 
 ///
@@ -2457,32 +2465,6 @@ typedef enum {
   SCALE_FACTOR_250P,
   SCALE_FACTOR_300P,
 } cef_scale_factor_t;
-
-///
-// Plugin policies supported by CefRequestContextHandler::OnBeforePluginLoad.
-///
-typedef enum {
-  ///
-  // Allow the content.
-  ///
-  PLUGIN_POLICY_ALLOW,
-
-  ///
-  // Allow important content and block unimportant content based on heuristics.
-  // The user can manually load blocked content.
-  ///
-  PLUGIN_POLICY_DETECT_IMPORTANT,
-
-  ///
-  // Block the content. The user can manually load blocked content.
-  ///
-  PLUGIN_POLICY_BLOCK,
-
-  ///
-  // Disable the content. The user cannot load disabled content.
-  ///
-  PLUGIN_POLICY_DISABLE,
-} cef_plugin_policy_t;
 
 ///
 // Policy for how the Referrer HTTP header value will be sent during navigation.

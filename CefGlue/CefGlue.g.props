@@ -112,9 +112,6 @@
         <Compile Include="Classes.g\CefV8StackTrace.g.cs"/>
         <Compile Include="Classes.g\CefV8Value.g.cs"/>
         <Compile Include="Classes.g\CefValue.g.cs"/>
-        <Compile Include="Classes.g\CefWebPluginInfo.g.cs"/>
-        <Compile Include="Classes.g\CefWebPluginInfoVisitor.g.cs"/>
-        <Compile Include="Classes.g\CefWebPluginUnstableCallback.g.cs"/>
         <Compile Include="Classes.g\CefWriteHandler.g.cs"/>
         <Compile Include="Classes.g\CefX509CertPrincipal.g.cs"/>
         <Compile Include="Classes.g\CefX509Certificate.g.cs"/>
@@ -232,9 +229,6 @@
         <Compile Include="Interop\Classes.g\cef_v8stack_trace_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_v8value_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_value_t.g.cs"/>
-        <Compile Include="Interop\Classes.g\cef_web_plugin_info_t.g.cs"/>
-        <Compile Include="Interop\Classes.g\cef_web_plugin_info_visitor_t.g.cs"/>
-        <Compile Include="Interop\Classes.g\cef_web_plugin_unstable_callback_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_write_handler_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_x509cert_principal_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_x509certificate_t.g.cs"/>

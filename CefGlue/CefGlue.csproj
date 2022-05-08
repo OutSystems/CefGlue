@@ -9,7 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 
-    <Version>99.0.19</Version>
+    <Version>100.0.24</Version>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
@@ -71,8 +71,6 @@
     <Compile Include="Classes.Handlers\CefV8ArrayBufferReleaseCallback.cs" />
     <Compile Include="Classes.Handlers\CefV8Handler.cs" />
     <Compile Include="Classes.Handlers\CefV8Interceptor.cs" />
-    <Compile Include="Classes.Handlers\CefWebPluginInfoVisitor.cs" />
-    <Compile Include="Classes.Handlers\CefWebPluginUnstableCallback.cs" />
     <Compile Include="Classes.Handlers\CefWriteHandler.cs" />
     <Compile Include="Classes.Proxies\CefAuthCallback.cs" />
     <Compile Include="Classes.Proxies\CefBeforeDownloadCallback.cs" />
@@ -131,7 +129,6 @@
     <Compile Include="Classes.Proxies\CefV8StackTrace.cs" />
     <Compile Include="Classes.Proxies\CefV8Value.cs" />
     <Compile Include="Classes.Proxies\CefValue.cs" />
-    <Compile Include="Classes.Proxies\CefWebPluginInfo.cs" />
     <Compile Include="Classes.Proxies\CefX509Certificate.cs" />
     <Compile Include="Classes.Proxies\CefX509CertPrincipal.cs" />
     <Compile Include="Classes.Proxies\CefXmlReader.cs" />
@@ -179,7 +176,6 @@
     <Compile Include="Enums\CefPaintElementType.cs" />
     <Compile Include="Enums\CefPathKey.cs" />
     <Compile Include="Enums\CefPdfPrintMarginType.cs" />
-    <Compile Include="Enums\CefPluginPolicy.cs" />
     <Compile Include="Enums\CefPointerType.cs" />
     <Compile Include="Enums\CefPostDataElementType.cs" />
     <Compile Include="Enums\CefProcessId.cs" />
