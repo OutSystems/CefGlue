@@ -10,7 +10,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
     {
         private const int MaxErrorsAllowed = 5;
 
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
         public event Action<string> MessageReceived;
 
@@ -38,12 +38,18 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                         }
                     }
                 }
+
+                var cancellationTokenSource = _cancellationTokenSource;
+                _cancellationTokenSource = null;
+                cancellationTokenSource.Dispose();
             });
         }
 
         public void Dispose()
         {
-            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource?.Cancel();
+            // release the MessageReceived handlers to prevent any possible memory leak
+            MessageReceived = null;
         }
 
         private void HandleClientConnected(Stream pipe)

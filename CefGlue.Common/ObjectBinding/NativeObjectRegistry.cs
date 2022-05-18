@@ -99,6 +99,11 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
         public void Dispose()
         {
+            lock (_registrationSyncRoot)
+            {
+                _registeredObjects.Clear();
+            }
+
             _browser = null;
         }
     }
