@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="$(JsonVersion)" />
+    <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
 </Project>

@@ -12,6 +12,10 @@ namespace Xilium.CefGlue.Demo.Avalonia
         {
             AppBuilder.Configure<App>()
                       .UsePlatformDetect()
+                      .With(new Win32PlatformOptions
+                      {
+                          UseWindowsUIComposition = false
+                      })
                       .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings() {
 #if WINDOWLESS
                           WindowlessRenderingEnabled = true

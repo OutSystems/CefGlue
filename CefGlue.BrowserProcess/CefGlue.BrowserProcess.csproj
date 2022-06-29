@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Loader" />
   </ItemGroup>
     
   <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and $(TargetFramework.StartsWith('net5')) and '$(IsPublishing)' != 'True'"> 
