@@ -22,10 +22,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="NLog" Version="$(NLogVersion)" />
-        <PackageReference PrivateAssets="None" Include="cef.redist.x64" Version="$(CefRedistVersion)" />
-        <PackageReference PrivateAssets="None" Include="cef.redist.osx64" Version="$(CefRedistOSXVersion)" />
-        <PackageReference Include="System.Text.Json" Version="$(JsonVersion)" />
+        <PackageReference Include="NLog" />
+        <PackageReference PrivateAssets="None" Include="cef.redist.x64" />
+        <PackageReference PrivateAssets="None" Include="cef.redist.osx64" />
+        <PackageReference Include="System.Text.Json" />
     </ItemGroup>
 
     <ItemGroup>

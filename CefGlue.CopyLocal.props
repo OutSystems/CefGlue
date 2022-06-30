@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
     <ItemGroup>
-        <PackageReference Include="cef.redist.x64" Version="$(CefRedistVersion)" />
-        <PackageReference Include="cef.redist.osx64" Version="$(CefRedistOSXVersion)" />
+        <PackageReference Include="cef.redist.x64" />
+        <PackageReference Include="cef.redist.osx64" />
     </ItemGroup>
     
     <PropertyGroup>
