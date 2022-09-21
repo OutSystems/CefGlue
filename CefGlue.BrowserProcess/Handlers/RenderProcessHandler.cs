@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Xilium.CefGlue.BrowserProcess.JavascriptExecution;
 using Xilium.CefGlue.BrowserProcess.ObjectBinding;
 using Xilium.CefGlue.Common.Shared.Helpers;
