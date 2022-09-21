@@ -2,34 +2,37 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal static class CefValueSerialization
     {
-        private const int SerializerMaxDepth = byte.MaxValue;
-        
+        private const int SerializerMaxDepth = int.MaxValue;
+        private const int DeserializerMaxDepth = byte.MaxValue;
+
         private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
         {
             Converters =
             {
-                new StringJsonConverter(), 
-                new DateTimeJsonConverter(), 
+                new StringJsonConverter(),
+                new DateTimeJsonConverter(),
                 new BinaryJsonConverter()
             },
             IncludeFields = true,
-            MaxDepth = SerializerMaxDepth
+            MaxDepth = SerializerMaxDepth,
+            ReferenceHandler = ReferenceHandler.Preserve
         };
-        
+
         private static readonly JsonSerializerOptions _jsonDeserializerOptions = new JsonSerializerOptions()
         {
             Converters =
             {
                 new ObjectJsonConverter()
             },
-            MaxDepth = SerializerMaxDepth
+            MaxDepth = DeserializerMaxDepth
         };
-        
+
         public static void Serialize(object value, CefValueWrapper cefValue)
         {
             if (value == null)
@@ -67,7 +70,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 case TypeCode.Char:
                     SerializeAsJson(((char)value).ToString(), cefValue);
                     break;
-                
+
                 case TypeCode.Decimal:
                     cefValue.SetDouble((double)(decimal)value);
                     break;
@@ -177,7 +180,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     {
                         return value;
                     }
-                    return DeserializeAsJson(value); 
+                    return DeserializeAsJson(value);
 
                 case CefValueType.Null:
                     return null;
@@ -185,7 +188,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
             return null;
         }
-        
+
         private static object DeserializeAsJson(string value)
         {
             try

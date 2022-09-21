@@ -24,14 +24,40 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             "            return byteArray;" +
             "        }" +
             "        function revive(name, value) {" +
-            "            if (isString(value)) {" +
-            "                switch (value.substring(0, " + DataMarkers.MarkerLength + ")) {" +
-            "                    case \"" + DataMarkers.StringMarker + "\":" +
-            "                        return value.substring(" + DataMarkers.MarkerLength + ");" +
-            "                    case \"" + DataMarkers.DateTimeMarker + "\":" +
-            "                        return new Date(value.substring(" + DataMarkers.MarkerLength + "));" +
-            "                    case \"" + DataMarkers.BinaryMarker + "\":" +
-            "                        return convertBase64ToBinary(value.substring(" + DataMarkers.MarkerLength + "));" +
+            "            const refs = new Map();" +
+            "            const pendingRefs = new Map();" +
+            "            if (value) {" +
+            "                const id = value.$id;" +
+            "                if (id !== undefined) {" +
+            "                    delete value.$id;" +
+            "                    const pendingRef = pendingRefs.get(id);" +
+            "                    if (pendingRef) {" +
+            "                        Object.assign(pendingRef, value);" +
+            "                        value = pendingRef;" +
+            "                    }" +
+            "                    refs.set(id, value);" +
+            "                } else if (value.$ref !== undefined) {" +
+            "                    const refId = value.$ref;" +
+            "                    const ref = refs.get(refId);" +
+            "                    if (ref) {" +
+            "                        return ref;" +
+            "                    }" +
+            "                    const pendingRef = pendingRefs.get(refId);" +
+            "                    if (!pendingRef) {" +
+            "                        value = {};" +
+            "                        pendingRefs.set(refId, value);" +
+            "                    } else {" +
+            "                        value = pendingRef;" +
+            "                    }" +
+            "                } else if (isString(value)) {" +
+            "                    switch (value.substring(0, " + DataMarkers.MarkerLength + ")) {" +
+            "                        case \"" + DataMarkers.StringMarker + "\":" +
+            "                            return value.substring(" + DataMarkers.MarkerLength + ");" +
+            "                        case \"" + DataMarkers.DateTimeMarker + "\":" +
+            "                            return new Date(value.substring(" + DataMarkers.MarkerLength + "));" +
+            "                        case \"" + DataMarkers.BinaryMarker + "\":" +
+            "                            return convertBase64ToBinary(value.substring(" + DataMarkers.MarkerLength + "));" +
+            "                    }" +
             "                }" +
             "            }" +
             "            return value;" +

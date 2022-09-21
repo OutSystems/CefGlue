@@ -17,7 +17,7 @@ namespace CefGlue.Tests.Serialization
             valueType = cefValue.GetValueType();
             return result;
         }
-        
+
         private static void AssertSerialization(object value, CefValueType valueType)
         {
             var obtainedValue = SerializeAndDeserialize(value, out var obtainedValueType);
@@ -86,7 +86,7 @@ namespace CefGlue.Tests.Serialization
             AssertSerialization("this is a string", CefValueType.String);
             AssertSerialization("", CefValueType.String);
         }
-        
+
         [Test]
         public void HandlesStringsWithSpecialChars()
         {
@@ -138,7 +138,7 @@ namespace CefGlue.Tests.Serialization
         {
             var dict = new Dictionary<string, object>();
             dict.Add("first", dict);
-            
+
             var cefValue = new CefTestValue();
             Assert.Throws<InvalidOperationException>(() => Serialize(dict, cefValue));
         }
@@ -150,7 +150,7 @@ namespace CefGlue.Tests.Serialization
             AssertSerialization(list, CefValueType.String);
             AssertSerialization(new List<string>(), CefValueType.String);
         }
-        
+
         [Test]
         public void HandlesNestedLists()
         {
@@ -161,7 +161,7 @@ namespace CefGlue.Tests.Serialization
             };
             AssertSerialization(list, CefValueType.String);
         }
-        
+
         [Test]
         public void HandlesListsOfObjects()
         {
@@ -178,7 +178,7 @@ namespace CefGlue.Tests.Serialization
             };
             AssertSerialization(list, CefValueType.String);
         }
-        
+
         [Test]
         public void HandlesArrays()
         {
@@ -186,17 +186,17 @@ namespace CefGlue.Tests.Serialization
             AssertSerialization(list, CefValueType.String);
             AssertSerialization(new string[0], CefValueType.String);
         }
-        
+
         [Test]
         public void HandlesCyclicListReferencesWithException()
         {
             var list = new List<object>();
             list.Add(list);
-            
+
             var cefValue = new CefTestValue();
             Assert.Throws<InvalidOperationException>(() => Serialize(list, cefValue));
         }
-        
+
         [Test]
         public void HandlesDeepStructuresWith250Levels()
         {
@@ -215,6 +215,38 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
+        public void HandlesDeepStructuresWithReferenceObjects()
+        {
+            var innerList1 = new List<object>();
+            var child = new List<object>();
+            innerList1.Add(child);
+
+            for (var i = 0; i < 150; i++)
+            {
+                var nestedChild = new List<object>();
+                child.Add(nestedChild);
+                child = nestedChild;
+            }
+
+            var listThatContainsRefsToInnerList1 = new List<object>();
+            listThatContainsRefsToInnerList1.Add(innerList1);
+            child = new List<object>();
+            listThatContainsRefsToInnerList1.Add(child);
+            for (var i = 0; i < 149; i++)
+            {
+                var nestedChild = new List<object>();
+                child.Add(nestedChild);
+                child = nestedChild;
+            }
+            // add the innerList1 again, at the deepest level inside listThatContainsRefsToInnerList1
+            child.Add(innerList1);
+
+            var cefValue = new CefTestValue();
+            Assert.DoesNotThrow(() => Serialize(listThatContainsRefsToInnerList1, cefValue));
+            Assert.IsTrue(cefValue.GetString().TrimEnd('}', ']').EndsWith("\"$ref\":\"2\""), "The last element in the list should be a reference to the first child");
+        }
+
+        [Test]
         public void HandlesSimpleDictionaries()
         {
             var dict = new Dictionary<string, object>()
@@ -227,7 +259,7 @@ namespace CefGlue.Tests.Serialization
                 { "sixth", null },
                 { "seventh", 7.0 }
             };
-            
+
             AssertSerialization(dict, CefValueType.String);
         }
 
