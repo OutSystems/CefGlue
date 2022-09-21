@@ -1,106 +1,37 @@
+﻿using System.IO;
+using System.Text;
+using Xilium.CefGlue.Common.Shared.Helpers;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
     internal static partial class JavascriptHelper
     {
+        private const string CefGlueGlobalScriptFileName = "CefGlueGlobalScript.js";
         private const string GlobalObjectName = "cefglue";
         private const string PromiseFactoryFunctionName = "createPromise";
+        private const string InterceptorFactoryFunctionName = "createInterceptor";
+        private const string EvaluateScriptFunctionName = "evaluateScript";
         private const string BindNativeFunctionName = "Bind";
         private const string UnbindNativeFunctionName = "Unbind";
 
-        private static readonly string CefGlueGlobal =
-            "var " + GlobalObjectName + ";" +
-            "if (!" + GlobalObjectName + ")" +
-            "    " + GlobalObjectName + " = (function() {" +
-            "        function isString(value) {" +
-            "            return typeof value === \"string\";" +
-            "        }" +
-            "        function convertBase64ToBinary(value) {" +
-            "            const byteCharacters = atob(value);" +
-            "            const byteArray = new Array(byteCharacters.length);" +
-            "            for (let i = 0; i < byteCharacters.length; i++)" +
-            "                byteArray[i] = byteCharacters.charCodeAt(i);" +
-            "            return byteArray;" +
-            "        }" +
-            "        function revive(name, value, refs, pendingRefs) {" +
-            "            if (value) {" +
-            "                if (value.$id !== undefined) {" +
-            "                    const id = value.$id;" +
-            "                    delete value.$id;" +
-            "                    const pendingRef = pendingRefs.get(id);" +
-            "                    if (pendingRef) {" +
-            "                        Object.assign(pendingRef, value);" +
-            "                        value = pendingRef;" +
-            "                    }" +
-            "                    refs.set(id, value);" +
-            "                } else if (value.$ref !== undefined) {" +
-            "                    const refId = value.$ref;" +
-            "                    const ref = refs.get(refId);" +
-            "                    if (ref) {" +
-            "                        return ref;" +
-            "                    }" +
-            "                    const pendingRef = pendingRefs.get(refId);" +
-            "                    if (pendingRef) {" +
-            "                        value = pendingRef;" +
-            "                    } else {" +
-            "                        value = {};" +
-            "                        pendingRefs.set(refId, value);" +
-            "                    }" +
-            "                } else if (isString(value)) {" +
-            "                    switch (value.substring(0, " + DataMarkers.MarkerLength + ")) {" +
-            "                        case \"" + DataMarkers.StringMarker + "\":" +
-            "                            return value.substring(" + DataMarkers.MarkerLength + ");" +
-            "                        case \"" + DataMarkers.DateTimeMarker + "\":" +
-            "                            return new Date(value.substring(" + DataMarkers.MarkerLength + "));" +
-            "                        case \"" + DataMarkers.BinaryMarker + "\":" +
-            "                            return convertBase64ToBinary(value.substring(" + DataMarkers.MarkerLength + "));" +
-            "                    }" +
-            "                }" +
-            "            }" +
-            "            return value;" +
-            "        }" +
-            "        function parseResult(result) {" +
-            "            const refs = new Map();" +
-            "            const pendingRefs = new Map();" +
-            "            return isString(result) ? JSON.parse(result, (name, value) => revive(name, value, refs, pendingRefs)) : result;" +
-            "        }" +
-            "        return {" +
-            "            " + PromiseFactoryFunctionName + ": function() {" +
-            "                const result = {};" +
-            "                const promise = new Promise(function(resolve, reject) {" +
-            "                    result.resolve = function(result) {" +
-            "                        resolve(parseResult(result));" +
-            "                    };" +
-            "                    result.reject = reject;" +
-            "                });" +
-            "                result.promise = promise;" +
-            "                return result;" +
-            "            }," +
-            "            checkObjectBound: function(objName) {" +
-            "                native function " + BindNativeFunctionName + "();" +
-            "                if (window.hasOwnProperty(objName))" + // quick check
-            "                    return Promise.resolve(true);" +
-            "                return " + BindNativeFunctionName + "(objName);" +
-            "            }," +
-            "            deleteObjectBound: function(objName) {" +
-            "                native function " + UnbindNativeFunctionName + "();" +
-            "                " + UnbindNativeFunctionName + "(objName);" +
-            "            }" +
-            "        };" +
-            "    })();";
-
         public static void Register(INativeObjectRegistry nativeObjectRegistry)
         {
-            // TODO global name
-            CefRuntime.RegisterExtension("cefglue", CefGlueGlobal, new V8BuiltinFunctionHandler(nativeObjectRegistry));
+            var currentType = typeof(JavascriptHelper);
+            var currentNamespace = currentType.Namespace;
+            var currentAssembly = currentType.Assembly;
+            using (var stream = new StreamReader(currentAssembly.GetManifestResourceStream($"{currentNamespace}.{CefGlueGlobalScriptFileName}")))
+            {
+                var cefGlueGlobalScript = FillScriptPlaceholders(stream.ReadToEnd());
+                CefRuntime.RegisterExtension("cefglue", cefGlueGlobalScript, new V8BuiltinFunctionHandler(nativeObjectRegistry));
+            }
+                
         }
 
         public static PromiseHolder CreatePromise(this CefV8Context context)
         {
-            var global = context.GetGlobal();
-            var cefGlueGlobal = global.GetValue(GlobalObjectName); // TODO what if cefGlueGlobal == null?
-            var promiseFactory = cefGlueGlobal.GetValue(PromiseFactoryFunctionName);
+            var promiseFactory = GetGlobalInnerValue(context, PromiseFactoryFunctionName);
             var promiseData = promiseFactory.ExecuteFunctionWithContext(context, null, new CefV8Value[0]); // create a promise and return the resolve and reject callbacks
 
             var promise = promiseData.GetValue("promise");
@@ -112,6 +43,46 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             CefObjectTracker.Untrack(reject);
 
             return new PromiseHolder(promise, resolve, reject, context);
+        }
+
+        public static CefV8Value CreateInterceptorObject(this CefV8Context context, CefV8Value targetObj)
+        {
+            var interceptorFactory = GetGlobalInnerValue(context, InterceptorFactoryFunctionName);
+            
+            return interceptorFactory.ExecuteFunctionWithContext(context, null, new[] { targetObj });
+        }
+
+        private static CefV8Value GetGlobalInnerValue(CefV8Context context, string innerValueKey)
+        {
+            var global = context.GetGlobal();
+            var cefGlueGlobal = global.GetValue(GlobalObjectName); // TODO what if cefGlueGlobal == null?
+            
+            return cefGlueGlobal.GetValue(innerValueKey);
+        }
+
+        public static string WrapScriptForEvaluation(string script)
+        {
+            return $"{GlobalObjectName}.{EvaluateScriptFunctionName}(() => ({script}))";
+        }
+
+        private static string FillScriptPlaceholders(string script)
+        {
+            var sb = new StringBuilder(script);
+            return sb
+                .Replace("$GlobalObjectName$", GlobalObjectName)
+                .Replace("$JsonIdAttribute$", JsonAttributes.Id)
+                .Replace("$JsonRefAttribute$", JsonAttributes.Ref)
+                .Replace("$JsonValuesAttribute$", JsonAttributes.Values)
+                .Replace("$DataMarkerLength$", DataMarkers.MarkerLength.ToString())
+                .Replace("$StringMarker$", DataMarkers.StringMarker)
+                .Replace("$DateTimeMarker$", DataMarkers.DateTimeMarker)
+                .Replace("$BinaryMarker$", DataMarkers.BinaryMarker)
+                .Replace("$PromiseFactoryFunctionName$", PromiseFactoryFunctionName)
+                .Replace("$InterceptorFactoryFunctionName$", InterceptorFactoryFunctionName)
+                .Replace("$BindNativeFunctionName$", BindNativeFunctionName)
+                .Replace("$UnbindNativeFunctionName$", UnbindNativeFunctionName)
+                .Replace("$EvaluateScriptFunctionName$", EvaluateScriptFunctionName)
+                .ToString();
         }
     }
 }

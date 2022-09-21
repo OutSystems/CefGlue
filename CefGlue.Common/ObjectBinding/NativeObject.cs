@@ -33,6 +33,16 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
         public void ExecuteMethod(string methodName, object[] args, Action<object, Exception> handleResult)
         {
+            InnerExecuteMethod(methodName, args, handleResult);
+        }
+
+        public void ExecuteMethod(string methodName, string argsAsJson, Action<object, Exception> handleResult)
+        {
+            InnerExecuteMethod(methodName, argsAsJson, handleResult);
+        }
+
+        private void InnerExecuteMethod<T>(string methodName, T args, Action<object, Exception> handleResult)
+        {
             if (!_methods.TryGetValue(methodName ?? "", out var method))
             {
                 handleResult(default, new Exception($"Object does not have a {methodName} method."));
@@ -46,7 +56,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             }
 
             var innerMethod = method.MakeDelegate(_target, args);
-            _methodHandler.Execute(_methodHandlerTarget, new[] { innerMethod }, (result, exception) =>
+            _methodHandler.Execute(_methodHandlerTarget, innerMethod, (result, exception) =>
             {
                 if (result is Task task)
                 {
