@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -21,8 +22,10 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             },
             IncludeFields = true,
             MaxDepth = SerializerMaxDepth,
-            ReferenceHandler = ReferenceHandler.Preserve
+            ReferenceHandler = ReferenceHandler.Preserve,
         };
+
+        private static readonly JsonReferenceHandler _jsonDeserializerReferenceHandler = new JsonReferenceHandler();
 
         private static readonly JsonSerializerOptions _jsonDeserializerOptions = new JsonSerializerOptions()
         {
@@ -30,8 +33,22 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             {
                 new ObjectJsonConverter()
             },
-            MaxDepth = DeserializerMaxDepth
+            IncludeFields = true,
+            MaxDepth = DeserializerMaxDepth,
+            ReferenceHandler = _jsonDeserializerReferenceHandler
         };
+
+        private static JsonSerializerOptions JsonSerializerOptions => _jsonSerializerOptions;
+
+        private static JsonSerializerOptions JsonDeserializerOptions
+        {
+            get
+            {
+                _jsonDeserializerReferenceHandler.Reset();
+                _jsonDeserializerOptions.Converters.OfType<ObjectJsonConverter>().First().ResetState();
+                return _jsonDeserializerOptions;
+            }
+        }
 
         public static void Serialize(object value, CefValueWrapper cefValue)
         {
@@ -127,7 +144,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         {
             try
             {
-                var json = JsonSerializer.Serialize(value, _jsonSerializerOptions);
+                var json = JsonSerializer.Serialize(value, JsonSerializerOptions);
                 cefValue.SetString(json);
             }
             catch (JsonException e)
@@ -193,7 +210,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         {
             try
             {
-                return JsonSerializer.Deserialize<object>(value, _jsonDeserializerOptions);
+                return JsonSerializer.Deserialize<object>(value, JsonDeserializerOptions);
             }
             catch (JsonException e)
             {

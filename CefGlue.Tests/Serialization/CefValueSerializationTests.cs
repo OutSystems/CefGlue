@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xilium.CefGlue;
 using static Xilium.CefGlue.Common.Shared.Serialization.CefValueSerialization;
 
@@ -134,13 +135,50 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
-        public void HandlesCyclicDictionaryReferencesWithException()
+        public void HandlesCyclicDictionaryReferences()
         {
             var dict = new Dictionary<string, object>();
             dict.Add("first", dict);
 
-            var cefValue = new CefTestValue();
-            Assert.Throws<InvalidOperationException>(() => Serialize(dict, cefValue));
+            object obtainedValue = null;
+            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize(dict, out var _));
+            Assert.IsInstanceOf<Dictionary<string, object>>(obtainedValue);
+            Assert.AreSame(obtainedValue,((Dictionary<string, object>)obtainedValue).First().Value);
+        }
+
+        [Test]
+        public void HandlesCyclicListReferences()
+        {
+            var list = new List<object>();
+            list.Add(list);
+
+            object obtainedValue = null;
+            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize(list, out var _));
+            Assert.IsInstanceOf<List<object>>(obtainedValue);
+            Assert.AreSame(obtainedValue,((List<object>)obtainedValue).First());
+        }
+
+        private class Person
+        {
+            public Person Parent;
+            public Person Child;
+        }
+
+        [Test]
+        public void HandlesCyclicObjectReferences()
+        {
+            var parent = new Person();
+            var child = new Person();
+            child.Parent = parent;
+            parent.Child = child;
+
+            object obtainedValue = null;
+            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize(parent, out var _));
+            // the Cef"Deserializer" returns a Dictionary<string, object> for Objects
+            Assert.IsInstanceOf<Dictionary<string, object>>(obtainedValue);
+            Assert.AreEqual(2, ((Dictionary<string, object>)obtainedValue).Count);
+            Assert.AreEqual("Parent", ((Dictionary<string, object>)obtainedValue).Keys.First());
+            Assert.AreEqual("Child", ((Dictionary<string, object>)obtainedValue).Keys.Last());
         }
 
         [Test]
@@ -188,17 +226,7 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
-        public void HandlesCyclicListReferencesWithException()
-        {
-            var list = new List<object>();
-            list.Add(list);
-
-            var cefValue = new CefTestValue();
-            Assert.Throws<InvalidOperationException>(() => Serialize(list, cefValue));
-        }
-
-        [Test]
-        public void HandlesDeepStructuresWith250Levels()
+        public void HandlesSerializationOfDeepListsWith250Levels()
         {
             var list = new List<object>();
             var child = new List<object>();
@@ -211,7 +239,41 @@ namespace CefGlue.Tests.Serialization
                 child = nestedChild;
             }
 
-            AssertSerialization(list, CefValueType.String);
+            var cefValue = new CefTestValue();
+            Assert.DoesNotThrow(() => Serialize(list, cefValue));
+        }
+
+        [Test]
+        public void HandlesDeserializationOfDeepListsWith248LevelsWithoutReferences()
+        {
+            var list = new List<object>();
+            var child = new List<object>();
+            list.Add(child);
+
+            // 248 is the maximum supported deepness for Cef Deserialization process
+            // more than that and it will hit an exception
+            for (var i = 0; i < 248; i++)
+            {
+                var nestedChild = new List<object>();
+                child.Add(nestedChild);
+                child = nestedChild;
+            }
+
+            var cefValue = new CefTestValue();
+            // use a default serializer, without references handling
+            var jsonSerializerOptions = new System.Text.Json.JsonSerializerOptions()
+            {
+                IncludeFields = true,
+                MaxDepth = int.MaxValue,
+            };
+            var json = System.Text.Json.JsonSerializer.Serialize(list, jsonSerializerOptions);
+            cefValue.SetString(json);
+            object obtainedValue = null;
+
+            Assert.DoesNotThrow(() => obtainedValue = DeserializeCefValue(cefValue));
+            var valueType = cefValue.GetValueType();
+            Assert.IsTrue(valueType == CefValueType.String);
+            Assert.IsInstanceOf<object[]>(obtainedValue);
         }
 
         [Test]
