@@ -277,34 +277,15 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
-        public void HandlesDeepStructuresWithReferenceObjects()
+        public void HandlesReferenceObjects()
         {
-            var innerList1 = new List<object>();
-            var child = new List<object>();
-            innerList1.Add(child);
-
-            for (var i = 0; i < 150; i++)
-            {
-                var nestedChild = new List<object>();
-                child.Add(nestedChild);
-                child = nestedChild;
-            }
-
-            var listThatContainsRefsToInnerList1 = new List<object>();
-            listThatContainsRefsToInnerList1.Add(innerList1);
-            child = new List<object>();
-            listThatContainsRefsToInnerList1.Add(child);
-            for (var i = 0; i < 149; i++)
-            {
-                var nestedChild = new List<object>();
-                child.Add(nestedChild);
-                child = nestedChild;
-            }
-            // add the innerList1 again, at the deepest level inside listThatContainsRefsToInnerList1
-            child.Add(innerList1);
+            var list = new List<object>();
+            var childList = new List<object>();
+            list.Add(childList);
+            list.Add(childList);
 
             var cefValue = new CefTestValue();
-            Assert.DoesNotThrow(() => Serialize(listThatContainsRefsToInnerList1, cefValue));
+            Assert.DoesNotThrow(() => Serialize(list, cefValue));
             Assert.IsTrue(cefValue.GetString().TrimEnd('}', ']').EndsWith("\"$ref\":\"2\""), "The last element in the list should be a reference to the first child");
         }
 

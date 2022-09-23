@@ -23,9 +23,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             "                byteArray[i] = byteCharacters.charCodeAt(i);" +
             "            return byteArray;" +
             "        }" +
-            "        function revive(name, value) {" +
-            "            const refs = new Map();" +
-            "            const pendingRefs = new Map();" +
+            "        function revive(name, value, refs, pendingRefs) {" +
             "            if (value) {" +
             "                const id = value.$id;" +
             "                if (id !== undefined) {" +
@@ -43,11 +41,11 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             "                        return ref;" +
             "                    }" +
             "                    const pendingRef = pendingRefs.get(refId);" +
-            "                    if (!pendingRef) {" +
+            "                    if (pendingRef) {" +
+            "                        value = pendingRef;" +
+            "                    } else {" +
             "                        value = {};" +
             "                        pendingRefs.set(refId, value);" +
-            "                    } else {" +
-            "                        value = pendingRef;" +
             "                    }" +
             "                } else if (isString(value)) {" +
             "                    switch (value.substring(0, " + DataMarkers.MarkerLength + ")) {" +
@@ -63,7 +61,9 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             "            return value;" +
             "        }" +
             "        function parseResult(result) {" +
-            "            return isString(result) ? JSON.parse(result, revive) : result;"+
+            "            const refs = new Map();" +
+            "            const pendingRefs = new Map();" +
+            "            return isString(result) ? JSON.parse(result, (name, value) => revive(name, value, refs, pendingRefs)) : result;" +
             "        }" +
             "        return {" +
             "            " + PromiseFactoryFunctionName + ": function() {" +

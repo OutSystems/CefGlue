@@ -10,7 +10,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
     internal static class CefValueSerialization
     {
         private const int SerializerMaxDepth = int.MaxValue;
-        private const int DeserializerMaxDepth = byte.MaxValue;
+        private const int DeserializerMaxDepth = 255;
 
         private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
         {
