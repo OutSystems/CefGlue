@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xilium.CefGlue;
 using static Xilium.CefGlue.Common.Shared.Serialization.CefValueSerialization;
 
@@ -160,6 +161,11 @@ namespace CefGlue.Tests.Serialization
 
         private class Person
         {
+            public Person(string name)
+            {
+                Name = name;
+            }
+            public string Name { get; }
             public Person Parent;
             public Person Child;
         }
@@ -167,18 +173,48 @@ namespace CefGlue.Tests.Serialization
         [Test]
         public void HandlesCyclicObjectReferences()
         {
-            var parent = new Person();
-            var child = new Person();
+            var parent = new Person("p");
+            var child = new Person("c");
             child.Parent = parent;
             parent.Child = child;
 
+            AssertSerializeAndDeserializeOfCyclicObjectReferences(parent);
+        }
+
+        [Test]
+        public void Handles100ParallelTasksOfCyclicObjectReferences()
+        {
+            Parallel.For(fromInclusive: 0, toExclusive: 100, (taskId, state) =>
+            {
+                var parentName = $"p{taskId}";
+                var childName = $"c{taskId}";
+                var parent = new Person(parentName);
+                var child = new Person(childName);
+                child.Parent = parent;
+                parent.Child = child;
+
+                AssertSerializeAndDeserializeOfCyclicObjectReferences(parent);
+            });
+        }
+
+        private void AssertSerializeAndDeserializeOfCyclicObjectReferences(Person parent)
+        {
             object obtainedValue = null;
             Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize(parent, out var _));
             // the Cef"Deserializer" returns a Dictionary<string, object> for Objects
             Assert.IsInstanceOf<Dictionary<string, object>>(obtainedValue);
-            Assert.AreEqual(2, ((Dictionary<string, object>)obtainedValue).Count);
-            Assert.AreEqual("Parent", ((Dictionary<string, object>)obtainedValue).Keys.First());
-            Assert.AreEqual("Child", ((Dictionary<string, object>)obtainedValue).Keys.Last());
+            Assert.AreEqual(3, ((Dictionary<string, object>)obtainedValue).Count);
+            var keys = ((Dictionary<string, object>)obtainedValue).Keys.ToArray();
+            Assert.AreEqual("Name", keys[0]);
+            Assert.AreEqual("Parent", keys[1]);
+            Assert.AreEqual("Child", keys[2]);
+            var values = ((Dictionary<string, object>)obtainedValue).Values.ToArray();
+            Assert.AreEqual(parent.Name,
+                values[0]);
+            Assert.AreEqual(parent.Child.Name,
+                ((Dictionary<string, Object>)values[2]).Values.First());
+            Assert.AreSame(obtainedValue,
+                ((Dictionary<string, Object>)values[2]).Values.ToArray()[1], "Child.Parent instance should point to the obtained dictionary instance.");
         }
 
         [Test]
