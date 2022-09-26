@@ -25,8 +25,8 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             "        }" +
             "        function revive(name, value, refs, pendingRefs) {" +
             "            if (value) {" +
-            "                const id = value.$id;" +
-            "                if (id !== undefined) {" +
+            "                if (value.$id !== undefined) {" +
+            "                    const id = value.$id;" +
             "                    delete value.$id;" +
             "                    const pendingRef = pendingRefs.get(id);" +
             "                    if (pendingRef) {" +
