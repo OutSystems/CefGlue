@@ -25,45 +25,14 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             ReferenceHandler = ReferenceHandler.Preserve,
         };
 
-        [ThreadStatic]
-        private static JsonReferenceHandler _jsonDeserializerReferenceHandler;
-
-        [ThreadStatic]
-        private static JsonSerializerOptions _jsonDeserializerOptions;
-
-        private static JsonSerializerOptions JsonSerializerOptions => _jsonSerializerOptions;
-
-        private static JsonSerializerOptions JsonDeserializerOptions
+        private static readonly JsonSerializerOptions _jsonDeserializerOptions = new JsonSerializerOptions()
         {
-            get
+            Converters =
             {
-                if (_jsonDeserializerOptions == null)
-                {
-                    _jsonDeserializerReferenceHandler =  new JsonReferenceHandler();
-                    _jsonDeserializerOptions = new JsonSerializerOptions()
-                    {
-                        Converters =
-                        {
-                            new ObjectJsonConverter()
-                        },
-                        IncludeFields = true,
-                        MaxDepth = DeserializerMaxDepth,
-                        ReferenceHandler = _jsonDeserializerReferenceHandler
-                    };
-
-                    return _jsonDeserializerOptions;
-                }
-
-                ResetJsonDeserializerOptionState();
-                return _jsonDeserializerOptions;
-            }
-        }
-
-        private static void ResetJsonDeserializerOptionState()
-        {
-            _jsonDeserializerReferenceHandler.Reset();
-            _jsonDeserializerOptions.Converters.OfType<ObjectJsonConverter>().First().ResetState();
-        }
+                new ObjectJsonConverter()
+            },
+            MaxDepth = DeserializerMaxDepth,
+        };
 
         public static void Serialize(object value, CefValueWrapper cefValue)
         {
@@ -159,7 +128,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         {
             try
             {
-                var json = JsonSerializer.Serialize(value, JsonSerializerOptions);
+                var json = JsonSerializer.Serialize(value, _jsonSerializerOptions);
                 cefValue.SetString(json);
             }
             catch (JsonException e)
@@ -225,16 +194,12 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         {
             try
             {
-                return JsonSerializer.Deserialize<object>(value, JsonDeserializerOptions);
+                return JsonSerializer.Deserialize<object>(value, _jsonDeserializerOptions);
             }
             catch (JsonException e)
             {
                 // wrap the json exception
                 throw new InvalidOperationException(e.Message);
-            }
-            finally
-            {
-                ResetJsonDeserializerOptionState();
             }
         }
 
