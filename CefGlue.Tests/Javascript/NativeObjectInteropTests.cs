@@ -23,6 +23,13 @@ namespace CefGlue.Tests.Javascript
             public byte[] Photo = default;
         }
 
+        protected class CyclicObject
+        {
+            public string Name = null;
+            public CyclicObject Parent;
+            public CyclicObject Child;
+        }
+
         protected class NativeObject
         {
             private readonly TaskCompletionSource<object> _tcs = new TaskCompletionSource<object>();
@@ -65,6 +72,13 @@ namespace CefGlue.Tests.Javascript
             public void MethodWithObjectParam(Person param)
             {
                 MethodWithObjectParamCalled?.Invoke(new object[] { param });
+            }
+
+            public event Action<object[]> MethodWithCyclicObjectParamCalled;
+
+            public void MethodWithCyclicObjectParam(CyclicObject param)
+            {
+                MethodWithCyclicObjectParamCalled?.Invoke(new object[] { param });
             }
 
             public object MethodWithNullReturn()
@@ -216,6 +230,25 @@ namespace CefGlue.Tests.Javascript
             Assert.AreEqual("cef", arg.Name);
             Assert.AreEqual(10, arg.Age);
             Assert.AreEqual(DateTime.Parse(Date), arg.BirthDate);
+        }
+
+        [Test]
+        public async Task MethodWithCyclicObjectParamIsPassed()
+        {
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithCyclicObjectParamCalled += (args) => taskCompletionSource.SetResult(args);
+
+            Execute($"{ObjName}.methodWithCyclicObjectParam({{'$id':'1','Name': 'parent1','Parent':null,'Child':{{'$id':'2','Name': 'child1','Parent':{{'$ref':'1'}},'Child':null}}}})");
+
+            var result = await taskCompletionSource.Task;
+            Assert.AreEqual(1, result.Length);
+            Assert.AreEqual(typeof(CyclicObject), result[0].GetType());
+
+            var arg = (CyclicObject)result[0];
+            Assert.AreEqual("parent1", arg.Name);
+            Assert.NotNull(arg.Child);
+            Assert.AreEqual("child1", arg.Child.Name);
+            Assert.NotNull(arg.Child.Parent);
         }
 
         [Test]
