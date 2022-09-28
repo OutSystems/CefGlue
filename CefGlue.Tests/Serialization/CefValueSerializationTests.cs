@@ -273,6 +273,20 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
+        public void HandlesObjectsArray()
+        {
+            var list = new object[]
+            {
+                "1",
+                null,
+                new string[] {"a", "b"},
+                2,
+                true
+            };
+            AssertSerialization(list, CefValueType.String);
+        }
+
+        [Test]
         public void HandlesSerializationOfDeepListsWith250Levels()
         {
             var list = new List<object>();
