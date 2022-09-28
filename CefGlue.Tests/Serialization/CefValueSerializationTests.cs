@@ -21,6 +21,19 @@ namespace CefGlue.Tests.Serialization
             Standard
         }
 
+        private class Person
+        {
+            public Person() {}
+            public Person(string name)
+            {
+                Name = name;
+            }
+
+            public string Name;
+            public Person Parent;
+            public Person Child;
+        }
+
         private static JsonSerializerOptions _jsonDeserializerOptions = new JsonSerializerOptions()
         {
             Converters =
@@ -36,6 +49,7 @@ namespace CefGlue.Tests.Serialization
         {
             return SerializeAndDeserialize<object>(value, out valueType);
         }
+
         private static object SerializeAndDeserialize<T>(object value, out CefValueType valueType, DeserializationType deserializationType = DeserializationType.CefValue)
         {
             var cefValue = new CefTestValue();
@@ -197,19 +211,6 @@ namespace CefGlue.Tests.Serialization
             Assert.AreSame(obtainedValue,((List<object>)obtainedValue).First());
         }
 
-        private class Person
-        {
-            public Person() {}
-            public Person(string name)
-            {
-                Name = name;
-            }
-
-            public string Name;
-            public Person Parent;
-            public Person Child;
-        }
-
         [Test]
         public void HandlesCyclicObjectReferences()
         {
@@ -357,7 +358,7 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
-        public void HandlesReferenceObjects()
+        public void HandlesListWithObjectReferences()
         {
             var list = new List<object>();
             var childList = new List<object>();
