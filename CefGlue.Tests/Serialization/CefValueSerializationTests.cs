@@ -14,7 +14,6 @@ namespace CefGlue.Tests.Serialization
     [TestFixture]
     public class SerializationTests
     {
-        // TODO - When the Cef deserializer supports references, this enum is no longer needed and the related logic should be refactored
         private enum DeserializationType
         {
             CefValue,
@@ -243,23 +242,11 @@ namespace CefGlue.Tests.Serialization
             object obtainedValue = null;
             Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize<Person>(parent, out var _, DeserializationType.Standard));
             Assert.IsInstanceOf<Person>(obtainedValue);
-            // TODO - When the cef Deserializer is able to handle references, Replace the Person validations bellow by the commented code to assert the expected obtained Dictionary
             var obtainedPerson = (Person)obtainedValue;
             Assert.AreEqual(parent.Name, obtainedPerson.Name);
             Assert.NotNull(obtainedPerson.Child);
             Assert.AreEqual(parent.Child.Name, obtainedPerson.Child.Name);
             Assert.AreSame(obtainedPerson, obtainedPerson.Child.Parent);
-            // Assert.AreEqual(3, ((Dictionary<string, object>)obtainedValue).Count);
-            // var keys = ((Dictionary<string, object>)obtainedValue).Keys.ToArray();
-            // Assert.AreEqual("Parent", keys[1]);
-            // Assert.AreEqual("Child", keys[2]);
-            // var values = ((Dictionary<string, object>)obtainedValue).Values.ToArray();
-            // Assert.AreEqual(parent.Name,
-            //     values[0]);
-            // Assert.AreEqual(parent.Child.Name,
-            //     ((Dictionary<string, Object>)values[2]).Values.First());
-            // Assert.AreSame(obtainedValue,
-            //     ((Dictionary<string, Object>)values[2]).Values.ToArray()[1], "Child.Parent instance should point to the obtained dictionary instance.");
         }
 
         [Test]
@@ -384,8 +371,6 @@ namespace CefGlue.Tests.Serialization
                 { "seventh", 7.0 }
             };
 
-            // TODO - When the Deserializer supports References, the next commented line should replace the code bellow it
-            // AssertSerialization(dict, CefValueType.String);
             var cefValue = new CefTestValue();
             Serialize(dict, cefValue);
             // strip the "$id:1" from the json string so it can be passed do the deserializer, who doesn't handle references
