@@ -218,27 +218,6 @@ namespace CefGlue.Tests.Serialization
             child.Parent = parent;
             parent.Child = child;
 
-            AssertSerializeAndDeserializeOfCyclicObjectReferences(parent);
-        }
-
-        [Test]
-        public void Handles100ParallelTasksOfCyclicObjectReferences()
-        {
-            Parallel.For(fromInclusive: 0, toExclusive: 100, (taskId, state) =>
-            {
-                var parentName = $"p{taskId}";
-                var childName = $"c{taskId}";
-                var parent = new Person(parentName);
-                var child = new Person(childName);
-                child.Parent = parent;
-                parent.Child = child;
-
-                AssertSerializeAndDeserializeOfCyclicObjectReferences(parent);
-            });
-        }
-
-        private void AssertSerializeAndDeserializeOfCyclicObjectReferences(Person parent)
-        {
             object obtainedValue = null;
             Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize<Person>(parent, out var _, DeserializationType.Standard));
             Assert.IsInstanceOf<Person>(obtainedValue);
@@ -312,15 +291,13 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
-        public void HandlesDeserializationOfDeepListsWith248LevelsWithoutReferences()
+        public void HandlesDeserializationOfDeepListsWith250LevelsWithoutReferences()
         {
             var list = new List<object>();
             var child = new List<object>();
             list.Add(child);
 
-            // 248 is the maximum supported deepness for Cef Deserialization process
-            // more than that and it will hit an exception
-            for (var i = 0; i < 248; i++)
+            for (var i = 0; i < 250; i++)
             {
                 var nestedChild = new List<object>();
                 child.Add(nestedChild);
