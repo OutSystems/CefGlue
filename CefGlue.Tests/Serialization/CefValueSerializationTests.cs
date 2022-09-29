@@ -14,12 +14,6 @@ namespace CefGlue.Tests.Serialization
     [TestFixture]
     public class SerializationTests
     {
-        private enum DeserializationType
-        {
-            CefValue,
-            Standard
-        }
-
         private class Person
         {
             public Person() {}
@@ -33,47 +27,18 @@ namespace CefGlue.Tests.Serialization
             public Person Child;
         }
 
-        private static JsonSerializerOptions _jsonDeserializerOptions = new JsonSerializerOptions()
-        {
-            Converters =
-            {
-                new StringJsonConverter()
-            },
-            IncludeFields = true,
-            MaxDepth = 255,
-            ReferenceHandler = ReferenceHandler.Preserve
-        };
-
         private static object SerializeAndDeserialize(object value, out CefValueType valueType)
-        {
-            return SerializeAndDeserialize<object>(value, out valueType);
-        }
-
-        private static object SerializeAndDeserialize<T>(object value, out CefValueType valueType, DeserializationType deserializationType = DeserializationType.CefValue)
         {
             var cefValue = new CefTestValue();
             Serialize(value, cefValue);
-            var result =
-                deserializationType == DeserializationType.CefValue
-                ? DeserializeCefValue(cefValue)
-                : DeserializeJsonString<T>(cefValue.GetString());
+            var result = DeserializeCefValue(cefValue);
             valueType = cefValue.GetValueType();
             return result;
         }
 
-        private static object DeserializeJsonString<T>(string jsonString)
-        {
-            return JsonSerializer.Deserialize<T>(jsonString, _jsonDeserializerOptions);
-        }
-
         private static void AssertSerialization(object value, CefValueType valueType)
         {
-            AssertSerialization<object>(value, valueType);
-        }
-
-        private static void AssertSerialization<T>(object value, CefValueType valueType, DeserializationType deserializationType = DeserializationType.CefValue)
-        {
-            var obtainedValue = SerializeAndDeserialize<T>(value, out var obtainedValueType, deserializationType);
+            var obtainedValue = SerializeAndDeserialize(value, out var obtainedValueType);
             Assert.AreEqual(value, obtainedValue);
             Assert.AreEqual(valueType, obtainedValueType);
         }
@@ -193,7 +158,7 @@ namespace CefGlue.Tests.Serialization
             dict.Add("first", dict);
 
             object obtainedValue = null;
-            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize<Dictionary<string, object>>(dict, out var _, DeserializationType.Standard));
+            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize(dict, out var _));
             Assert.IsInstanceOf<Dictionary<string, object>>(obtainedValue);
             Assert.AreSame(obtainedValue,((Dictionary<string, object>)obtainedValue).First().Value);
         }
@@ -205,7 +170,7 @@ namespace CefGlue.Tests.Serialization
             list.Add(list);
 
             object obtainedValue = null;
-            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize<List<object>>(list, out var _, DeserializationType.Standard));
+            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize(list, out var _));
             Assert.IsInstanceOf<List<object>>(obtainedValue);
             Assert.AreSame(obtainedValue,((List<object>)obtainedValue).First());
         }
@@ -219,21 +184,27 @@ namespace CefGlue.Tests.Serialization
             parent.Child = child;
 
             object obtainedValue = null;
-            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize<Person>(parent, out var _, DeserializationType.Standard));
-            Assert.IsInstanceOf<Person>(obtainedValue);
-            var obtainedPerson = (Person)obtainedValue;
-            Assert.AreEqual(parent.Name, obtainedPerson.Name);
-            Assert.NotNull(obtainedPerson.Child);
-            Assert.AreEqual(parent.Child.Name, obtainedPerson.Child.Name);
-            Assert.AreSame(obtainedPerson, obtainedPerson.Child.Parent);
+            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize(parent, out var _));
+            // the Cef"Deserializer" returns a Dictionary<string, object> for Objects
+            Assert.AreEqual(3, ((Dictionary<string, object>)obtainedValue).Count);
+            var keys = ((Dictionary<string, object>)obtainedValue).Keys.ToArray();
+            Assert.AreEqual("Parent", keys[1]);
+            Assert.AreEqual("Child", keys[2]);
+            var values = ((Dictionary<string, object>)obtainedValue).Values.ToArray();
+            Assert.AreEqual(parent.Name,
+                values[0]);
+            Assert.AreEqual(parent.Child.Name,
+                ((Dictionary<string, Object>)values[2]).Values.First());
+            Assert.AreSame(obtainedValue,
+                ((Dictionary<string, Object>)values[2]).Values.ToArray()[1], "Child.Parent instance should point to the obtained dictionary instance.");
         }
 
         [Test]
         public void HandlesLists()
         {
             var list = new List<string>() { "1", "2" };
-            AssertSerialization<List<string>>(list, CefValueType.String, DeserializationType.Standard);
-            AssertSerialization<List<string>>(new List<string>(), CefValueType.String, DeserializationType.Standard);
+            AssertSerialization(list, CefValueType.String);
+            AssertSerialization(new List<string>(), CefValueType.String);
         }
 
         [Test]
@@ -244,7 +215,7 @@ namespace CefGlue.Tests.Serialization
                 new List<string> { "1" , "2" },
                 new List<string> { "3" , "4" }
             };
-            AssertSerialization<List<List<string>>>(list, CefValueType.String, DeserializationType.Standard);
+            AssertSerialization(list, CefValueType.String);
         }
 
         [Test]
@@ -261,7 +232,7 @@ namespace CefGlue.Tests.Serialization
                     { "fourth" , "4" },
                 },
             };
-            AssertSerialization<List<Dictionary<string, string>>>(list, CefValueType.String, DeserializationType.Standard);
+            AssertSerialization(list, CefValueType.String);
         }
 
         [Test]
@@ -362,13 +333,7 @@ namespace CefGlue.Tests.Serialization
                 { "seventh", 7.0 }
             };
 
-            var cefValue = new CefTestValue();
-            Serialize(dict, cefValue);
-            // strip the "$id:1" from the json string so it can be passed do the deserializer, who doesn't handle references
-            cefValue.SetString(cefValue.GetString().Replace("\"$id\":\"1\",", ""));
-            var obtainedValue = DeserializeCefValue(cefValue);
-            Assert.AreEqual(dict, obtainedValue);
-            Assert.AreEqual(cefValue.GetValueType(), CefValueType.String);
+            AssertSerialization(dict, CefValueType.String);
         }
 
         [Test]
@@ -392,7 +357,7 @@ namespace CefGlue.Tests.Serialization
                     { "third_third", 9d },
                 }}
             };
-            AssertSerialization<Dictionary<string, Dictionary<string, double>>>(dict, CefValueType.String, DeserializationType.Standard);
+            AssertSerialization(dict, CefValueType.String);
         }
 
         [Test]

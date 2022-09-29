@@ -91,12 +91,15 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                         break;
 
                     case JsonTokenType.EndArray:
-                        // check if the popped obj is an array, since it can also be a List<value>
-                        // for which case no array index was pushed to the arraysIndexesStack
-                        if (objectsStack.Pop() is object[])
+                        // check if the popped obj is a List<object>
+                        // for which case, the pop will happen in the EndObject, since the StartArray didn't push any new Array instance
+                        if (objectsStack.Peek() is List<object>)
                         {
-                            arraysIndexesStack.Pop();
+                            continue;
                         }
+
+                        objectsStack.Pop();
+                        arraysIndexesStack.Pop();
                         continue;
 
                     case JsonTokenType.StartObject:
