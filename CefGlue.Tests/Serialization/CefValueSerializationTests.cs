@@ -31,17 +31,14 @@ namespace CefGlue.Tests.Serialization
         {
             var cefValue = new CefTestValue();
             Serialize(value, cefValue);
-            var result =
-                deserializationType == DeserializationType.CefValue
-                ? DeserializeCefValue(cefValue)
-                : DeserializeJsonString<T>(cefValue.GetString());
+            var result = DeserializeCefValue(cefValue);
             valueType = cefValue.GetValueType();
             return result;
         }
 
         private static void AssertSerialization(object value, CefValueType valueType)
         {
-            var obtainedValue = SerializeAndDeserialize<T>(value, out var obtainedValueType, deserializationType);
+            var obtainedValue = SerializeAndDeserialize(value, out var obtainedValueType);
             Assert.AreEqual(value, obtainedValue);
             Assert.AreEqual(valueType, obtainedValueType);
         }
@@ -49,7 +46,7 @@ namespace CefGlue.Tests.Serialization
         [Test]
         public void HandlesNullObject()
         {
-            AssertSerialization<object>(null, CefValueType.Null);
+            AssertSerialization(null, CefValueType.Null);
         }
 
         [Test]
@@ -206,8 +203,8 @@ namespace CefGlue.Tests.Serialization
         public void HandlesLists()
         {
             var list = new List<string>() { "1", "2" };
-            AssertSerialization(list, CefValueType.String, DeserializationType.Standard);
-            AssertSerialization(new List<string>(), CefValueType.String, DeserializationType.Standard);
+            AssertSerialization(list, CefValueType.String);
+            AssertSerialization(new List<string>(), CefValueType.String);
         }
 
         [Test]
@@ -218,7 +215,7 @@ namespace CefGlue.Tests.Serialization
                 new List<string> { "1" , "2" },
                 new List<string> { "3" , "4" }
             };
-            AssertSerialization(list, CefValueType.String, DeserializationType.Standard);
+            AssertSerialization(list, CefValueType.String);
         }
 
         [Test]
@@ -235,7 +232,7 @@ namespace CefGlue.Tests.Serialization
                     { "fourth" , "4" },
                 },
             };
-            AssertSerialization(list, CefValueType.String, DeserializationType.Standard);
+            AssertSerialization(list, CefValueType.String);
         }
 
         [Test]
@@ -360,7 +357,7 @@ namespace CefGlue.Tests.Serialization
                     { "third_third", 9d },
                 }}
             };
-            AssertSerialization(dict, CefValueType.String, DeserializationType.Standard);
+            AssertSerialization(dict, CefValueType.String);
         }
 
         [Test]
