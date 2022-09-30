@@ -23,12 +23,19 @@ namespace CefGlue.Tests.Javascript
             public byte[] Photo = default;
         }
 
+        protected class CyclicObject
+        {
+            public string Name = null;
+            public CyclicObject Parent;
+            public CyclicObject Child;
+        }
+
         protected class NativeObject
         {
             private readonly TaskCompletionSource<object> _tcs = new TaskCompletionSource<object>();
 
             public Task<object> ResultTask => _tcs.Task;
-                
+
             public event Action TestCalled;
 
             public void Test()
@@ -52,7 +59,7 @@ namespace CefGlue.Tests.Javascript
             {
                 MethodWithParamsCalled?.Invoke(new object[] { param1, param2, param3, param4 });
             }
-            
+
             public event Action<object[]> MethodWithStringParamCalled;
 
             public void MethodWithStringParam(string param1)
@@ -65,6 +72,13 @@ namespace CefGlue.Tests.Javascript
             public void MethodWithObjectParam(Person param)
             {
                 MethodWithObjectParamCalled?.Invoke(new object[] { param });
+            }
+
+            public event Action<object[]> MethodWithCyclicObjectParamCalled;
+
+            public void MethodWithCyclicObjectParam(CyclicObject param)
+            {
+                MethodWithCyclicObjectParamCalled?.Invoke(new object[] { param });
             }
 
             public object MethodWithNullReturn()
@@ -91,7 +105,7 @@ namespace CefGlue.Tests.Javascript
             {
                 return Task.FromException(new Exception("error"));
             }
-            
+
             public string MethodWithStringReturn()
             {
                 return "this is the result";
@@ -117,7 +131,7 @@ namespace CefGlue.Tests.Javascript
         {
             Browser.ExecuteJavaScript("(function() { " + script + " })()");
         }
-        
+
         protected override async Task ExtraSetup()
         {
             RegisterObject();
@@ -155,7 +169,7 @@ namespace CefGlue.Tests.Javascript
         {
             const string Arg1 = "test";
             const int Arg2 = 5;
-            
+
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithParamsCalled += (args) => taskCompletionSource.SetResult(args);
 
@@ -169,12 +183,12 @@ namespace CefGlue.Tests.Javascript
             Assert.AreEqual(DateTime.Parse(Date), result[2]);
             Assert.AreEqual(true, result[3]);
         }
-        
+
         [Test]
         public async Task MethodEmptyStringParamIsPassed()
         {
             const string Arg1 = "";
-            
+
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithStringParamCalled += (args) => taskCompletionSource.SetResult(args);
 
@@ -185,7 +199,7 @@ namespace CefGlue.Tests.Javascript
             Assert.AreEqual(1, result.Length);
             Assert.AreEqual(Arg1, result[0]);
         }
-        
+
         [Test]
         public async Task MethodNullStringParamIsPassed()
         {
@@ -210,12 +224,31 @@ namespace CefGlue.Tests.Javascript
 
             var result = await taskCompletionSource.Task;
             Assert.AreEqual(1, result.Length);
-            Assert.AreEqual(typeof(Person), result[0].GetType());
+            Assert.IsInstanceOf<Person>(result[0]);
 
             var arg = (Person) result[0];
             Assert.AreEqual("cef", arg.Name);
             Assert.AreEqual(10, arg.Age);
             Assert.AreEqual(DateTime.Parse(Date), arg.BirthDate);
+        }
+
+        [Test]
+        public async Task MethodWithCyclicObjectParamIsPassed()
+        {
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithCyclicObjectParamCalled += (args) => taskCompletionSource.SetResult(args);
+
+            Execute($"{ObjName}.methodWithCyclicObjectParam({{'$id':'1','Name': 'parent1','Parent':null,'Child':{{'$id':'2','Name': 'child1','Parent':{{'$ref':'1'}},'Child':null}}}})");
+
+            var result = await taskCompletionSource.Task;
+            Assert.AreEqual(1, result.Length);
+            Assert.IsInstanceOf<CyclicObject>(result[0]);
+
+            var arg = (CyclicObject)result[0];
+            Assert.AreEqual("parent1", arg.Name);
+            Assert.NotNull(arg.Child);
+            Assert.AreEqual("child1", arg.Child.Name);
+            Assert.NotNull(arg.Child.Parent);
         }
 
         [Test]
@@ -261,7 +294,7 @@ namespace CefGlue.Tests.Javascript
             Assert.AreEqual(expected.BirthDate, result.BirthDate);
             Assert.AreEqual(expected.Photo, result.Photo);
         }
-        
+
         [Test]
         public void AsyncMethodsCanExecuteSimultaneously()
         {
@@ -298,7 +331,7 @@ namespace CefGlue.Tests.Javascript
                 Assert.AreEqual(i, calls[i-1], "Call order failed");
             }
         }
-        
+
         [Test]
         public async Task AsyncMethodResultIsReturned()
         {

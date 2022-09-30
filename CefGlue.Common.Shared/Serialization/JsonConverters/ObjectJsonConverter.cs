@@ -36,16 +36,16 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                         {
                             case DataMarkers.StringMarker:
                                 return value.Substring(DataMarkers.MarkerLength);
-                            
+
                             case DataMarkers.DateTimeMarker:
                                 return JsonSerializer.Deserialize<DateTime>("\"" + value.Substring(DataMarkers.MarkerLength) + "\"");
-                            
+
                             case DataMarkers.BinaryMarker:
                                 return Convert.FromBase64String(value.Substring(DataMarkers.MarkerLength));
                         }
                     }
                     return value;
-                
+
                 case JsonTokenType.StartArray:
                     return JsonDocument.ParseValue(ref reader).Deserialize<object[]>(options);
 
