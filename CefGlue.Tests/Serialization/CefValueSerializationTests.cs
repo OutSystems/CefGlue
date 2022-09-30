@@ -44,12 +44,7 @@ namespace CefGlue.Tests.Serialization
             ReferenceHandler = ReferenceHandler.Preserve
         };
 
-        private static object SerializeAndDeserialize(object value, out CefValueType valueType)
-        {
-            return SerializeAndDeserialize<object>(value, out valueType);
-        }
-
-        private static object SerializeAndDeserialize<T>(object value, out CefValueType valueType, DeserializationType deserializationType = DeserializationType.CefValue)
+        private static object SerializeAndDeserialize<T>(T value, out CefValueType valueType, DeserializationType deserializationType = DeserializationType.CefValue)
         {
             var cefValue = new CefTestValue();
             Serialize(value, cefValue);
@@ -188,7 +183,7 @@ namespace CefGlue.Tests.Serialization
             dict.Add("first", dict);
 
             object obtainedValue = null;
-            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize<Dictionary<string, object>>(dict, out var _, DeserializationType.Standard));
+            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize(dict, out var _, DeserializationType.Standard));
             Assert.IsInstanceOf<Dictionary<string, object>>(obtainedValue);
             Assert.AreSame(obtainedValue,((Dictionary<string, object>)obtainedValue).First().Value);
         }
@@ -200,7 +195,7 @@ namespace CefGlue.Tests.Serialization
             list.Add(list);
 
             object obtainedValue = null;
-            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize<List<object>>(list, out var _, DeserializationType.Standard));
+            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize(list, out var _, DeserializationType.Standard));
             Assert.IsInstanceOf<List<object>>(obtainedValue);
             Assert.AreSame(obtainedValue,((List<object>)obtainedValue).First());
         }
@@ -214,7 +209,7 @@ namespace CefGlue.Tests.Serialization
             parent.Child = child;
 
             object obtainedValue = null;
-            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize<Person>(parent, out var _, DeserializationType.Standard));
+            Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize(parent, out var _, DeserializationType.Standard));
             Assert.IsInstanceOf<Person>(obtainedValue);
             var obtainedPerson = (Person)obtainedValue;
             Assert.AreEqual(parent.Name, obtainedPerson.Name);
