@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,12 +66,7 @@ namespace CefGlue.Tests.Serialization
             return JsonSerializer.Deserialize<T>(jsonString, _jsonDeserializerOptions);
         }
 
-        private static void AssertSerialization(object value, CefValueType valueType)
-        {
-            AssertSerialization<object>(value, valueType);
-        }
-
-        private static void AssertSerialization<T>(object value, CefValueType valueType, DeserializationType deserializationType = DeserializationType.CefValue)
+        private static void AssertSerialization<T>(T value, CefValueType valueType, DeserializationType deserializationType = DeserializationType.CefValue)
         {
             var obtainedValue = SerializeAndDeserialize<T>(value, out var obtainedValueType, deserializationType);
             Assert.AreEqual(value, obtainedValue);
@@ -81,7 +76,7 @@ namespace CefGlue.Tests.Serialization
         [Test]
         public void HandlesNullObject()
         {
-            AssertSerialization(null, CefValueType.Null);
+            AssertSerialization<object>(null, CefValueType.Null);
         }
 
         [Test]
@@ -232,8 +227,8 @@ namespace CefGlue.Tests.Serialization
         public void HandlesLists()
         {
             var list = new List<string>() { "1", "2" };
-            AssertSerialization<List<string>>(list, CefValueType.String, DeserializationType.Standard);
-            AssertSerialization<List<string>>(new List<string>(), CefValueType.String, DeserializationType.Standard);
+            AssertSerialization(list, CefValueType.String, DeserializationType.Standard);
+            AssertSerialization(new List<string>(), CefValueType.String, DeserializationType.Standard);
         }
 
         [Test]
@@ -244,24 +239,24 @@ namespace CefGlue.Tests.Serialization
                 new List<string> { "1" , "2" },
                 new List<string> { "3" , "4" }
             };
-            AssertSerialization<List<List<string>>>(list, CefValueType.String, DeserializationType.Standard);
+            AssertSerialization(list, CefValueType.String, DeserializationType.Standard);
         }
 
         [Test]
         public void HandlesListsOfObjects()
         {
-            var list = new List<object>()
+            var list = new List<Dictionary<string, string>>()
             {
-                new Dictionary<string, object>() {
+                new Dictionary<string, string>() {
                     { "first" , "1" },
                     { "second" , "2" },
                 },
-                new Dictionary<string, object>() {
+                new Dictionary<string, string>() {
                     { "third" , "3" },
                     { "fourth" , "4" },
                 },
             };
-            AssertSerialization<List<Dictionary<string, string>>>(list, CefValueType.String, DeserializationType.Standard);
+            AssertSerialization(list, CefValueType.String, DeserializationType.Standard);
         }
 
         [Test]
@@ -378,7 +373,7 @@ namespace CefGlue.Tests.Serialization
                     { "third_third", 9d },
                 }}
             };
-            AssertSerialization<Dictionary<string, Dictionary<string, double>>>(dict, CefValueType.String, DeserializationType.Standard);
+            AssertSerialization(dict, CefValueType.String, DeserializationType.Standard);
         }
 
         [Test]
