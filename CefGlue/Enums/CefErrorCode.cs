@@ -740,7 +740,7 @@ namespace Xilium.CefGlue
         /// </summary>
         CERT_WEAK_SIGNATURE_ALGORITHM = -208,
 
-        // -209 is availible: was CERT_NOT_IN_DNS.
+        // -209 is available: was CERT_NOT_IN_DNS.
 
         /// <summary>
         /// The host name specified in the certificate is not unique.
@@ -1033,7 +1033,7 @@ namespace Xilium.CefGlue
         RESPONSE_HEADERS_TRUNCATED = -357,
 
         /// <summary>
-        /// The QUIC crytpo handshake failed.  This means that the server was unable
+        /// The QUIC crypto handshake failed.  This means that the server was unable
         /// to read any requests sent, so they may be resent.
         /// </summary>
         QUIC_HANDSHAKE_FAILED = -358,
@@ -1175,6 +1175,12 @@ namespace Xilium.CefGlue
         INCONSISTENT_IP_ADDRESS_SPACE = -383,
 
         /// <summary>
+        /// The IP address space of the cached remote endpoint is blocked by private
+        /// network access check.
+        /// </summary>
+        CACHED_IP_ADDRESS_SPACE_BLOCKED_BY_PRIVATE_NETWORK_ACCESS_POLICY = -384,
+
+        /// <summary>
         /// The cache does not have the requested entry.
         /// </summary>
         CACHE_MISS = -400,
@@ -1240,7 +1246,7 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Internal not-quite error code for the HTTP cache. In-memory hints suggest
-        /// that the cache entry would not have been useable with the transaction's
+        /// that the cache entry would not have been usable with the transaction's
         /// current configuration (e.g. load flags, mode, etc.)
         /// </summary>
         CACHE_ENTRY_NOT_SUITABLE = -411,
