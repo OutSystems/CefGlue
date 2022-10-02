@@ -49,6 +49,7 @@
         <Compile Include="Classes.g\CefLifeSpanHandler.g.cs"/>
         <Compile Include="Classes.g\CefListValue.g.cs"/>
         <Compile Include="Classes.g\CefLoadHandler.g.cs"/>
+        <Compile Include="Classes.g\CefMediaAccessCallback.g.cs"/>
         <Compile Include="Classes.g\CefMediaObserver.g.cs"/>
         <Compile Include="Classes.g\CefMediaRoute.g.cs"/>
         <Compile Include="Classes.g\CefMediaRouteCreateCallback.g.cs"/>
@@ -61,6 +62,8 @@
         <Compile Include="Classes.g\CefNavigationEntry.g.cs"/>
         <Compile Include="Classes.g\CefNavigationEntryVisitor.g.cs"/>
         <Compile Include="Classes.g\CefPdfPrintCallback.g.cs"/>
+        <Compile Include="Classes.g\CefPermissionHandler.g.cs"/>
+        <Compile Include="Classes.g\CefPermissionPromptCallback.g.cs"/>
         <Compile Include="Classes.g\CefPostData.g.cs"/>
         <Compile Include="Classes.g\CefPostDataElement.g.cs"/>
         <Compile Include="Classes.g\CefPrintDialogCallback.g.cs"/>
@@ -87,12 +90,15 @@
         <Compile Include="Classes.g\CefResponseFilter.g.cs"/>
         <Compile Include="Classes.g\CefRunContextMenuCallback.g.cs"/>
         <Compile Include="Classes.g\CefRunFileDialogCallback.g.cs"/>
+        <Compile Include="Classes.g\CefRunQuickMenuCallback.g.cs"/>
         <Compile Include="Classes.g\CefSchemeHandlerFactory.g.cs"/>
         <Compile Include="Classes.g\CefSchemeRegistrar.g.cs"/>
         <Compile Include="Classes.g\CefSelectClientCertificateCallback.g.cs"/>
         <Compile Include="Classes.g\CefServer.g.cs"/>
         <Compile Include="Classes.g\CefServerHandler.g.cs"/>
         <Compile Include="Classes.g\CefSetCookieCallback.g.cs"/>
+        <Compile Include="Classes.g\CefSharedMemoryRegion.g.cs"/>
+        <Compile Include="Classes.g\CefSharedProcessMessageBuilder.g.cs"/>
         <Compile Include="Classes.g\CefSslInfo.g.cs"/>
         <Compile Include="Classes.g\CefSslStatus.g.cs"/>
         <Compile Include="Classes.g\CefStreamReader.g.cs"/>
@@ -167,6 +173,7 @@
         <Compile Include="Interop\Classes.g\cef_life_span_handler_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_list_value_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_load_handler_t.g.cs"/>
+        <Compile Include="Interop\Classes.g\cef_media_access_callback_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_media_observer_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_media_route_create_callback_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_media_route_t.g.cs"/>
@@ -179,6 +186,8 @@
         <Compile Include="Interop\Classes.g\cef_navigation_entry_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_navigation_entry_visitor_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_pdf_print_callback_t.g.cs"/>
+        <Compile Include="Interop\Classes.g\cef_permission_handler_t.g.cs"/>
+        <Compile Include="Interop\Classes.g\cef_permission_prompt_callback_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_post_data_element_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_post_data_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_print_dialog_callback_t.g.cs"/>
@@ -205,12 +214,15 @@
         <Compile Include="Interop\Classes.g\cef_response_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_run_context_menu_callback_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_run_file_dialog_callback_t.g.cs"/>
+        <Compile Include="Interop\Classes.g\cef_run_quick_menu_callback_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_scheme_handler_factory_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_scheme_registrar_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_select_client_certificate_callback_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_server_handler_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_server_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_set_cookie_callback_t.g.cs"/>
+        <Compile Include="Interop\Classes.g\cef_shared_memory_region_t.g.cs"/>
+        <Compile Include="Interop\Classes.g\cef_shared_process_message_builder_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_sslinfo_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_sslstatus_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_stream_reader_t.g.cs"/>

@@ -39,6 +39,7 @@
 #pragma once
 
 #include "include/cef_base.h"
+#include "include/cef_shared_memory_region.h"
 #include "include/cef_values.h"
 
 typedef cef_process_id_t CefProcessId;
@@ -71,6 +72,7 @@ class CefProcessMessage : public virtual CefBaseRefCounted {
 
   ///
   // Returns a writable copy of this object.
+  // Returns nullptr when message contains a shared memory region.
   ///
   /*--cef()--*/
   virtual CefRefPtr<CefProcessMessage> Copy() = 0;
@@ -83,9 +85,17 @@ class CefProcessMessage : public virtual CefBaseRefCounted {
 
   ///
   // Returns the list of arguments.
+  // Returns nullptr when message contains a shared memory region.
   ///
   /*--cef()--*/
   virtual CefRefPtr<CefListValue> GetArgumentList() = 0;
+
+  ///
+  // Returns the shared memory region.
+  // Returns nullptr when message contains an argument list.
+  ///
+  /*--cef()--*/
+  virtual CefRefPtr<CefSharedMemoryRegion> GetSharedMemoryRegion() = 0;
 };
 
 #endif  // CEF_INCLUDE_CEF_MESSAGE_H_

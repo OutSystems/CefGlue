@@ -97,7 +97,7 @@
         }
 
         /// <summary>
-        /// Called when the default implementation dialog is closed.
+        /// Called when the dialog is closed.
         /// </summary>
         protected abstract void OnDialogClosed(CefBrowser browser);
     }

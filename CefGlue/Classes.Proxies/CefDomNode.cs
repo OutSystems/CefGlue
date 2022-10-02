@@ -291,7 +291,8 @@
         }
 
         /// <summary>
-        /// Returns the bounds of the element.
+        /// Returns the bounds of the element in device pixels. Use
+        /// "window.devicePixelRatio" to convert to/from CSS pixels.
         /// </summary>
         public CefRectangle GetElementBounds()
         {

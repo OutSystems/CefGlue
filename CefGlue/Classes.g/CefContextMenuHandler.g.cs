@@ -27,6 +27,9 @@ namespace Xilium.CefGlue
         private cef_context_menu_handler_t.run_context_menu_delegate _ds5;
         private cef_context_menu_handler_t.on_context_menu_command_delegate _ds6;
         private cef_context_menu_handler_t.on_context_menu_dismissed_delegate _ds7;
+        private cef_context_menu_handler_t.run_quick_menu_delegate _ds8;
+        private cef_context_menu_handler_t.on_quick_menu_command_delegate _ds9;
+        private cef_context_menu_handler_t.on_quick_menu_dismissed_delegate _dsa;
         
         protected CefContextMenuHandler()
         {
@@ -48,6 +51,12 @@ namespace Xilium.CefGlue
             _self->_on_context_menu_command = Marshal.GetFunctionPointerForDelegate(_ds6);
             _ds7 = new cef_context_menu_handler_t.on_context_menu_dismissed_delegate(on_context_menu_dismissed);
             _self->_on_context_menu_dismissed = Marshal.GetFunctionPointerForDelegate(_ds7);
+            _ds8 = new cef_context_menu_handler_t.run_quick_menu_delegate(run_quick_menu);
+            _self->_run_quick_menu = Marshal.GetFunctionPointerForDelegate(_ds8);
+            _ds9 = new cef_context_menu_handler_t.on_quick_menu_command_delegate(on_quick_menu_command);
+            _self->_on_quick_menu_command = Marshal.GetFunctionPointerForDelegate(_ds9);
+            _dsa = new cef_context_menu_handler_t.on_quick_menu_dismissed_delegate(on_quick_menu_dismissed);
+            _self->_on_quick_menu_dismissed = Marshal.GetFunctionPointerForDelegate(_dsa);
         }
         
         ~CefContextMenuHandler()

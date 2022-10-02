@@ -1997,6 +1997,17 @@ typedef enum {
 } cef_context_menu_edit_state_flags_t;
 
 ///
+// Supported quick menu state bit flags.
+///
+typedef enum {
+  QM_EDITFLAG_NONE = 0,
+  QM_EDITFLAG_CAN_ELLIPSIS = 1 << 0,
+  QM_EDITFLAG_CAN_CUT = 1 << 1,
+  QM_EDITFLAG_CAN_COPY = 1 << 2,
+  QM_EDITFLAG_CAN_PASTE = 1 << 3,
+} cef_quick_menu_edit_state_flags_t;
+
+///
 // Key event types.
 ///
 typedef enum {
@@ -3229,6 +3240,138 @@ typedef enum {
   CEF_SHOW_STATE_MAXIMIZED,
   CEF_SHOW_STATE_FULLSCREEN,
 } cef_show_state_t;
+
+///
+// Values indicating what state of the touch handle is set.
+///
+typedef enum {
+  CEF_THS_FLAG_NONE = 0,
+  CEF_THS_FLAG_ENABLED = 1 << 0,
+  CEF_THS_FLAG_ORIENTATION = 1 << 1,
+  CEF_THS_FLAG_ORIGIN = 1 << 2,
+  CEF_THS_FLAG_ALPHA = 1 << 3,
+} cef_touch_handle_state_flags_t;
+
+typedef struct _cef_touch_handle_state_t {
+  ///
+  // Touch handle id. Increments for each new touch handle.
+  ///
+  int touch_handle_id;
+
+  ///
+  // Combination of cef_touch_handle_state_flags_t values indicating what state
+  // is set.
+  ///
+  uint32 flags;
+
+  ///
+  // Enabled state. Only set if |flags| contains CEF_THS_FLAG_ENABLED.
+  ///
+  int enabled;
+
+  ///
+  // Orientation state. Only set if |flags| contains CEF_THS_FLAG_ORIENTATION.
+  ///
+  cef_horizontal_alignment_t orientation;
+  int mirror_vertical;
+  int mirror_horizontal;
+
+  ///
+  // Origin state. Only set if |flags| contains CEF_THS_FLAG_ORIGIN.
+  ///
+  cef_point_t origin;
+
+  ///
+  // Alpha state. Only set if |flags| contains CEF_THS_FLAG_ALPHA.
+  ///
+  float alpha;
+} cef_touch_handle_state_t;
+
+///
+// Media access permissions used by OnRequestMediaAccessPermission.
+///
+typedef enum {
+  ///
+  // No permission.
+  ///
+  CEF_MEDIA_PERMISSION_NONE = 0,
+
+  ///
+  // Device audio capture permission.
+  ///
+  CEF_MEDIA_PERMISSION_DEVICE_AUDIO_CAPTURE = 1 << 0,
+
+  ///
+  // Device video capture permission.
+  ///
+  CEF_MEDIA_PERMISSION_DEVICE_VIDEO_CAPTURE = 1 << 1,
+
+  ///
+  // Desktop audio capture permission.
+  ///
+  CEF_MEDIA_PERMISSION_DESKTOP_AUDIO_CAPTURE = 1 << 2,
+
+  ///
+  // Desktop video capture permission.
+  ///
+  CEF_MEDIA_PERMISSION_DESKTOP_VIDEO_CAPTURE = 1 << 3,
+} cef_media_access_permission_types_t;
+
+///
+// Permission types used with OnShowPermissionPrompt. Some types are
+// platform-specific or only supported with the Chrome runtime. Should be kept
+// in sync with Chromium's permissions::RequestType type.
+///
+typedef enum {
+  CEF_PERMISSION_TYPE_NONE = 0,
+  CEF_PERMISSION_TYPE_ACCESSIBILITY_EVENTS = 1 << 0,
+  CEF_PERMISSION_TYPE_AR_SESSION = 1 << 1,
+  CEF_PERMISSION_TYPE_CAMERA_PAN_TILT_ZOOM = 1 << 2,
+  CEF_PERMISSION_TYPE_CAMERA_STREAM = 1 << 3,
+  CEF_PERMISSION_TYPE_CLIPBOARD = 1 << 4,
+  CEF_PERMISSION_TYPE_DISK_QUOTA = 1 << 5,
+  CEF_PERMISSION_TYPE_LOCAL_FONTS = 1 << 6,
+  CEF_PERMISSION_TYPE_GEOLOCATION = 1 << 7,
+  CEF_PERMISSION_TYPE_IDLE_DETECTION = 1 << 8,
+  CEF_PERMISSION_TYPE_MIC_STREAM = 1 << 9,
+  CEF_PERMISSION_TYPE_MIDI_SYSEX = 1 << 10,
+  CEF_PERMISSION_TYPE_MULTIPLE_DOWNLOADS = 1 << 11,
+  CEF_PERMISSION_TYPE_NOTIFICATIONS = 1 << 12,
+  CEF_PERMISSION_TYPE_PROTECTED_MEDIA_IDENTIFIER = 1 << 13,
+  CEF_PERMISSION_TYPE_REGISTER_PROTOCOL_HANDLER = 1 << 14,
+  CEF_PERMISSION_TYPE_SECURITY_ATTESTATION = 1 << 15,
+  CEF_PERMISSION_TYPE_STORAGE_ACCESS = 1 << 16,
+  CEF_PERMISSION_TYPE_U2F_API_REQUEST = 1 << 17,
+  CEF_PERMISSION_TYPE_VR_SESSION = 1 << 18,
+  CEF_PERMISSION_TYPE_WINDOW_PLACEMENT = 1 << 19,
+} cef_permission_request_types_t;
+
+///
+// Permission request results.
+///
+typedef enum {
+  ///
+  // Accept the permission request as an explicit user action.
+  ///
+  CEF_PERMISSION_RESULT_ACCEPT,
+
+  ///
+  // Deny the permission request as an explicit user action.
+  ///
+  CEF_PERMISSION_RESULT_DENY,
+
+  ///
+  // Dismiss the permission request as an explicit user action.
+  ///
+  CEF_PERMISSION_RESULT_DISMISS,
+
+  ///
+  // Ignore the permission request. If the prompt remains unhandled (e.g.
+  // OnShowPermissionPrompt returns false and there is no default permissions
+  // UI) then any related promises may remain unresolved.
+  ///
+  CEF_PERMISSION_RESULT_IGNORE,
+} cef_permission_request_result_t;
 
 #ifdef __cplusplus
 }

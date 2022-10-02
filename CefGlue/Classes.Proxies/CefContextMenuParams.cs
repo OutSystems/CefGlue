@@ -7,7 +7,7 @@
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Provides information about the context menu state. The ethods of this class
+    /// Provides information about the context menu state. The methods of this class
     /// can only be accessed on browser process the UI thread.
     /// </summary>
     public sealed unsafe partial class CefContextMenuParams

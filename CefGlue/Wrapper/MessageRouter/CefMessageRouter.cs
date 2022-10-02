@@ -4,6 +4,11 @@
     using System.Collections.Generic;
     using System.Text;
 
+    // TODO: This implementation doesn't includes implementation for transfer
+    // messages via shared memory region.
+    // See CEF commit: 3dc94645838ad6c7f7821bce50015533da294d27 as reference
+    // implementation.
+
     internal static class CefMessageRouter
     {
         // ID value reserved for internal use.
@@ -22,6 +27,9 @@
         public const int CanceledErrorCode = -1;
         public const string CanceledErrorMessage = "The query has been canceled";
 
+        // Value of 16KB is chosen as a result of performance tests available at
+        // http://tests/ipc_performance
+        public const int ResponseSizeThreshold = 16384;
 
         public sealed class IdGeneratorInt32
         {

@@ -17,6 +17,9 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _run_context_menu;
         internal IntPtr _on_context_menu_command;
         internal IntPtr _on_context_menu_dismissed;
+        internal IntPtr _run_quick_menu;
+        internal IntPtr _on_quick_menu_command;
+        internal IntPtr _on_quick_menu_dismissed;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -65,6 +68,24 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_context_menu_dismissed_delegate(cef_context_menu_handler_t* self, cef_browser_t* browser, cef_frame_t* frame);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int run_quick_menu_delegate(cef_context_menu_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_point_t* location, cef_size_t* size, CefQuickMenuEditStateFlags edit_state_flags, cef_run_quick_menu_callback_t* callback);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int on_quick_menu_command_delegate(cef_context_menu_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, int command_id, CefEventFlags event_flags);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void on_quick_menu_dismissed_delegate(cef_context_menu_handler_t* self, cef_browser_t* browser, cef_frame_t* frame);
         
         private static int _sizeof;
         
