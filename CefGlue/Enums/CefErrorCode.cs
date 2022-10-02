@@ -1481,6 +1481,12 @@ namespace Xilium.CefGlue
         /// </summary>
         DNS_REQUEST_CANCELLED = -810,
 
+        /// <summary>
+        /// The hostname resolution of HTTPS record was expected to be resolved with
+        /// alpn values of supported protocols, but did not.
+        /// </summary>
+        DNS_NO_MACHING_SUPPORTED_ALPN = -811,
+
         // CefGlue backward compatiblity.
         // Generally we prefer .NET naming rules, but will care about later.
         // Clients very rarely use this codes directly in their code.

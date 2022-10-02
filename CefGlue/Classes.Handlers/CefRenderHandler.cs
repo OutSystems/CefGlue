@@ -51,8 +51,8 @@
         }
 
         /// <summary>
-        /// Called to retrieve the root window rectangle in screen coordinates. Return
-        /// true if the rectangle was provided. If this method returns false the
+        /// Called to retrieve the root window rectangle in screen DIP coordinates.
+        /// Return true if the rectangle was provided. If this method returns false the
         /// rectangle from GetViewRect will be used.
         /// </summary>
         protected virtual bool GetRootScreenRect(CefBrowser browser, ref CefRectangle rect)
@@ -78,8 +78,8 @@
         }
 
         /// <summary>
-        /// Called to retrieve the view rectangle which is relative to screen
-        /// coordinates. This method must always provide a non-empty rectangle.
+        /// Called to retrieve the view rectangle in screen DIP coordinates. This
+        /// method must always provide a non-empty rectangle.
         /// </summary>
         protected abstract void GetViewRect(CefBrowser browser, out CefRectangle rect);
 
@@ -105,8 +105,10 @@
         }
 
         /// <summary>
-        /// Called to retrieve the translation from view coordinates to actual screen
-        /// coordinates. Return true if the screen coordinates were provided.
+        /// Called to retrieve the translation from view DIP coordinates to screen
+        /// coordinates. Windows/Linux should provide screen device (pixel) coordinates
+        /// and MacOS should provide screen DIP coordinates. Return true if the
+        /// requested coordinates were provided.
         /// </summary>
         protected virtual bool GetScreenPoint(CefBrowser browser, int viewX, int viewY, ref int screenX, ref int screenY)
         {
