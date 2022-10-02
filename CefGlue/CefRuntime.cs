@@ -165,13 +165,13 @@
         /// This function should be called from the application entry point function to
         /// execute a secondary process. It can be used to run secondary processes from
         /// the browser client executable (default behavior) or from a separate
-        /// executable specified by the CefSettings.browser_subprocess_path value. If
+        /// executable specified by the cef_settings_t.browser_subprocess_path value. If
         /// called for the browser process (identified by no "type" command-line value)
         /// it will return immediately with a value of -1. If called for a recognized
-        /// secondary process it will block until the process should exit and then return
-        /// the process exit code. The |application| parameter may be empty. The
-        /// |windows_sandbox_info| parameter is only used on Windows and may be NULL (see
-        /// cef_sandbox_win.h for details).
+        /// secondary process it will block until the process should exit and then
+        /// return the process exit code. The |application| parameter may be empty. The
+        /// |windows_sandbox_info| parameter is only used on Windows and may be NULL
+        /// (see cef_sandbox_win.h for details).
         /// </summary>
         public static int ExecuteProcess(CefMainArgs args, CefApp application, IntPtr windowsSandboxInfo)
         {
@@ -200,9 +200,9 @@
         /// <summary>
         /// This function should be called on the main application thread to initialize
         /// the CEF browser process. The |application| parameter may be empty. A return
-        /// value of true indicates that it succeeded and false indicates that it failed.
-        /// The |windows_sandbox_info| parameter is only used on Windows and may be NULL
-        /// (see cef_sandbox_win.h for details).
+        /// value of true indicates that it succeeded and false indicates that it
+        /// failed. The |windows_sandbox_info| parameter is only used on Windows and may
+        /// be NULL (see cef_sandbox_win.h for details).
         /// </summary>
         public static void Initialize(CefMainArgs args, CefSettings settings, CefApp application, IntPtr windowsSandboxInfo)
         {
@@ -235,7 +235,7 @@
             }
         }
 
-        [Obsolete]
+        [Obsolete("Use Initialize(CefMainArgs,CefSettings,CefApp,IntPtr) overload instead.")]
         public static void Initialize(CefMainArgs args, CefSettings settings, CefApp application)
         {
             Initialize(args, settings, application, IntPtr.Zero);
@@ -261,13 +261,14 @@
         /// provided for cases where the CEF message loop must be integrated into an
         /// existing application message loop. Use of this function is not recommended
         /// for most users; use either the CefRunMessageLoop() function or
-        /// CefSettings.multi_threaded_message_loop if possible. When using this function
-        /// care must be taken to balance performance against excessive CPU usage. It is
-        /// recommended to enable the CefSettings.external_message_pump option when using
-        /// this function so that CefBrowserProcessHandler::OnScheduleMessagePumpWork()
-        /// callbacks can facilitate the scheduling process. This function should only be
-        /// called on the main application thread and only if CefInitialize() is called
-        /// with a CefSettings.multi_threaded_message_loop value of false. This function
+        /// cef_settings_t.multi_threaded_message_loop if possible. When using this
+        /// function care must be taken to balance performance against excessive CPU
+        /// usage. It is recommended to enable the cef_settings_t.external_message_pump
+        /// option when using this function so that
+        /// CefBrowserProcessHandler::OnScheduleMessagePumpWork() callbacks can
+        /// facilitate the scheduling process. This function should only be called on
+        /// the main application thread and only if CefInitialize() is called with a
+        /// cef_settings_t.multi_threaded_message_loop value of false. This function
         /// will not block.
         /// </summary>
         public static void DoMessageLoopWork()
@@ -278,10 +279,10 @@
         /// <summary>
         /// Run the CEF message loop. Use this function instead of an application-
         /// provided message loop to get the best balance between performance and CPU
-        /// usage. This function should only be called on the main application thread and
-        /// only if CefInitialize() is called with a
-        /// CefSettings.multi_threaded_message_loop value of false. This function will
-        /// block until a quit message is received by the system.
+        /// usage. This function should only be called on the main application thread
+        /// and only if CefInitialize() is called with a
+        /// cef_settings_t.multi_threaded_message_loop value of false. This function
+        /// will block until a quit message is received by the system.
         /// </summary>
         public static void RunMessageLoop()
         {
@@ -308,9 +309,9 @@
         }
 
         /// <summary>
-        /// Call during process startup to enable High-DPI support on Windows 7 or newer.
-        /// Older versions of Windows should be left DPI-unaware because they do not
-        /// support DirectWrite and GDI fonts are kerned very badly.
+        /// Call during process startup to enable High-DPI support on Windows 7 or
+        /// newer. Older versions of Windows should be left DPI-unaware because they do
+        /// not support DirectWrite and GDI fonts are kerned very badly.
         /// </summary>
         public static void EnableHighDpiSupport()
         {

@@ -26,8 +26,8 @@
         }
 
         /// <summary>
-        /// Returns true if this object is valid. Do not call any other methods if this
-        /// function returns false.
+        /// Returns true if this object is valid. Do not call any other methods if
+        /// this function returns false.
         /// </summary>
         public bool IsValid
         {

@@ -57,10 +57,10 @@
 
         /// <summary>
         /// Called to allow custom display of the context menu. |params| provides
-        /// information about the context menu state. |model| contains the context menu
-        /// model resulting from OnBeforeContextMenu. For custom display return true
-        /// and execute |callback| either synchronously or asynchronously with the
-        /// selected command ID. For default display return false. Do not keep
+        /// information about the context menu state. |model| contains the context
+        /// menu model resulting from OnBeforeContextMenu. For custom display return
+        /// true and execute |callback| either synchronously or asynchronously with
+        /// the selected command ID. For default display return false. Do not keep
         /// references to |params| or |model| outside of this callback.
         /// </summary>
         protected virtual bool RunContextMenu(CefBrowser browser, CefFrame frame, CefContextMenuParams parameters, CefMenuModel model, CefRunContextMenuCallback callback)
@@ -89,9 +89,9 @@
         /// the command was handled or false for the default implementation. See
         /// cef_menu_id_t for the command ids that have default implementations. All
         /// user-defined command ids should be between MENU_ID_USER_FIRST and
-        /// MENU_ID_USER_LAST. |params| will have the same values as what was passed to
-        /// OnBeforeContextMenu(). Do not keep a reference to |params| outside of this
-        /// callback.
+        /// MENU_ID_USER_LAST. |params| will have the same values as what was passed
+        /// to OnBeforeContextMenu(). Do not keep a reference to |params| outside of
+        /// this callback.
         /// </summary>
         protected virtual bool OnContextMenuCommand(CefBrowser browser, CefFrame frame, CefContextMenuParams state, int commandId, CefEventFlags eventFlags)
         {
@@ -140,9 +140,9 @@
         /// Called to allow custom display of the quick menu for a windowless browser.
         /// |location| is the top left corner of the selected region. |size| is the
         /// size of the selected region. |edit_state_flags| is a combination of flags
-        /// that represent the state of the quick menu. Return true if the menu will be
-        /// handled and execute |callback| either synchronously or asynchronously with
-        /// the selected command ID. Return false to cancel the menu.
+        /// that represent the state of the quick menu. Return true if the menu will
+        /// be handled and execute |callback| either synchronously or asynchronously
+        /// with the selected command ID. Return false to cancel the menu.
         /// </summary>
         protected virtual bool RunQuickMenu(CefBrowser browser, CefFrame frame, CefPoint location, CefSize size, CefQuickMenuEditStateFlags editStateFlags, CefRunQuickMenuCallback callback)
             => false;

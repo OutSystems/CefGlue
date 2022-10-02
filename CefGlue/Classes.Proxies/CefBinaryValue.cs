@@ -57,8 +57,8 @@
         }
 
         /// <summary>
-        /// Returns true if this object and |that| object have an equivalent underlying
-        /// value but are not necessarily the same object.
+        /// Returns true if this object and |that| object have an equivalent
+        /// underlying value but are not necessarily the same object.
         /// </summary>
         public bool IsEqual(CefBinaryValue that)
         {
@@ -66,7 +66,8 @@
         }
 
         /// <summary>
-        /// Returns a copy of this object. The data in this object will also be copied.
+        /// Returns a copy of this object. The data in this object will also be
+        /// copied.
         /// </summary>
         public CefBinaryValue Copy()
         {

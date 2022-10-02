@@ -7,8 +7,8 @@
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Class representing a V8 exception. The methods of this class may be called on
-    /// any render process thread.
+    /// Class representing a V8 exception. The methods of this class may be called
+    /// on any render process thread.
     /// </summary>
     public sealed unsafe partial class CefV8Exception
     {
@@ -50,8 +50,8 @@
         }
 
         /// <summary>
-        /// Returns the 1-based number of the line where the error occurred or 0 if the
-        /// line number is unknown.
+        /// Returns the 1-based number of the line where the error occurred or 0 if
+        /// the line number is unknown.
         /// </summary>
         public int LineNumber
         {

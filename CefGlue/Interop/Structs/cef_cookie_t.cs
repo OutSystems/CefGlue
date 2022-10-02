@@ -15,10 +15,10 @@ namespace Xilium.CefGlue.Interop
         public cef_string_t path;
         public int secure;
         public int httponly;
-        public cef_time_t creation;
-        public cef_time_t last_access;
+        public CefBaseTime creation;
+        public CefBaseTime last_access;
         public int has_expires;
-        public cef_time_t expires;
+        public CefBaseTime expires;
         public CefCookieSameSite same_site;
         public CefCookiePriority priority;
 

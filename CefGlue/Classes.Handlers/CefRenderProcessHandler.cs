@@ -43,7 +43,8 @@
         /// browser will be created before the old browser with the same identifier is
         /// destroyed. |extra_info| is an optional read-only value originating from
         /// CefBrowserHost::CreateBrowser(), CefBrowserHost::CreateBrowserSync(),
-        /// CefLifeSpanHandler::OnBeforePopup() or CefBrowserView::CreateBrowserView().
+        /// CefLifeSpanHandler::OnBeforePopup() or
+        /// CefBrowserView::CreateBrowserView().
         /// </summary>
         protected virtual void OnBrowserCreated(CefBrowser browser, CefDictionaryValue? extraInfo)
         {
@@ -144,7 +145,7 @@
         /// <summary>
         /// Called for global uncaught exceptions in a frame. Execution of this
         /// callback is disabled by default. To enable set
-        /// CefSettings.uncaught_exception_stack_size &gt; 0.
+        /// cef_settings_t.uncaught_exception_stack_size > 0.
         /// </summary>
         protected virtual void OnUncaughtException(CefBrowser browser, CefFrame frame, CefV8Context context, CefV8Exception exception, CefV8StackTrace stackTrace)
         {
@@ -193,8 +194,8 @@
         }
 
         /// <summary>
-        /// Called when a new message is received from a different process. Return true
-        /// if the message was handled or false otherwise. It is safe to keep a
+        /// Called when a new message is received from a different process. Return
+        /// true if the message was handled or false otherwise. It is safe to keep a
         /// reference to |message| outside of this callback.
         /// </summary>
         protected virtual bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)

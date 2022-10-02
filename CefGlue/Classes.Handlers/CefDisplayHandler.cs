@@ -167,10 +167,10 @@
         }
 
         /// <summary>
-        /// Called when auto-resize is enabled via CefBrowserHost::SetAutoResizeEnabled
-        /// and the contents have auto-resized. |new_size| will be the desired size in
-        /// view coordinates. Return true if the resize was handled or false for
-        /// default handling.
+        /// Called when auto-resize is enabled via
+        /// CefBrowserHost::SetAutoResizeEnabled and the contents have auto-resized.
+        /// |new_size| will be the desired size in view coordinates. Return true if
+        /// the resize was handled or false for default handling.
         /// </summary>
         protected virtual bool OnAutoResize(CefBrowser browser, ref CefSize newSize)
         {
@@ -209,7 +209,8 @@
         /// <summary>
         /// Called when the browser's cursor has changed. If |type| is CT_CUSTOM then
         /// |custom_cursor_info| will be populated with the custom cursor information.
-        /// Return true if the cursor change was handled or false for default handling.
+        /// Return true if the cursor change was handled or false for default
+        /// handling.
         /// </summary>
         protected virtual bool OnCursorChange(CefBrowser browser, IntPtr cursorHandle, CefCursorType type, CefCursorInfo customCursorInfo)
             => false;

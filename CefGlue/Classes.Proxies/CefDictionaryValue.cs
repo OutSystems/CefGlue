@@ -7,7 +7,8 @@
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Class representing a dictionary value. Can be used on any process and thread.
+    /// Class representing a dictionary value. Can be used on any process and
+    /// thread.
     /// </summary>
     public sealed unsafe partial class CefDictionaryValue
     {
@@ -60,8 +61,8 @@
         }
 
         /// <summary>
-        /// Returns true if this object and |that| object have an equivalent underlying
-        /// value but are not necessarily the same object.
+        /// Returns true if this object and |that| object have an equivalent
+        /// underlying value but are not necessarily the same object.
         /// </summary>
         public bool IsEqual(CefDictionaryValue that)
         {
@@ -69,8 +70,8 @@
         }
 
         /// <summary>
-        /// Returns a writable copy of this object. If |exclude_empty_children| is true
-        /// any empty dictionaries or lists will be excluded from the copy.
+        /// Returns a writable copy of this object. If |exclude_empty_children| is
+        /// true any empty dictionaries or lists will be excluded from the copy.
         /// </summary>
         public CefDictionaryValue Copy(bool excludeEmptyChildren)
         {
@@ -261,10 +262,10 @@
         /// <summary>
         /// Sets the value at the specified key. Returns true if the value was set
         /// successfully. If |value| represents simple data then the underlying data
-        /// will be copied and modifications to |value| will not modify this object. If
-        /// |value| represents complex data (binary, dictionary or list) then the
-        /// underlying data will be referenced and modifications to |value| will modify
-        /// this object.
+        /// will be copied and modifications to |value| will not modify this object.
+        /// If |value| represents complex data (binary, dictionary or list) then the
+        /// underlying data will be referenced and modifications to |value| will
+        /// modify this object.
         /// </summary>
         public bool SetValue(string key, CefValue value)
         {
@@ -346,10 +347,10 @@
 
         /// <summary>
         /// Sets the value at the specified key as type binary. Returns true if the
-        /// value was set successfully. If |value| is currently owned by another object
-        /// then the value will be copied and the |value| reference will not change.
-        /// Otherwise, ownership will be transferred to this object and the |value|
-        /// reference will be invalidated.
+        /// value was set successfully. If |value| is currently owned by another
+        /// object then the value will be copied and the |value| reference will not
+        /// change. Otherwise, ownership will be transferred to this object and the
+        /// |value| reference will be invalidated.
         /// </summary>
         public bool SetBinary(string key, CefBinaryValue value)
         {
@@ -365,10 +366,10 @@
 
         /// <summary>
         /// Sets the value at the specified key as type dict. Returns true if the
-        /// value was set successfully. If |value| is currently owned by another object
-        /// then the value will be copied and the |value| reference will not change.
-        /// Otherwise, ownership will be transferred to this object and the |value|
-        /// reference will be invalidated.
+        /// value was set successfully. If |value| is currently owned by another
+        /// object then the value will be copied and the |value| reference will not
+        /// change. Otherwise, ownership will be transferred to this object and the
+        /// |value| reference will be invalidated.
         /// </summary>
         public bool SetDictionary(string key, CefDictionaryValue value)
         {
@@ -383,10 +384,10 @@
 
         /// <summary>
         /// Sets the value at the specified key as type list. Returns true if the
-        /// value was set successfully. If |value| is currently owned by another object
-        /// then the value will be copied and the |value| reference will not change.
-        /// Otherwise, ownership will be transferred to this object and the |value|
-        /// reference will be invalidated.
+        /// value was set successfully. If |value| is currently owned by another
+        /// object then the value will be copied and the |value| reference will not
+        /// change. Otherwise, ownership will be transferred to this object and the
+        /// |value| reference will be invalidated.
         /// </summary>
         public bool SetList(string key, CefListValue value)
         {

@@ -72,8 +72,8 @@
         /// new tab, etc). The |user_gesture| value will be true if the browser
         /// navigated via explicit user gesture (e.g. clicking a link) or false if it
         /// navigated automatically (e.g. via the DomContentLoaded event). Return true
-        /// to cancel the navigation or false to allow the navigation to proceed in the
-        /// source browser's top-level frame.
+        /// to cancel the navigation or false to allow the navigation to proceed in
+        /// the source browser's top-level frame.
         /// </summary>
         protected virtual bool OnOpenUrlFromTab(CefBrowser browser, CefFrame frame, string targetUrl, CefWindowOpenDisposition targetDisposition, bool userGesture)
         {
@@ -104,8 +104,8 @@
         /// Called on the browser process IO thread before a resource request is
         /// initiated. The |browser| and |frame| values represent the source of the
         /// request. |request| represents the request contents and cannot be modified
-        /// in this callback. |is_navigation| will be true if the resource request is a
-        /// navigation. |is_download| will be true if the resource request is a
+        /// in this callback. |is_navigation| will be true if the resource request is
+        /// a navigation. |is_download| will be true if the resource request is a
         /// download. |request_initiator| is the origin (scheme + domain) of the page
         /// that initiated the request. Set |disable_default_handling| to true to
         /// disable default handling of the request, in which case it will need to be
@@ -197,9 +197,9 @@
         /// Called on the UI thread to handle requests for URLs with an invalid
         /// SSL certificate. Return true and call CefCallback methods either in this
         /// method or at a later time to continue or cancel the request. Return false
-        /// to cancel the request immediately. If CefSettings.ignore_certificate_errors
-        /// is set all invalid certificates will be accepted without calling this
-        /// method.
+        /// to cancel the request immediately. If
+        /// cef_settings_t.ignore_certificate_errors is set all invalid certificates
+        /// will be accepted without calling this method.
         /// </summary>
         protected virtual bool OnCertificateError(CefBrowser browser, CefErrorCode certError, string requestUrl, CefSslInfo sslInfo, CefCallback callback)
         {
@@ -239,12 +239,13 @@
         /// authentication. Return false to use the default behavior and automatically
         /// select the first certificate available. Return true and call
         /// CefSelectClientCertificateCallback::Select either in this method or at a
-        /// later time to select a certificate. Do not call Select or call it with NULL
-        /// to continue without using any certificate. |isProxy| indicates whether the
-        /// host is an HTTPS proxy or the origin server. |host| and |port| contains the
-        /// hostname and port of the SSL server. |certificates| is the list of
-        /// certificates to choose from; this list has already been pruned by Chromium
-        /// so that it only contains certificates from issuers that the server trusts.
+        /// later time to select a certificate. Do not call Select or call it with
+        /// NULL to continue without using any certificate. |isProxy| indicates
+        /// whether the host is an HTTPS proxy or the origin server. |host| and |port|
+        /// contains the hostname and port of the SSL server. |certificates| is the
+        /// list of certificates to choose from; this list has already been pruned by
+        /// Chromium so that it only contains certificates from issuers that the
+        /// server trusts.
         /// </summary>
         protected virtual bool OnSelectClientCertificate(CefBrowser browser, bool isProxy, string host, int port, CefX509Certificate[] certificates, CefSelectClientCertificateCallback callback)
         {

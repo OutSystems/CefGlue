@@ -13,8 +13,8 @@
     {
         /// <summary>
         /// Continue the file selection. |file_paths| should be a single value or a
-        /// list of values depending on the dialog mode. An empty |file_paths| value is
-        /// treated the same as calling Cancel().
+        /// list of values depending on the dialog mode. An empty |file_paths| value
+        /// is treated the same as calling Cancel().
         /// </summary>
         public void Continue(string[] filePaths)
         {

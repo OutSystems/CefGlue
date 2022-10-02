@@ -22,10 +22,10 @@
         }
 
         /// <summary>
-        /// Called when the browser component is about to loose focus. For instance, if
-        /// focus was on the last HTML element and the user pressed the TAB key. |next|
-        /// will be true if the browser is giving focus to the next component and false
-        /// if the browser is giving focus to the previous component.
+        /// Called when the browser component is about to loose focus. For instance,
+        /// if focus was on the last HTML element and the user pressed the TAB key.
+        /// |next| will be true if the browser is giving focus to the next component
+        /// and false if the browser is giving focus to the previous component.
         /// </summary>
         protected virtual void OnTakeFocus(CefBrowser browser, bool next)
         {

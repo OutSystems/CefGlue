@@ -34,35 +34,19 @@
 #include "include/internal/cef_types_win.h"
 #include "include/internal/cef_types_wrappers.h"
 
-///
 // Handle types.
-///
 #define CefCursorHandle cef_cursor_handle_t
 #define CefEventHandle cef_event_handle_t
 #define CefWindowHandle cef_window_handle_t
 
-struct CefMainArgsTraits {
-  typedef cef_main_args_t struct_type;
-
-  static inline void init(struct_type* s) {}
-  static inline void clear(struct_type* s) {}
-
-  static inline void set(const struct_type* src,
-                         struct_type* target,
-                         bool copy) {
-    target->instance = src->instance;
-  }
-};
-
-// Class representing CefExecuteProcess arguments.
-class CefMainArgs : public CefStructBase<CefMainArgsTraits> {
+///
+/// Class representing CefExecuteProcess arguments.
+///
+class CefMainArgs : public cef_main_args_t {
  public:
-  typedef CefStructBase<CefMainArgsTraits> parent;
-
-  CefMainArgs() : parent() {}
-  explicit CefMainArgs(const cef_main_args_t& r) : parent(r) {}
-  explicit CefMainArgs(const CefMainArgs& r) : parent(r) {}
-  explicit CefMainArgs(HINSTANCE hInstance) : parent() { instance = hInstance; }
+  CefMainArgs() : cef_main_args_t{} {}
+  CefMainArgs(const cef_main_args_t& r) : cef_main_args_t(r) {}
+  explicit CefMainArgs(HINSTANCE hInstance) : cef_main_args_t{hInstance} {}
 };
 
 struct CefWindowInfoTraits {
@@ -92,7 +76,7 @@ struct CefWindowInfoTraits {
 };
 
 ///
-// Class representing window information.
+/// Class representing window information.
 ///
 class CefWindowInfo : public CefStructBase<CefWindowInfoTraits> {
  public:
@@ -106,7 +90,7 @@ class CefWindowInfo : public CefStructBase<CefWindowInfoTraits> {
   CefWindowInfo& operator=(CefWindowInfo&&) = default;
 
   ///
-  // Create the browser as a child window.
+  /// Create the browser as a child window.
   ///
   void SetAsChild(CefWindowHandle parent, const CefRect& windowBounds) {
     style =
@@ -116,7 +100,7 @@ class CefWindowInfo : public CefStructBase<CefWindowInfoTraits> {
   }
 
   ///
-  // Create the browser as a popup window.
+  /// Create the browser as a popup window.
   ///
   void SetAsPopup(CefWindowHandle parent, const CefString& windowName) {
     style =
@@ -131,16 +115,16 @@ class CefWindowInfo : public CefStructBase<CefWindowInfoTraits> {
   }
 
   ///
-  // Create the browser using windowless (off-screen) rendering. No window
-  // will be created for the browser and all rendering will occur via the
-  // CefRenderHandler interface. The |parent| value will be used to identify
-  // monitor info and to act as the parent window for dialogs, context menus,
-  // etc. If |parent| is not provided then the main screen monitor will be used
-  // and some functionality that requires a parent window may not function
-  // correctly. In order to create windowless browsers the
-  // CefSettings.windowless_rendering_enabled value must be set to true.
-  // Transparent painting is enabled by default but can be disabled by setting
-  // CefBrowserSettings.background_color to an opaque value.
+  /// Create the browser using windowless (off-screen) rendering. No window
+  /// will be created for the browser and all rendering will occur via the
+  /// CefRenderHandler interface. The |parent| value will be used to identify
+  /// monitor info and to act as the parent window for dialogs, context menus,
+  /// etc. If |parent| is not provided then the main screen monitor will be used
+  /// and some functionality that requires a parent window may not function
+  /// correctly. In order to create windowless browsers the
+  /// CefSettings.windowless_rendering_enabled value must be set to true.
+  /// Transparent painting is enabled by default but can be disabled by setting
+  /// CefBrowserSettings.background_color to an opaque value.
   ///
   void SetAsWindowless(CefWindowHandle parent) {
     windowless_rendering_enabled = TRUE;

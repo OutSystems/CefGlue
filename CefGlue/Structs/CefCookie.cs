@@ -50,18 +50,18 @@
         /// The cookie creation date. This is automatically populated by the system on
         /// cookie creation.
         /// </summary>
-        public DateTime Creation { get; set; }
+        public CefBaseTime Creation { get; set; }
 
         /// <summary>
         /// The cookie last access date. This is automatically populated by the system
         /// on access.
         /// </summary>
-        public DateTime LastAccess { get; set; }
+        public CefBaseTime LastAccess { get; set; }
 
         /// <summary>
         /// The cookie expiration date.
         /// </summary>
-        public DateTime? Expires { get; set; }
+        public CefBaseTime? Expires { get; set; }
 
         /// <summary>
         /// Same site.
@@ -83,9 +83,9 @@
                     Path = cef_string_t.ToString(&ptr->path),
                     Secure = ptr->secure != 0,
                     HttpOnly = ptr->httponly != 0,
-                    Creation = cef_time_t.ToDateTime(&ptr->creation),
-                    LastAccess = cef_time_t.ToDateTime(&ptr->last_access),
-                    Expires = ptr->has_expires != 0 ? (DateTime?)cef_time_t.ToDateTime(&ptr->expires) : null,
+                    Creation = ptr->creation,
+                    LastAccess = ptr->last_access,
+                    Expires = ptr->has_expires != 0 ? ptr->expires : null,
                     SameSite = ptr->same_site,
                     Priority = ptr->priority,
                 };
@@ -101,10 +101,10 @@
             cef_string_t.Copy(Path, &ptr->path);
             ptr->secure = Secure ? 1 : 0;
             ptr->httponly = HttpOnly ? 1 : 0;
-            ptr->creation = new cef_time_t(Creation);
-            ptr->last_access = new cef_time_t(LastAccess);
+            ptr->creation = Creation;
+            ptr->last_access = LastAccess;
             ptr->has_expires = Expires != null ? 1 : 0;
-            ptr->expires = Expires != null ? new cef_time_t(Expires.Value) : new cef_time_t();
+            ptr->expires = Expires != null ? Expires.Value : default(CefBaseTime);
             ptr->same_site = SameSite;
             ptr->priority = Priority;
 

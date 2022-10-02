@@ -9,7 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 
-    <Version>104.4.26</Version>
+    <Version>105.3.39</Version>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
@@ -257,7 +257,6 @@
     <Compile Include="Interop\Structs\cef_screen_info_t.cs" />
     <Compile Include="Interop\Structs\cef_settings_t.cs" />
     <Compile Include="Interop\Structs\cef_size_t.cs" />
-    <Compile Include="Interop\Structs\cef_time_t.cs" />
     <Compile Include="Interop\Structs\cef_touch_event_t.cs" />
     <Compile Include="Interop\Structs\cef_urlparts_t.cs" />
     <Compile Include="Interop\Structs\cef_window_info_t.cs" />
@@ -270,6 +269,8 @@
     <Compile Include="Platform\Windows\WindowStylesEx.cs" />
     <Compile Include="StringHelper.cs" />
     <Compile Include="Structs\CefAudioParameters.cs" />
+    <Compile Include="Structs\CefTime.cs" />
+    <Compile Include="Structs\CefBaseTime.cs" />
     <Compile Include="Structs\CefBrowserSettings.cs" />
     <Compile Include="Structs\CefColor.cs" />
     <Compile Include="Structs\CefCompositionUnderline.cs" />

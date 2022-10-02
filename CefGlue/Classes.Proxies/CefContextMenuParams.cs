@@ -67,7 +67,8 @@
 
         /// <summary>
         /// Returns the source URL, if any, for the element that the context menu was
-        /// invoked on. Example of elements with source URLs are img, audio, and video.
+        /// invoked on. Example of elements with source URLs are img, audio, and
+        /// video.
         /// </summary>
         public string SourceUrl
         {
@@ -101,7 +102,8 @@
         }
 
         /// <summary>
-        /// Returns the URL of the top level page that the context menu was invoked on.
+        /// Returns the URL of the top level page that the context menu was invoked
+        /// on.
         /// </summary>
         public string PageUrl
         {

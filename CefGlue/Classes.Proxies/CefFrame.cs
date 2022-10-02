@@ -139,8 +139,8 @@
         /// Execute a string of JavaScript code in this frame. The |script_url|
         /// parameter is the URL where the script in question can be found, if any.
         /// The renderer may request this URL to show the developer the source of the
-        /// error.  The |start_line| parameter is the base line number to use for error
-        /// reporting.
+        /// error.  The |start_line| parameter is the base line number to use for
+        /// error reporting.
         /// </summary>
         public void ExecuteJavaScript(string code, string url, int line)
         {
@@ -173,8 +173,8 @@
         /// Returns the name for this frame. If the frame has an assigned name (for
         /// example, set via the iframe "name" attribute) then that value will be
         /// returned. Otherwise a unique name will be constructed based on the frame
-        /// parent hierarchy. The main (top-level) frame will always have an empty name
-        /// value.
+        /// parent hierarchy. The main (top-level) frame will always have an empty
+        /// name value.
         /// </summary>
         public string Name
         {
@@ -263,19 +263,20 @@
         /// frame and the associated browser. This request may be intercepted by the
         /// client via CefResourceRequestHandler or CefSchemeHandlerFactory. Use
         /// CefURLRequest::Create instead if you do not want the request to have this
-        /// association, in which case it may be handled differently (see documentation
-        /// on that method). Requests may originate from both the browser process and
-        /// the render process.
+        /// association, in which case it may be handled differently (see
+        /// documentation on that method). Requests may originate from both the
+        /// browser process and the render process.
         /// For requests originating from the browser process:
         /// - POST data may only contain a single element of type PDE_TYPE_FILE or
         /// PDE_TYPE_BYTES.
         /// For requests originating from the render process:
         /// - POST data may only contain a single element of type PDE_TYPE_BYTES.
-        /// - If the response contains Content-Disposition or Mime-Type header values
-        /// that would not normally be rendered then the response may receive
-        /// special handling inside the browser (for example, via the file download
-        /// code path instead of the URL request code path).
-        /// The |request| object will be marked as read-only after calling this method.
+        /// - If the response contains Content-Disposition or Mime-Type header
+        /// values that would not normally be rendered then the response may
+        /// receive special handling inside the browser (for example, via the
+        /// file download code path instead of the URL request code path).
+        /// The |request| object will be marked as read-only after calling this
+        /// method.
         /// </summary>
         public CefUrlRequest CreateUrlRequest(CefRequest request, CefUrlRequestClient client = null)
         {

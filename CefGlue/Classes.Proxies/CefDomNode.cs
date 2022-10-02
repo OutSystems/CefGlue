@@ -205,8 +205,9 @@
             }
         }
 
+        // The following methods are valid only for element nodes.
+
         /// <summary>
-        /// The following methods are valid only for element nodes.
         /// Returns the tag name of this element.
         /// </summary>
         public string ElementTagName

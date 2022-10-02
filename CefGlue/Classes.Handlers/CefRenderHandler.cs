@@ -52,8 +52,8 @@
 
         /// <summary>
         /// Called to retrieve the root window rectangle in screen DIP coordinates.
-        /// Return true if the rectangle was provided. If this method returns false the
-        /// rectangle from GetViewRect will be used.
+        /// Return true if the rectangle was provided. If this method returns false
+        /// the rectangle from GetViewRect will be used.
         /// </summary>
         protected virtual bool GetRootScreenRect(CefBrowser browser, ref CefRectangle rect)
         {
@@ -106,9 +106,9 @@
 
         /// <summary>
         /// Called to retrieve the translation from view DIP coordinates to screen
-        /// coordinates. Windows/Linux should provide screen device (pixel) coordinates
-        /// and MacOS should provide screen DIP coordinates. Return true if the
-        /// requested coordinates were provided.
+        /// coordinates. Windows/Linux should provide screen device (pixel)
+        /// coordinates and MacOS should provide screen DIP coordinates. Return true
+        /// if the requested coordinates were provided.
         /// </summary>
         protected virtual bool GetScreenPoint(CefBrowser browser, int viewX, int viewY, ref int screenX, ref int screenY)
         {
@@ -207,10 +207,10 @@
         /// CefScreenInfo.device_scale_factor returned from GetScreenInfo. |type|
         /// indicates whether the element is the view or the popup widget. |buffer|
         /// contains the pixel data for the whole image. |dirtyRects| contains the set
-        /// of rectangles in pixel coordinates that need to be repainted. |buffer| will
-        /// be |width|*|height|*4 bytes in size and represents a BGRA image with an
-        /// upper-left origin. This method is only called when CefWindowInfo::SharedTextureEnabled
-        /// is set to false.
+        /// of rectangles in pixel coordinates that need to be repainted. |buffer|
+        /// will be |width|*|height|*4 bytes in size and represents a BGRA image with
+        /// an upper-left origin. This method is only called when
+        /// CefWindowInfo::shared_texture_enabled is set to false.
         /// </summary>
         protected abstract void OnPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr buffer, int width, int height);
 

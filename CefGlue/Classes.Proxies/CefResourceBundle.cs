@@ -9,9 +9,9 @@
     /// <summary>
     /// Class used for retrieving resources from the resource bundle (*.pak) files
     /// loaded by CEF during startup or via the CefResourceBundleHandler returned
-    /// from CefApp::GetResourceBundleHandler. See CefSettings for additional options
-    /// related to resource bundle loading. The methods of this class may be called
-    /// on any thread unless otherwise indicated.
+    /// from CefApp::GetResourceBundleHandler. See CefSettings for additional
+    /// options related to resource bundle loading. The methods of this class may be
+    /// called on any thread unless otherwise indicated.
     /// </summary>
     public sealed unsafe partial class CefResourceBundle
     {

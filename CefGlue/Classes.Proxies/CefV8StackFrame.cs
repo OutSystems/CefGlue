@@ -72,8 +72,8 @@
         }
 
         /// <summary>
-        /// Returns the 1-based column offset on the line for the function call or 0 if
-        /// unknown.
+        /// Returns the 1-based column offset on the line for the function call or 0
+        /// if unknown.
         /// </summary>
         public int Column
         {

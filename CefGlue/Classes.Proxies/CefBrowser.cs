@@ -96,8 +96,8 @@
         }
 
         /// <summary>
-        /// Returns the globally unique identifier for this browser. This value is also
-        /// used as the tabId for extension APIs.
+        /// Returns the globally unique identifier for this browser. This value is
+        /// also used as the tabId for extension APIs.
         /// </summary>
         public int Identifier
         {

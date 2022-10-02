@@ -114,7 +114,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int get_count_delegate(cef_menu_model_t* self);
+        private delegate UIntPtr get_count_delegate(cef_menu_model_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -150,31 +150,31 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int insert_separator_at_delegate(cef_menu_model_t* self, int index);
+        private delegate int insert_separator_at_delegate(cef_menu_model_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int insert_item_at_delegate(cef_menu_model_t* self, int index, int command_id, cef_string_t* label);
+        private delegate int insert_item_at_delegate(cef_menu_model_t* self, UIntPtr index, int command_id, cef_string_t* label);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int insert_check_item_at_delegate(cef_menu_model_t* self, int index, int command_id, cef_string_t* label);
+        private delegate int insert_check_item_at_delegate(cef_menu_model_t* self, UIntPtr index, int command_id, cef_string_t* label);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int insert_radio_item_at_delegate(cef_menu_model_t* self, int index, int command_id, cef_string_t* label, int group_id);
+        private delegate int insert_radio_item_at_delegate(cef_menu_model_t* self, UIntPtr index, int command_id, cef_string_t* label, int group_id);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_menu_model_t* insert_sub_menu_at_delegate(cef_menu_model_t* self, int index, int command_id, cef_string_t* label);
+        private delegate cef_menu_model_t* insert_sub_menu_at_delegate(cef_menu_model_t* self, UIntPtr index, int command_id, cef_string_t* label);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -186,7 +186,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int remove_at_delegate(cef_menu_model_t* self, int index);
+        private delegate int remove_at_delegate(cef_menu_model_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -198,13 +198,13 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int get_command_id_at_delegate(cef_menu_model_t* self, int index);
+        private delegate int get_command_id_at_delegate(cef_menu_model_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_command_id_at_delegate(cef_menu_model_t* self, int index, int command_id);
+        private delegate int set_command_id_at_delegate(cef_menu_model_t* self, UIntPtr index, int command_id);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -216,7 +216,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_string_userfree* get_label_at_delegate(cef_menu_model_t* self, int index);
+        private delegate cef_string_userfree* get_label_at_delegate(cef_menu_model_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -228,7 +228,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_label_at_delegate(cef_menu_model_t* self, int index, cef_string_t* label);
+        private delegate int set_label_at_delegate(cef_menu_model_t* self, UIntPtr index, cef_string_t* label);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -240,7 +240,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate CefMenuItemType get_type_at_delegate(cef_menu_model_t* self, int index);
+        private delegate CefMenuItemType get_type_at_delegate(cef_menu_model_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -252,7 +252,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int get_group_id_at_delegate(cef_menu_model_t* self, int index);
+        private delegate int get_group_id_at_delegate(cef_menu_model_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -264,7 +264,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_group_id_at_delegate(cef_menu_model_t* self, int index, int group_id);
+        private delegate int set_group_id_at_delegate(cef_menu_model_t* self, UIntPtr index, int group_id);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -276,7 +276,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_menu_model_t* get_sub_menu_at_delegate(cef_menu_model_t* self, int index);
+        private delegate cef_menu_model_t* get_sub_menu_at_delegate(cef_menu_model_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -288,7 +288,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int is_visible_at_delegate(cef_menu_model_t* self, int index);
+        private delegate int is_visible_at_delegate(cef_menu_model_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -300,7 +300,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_visible_at_delegate(cef_menu_model_t* self, int index, int visible);
+        private delegate int set_visible_at_delegate(cef_menu_model_t* self, UIntPtr index, int visible);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -312,7 +312,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int is_enabled_at_delegate(cef_menu_model_t* self, int index);
+        private delegate int is_enabled_at_delegate(cef_menu_model_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -324,7 +324,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_enabled_at_delegate(cef_menu_model_t* self, int index, int enabled);
+        private delegate int set_enabled_at_delegate(cef_menu_model_t* self, UIntPtr index, int enabled);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -336,7 +336,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int is_checked_at_delegate(cef_menu_model_t* self, int index);
+        private delegate int is_checked_at_delegate(cef_menu_model_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -348,7 +348,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_checked_at_delegate(cef_menu_model_t* self, int index, int @checked);
+        private delegate int set_checked_at_delegate(cef_menu_model_t* self, UIntPtr index, int @checked);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -360,7 +360,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int has_accelerator_at_delegate(cef_menu_model_t* self, int index);
+        private delegate int has_accelerator_at_delegate(cef_menu_model_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -372,7 +372,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_accelerator_at_delegate(cef_menu_model_t* self, int index, int key_code, int shift_pressed, int ctrl_pressed, int alt_pressed);
+        private delegate int set_accelerator_at_delegate(cef_menu_model_t* self, UIntPtr index, int key_code, int shift_pressed, int ctrl_pressed, int alt_pressed);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -384,7 +384,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int remove_accelerator_at_delegate(cef_menu_model_t* self, int index);
+        private delegate int remove_accelerator_at_delegate(cef_menu_model_t* self, UIntPtr index);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -396,7 +396,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int get_accelerator_at_delegate(cef_menu_model_t* self, int index, int* key_code, int* shift_pressed, int* ctrl_pressed, int* alt_pressed);
+        private delegate int get_accelerator_at_delegate(cef_menu_model_t* self, UIntPtr index, int* key_code, int* shift_pressed, int* ctrl_pressed, int* alt_pressed);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -540,7 +540,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p6;
         private static get_count_delegate _d6;
         
-        public static int get_count(cef_menu_model_t* self)
+        public static UIntPtr get_count(cef_menu_model_t* self)
         {
             get_count_delegate d;
             var p = self->_get_count;
@@ -642,7 +642,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pc;
         private static insert_separator_at_delegate _dc;
         
-        public static int insert_separator_at(cef_menu_model_t* self, int index)
+        public static int insert_separator_at(cef_menu_model_t* self, UIntPtr index)
         {
             insert_separator_at_delegate d;
             var p = self->_insert_separator_at;
@@ -659,7 +659,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pd;
         private static insert_item_at_delegate _dd;
         
-        public static int insert_item_at(cef_menu_model_t* self, int index, int command_id, cef_string_t* label)
+        public static int insert_item_at(cef_menu_model_t* self, UIntPtr index, int command_id, cef_string_t* label)
         {
             insert_item_at_delegate d;
             var p = self->_insert_item_at;
@@ -676,7 +676,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pe;
         private static insert_check_item_at_delegate _de;
         
-        public static int insert_check_item_at(cef_menu_model_t* self, int index, int command_id, cef_string_t* label)
+        public static int insert_check_item_at(cef_menu_model_t* self, UIntPtr index, int command_id, cef_string_t* label)
         {
             insert_check_item_at_delegate d;
             var p = self->_insert_check_item_at;
@@ -693,7 +693,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pf;
         private static insert_radio_item_at_delegate _df;
         
-        public static int insert_radio_item_at(cef_menu_model_t* self, int index, int command_id, cef_string_t* label, int group_id)
+        public static int insert_radio_item_at(cef_menu_model_t* self, UIntPtr index, int command_id, cef_string_t* label, int group_id)
         {
             insert_radio_item_at_delegate d;
             var p = self->_insert_radio_item_at;
@@ -710,7 +710,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p10;
         private static insert_sub_menu_at_delegate _d10;
         
-        public static cef_menu_model_t* insert_sub_menu_at(cef_menu_model_t* self, int index, int command_id, cef_string_t* label)
+        public static cef_menu_model_t* insert_sub_menu_at(cef_menu_model_t* self, UIntPtr index, int command_id, cef_string_t* label)
         {
             insert_sub_menu_at_delegate d;
             var p = self->_insert_sub_menu_at;
@@ -744,7 +744,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p12;
         private static remove_at_delegate _d12;
         
-        public static int remove_at(cef_menu_model_t* self, int index)
+        public static int remove_at(cef_menu_model_t* self, UIntPtr index)
         {
             remove_at_delegate d;
             var p = self->_remove_at;
@@ -778,7 +778,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p14;
         private static get_command_id_at_delegate _d14;
         
-        public static int get_command_id_at(cef_menu_model_t* self, int index)
+        public static int get_command_id_at(cef_menu_model_t* self, UIntPtr index)
         {
             get_command_id_at_delegate d;
             var p = self->_get_command_id_at;
@@ -795,7 +795,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p15;
         private static set_command_id_at_delegate _d15;
         
-        public static int set_command_id_at(cef_menu_model_t* self, int index, int command_id)
+        public static int set_command_id_at(cef_menu_model_t* self, UIntPtr index, int command_id)
         {
             set_command_id_at_delegate d;
             var p = self->_set_command_id_at;
@@ -829,7 +829,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p17;
         private static get_label_at_delegate _d17;
         
-        public static cef_string_userfree* get_label_at(cef_menu_model_t* self, int index)
+        public static cef_string_userfree* get_label_at(cef_menu_model_t* self, UIntPtr index)
         {
             get_label_at_delegate d;
             var p = self->_get_label_at;
@@ -863,7 +863,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p19;
         private static set_label_at_delegate _d19;
         
-        public static int set_label_at(cef_menu_model_t* self, int index, cef_string_t* label)
+        public static int set_label_at(cef_menu_model_t* self, UIntPtr index, cef_string_t* label)
         {
             set_label_at_delegate d;
             var p = self->_set_label_at;
@@ -897,7 +897,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1b;
         private static get_type_at_delegate _d1b;
         
-        public static CefMenuItemType get_type_at(cef_menu_model_t* self, int index)
+        public static CefMenuItemType get_type_at(cef_menu_model_t* self, UIntPtr index)
         {
             get_type_at_delegate d;
             var p = self->_get_type_at;
@@ -931,7 +931,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1d;
         private static get_group_id_at_delegate _d1d;
         
-        public static int get_group_id_at(cef_menu_model_t* self, int index)
+        public static int get_group_id_at(cef_menu_model_t* self, UIntPtr index)
         {
             get_group_id_at_delegate d;
             var p = self->_get_group_id_at;
@@ -965,7 +965,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1f;
         private static set_group_id_at_delegate _d1f;
         
-        public static int set_group_id_at(cef_menu_model_t* self, int index, int group_id)
+        public static int set_group_id_at(cef_menu_model_t* self, UIntPtr index, int group_id)
         {
             set_group_id_at_delegate d;
             var p = self->_set_group_id_at;
@@ -999,7 +999,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p21;
         private static get_sub_menu_at_delegate _d21;
         
-        public static cef_menu_model_t* get_sub_menu_at(cef_menu_model_t* self, int index)
+        public static cef_menu_model_t* get_sub_menu_at(cef_menu_model_t* self, UIntPtr index)
         {
             get_sub_menu_at_delegate d;
             var p = self->_get_sub_menu_at;
@@ -1033,7 +1033,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p23;
         private static is_visible_at_delegate _d23;
         
-        public static int is_visible_at(cef_menu_model_t* self, int index)
+        public static int is_visible_at(cef_menu_model_t* self, UIntPtr index)
         {
             is_visible_at_delegate d;
             var p = self->_is_visible_at;
@@ -1067,7 +1067,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p25;
         private static set_visible_at_delegate _d25;
         
-        public static int set_visible_at(cef_menu_model_t* self, int index, int visible)
+        public static int set_visible_at(cef_menu_model_t* self, UIntPtr index, int visible)
         {
             set_visible_at_delegate d;
             var p = self->_set_visible_at;
@@ -1101,7 +1101,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p27;
         private static is_enabled_at_delegate _d27;
         
-        public static int is_enabled_at(cef_menu_model_t* self, int index)
+        public static int is_enabled_at(cef_menu_model_t* self, UIntPtr index)
         {
             is_enabled_at_delegate d;
             var p = self->_is_enabled_at;
@@ -1135,7 +1135,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p29;
         private static set_enabled_at_delegate _d29;
         
-        public static int set_enabled_at(cef_menu_model_t* self, int index, int enabled)
+        public static int set_enabled_at(cef_menu_model_t* self, UIntPtr index, int enabled)
         {
             set_enabled_at_delegate d;
             var p = self->_set_enabled_at;
@@ -1169,7 +1169,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p2b;
         private static is_checked_at_delegate _d2b;
         
-        public static int is_checked_at(cef_menu_model_t* self, int index)
+        public static int is_checked_at(cef_menu_model_t* self, UIntPtr index)
         {
             is_checked_at_delegate d;
             var p = self->_is_checked_at;
@@ -1203,7 +1203,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p2d;
         private static set_checked_at_delegate _d2d;
         
-        public static int set_checked_at(cef_menu_model_t* self, int index, int @checked)
+        public static int set_checked_at(cef_menu_model_t* self, UIntPtr index, int @checked)
         {
             set_checked_at_delegate d;
             var p = self->_set_checked_at;
@@ -1237,7 +1237,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p2f;
         private static has_accelerator_at_delegate _d2f;
         
-        public static int has_accelerator_at(cef_menu_model_t* self, int index)
+        public static int has_accelerator_at(cef_menu_model_t* self, UIntPtr index)
         {
             has_accelerator_at_delegate d;
             var p = self->_has_accelerator_at;
@@ -1271,7 +1271,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p31;
         private static set_accelerator_at_delegate _d31;
         
-        public static int set_accelerator_at(cef_menu_model_t* self, int index, int key_code, int shift_pressed, int ctrl_pressed, int alt_pressed)
+        public static int set_accelerator_at(cef_menu_model_t* self, UIntPtr index, int key_code, int shift_pressed, int ctrl_pressed, int alt_pressed)
         {
             set_accelerator_at_delegate d;
             var p = self->_set_accelerator_at;
@@ -1305,7 +1305,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p33;
         private static remove_accelerator_at_delegate _d33;
         
-        public static int remove_accelerator_at(cef_menu_model_t* self, int index)
+        public static int remove_accelerator_at(cef_menu_model_t* self, UIntPtr index)
         {
             remove_accelerator_at_delegate d;
             var p = self->_remove_accelerator_at;
@@ -1339,7 +1339,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p35;
         private static get_accelerator_at_delegate _d35;
         
-        public static int get_accelerator_at(cef_menu_model_t* self, int index, int* key_code, int* shift_pressed, int* ctrl_pressed, int* alt_pressed)
+        public static int get_accelerator_at(cef_menu_model_t* self, UIntPtr index, int* key_code, int* shift_pressed, int* ctrl_pressed, int* alt_pressed)
         {
             get_accelerator_at_delegate d;
             var p = self->_get_accelerator_at;

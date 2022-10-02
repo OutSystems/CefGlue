@@ -10,8 +10,8 @@
     /// Class representing a V8 context handle. V8 handles can only be accessed from
     /// the thread on which they are created. Valid threads for creating a V8 handle
     /// include the render process main thread (TID_RENDERER) and WebWorker threads.
-    /// A task runner for posting tasks on the associated thread can be retrieved via
-    /// the CefV8Context::GetTaskRunner() method.
+    /// A task runner for posting tasks on the associated thread can be retrieved
+    /// via the CefV8Context::GetTaskRunner() method.
     /// </summary>
     public sealed unsafe partial class CefV8Context
     {
@@ -133,11 +133,12 @@
         /// Execute a string of JavaScript code in this V8 context. The |script_url|
         /// parameter is the URL where the script in question can be found, if any.
         /// The |start_line| parameter is the base line number to use for error
-        /// reporting. On success |retval| will be set to the return value, if any, and
-        /// the function will return true. On failure |exception| will be set to the
-        /// exception, if any, and the function will return false.
+        /// reporting. On success |retval| will be set to the return value, if any,
+        /// and the function will return true. On failure |exception| will be set to
+        /// the exception, if any, and the function will return false.
         /// </summary>
-        public bool TryEval(string code, string scriptUrl, int startLine, out CefV8Value returnValue, out CefV8Exception exception)
+        public bool TryEval(string code, string scriptUrl, int startLine,
+            out CefV8Value? returnValue, out CefV8Exception? exception)
         {
             bool result;
             cef_v8value_t* n_retval = null;
@@ -151,8 +152,8 @@
                 result = cef_v8context_t.eval(_self, &n_code, &n_scriptUrl, startLine, &n_retval, &n_exception) != 0;
             }
 
-            returnValue = n_retval != null ? CefV8Value.FromNative(n_retval) : null;
-            exception = n_exception != null ? CefV8Exception.FromNative(n_exception) : null;
+            returnValue = CefV8Value.FromNativeOrNull(n_retval);
+            exception = CefV8Exception.FromNativeOrNull(n_exception);
 
             return result;
         }

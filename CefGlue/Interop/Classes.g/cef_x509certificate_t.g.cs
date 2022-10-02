@@ -70,13 +70,13 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_time_t get_valid_start_delegate(cef_x509certificate_t* self);
+        private delegate CefBaseTime get_valid_start_delegate(cef_x509certificate_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_time_t get_valid_expiry_delegate(cef_x509certificate_t* self);
+        private delegate CefBaseTime get_valid_expiry_delegate(cef_x509certificate_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -231,7 +231,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p7;
         private static get_valid_start_delegate _d7;
         
-        public static cef_time_t get_valid_start(cef_x509certificate_t* self)
+        public static CefBaseTime get_valid_start(cef_x509certificate_t* self)
         {
             get_valid_start_delegate d;
             var p = self->_get_valid_start;
@@ -248,7 +248,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p8;
         private static get_valid_expiry_delegate _d8;
         
-        public static cef_time_t get_valid_expiry(cef_x509certificate_t* self)
+        public static CefBaseTime get_valid_expiry(cef_x509certificate_t* self)
         {
             get_valid_expiry_delegate d;
             var p = self->_get_valid_expiry;

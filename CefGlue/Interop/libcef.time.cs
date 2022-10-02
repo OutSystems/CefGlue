@@ -12,6 +12,15 @@ namespace Xilium.CefGlue.Interop
 
     internal static unsafe partial class libcef
     {
+        [DllImport(DllName, EntryPoint = "cef_basetime_now", CallingConvention = CEF_CALL)]
+        public static extern CefBaseTime basetime_now();
+
+        [DllImport(DllName, EntryPoint = "cef_time_to_basetime", CallingConvention = CEF_CALL)]
+        public static extern int time_to_basetime(in CefTime from, out CefBaseTime to);
+
+        [DllImport(DllName, EntryPoint = "cef_time_from_basetime", CallingConvention = CEF_CALL)]
+        public static extern int time_from_basetime(CefBaseTime from, out CefTime to);
+
         /*
         ///
         // Converts cef_time_t to/from time_t. Returns true (1) on success and false (0)
