@@ -1,12 +1,10 @@
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Xilium.CefGlue;
-using Xilium.CefGlue.Common.Shared.Serialization;
 using static Xilium.CefGlue.Common.Shared.Serialization.CefValueSerialization;
 
 namespace CefGlue.Tests.Serialization
@@ -39,7 +37,11 @@ namespace CefGlue.Tests.Serialization
         private static void AssertSerialization(object value, CefValueType valueType)
         {
             var obtainedValue = SerializeAndDeserialize(value, out var obtainedValueType);
-            Assert.AreEqual(value, obtainedValue);
+            // Lists are deserialized as object arrays and not as the serialized type
+            var expectedValue = value is IList
+                ? ((IList)value).Cast<object>().ToArray()
+                : value;
+            Assert.AreEqual(expectedValue, obtainedValue);
             Assert.AreEqual(valueType, obtainedValueType);
         }
 
@@ -171,8 +173,9 @@ namespace CefGlue.Tests.Serialization
 
             object obtainedValue = null;
             Assert.DoesNotThrow(() => obtainedValue = SerializeAndDeserialize(list, out var _));
-            Assert.IsInstanceOf<List<object>>(obtainedValue);
-            Assert.AreSame(obtainedValue,((List<object>)obtainedValue).First());
+            // List<object> are deserialized as object arrays
+            Assert.IsInstanceOf<object[]>(obtainedValue);
+            Assert.AreSame(obtainedValue,((object[])obtainedValue).First());
         }
 
         [Test]

@@ -12,6 +12,23 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         private const string JsonAttributeRefPropName = "$ref";
         private const string JsonAttributeValuesPropName = "$values";
 
+        private class ReadState
+        {
+            public ReadState(string propertyName, int? arrayIndex, bool hasReference, object objectHolder)
+            {
+                PropertyName = propertyName;
+                ArrayIndex = arrayIndex;
+                HasReference = hasReference;
+                ObjectHolder = objectHolder;
+            }
+
+            public readonly bool HasReference;
+            public readonly object ObjectHolder;
+
+            public string PropertyName;
+            public int? ArrayIndex;
+        }
+
         public override bool CanConvert(Type typeToConvert)
         {
             return true;
@@ -19,19 +36,16 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
         public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            string? propertyName = null;
-            string? previousPropertyName = null;
-            var objectsStack = new Stack<object>();
+            var stateStack = new Stack<ReadState>();
             var root = new object[1];
-            var arraysIndexesStack = new Stack<int>();
-            var objectReferences = new Dictionary<string, object>();
-            arraysIndexesStack.Push(0);
-            objectsStack.Push(root);
+            var referencesMap = new Dictionary<string, object>();
+
+            stateStack.Push(new ReadState(null, 0, false, root));
 
             do
             {
                 object value = null;
-                var currentObject = objectsStack.Peek();
+                var currentState = stateStack.Peek();
 
                 switch (reader.TokenType)
                 {
@@ -40,9 +54,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                         break;
 
                     case JsonTokenType.Number:
-                        value = reader.TryGetInt64(out var number)
-                            ? number
-                            : (object)reader.GetDouble();
+                        value = reader.GetNumber();
                         break;
 
                     case JsonTokenType.String:
@@ -73,69 +85,38 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                         break;
 
                     case JsonTokenType.PropertyName:
-                        previousPropertyName = propertyName;
-                        propertyName = reader.GetString();
+                        currentState.PropertyName = reader.GetString();
                         continue;
 
                     case JsonTokenType.StartArray:
-                        if (propertyName == JsonAttributeValuesPropName)
-                        {
-                            // entering here means that a pattern such as "{$id"="N","$values=[...]}" was found
-                            // which means that the array (in this case List<object>) was already set in the StartObject token
-                            // as such, disregard and continue
-                            propertyName = null;
-                            continue;
-                        }
                         value = new object[PeekAndCalculateArraySize(reader)];
-                        objectsStack.Push(value);
+                        stateStack.Push(new ReadState(null, 0, false, value));
                         break;
 
                     case JsonTokenType.EndArray:
-                        // check if the popped obj is a List<object>
-                        // for which case, the pop will happen in the EndObject, since the StartArray didn't push any new Array instance
-                        if (objectsStack.Peek() is List<object>)
+                        if (!currentState.HasReference)
                         {
-                            continue;
+                            stateStack.Pop();
                         }
-
-                        objectsStack.Pop();
-                        arraysIndexesStack.Pop();
                         continue;
 
                     case JsonTokenType.StartObject:
-                        if (PeekAndCheckIfIsListOfObject(reader, objectReferences, out var referencedObject))
-                        {
-                            // if the referencedObject is returned, it means it found a {"$ref"="N"}
-                            // so, read through both values ("$ref" and "N") and proceed
-                            if (referencedObject != null)
-                            {
-                                reader.Read();
-                                reader.Read();
-                            }
-                            value = referencedObject ?? new List<object>();
-                        }
-                        else
+                        if (!HandleReferences(ref reader, referencesMap, out value, out var isNewArray))
                         {
                             value = new Dictionary<string, object>();
                         }
-                        objectsStack.Push(value);
+                        stateStack.Push(new ReadState(null, isNewArray ? 0 : null, true, value));
                         break;
 
                     case JsonTokenType.EndObject:
-                        propertyName = null;
-                        objectsStack.Pop();
+                        stateStack.Pop();
                         continue;
                 }
 
-                SetObjectPropertyOrArrayIndex(objectReferences, currentObject, arraysIndexesStack, ref propertyName, ref previousPropertyName, value);
-
-                if (reader.TokenType == JsonTokenType.StartArray)
-                {
-                    arraysIndexesStack.Push(0);
-                }
+                SetObjectPropertyOrArrayIndex(currentState, value);
             } while (reader.Read());
 
-            if (objectsStack.Count > 1 && objectsStack.Pop() != root)
+            if (stateStack.Count > 1 && stateStack.Pop().ObjectHolder != root)
             {
                 throw new InvalidOperationException();
             }
@@ -144,188 +125,83 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         }
 
         private static void SetObjectPropertyOrArrayIndex(
-            Dictionary<string, object> objectReferences,
-            object obj,
-            Stack<int> arraysIndexesStack,
-            ref string? propertyName,
-            ref string? previousPropertyName,
+            ReadState state,
             object value)
         {
-            if (propertyName != null)
+            var obj = state.ObjectHolder;
+            if (state.PropertyName != null)
             {
-                SetObjectProperty(objectReferences, obj, ref propertyName, ref previousPropertyName, value);
+                ((Dictionary<string, object>)obj)[state.PropertyName] = value;
             }
-            else if (obj is object[] array)
+            else if (state.ArrayIndex != null)
             {
-                var arrayIndex = arraysIndexesStack.Pop();
-                array[arrayIndex] = value;
-                arraysIndexesStack.Push(++arrayIndex);
-            }
-            else if (obj is List<object> list)
-            {
-                list.Add(value);
+                ((object[])obj)[state.ArrayIndex.Value] = value;
+                state.ArrayIndex++;
             }
         }
 
-        private static void SetObjectProperty(
-            Dictionary<string, object> objectReferences,
-            object obj,
-            ref string propertyName,
-            ref string? previousPropertyName,
-            object value)
+        private bool HandleReferences(ref Utf8JsonReader reader, Dictionary<string, object> referencesMap, out object value, out bool isNewArray)
         {
-            if (propertyName == JsonAttributeIdPropName)
+            isNewArray = false;
+            var tempReader = reader;
+            tempReader.ReadToken(JsonTokenType.StartObject);
+            var propName = tempReader.ReadPropertyName();
+
+            var isId = propName == JsonAttributeIdPropName;
+            var isRef = !isId && propName == JsonAttributeRefPropName;
+            if (!isId && !isRef)
             {
-                // check the "$id" value
-                if (string.IsNullOrEmpty(value as string))
-                {
-                    throw new JsonException("Object id expected!");
-                }
-
-                if (objectReferences.ContainsKey((string)value))
-                {
-                    throw new JsonException("Duplicate reference id found!");
-                }
-
-                objectReferences.Add((string)value, obj);
-                propertyName = null;
-
-                return;
+                value = null;
+                return false;
             }
 
-            if (propertyName == JsonAttributeRefPropName)
+            reader.Read(); // StartObject
+            reader.Read(); // PropertyName
+            var objId = reader.GetString();
+
+            if (isRef)
             {
-                throw new InvalidOperationException();
+                value = referencesMap[objId];
+                return true;
             }
 
-            if (propertyName == JsonAttributeValuesPropName)
+            // it's $id="N"
+            // check if it's followed by $values=[...]
+            tempReader.Read(); // $id Value
+            propName = tempReader.ReadPropertyName();
+            if (propName == JsonAttributeValuesPropName)
             {
-                throw new InvalidOperationException();
+                reader.Read(); // objId
+                reader.Read(); // $values PropertyName
+                value = new object[PeekAndCalculateArraySize(reader)];
+                isNewArray = true;
             }
-
-            ((Dictionary<string, object>)obj)[propertyName] = value;
-            propertyName = null;
+            else
+            {
+                value = new Dictionary<string, object>();
+            }
+            referencesMap.Add(objId, value);
+            return true;
         }
 
         private int PeekAndCalculateArraySize(Utf8JsonReader reader)
         {
-            if (reader.TokenType != JsonTokenType.StartArray)
+            var arraySize = 0;
+            var startDepth = reader.CurrentDepth;
+            reader.ReadToken(JsonTokenType.StartArray);
+            while (reader.CurrentDepth > startDepth || reader.TokenType != JsonTokenType.EndArray)
             {
-                throw new InvalidOperationException();
-            }
-
-            int nestedArrays = 0;
-            int arraySize = 0;
-            string? propertyName = null;
-            while (reader.Read())
-            {
-                switch (reader.TokenType)
+                if (reader.CurrentDepth == startDepth + 1
+                    && reader.TokenType != JsonTokenType.EndArray
+                    && reader.TokenType != JsonTokenType.EndObject
+                    && reader.TokenType != JsonTokenType.PropertyName
+                    && reader.TokenType != JsonTokenType.Comment)
                 {
-                    case JsonTokenType.StartArray:
-                        if (nestedArrays == 0)
-                        {
-                            arraySize++;
-                        }
-                        nestedArrays++;
-                        break;
-
-                    case JsonTokenType.EndArray:
-                        if (nestedArrays == 0)
-                        {
-                            return arraySize;
-                        }
-                        nestedArrays--;
-                        break;
-
-                    case JsonTokenType.EndObject:
-                        break;
-
-                    case JsonTokenType.PropertyName:
-                        propertyName = reader.GetString();
-                        break;
-
-                    default:
-                        if (reader.TokenType == JsonTokenType.String
-                            && (propertyName == JsonAttributeIdPropName
-                                || propertyName == JsonAttributeRefPropName
-                                || propertyName == JsonAttributeValuesPropName))
-                        {
-                            propertyName = null;
-                            break;
-                        }
-                        if (nestedArrays == 0)
-                        {
-                            arraySize++;
-                        }
-                        break;
+                    arraySize++;
                 }
+                reader.Read();
             }
-
             return arraySize;
-        }
-
-        /// <summary>
-        /// Peeks the reader so we can look ahead and check if we're dealing with a List<object> - {"$id"="N","$values"="[....]"}
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="objectReferences"></param>
-        /// <param name="referencedObject"></param>
-        /// <returns></returns>
-        private bool PeekAndCheckIfIsListOfObject(Utf8JsonReader reader, Dictionary<string, object> objectReferences, out object referencedObject)
-        {
-            // since the Utf8JsonReader is a structure, the reader argument to work with it inside of this method will be a new instance
-            referencedObject = null;
-
-            // this is only possible because the Utf8JsonReader is a structure
-            if (reader.TokenType != JsonTokenType.StartObject)
-            {
-                return false;
-            }
-
-            // check for the $id
-            var propertyName = String.Empty;
-            var propertyValue = string.Empty;
-            if (!reader.Read()
-                || reader.TokenType != JsonTokenType.PropertyName
-                || !TryReadStringValue(ref reader, JsonTokenType.PropertyName, ref propertyName)
-                || propertyName != JsonAttributeIdPropName)
-            {
-                // read through and check the "$ref" value - the pattern is - {"$ref":"1"}
-                if (propertyName == JsonAttributeRefPropName
-                    && reader.Read()
-                    && TryReadStringValue(ref reader, JsonTokenType.String,  ref propertyValue))
-                {
-                    return objectReferences.TryGetValue(propertyValue, out referencedObject);
-                }
-                return false;
-            }
-
-            // read through the "$id" value
-            reader.Read();
-            if (!TryReadStringValue(ref reader, JsonTokenType.String,  ref propertyValue) || string.IsNullOrEmpty(propertyValue))
-            {
-                return false;
-            }
-
-            // check if next token is the $values propertyName
-            if (!reader.Read() || reader.TokenType != JsonTokenType.PropertyName || reader.GetString() != JsonAttributeValuesPropName)
-            {
-                return false;
-            }
-
-            // reaching here, means that this object matches the pattern it's looking for - {"$id"="N","$values"="[....]"}
-            return true;
-        }
-
-        private static bool TryReadStringValue(ref Utf8JsonReader reader, JsonTokenType allowedTokenType, ref string value)
-        {
-            if (reader.TokenType != allowedTokenType)
-            {
-                return false;
-            }
-
-            value = reader.GetString();
-            return true;
         }
 
         public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
