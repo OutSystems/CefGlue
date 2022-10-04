@@ -238,7 +238,7 @@ namespace CefGlue.Tests.Javascript
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithCyclicObjectParamCalled += (args) => taskCompletionSource.SetResult(args);
 
-            Execute($"{ObjName}.methodWithCyclicObjectParam({{'$id':'1','Name': 'parent1','Parent':null,'Child':{{'$id':'2','Name': 'child1','Parent':{{'$ref':'1'}},'Child':null}}}})");
+            Execute($"const parent={{Name:'parent1', Parent:null,Child:null}};const child={{Name:'child1',Parent:parent,Child:null}};parent.Child=child;{ObjName}.methodWithCyclicObjectParam(parent)");
 
             var result = await taskCompletionSource.Task;
             Assert.AreEqual(1, result.Length);
@@ -249,6 +249,7 @@ namespace CefGlue.Tests.Javascript
             Assert.NotNull(arg.Child);
             Assert.AreEqual("child1", arg.Child.Name);
             Assert.NotNull(arg.Child.Parent);
+            Assert.AreSame(arg, arg.Child.Parent);
         }
 
         [Test]

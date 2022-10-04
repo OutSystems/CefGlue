@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.BrowserProcess.Serialization
 {
     internal static class V8ValueSerialization
     {
+        private const string JsonAttributeIdPropName = "$id";
+        private const string JsonAttributeRefPropName = "$ref";
+
         /// <summary>
         /// Converts a V8Value to a CefValue (used when sending values from the browser process to the main process)
         /// </summary>
@@ -14,18 +18,11 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
         /// <param name="cefValue"></param>
         public static void SerializeV8ObjectToCefValue(CefV8Value obj, CefValueWrapper cefValue)
         {
-            SerializeV8ObjectToCefValue(obj, cefValue, new Stack<CefV8Value>());
+            SerializeV8ObjectToCefValue(obj, cefValue, new CefReferencesResolver<CefV8Value>(CefV8ValueEqualityComparer.Instance));
         }
 
-        private static void SerializeV8ObjectToCefValue(CefV8Value obj, CefValueWrapper cefValue, Stack<CefV8Value> visitedObjects)
+        private static void SerializeV8ObjectToCefValue(CefV8Value obj, CefValueWrapper cefValue, IReferencesResolver<CefV8Value> referencesResolver)
         {
-            if (visitedObjects.Any(o => o.IsSame(obj)))
-            {
-                throw new InvalidOperationException("Cycle found in result");
-            }
-
-            visitedObjects.Push(obj);
-
             if (obj.IsNull || obj.IsUndefined)
             {
                 cefValue.SetNull();
@@ -57,11 +54,12 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                 if (arrLength > 0)
                 {
                     var keys = obj.GetKeys();
+
                     using (var cefList = CefListValue.Create())
                     {
                         for (var i = 0; i < arrLength; i++)
                         {
-                            SerializeV8ObjectToCefValue(obj.GetValue(keys[i]), new CefListWrapper(cefList, i), visitedObjects);
+                            SerializeV8ObjectToCefValue(obj.GetValue(keys[i]), new CefListWrapper(cefList, i), referencesResolver);
                         }
 
                         cefValue.SetList(cefList);
@@ -86,13 +84,27 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                 {
                     using (var cefDictionary = CefDictionaryValue.Create())
                     {
-                        foreach (var key in keys)
+                        if (referencesResolver.TryGetReferenceId(obj, out var refId))
                         {
-                            if (obj.HasValue(key))
+                            var dictWrapper = new CefDictionaryWrapper(cefDictionary, JsonAttributeRefPropName);
+                            dictWrapper.SetString(refId);
+                        }
+                        else
+                        {
+                            refId = referencesResolver.ReferencesCount.ToString();
+                            referencesResolver.AddReference(refId, obj);
+                            var dictWrapper = new CefDictionaryWrapper(cefDictionary, JsonAttributeIdPropName);
+                            dictWrapper.SetString(refId);
+
+                            foreach (var key in keys)
                             {
-                                SerializeV8ObjectToCefValue(obj.GetValue(key), new CefDictionaryWrapper(cefDictionary, key), visitedObjects);
+                                if (obj.HasValue(key))
+                                {
+                                    SerializeV8ObjectToCefValue(obj.GetValue(key), new CefDictionaryWrapper(cefDictionary, key), referencesResolver);
+                                }
                             }
                         }
+
                         cefValue.SetDictionary(cefDictionary);
                     }
                 }
@@ -101,8 +113,6 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
             {
                 cefValue.SetNull();
             }
-
-            visitedObjects.Pop();
         }
 
         /// <summary>

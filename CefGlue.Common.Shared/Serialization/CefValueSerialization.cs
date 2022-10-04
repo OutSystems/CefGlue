@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text.Json;
@@ -10,7 +10,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
     {
         private const int SerializerMaxDepth = int.MaxValue;
         private const int DeserializerMaxDepth = 255;
-
+        
         private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
         {
             Converters =
@@ -139,6 +139,11 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
         public static object DeserializeCefValue(CefValueWrapper cefValue)
         {
+            return DeserializeCefValue(cefValue, new CefReferencesResolver<object>());
+        }
+
+        public static object DeserializeCefValue(CefValueWrapper cefValue, IReferencesResolver<object> referencesResolver)
+        {
             switch (cefValue.GetValueType())
             {
                 case CefValueType.Binary:
@@ -157,7 +162,18 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                         var keys = cefDictionary.GetKeys();
                         foreach (var key in keys)
                         {
-                            dictionary[key] = DeserializeCefValue(new CefDictionaryWrapper(cefDictionary, key));
+                            var dictValue = DeserializeCefValue(new CefDictionaryWrapper(cefDictionary, key), referencesResolver);
+                            switch (key)
+                            {
+                                case ObjectJsonConverter.JsonAttributeRefPropName:
+                                    return referencesResolver.ResolveReference(dictValue.ToString());
+                                case ObjectJsonConverter.JsonAttributeIdPropName:
+                                    referencesResolver.AddReference(dictValue.ToString(), dictionary);
+                                    break;
+                                default:
+                                    dictionary[key] = dictValue;
+                                    break;
+                            }
                         }
                         return dictionary;
                     }

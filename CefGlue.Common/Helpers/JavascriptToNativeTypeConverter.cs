@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +31,18 @@ namespace Xilium.CefGlue.Common.Helpers
         /// <param name="expectedType">Expected object type</param>
         /// <returns></returns>
         public static object ConvertToNative(object obj, Type expectedType)
+        {
+            return ConvertToNative(obj, expectedType, new Dictionary<object, object>());
+        }
+
+        /// <summary>
+        /// Converts an object from javascript into a .Net type
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="expectedType">Expected object type</param>
+        /// <param name="convertedObjectsMap">Dictionary of the objects (key) that were converted to NativeObjects (values)</param>
+        /// <returns></returns>
+        public static object ConvertToNative(object obj, Type expectedType, Dictionary<object, object> convertedObjectsMap)
         {
             if (obj == null)
             {
@@ -74,7 +86,7 @@ namespace Xilium.CefGlue.Common.Helpers
                 return ConvertToNativeList(obj, expectedType);
             }
 
-            return ConvertToNativeObject(obj, expectedType);
+            return ConvertToNativeObject(obj, expectedType, convertedObjectsMap);
         }
 
         private static bool IsCollection(this Type source)
@@ -130,9 +142,15 @@ namespace Xilium.CefGlue.Common.Helpers
             return nativeList;
         }
 
-        private static object ConvertToNativeObject(object obj, Type expectedType)
+        private static object ConvertToNativeObject(object obj, Type expectedType, Dictionary<object, object> convertedObjectsMap)
         {
-            var nativeObject = Activator.CreateInstance(expectedType, true);
+            if (convertedObjectsMap.TryGetValue(obj, out var nativeObject))
+            {
+                return nativeObject;
+            }
+
+            nativeObject = Activator.CreateInstance(expectedType, true);
+            convertedObjectsMap.Add(obj, nativeObject);
 
             // if the object type is a dictionary, then attempt to convert all the members
             if (obj is IDictionary<string, object> dictionary)
@@ -142,7 +160,7 @@ namespace Xilium.CefGlue.Common.Helpers
                 {
                     if (dictionary.TryGetValue(property.Name, out var value))
                     {
-                        var convertedValue = ConvertToNative(value, property.Type);
+                        var convertedValue = ConvertToNative(value, property.Type, convertedObjectsMap);
                         property.SetValue(nativeObject, convertedValue);
                     }
                 }

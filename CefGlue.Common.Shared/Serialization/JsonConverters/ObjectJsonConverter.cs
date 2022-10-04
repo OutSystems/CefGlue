@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -8,8 +8,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal class ObjectJsonConverter : JsonConverter<object?>
     {
-        private const string JsonAttributeIdPropName = "$id";
-        private const string JsonAttributeRefPropName = "$ref";
+        internal const string JsonAttributeIdPropName = "$id";
+        internal const string JsonAttributeRefPropName = "$ref";
         private const string JsonAttributeValuesPropName = "$values";
 
         private class ReadState
