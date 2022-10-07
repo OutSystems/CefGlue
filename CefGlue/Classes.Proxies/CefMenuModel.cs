@@ -422,8 +422,8 @@
         }
 
         /// <summary>
-        /// Check the specified |index|. Only applies to check and radio items. Returns
-        /// true on success.
+        /// Check the specified |index|. Only applies to check and radio items.
+        /// Returns true on success.
         /// </summary>
         public bool SetCheckedAt(nuint index, bool value)
         {
@@ -448,8 +448,8 @@
         }
 
         /// <summary>
-        /// Set the keyboard accelerator for the specified |commandId|. |key_code| can
-        /// be any virtual key or character value. Returns true on success.
+        /// Set the keyboard accelerator for the specified |commandId|. |key_code|
+        /// can be any virtual key or character value. Returns true on success.
         /// </summary>
         public bool SetAccelerator(int commandId, int keyCode, bool shiftPressed, bool ctrlPressed, bool altPressed)
         {
@@ -592,7 +592,7 @@
         /// <summary>
         /// Sets the font list for the specified |command_id|. If |font_list| is empty
         /// the system font will be used. Returns true on success. The format is
-        /// "<FONT_FAMILY_LIST>,[STYLES] <SIZE>", where:
+        /// "&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;", where:
         /// - FONT_FAMILY_LIST is a comma-separated list of font family names,
         /// - STYLES is an optional space-separated list of style names
         /// (case-sensitive "Bold" and "Italic" are supported), and
@@ -614,7 +614,7 @@
         /// Sets the font list for the specified |index|. Specify an |index| value of
         /// -1 to set the default font. If |font_list| is empty the system font will
         /// be used. Returns true on success. The format is
-        /// "<FONT_FAMILY_LIST>,[STYLES] <SIZE>", where:
+        /// "&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;", where:
         /// - FONT_FAMILY_LIST is a comma-separated list of font family names,
         /// - STYLES is an optional space-separated list of style names
         /// (case-sensitive "Bold" and "Italic" are supported), and

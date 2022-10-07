@@ -84,7 +84,7 @@
         /// visible window and cannot be displayed. |extension| is the extension that
         /// is loading the background script. |url| is an internally generated
         /// reference to an HTML page that will be used to load the background script
-        /// via a "<script>" src attribute. To allow creation of the browser
+        /// via a "&lt;script&gt;" src attribute. To allow creation of the browser
         /// optionally modify |client| and |settings| and return false. To cancel
         /// creation of the browser (and consequently cancel load of the background
         /// script) return true. Successful creation will be indicated by a call to

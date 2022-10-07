@@ -185,7 +185,7 @@
         /// |callback| when the data is available (|data_out| will remain valid until
         /// the callback is executed). To indicate response completion set
         /// |bytes_read| to 0 and return false. To indicate failure set |bytes_read|
-        /// to < 0 (e.g. -2 for ERR_FAILED) and return false. This method will be
+        /// to &lt; 0 (e.g. -2 for ERR_FAILED) and return false. This method will be
         /// called in sequence but not from a dedicated thread. For backwards
         /// compatibility set |bytes_read| to -1 and return false and the ReadResponse
         /// method will be called.

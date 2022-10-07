@@ -5,7 +5,7 @@
     using System.Diagnostics;
     using System.Runtime.InteropServices;
     using Xilium.CefGlue.Interop;
-    
+
     /// <summary>
     /// Class that builds a CefProcessMessage containing a shared memory region.
     /// This class is not thread-safe but may be used exclusively on a different
@@ -26,7 +26,7 @@
                 return CefSharedProcessMessageBuilder.FromNative(n_result);
             }
         }
-        
+
         /// <summary>
         /// Returns true if the builder is valid.
         /// </summary>
@@ -34,7 +34,7 @@
         {
             get => cef_shared_process_message_builder_t.is_valid(_self) != 0;
         }
-        
+
         /// <summary>
         /// Returns the size of the shared memory region in bytes. Returns 0 for
         /// invalid instances.
@@ -43,7 +43,7 @@
         {
             get => cef_shared_process_message_builder_t.size(_self);
         }
-        
+
         /// <summary>
         /// Returns the pointer to the writable memory. Returns nullptr for invalid
         /// instances. The returned pointer is only valid for the life span of this
@@ -53,7 +53,7 @@
         {
             return (IntPtr)cef_shared_process_message_builder_t.memory(_self);
         }
-        
+
         /// <summary>
         /// Creates a new CefProcessMessage from the data provided to the builder.
         /// Returns nullptr for invalid instances. Invalidates the builder instance.

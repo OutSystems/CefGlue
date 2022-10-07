@@ -35,8 +35,8 @@ namespace Xilium.CefGlue
         FileExe,
 
         /// <summary>
-        /// Path and filename of the module containing the CEF code (usually the libcef
-        /// module).
+        /// Path and filename of the module containing the CEF code (usually the
+        /// libcef module).
         /// </summary>
         FileModule,
 

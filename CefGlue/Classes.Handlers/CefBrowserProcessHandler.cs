@@ -64,8 +64,8 @@
         /// message loop (see additional comments and warnings on
         /// CefDoMessageLoopWork). This callback should schedule a
         /// CefDoMessageLoopWork() call to happen on the main (UI) thread. |delay_ms|
-        /// is the requested delay in milliseconds. If |delay_ms| is <= 0 then the
-        /// call should happen reasonably soon. If |delay_ms| is > 0 then the call
+        /// is the requested delay in milliseconds. If |delay_ms| is &lt;= 0 then the
+        /// call should happen reasonably soon. If |delay_ms| is &gt; 0 then the call
         /// should be scheduled to happen after the specified delay and any currently
         /// pending scheduled call should be cancelled.
         /// </summary>

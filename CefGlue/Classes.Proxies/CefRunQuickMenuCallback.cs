@@ -19,7 +19,7 @@
         {
             cef_run_quick_menu_callback_t.cont(_self, commandId, eventFlags);
         }
-        
+
         /// <summary>
         /// Cancel quick menu display.
         /// </summary>

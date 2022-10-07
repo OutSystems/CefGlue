@@ -22,11 +22,11 @@
         }
 
         /// <summary>
-        /// Method that will be executed. Do not keep a reference to |entry| outside of
-        /// this callback. Return true to continue visiting entries or false to stop.
-        /// |current| is true if this entry is the currently loaded navigation entry.
-        /// |index| is the 0-based index of this entry and |total| is the total number
-        /// of entries.
+        /// Method that will be executed. Do not keep a reference to |entry| outside
+        /// of this callback. Return true to continue visiting entries or false to
+        /// stop. |current| is true if this entry is the currently loaded navigation
+        /// entry. |index| is the 0-based index of this entry and |total| is the total
+        /// number of entries.
         /// </summary>
         protected abstract bool Visit(CefNavigationEntry entry, bool current, int index, int total);
     }

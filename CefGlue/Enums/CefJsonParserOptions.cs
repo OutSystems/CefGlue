@@ -13,8 +13,9 @@ namespace Xilium.CefGlue
     public enum CefJsonParserOptions
     {
         /// <summary>
-        /// Parses the input strictly according to RFC 4627. See comments in Chromium's
-        /// base/json/json_reader.h file for known limitations/deviations from the RFC.
+        /// Parses the input strictly according to RFC 4627. See comments in
+        /// Chromium's base/json/json_reader.h file for known limitations/
+        /// deviations from the RFC.
         /// </summary>
         Rfc = 0,
 

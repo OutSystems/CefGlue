@@ -253,7 +253,7 @@
         /// pixel (DIP) sizes larger than |max_image_size| are filtered out from the
         /// image results. Versions of the image at different scale factors may be
         /// downloaded up to the maximum scale factor supported by the system. If
-        /// there are no image results <= |max_image_size| then the smallest image is
+        /// there are no image results &lt;= |max_image_size| then the smallest image is
         /// resized to |max_image_size| and is the only result. A |max_image_size| of
         /// 0 means unlimited. If |bypass_cache| is true then |image_url| is requested
         /// from the server even if it is present in the browser cache.
@@ -393,7 +393,7 @@
         /// sessions.
         /// Communication with the DevTools front-end (when displayed) can be logged
         /// for development purposes by passing the
-        /// `--devtools-protocol-log-file=<path>` command-line flag.
+        /// `--devtools-protocol-log-file=&lt;path&gt;` command-line flag.
         /// </summary>
         public bool SendDevToolsMessage(IntPtr message, int messageSize)
         {

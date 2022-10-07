@@ -145,7 +145,7 @@
         /// <summary>
         /// Called for global uncaught exceptions in a frame. Execution of this
         /// callback is disabled by default. To enable set
-        /// cef_settings_t.uncaught_exception_stack_size > 0.
+        /// cef_settings_t.uncaught_exception_stack_size &gt; 0.
         /// </summary>
         protected virtual void OnUncaughtException(CefBrowser browser, CefFrame frame, CefV8Context context, CefV8Exception exception, CefV8StackTrace stackTrace)
         {

@@ -4,7 +4,8 @@ using Xilium.CefGlue.Interop;
 namespace Xilium.CefGlue
 {
     /// <summary>
-    /// Structure representing the audio parameters for setting up the audio handler.
+    /// Structure representing the audio parameters for setting up the audio
+    /// handler.
     /// </summary>
     public unsafe ref struct CefAudioParameters
     {

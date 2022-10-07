@@ -339,7 +339,7 @@
         /// loaded. For example, the client can look for the "browser_action" manifest
         /// key as documented at
         /// https://developer.chrome.com/extensions/browserAction. Extension URLs take
-        /// the form "chrome-extension://<extension_id>/<path>".
+        /// the form "chrome-extension://&lt;extension_id&gt;/&lt;path&gt;".
         /// Browsers that host extensions differ from normal browsers as follows:
         /// - Can access chrome.* JavaScript APIs if allowed by the manifest. Visit
         /// chrome://extensions-support for the list of extension APIs currently
