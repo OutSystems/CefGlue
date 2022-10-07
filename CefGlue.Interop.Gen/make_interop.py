@@ -736,7 +736,10 @@ def append_xmldoc(result, lines):
         if line != '/' and not (line is None):
             line = line.strip()
             if line != '':
-                result.append('/// %s' % line.strip())
+                temp = line.strip()
+                temp = temp.replace("<", "&lt;")
+                temp = temp.replace(">", "&gt;")
+                result.append('/// %s' % temp)
     result.append('/// </summary>')
     return
 
