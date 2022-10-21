@@ -8,9 +8,6 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
 {
     internal static class V8ValueSerialization
     {
-        private const string JsonAttributeIdPropName = "$id";
-        private const string JsonAttributeRefPropName = "$ref";
-
         /// <summary>
         /// Converts a V8Value to a CefValue (used when sending values from the browser process to the main process)
         /// </summary>
@@ -86,14 +83,14 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                     {
                         if (referencesResolver.TryGetReferenceId(obj, out var refId))
                         {
-                            var dictWrapper = new CefDictionaryWrapper(cefDictionary, JsonAttributeRefPropName);
+                            var dictWrapper = new CefDictionaryWrapper(cefDictionary, JsonAttributes.Ref);
                             dictWrapper.SetString(refId);
                         }
                         else
                         {
                             refId = referencesResolver.ReferencesCount.ToString();
                             referencesResolver.AddReference(refId, obj);
-                            var dictWrapper = new CefDictionaryWrapper(cefDictionary, JsonAttributeIdPropName);
+                            var dictWrapper = new CefDictionaryWrapper(cefDictionary, JsonAttributes.Id);
                             dictWrapper.SetString(refId);
 
                             foreach (var key in keys)

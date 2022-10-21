@@ -8,10 +8,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal class ObjectJsonConverter : JsonConverter<object?>
     {
-        internal const string JsonAttributeIdPropName = "$id";
-        internal const string JsonAttributeRefPropName = "$ref";
-        private const string JsonAttributeValuesPropName = "$values";
-
         private class ReadState
         {
             public ReadState(string propertyName, int? arrayIndex, bool hasReference, object objectHolder)
@@ -147,8 +143,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             tempReader.ReadToken(JsonTokenType.StartObject);
             var propName = tempReader.ReadPropertyName();
 
-            var isId = propName == JsonAttributeIdPropName;
-            var isRef = !isId && propName == JsonAttributeRefPropName;
+            var isId = propName == JsonAttributes.Id;
+            var isRef = !isId && propName == JsonAttributes.Ref;
             if (!isId && !isRef)
             {
                 value = null;
@@ -169,7 +165,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             // check if it's followed by $values=[...]
             tempReader.Read(); // $id Value
             propName = tempReader.ReadPropertyName();
-            if (propName == JsonAttributeValuesPropName)
+            if (propName == JsonAttributes.Values)
             {
                 reader.Read(); // objId
                 reader.Read(); // $values PropertyName

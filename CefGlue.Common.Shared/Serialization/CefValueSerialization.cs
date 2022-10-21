@@ -165,9 +165,9 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                             var dictValue = DeserializeCefValue(new CefDictionaryWrapper(cefDictionary, key), referencesResolver);
                             switch (key)
                             {
-                                case ObjectJsonConverter.JsonAttributeRefPropName:
+                                case JsonAttributes.Ref:
                                     return referencesResolver.ResolveReference(dictValue.ToString());
-                                case ObjectJsonConverter.JsonAttributeIdPropName:
+                                case JsonAttributes.Id:
                                     referencesResolver.AddReference(dictValue.ToString(), dictionary);
                                     break;
                                 default:
