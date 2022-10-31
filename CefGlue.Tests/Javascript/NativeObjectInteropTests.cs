@@ -81,6 +81,13 @@ namespace CefGlue.Tests.Javascript
                 MethodWithCyclicObjectParamCalled?.Invoke(new object[] { param });
             }
 
+            public event Action<object[]> MethodWithObjectsArrayParamCalled;
+
+            public void MethodWithObjectsArrayParam(object[] param)
+            {
+                MethodWithObjectsArrayParamCalled?.Invoke(param);
+            }
+
             public object MethodWithNullReturn()
             {
                 return null;
@@ -250,6 +257,35 @@ namespace CefGlue.Tests.Javascript
             Assert.AreEqual("child1", arg.Child.Name);
             Assert.NotNull(arg.Child.Parent);
             Assert.AreSame(arg, arg.Child.Parent);
+        }
+
+        [Test]
+        public async Task MethodWithObjectsArrayParamIsPassed()
+        {
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithObjectsArrayParamCalled += (args) => taskCompletionSource.SetResult(args);
+
+            var script = @$"const intsArray=[1,2,3];
+                            const objs=[null, 'text', 5, {{Name: 'plainObjName'}}, intsArray, intsArray];
+                            {ObjName}.methodWithObjectsArrayParam(objs)";
+            Execute(script);
+
+            var result = await taskCompletionSource.Task;
+            Assert.IsInstanceOf<object[]>(result);
+            Assert.AreEqual(6, result.Length);
+            Assert.IsNull(result[0]);
+            Assert.AreEqual("text", result[1]);
+            Assert.AreEqual(5, result[2]);
+            Assert.IsInstanceOf<IDictionary<string, object>>(result[3]);
+            var dict = (IDictionary<string, object>)result[3];
+            Assert.AreEqual(1, dict.Count);
+            Assert.AreEqual("Name", dict.Keys.Single());
+            Assert.AreEqual("plainObjName", dict.Values.Single());
+            Assert.IsInstanceOf<object[]>(result[4]);
+            var arr = (object[])result[4];
+            Assert.AreEqual(3, arr.Length);
+            Assert.AreEqual(2, arr[1]);
+            Assert.AreSame(result[4], result[5]);
         }
 
         [Test]

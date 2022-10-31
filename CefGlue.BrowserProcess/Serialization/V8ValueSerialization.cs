@@ -50,16 +50,27 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                 var arrLength = obj.GetArrayLength();
                 if (arrLength > 0)
                 {
-                    var keys = obj.GetKeys();
-
-                    using (var cefList = CefListValue.Create())
+                    using (var cefDictionary = CefDictionaryValue.Create())
                     {
-                        for (var i = 0; i < arrLength; i++)
+                        if (!HandleExistingDictionaryReference(obj, cefDictionary, referencesResolver))
                         {
-                            SerializeV8ObjectToCefValue(obj.GetValue(keys[i]), new CefListWrapper(cefList, i), referencesResolver);
+                            using (var cefList = CefListValue.Create())
+                            {
+                                HandleNewDictionaryReference(obj, cefDictionary, referencesResolver);
+
+                                var keys = obj.GetKeys();
+
+                                for (var i = 0; i < arrLength; i++)
+                                {
+                                    SerializeV8ObjectToCefValue(obj.GetValue(keys[i]), new CefListWrapper(cefList, i), referencesResolver);
+                                }
+
+                                var valuesDictWrapper = new CefDictionaryWrapper(cefDictionary, JsonAttributes.Values);
+                                valuesDictWrapper.SetList(cefList);
+                            }
                         }
 
-                        cefValue.SetList(cefList);
+                        cefValue.SetDictionary(cefDictionary);
                     }
                 }
                 else
@@ -81,18 +92,10 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                 {
                     using (var cefDictionary = CefDictionaryValue.Create())
                     {
-                        if (referencesResolver.TryGetReferenceId(obj, out var refId))
+                        if (!HandleExistingDictionaryReference(obj, cefDictionary, referencesResolver))
                         {
-                            var dictWrapper = new CefDictionaryWrapper(cefDictionary, JsonAttributes.Ref);
-                            dictWrapper.SetString(refId);
-                        }
-                        else
-                        {
-                            refId = referencesResolver.ReferencesCount.ToString();
-                            referencesResolver.AddReference(refId, obj);
-                            var dictWrapper = new CefDictionaryWrapper(cefDictionary, JsonAttributes.Id);
-                            dictWrapper.SetString(refId);
-
+                            HandleNewDictionaryReference(obj, cefDictionary, referencesResolver);
+                            
                             foreach (var key in keys)
                             {
                                 if (obj.HasValue(key))
@@ -151,6 +154,26 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
             }
 
             return CefV8Value.CreateUndefined();
+        }
+
+        private static bool HandleExistingDictionaryReference(CefV8Value obj, CefDictionaryValue cefDictionary, IReferencesResolver<CefV8Value> referencesResolver)
+        {
+            if (!referencesResolver.TryGetReferenceId(obj, out var refId))
+            {
+                return false;
+            }
+
+            var dictWrapper = new CefDictionaryWrapper(cefDictionary, JsonAttributes.Ref);
+            dictWrapper.SetString(refId);
+            return true;
+        }
+
+        private static void HandleNewDictionaryReference(CefV8Value obj, CefDictionaryValue cefDictionary, IReferencesResolver<CefV8Value> referencesResolver)
+        {
+            var refId = referencesResolver.ReferencesCount.ToString();
+            referencesResolver.AddReference(refId, obj);
+            var dictWrapper = new CefDictionaryWrapper(cefDictionary, JsonAttributes.Id);
+            dictWrapper.SetString(refId);
         }
     }
 }
