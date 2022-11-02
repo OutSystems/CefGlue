@@ -58,6 +58,18 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
+        public async Task CyclicObjectReturn()
+        {
+            var script = @"const list = [1,null];
+                           list[1] = list;
+                           return list;";
+            var result = await EvaluateJavascript<object[]>(script);
+            Assert.AreEqual(2, result.Length);
+            Assert.AreEqual(1, result[0]);
+            Assert.AreSame(result, result[1]);
+        }
+
+        [Test]
         public void ExceptionThrown()
         {
             const string ExceptionMessage = "ups";
