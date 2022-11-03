@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.BrowserProcess.Serialization
@@ -15,7 +12,7 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
         /// <param name="cefValue"></param>
         public static void SerializeV8ObjectToCefValue(CefV8Value obj, CefValueWrapper cefValue)
         {
-            SerializeV8ObjectToCefValue(obj, cefValue, new CefReferencesResolver<CefV8Value>(CefV8ValueEqualityComparer.Instance));
+            SerializeV8ObjectToCefValue(obj, cefValue, new ReferencesResolver<CefV8Value>(CefV8ValueEqualityComparer.Instance));
         }
 
         private static void SerializeV8ObjectToCefValue(CefV8Value obj, CefValueWrapper cefValue, IReferencesResolver<CefV8Value> referencesResolver)
@@ -170,8 +167,7 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
 
         private static void HandleNewDictionaryReference(CefV8Value obj, CefDictionaryValue cefDictionary, IReferencesResolver<CefV8Value> referencesResolver)
         {
-            var refId = referencesResolver.ReferencesCount.ToString();
-            referencesResolver.AddReference(refId, obj);
+            var refId = referencesResolver.AddReference(obj);
             var dictWrapper = new CefDictionaryWrapper(cefDictionary, JsonAttributes.Id);
             dictWrapper.SetString(refId);
         }

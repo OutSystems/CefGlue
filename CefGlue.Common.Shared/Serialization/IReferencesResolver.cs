@@ -10,7 +10,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal interface IReferencesResolver<T>
     {
-        public int ReferencesCount { get; }
+        public string AddReference(T value);
 
         public void AddReference(string referenceId, T value);
 

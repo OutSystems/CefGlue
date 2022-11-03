@@ -8,20 +8,25 @@ using System.Threading.Tasks;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization
 {
-    internal class CefReferencesResolver<T> : IReferencesResolver<T>
+    internal class ReferencesResolver<T> : IReferencesResolver<T>
     {
         private Dictionary<string, T> _referenceIdToObjectMap;
         private Dictionary<T, string> _objectToReferenceIdMap;
         private readonly IEqualityComparer<T> _equalityComparer;
 
-        public CefReferencesResolver() { }
+        public ReferencesResolver() { }
 
-        public CefReferencesResolver(IEqualityComparer<T> objectComparer) : base()
+        public ReferencesResolver(IEqualityComparer<T> objectComparer) : base()
         {
             _equalityComparer = objectComparer;
         }
 
-        public int ReferencesCount => ReferenceIdToObjectMap.Count;
+        public string AddReference(T value)
+        {
+            var refId = ReferenceIdToObjectMap.Count.ToString();
+            AddReference(refId, value);
+            return refId;
+        }
 
         public void AddReference(string referenceId, T value)
         {

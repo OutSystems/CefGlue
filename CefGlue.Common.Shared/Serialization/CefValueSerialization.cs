@@ -152,7 +152,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     return cefValue.GetBool();
 
                 case CefValueType.Dictionary:
-                    referencesResolver = referencesResolver ?? new CefReferencesResolver<object>();
+                    referencesResolver = referencesResolver ?? new ReferencesResolver<object>();
 
                     using (var cefDictionary = cefValue.GetDictionary())
                     {
