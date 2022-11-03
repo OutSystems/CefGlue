@@ -10,19 +10,20 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
     {
         private class ReadState
         {
-            public ReadState(string propertyName, int? arrayIndex, bool hasReference, object objectHolder)
+            public ReadState(int? arrayIndex, bool hasReference, object objectHolder)
             {
-                PropertyName = propertyName;
                 ArrayIndex = arrayIndex;
                 HasReference = hasReference;
                 ObjectHolder = objectHolder;
             }
 
-            public readonly bool HasReference;
-            public readonly object ObjectHolder;
+            public bool HasReference { get; }
 
-            public string PropertyName;
-            public int? ArrayIndex;
+            public object ObjectHolder { get; }
+            
+            public string PropertyName { get; set; }
+            
+            public int? ArrayIndex { get; set; }
         }
 
         public override bool CanConvert(Type typeToConvert)
@@ -30,13 +31,13 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             return true;
         }
 
-        public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var stateStack = new Stack<ReadState>();
             var root = new object[1];
             var referencesMap = new Dictionary<string, object>();
 
-            stateStack.Push(new ReadState(null, 0, false, root));
+            stateStack.Push(new ReadState(0, false, root));
 
             do
             {
@@ -67,8 +68,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                         continue;
 
                     case JsonTokenType.StartArray:
-                        value = new object[PeekAndCalculateArraySize(reader)];
-                        stateStack.Push(new ReadState(null, 0, false, value));
+                        value = new object[reader.PeekAndCalculateArraySize()];
+                        stateStack.Push(new ReadState(0, false, value));
                         break;
 
                     case JsonTokenType.EndArray:
@@ -83,7 +84,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                         {
                             value = new Dictionary<string, object>();
                         }
-                        stateStack.Push(new ReadState(null, isNewArray ? 0 : null, true, value));
+                        stateStack.Push(new ReadState(isNewArray ? 0 : null, true, value));
                         break;
 
                     case JsonTokenType.EndObject:
@@ -96,15 +97,13 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
             if (stateStack.Count > 1 && stateStack.Pop().ObjectHolder != root)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Invalid json format - missing enclosing EndArray or EndObject token(s).");
             }
 
             return root.First();
         }
 
-        private static void SetObjectPropertyOrArrayIndex(
-            ReadState state,
-            object value)
+        private static void SetObjectPropertyOrArrayIndex(ReadState state, object value)
         {
             var obj = state.ObjectHolder;
             if (state.PropertyName != null)
@@ -133,8 +132,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 return false;
             }
 
-            reader.Read(); // StartObject
-            reader.Read(); // PropertyName
+            reader.ReadToken(JsonTokenType.StartObject);
+            reader.ReadToken(JsonTokenType.PropertyName);
             var objId = reader.GetString();
 
             if (isRef)
@@ -151,7 +150,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             {
                 reader.Read(); // objId
                 reader.Read(); // $values PropertyName
-                value = new object[PeekAndCalculateArraySize(reader)];
+                value = new object[reader.PeekAndCalculateArraySize()];
                 isNewArray = true;
             }
             else
@@ -160,26 +159,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             }
             referencesMap.Add(objId, value);
             return true;
-        }
-
-        private int PeekAndCalculateArraySize(Utf8JsonReader reader)
-        {
-            var arraySize = 0;
-            var startDepth = reader.CurrentDepth;
-            reader.ReadToken(JsonTokenType.StartArray);
-            while (reader.CurrentDepth > startDepth || reader.TokenType != JsonTokenType.EndArray)
-            {
-                if (reader.CurrentDepth == startDepth + 1
-                    && reader.TokenType != JsonTokenType.EndArray
-                    && reader.TokenType != JsonTokenType.EndObject
-                    && reader.TokenType != JsonTokenType.PropertyName
-                    && reader.TokenType != JsonTokenType.Comment)
-                {
-                    arraySize++;
-                }
-                reader.Read();
-            }
-            return arraySize;
         }
 
         public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)

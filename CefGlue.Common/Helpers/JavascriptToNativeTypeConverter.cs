@@ -42,7 +42,7 @@ namespace Xilium.CefGlue.Common.Helpers
         /// <param name="expectedType">Expected object type</param>
         /// <param name="convertedObjectsMap">Dictionary of the objects (key) that were converted to NativeObjects (values)</param>
         /// <returns></returns>
-        public static object ConvertToNative(object obj, Type expectedType, Dictionary<object, object> convertedObjectsMap)
+        private static object ConvertToNative(object obj, Type expectedType, Dictionary<object, object> convertedObjectsMap)
         {
             if (obj == null)
             {

@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -318,8 +318,13 @@ namespace CefGlue.Tests.Serialization
             list.Add(childList);
 
             var cefValue = new CefTestValue();
+            object obtainedValue = null;
             Assert.DoesNotThrow(() => Serialize(list, cefValue));
-            Assert.IsTrue(cefValue.GetString().TrimEnd('}', ']').EndsWith("\"$ref\":\"2\""), "The last element in the list should be a reference to the first child");
+            Assert.DoesNotThrow(() => obtainedValue = DeserializeCefValue(cefValue));
+            Assert.IsInstanceOf<object[]>(obtainedValue);
+            var arr = (object[])obtainedValue;
+            Assert.AreEqual(2, arr.Length);
+            Assert.AreSame(arr[0], arr[1]);
         }
 
         [Test]
