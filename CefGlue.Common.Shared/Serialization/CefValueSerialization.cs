@@ -233,7 +233,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             }
         }
 
-        public static TListElementType[] DeserializeCefList<TListElementType>(ICefListValue cefList, IReferencesResolver<object> referencesResolver = null)
+        internal static TListElementType[] DeserializeCefList<TListElementType>(ICefListValue cefList, IReferencesResolver<object> referencesResolver = null)
         {
             var array = new TListElementType[cefList.Count];
             DeserializeCefListToArray(cefList, array, referencesResolver);

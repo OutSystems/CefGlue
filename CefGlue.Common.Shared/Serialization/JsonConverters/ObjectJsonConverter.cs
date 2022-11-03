@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization
 {
-    internal class ObjectJsonConverter : JsonConverter<object?>
+    internal class ObjectJsonConverter : JsonConverter<object>
     {
         private class ReadState
         {
@@ -54,25 +54,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                         break;
 
                     case JsonTokenType.String:
-                        var stringValue = reader.GetString();
-                        value = stringValue;
-                        if (stringValue.Length >= DataMarkers.MarkerLength)
-                        {
-                            switch (stringValue.Substring(0, DataMarkers.MarkerLength))
-                            {
-                                case DataMarkers.StringMarker:
-                                    value = stringValue.Substring(DataMarkers.MarkerLength);
-                                    break;
-
-                                case DataMarkers.DateTimeMarker:
-                                    value = JsonSerializer.Deserialize<DateTime>("\"" + stringValue.Substring(DataMarkers.MarkerLength) + "\"");
-                                    break;
-
-                                case DataMarkers.BinaryMarker:
-                                    value = Convert.FromBase64String(stringValue.Substring(DataMarkers.MarkerLength));
-                                    break;
-                            }
-                        }
+                        value = reader.GetObjectFromString();
                         break;
 
                     case JsonTokenType.False:
