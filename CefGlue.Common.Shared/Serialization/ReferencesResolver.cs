@@ -10,15 +10,21 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal class ReferencesResolver<T> : IReferencesResolver<T>
     {
-        private Dictionary<string, T> _referenceIdToObjectMap;
-        private Dictionary<T, string> _objectToReferenceIdMap;
+        private Lazy<Dictionary<string, T>> _lazyReferenceIdToObjectMap;
+        private Lazy<Dictionary<T, string>> _lazyObjectToReferenceIdMap;
         private readonly IEqualityComparer<T> _equalityComparer;
 
-        public ReferencesResolver() { }
+        public ReferencesResolver() : this(null) { }
 
-        public ReferencesResolver(IEqualityComparer<T> objectComparer) : base()
+        public ReferencesResolver(IEqualityComparer<T> objectComparer)
         {
             _equalityComparer = objectComparer;
+
+            _lazyReferenceIdToObjectMap = new Lazy<Dictionary<string, T>>(() => new Dictionary<string, T>());
+            _lazyObjectToReferenceIdMap = new Lazy<Dictionary<T, string>>(() => 
+                _equalityComparer != null 
+                ? new Dictionary<T, string>(_equalityComparer)
+                : new Dictionary<T, string>());
         }
 
         public string AddReference(T value)
@@ -36,12 +42,13 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
         public T ResolveReference(string referenceId)
         {
-            if (!ReferenceIdToObjectMap.TryGetValue(referenceId, out T value))
+            if (ReferenceIdToObjectMap.TryGetValue(referenceId, out T value))
             {
-                throw new ArgumentException($"Reference not found - id={referenceId}");
+                return value;
             }
 
-            return value;
+            throw new ArgumentException($"Reference not found - id={referenceId}");
+            
         }
 
         public bool TryGetReferenceId(T value, out string referenceId)
@@ -60,14 +67,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         {
             get
             {
-                if (_referenceIdToObjectMap == null)
-                {
-                    _referenceIdToObjectMap = new Dictionary<string, T>();
-                    _objectToReferenceIdMap = _equalityComparer != null
-                        ? new Dictionary<T, string>(_equalityComparer)
-                        : new Dictionary<T, string>();
-                }
-                return _referenceIdToObjectMap;
+                return _lazyReferenceIdToObjectMap.Value;
             }
         }
 
@@ -75,13 +75,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         {
             get
             {
-                if (_objectToReferenceIdMap == null)
-                {
-                    _objectToReferenceIdMap = _equalityComparer != null
-                        ? new Dictionary<T, string>(_equalityComparer)
-                        : new Dictionary<T, string>();
-                }
-                return _objectToReferenceIdMap;
+                return _lazyObjectToReferenceIdMap.Value;
             }
         }
     }
