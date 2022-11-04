@@ -396,6 +396,10 @@ namespace CefGlue.Tests.Serialization
             Assert.AreEqual(child.doubleField, obtainedChild[nameof(ChildObj.doubleField)]);
             Assert.AreEqual(child.intField, obtainedChild[nameof(ChildObj.intField)]);
             Assert.AreEqual(child.stringField, obtainedChild[nameof(ChildObj.stringField)]);
+
+            object obtainedObject = null;
+            Assert.DoesNotThrow(() => obtainedObject = SerializeAndDeserialize(new object(), out var _));
+            Assert.NotNull(obtainedObject);
         }
     }
 }

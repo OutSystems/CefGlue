@@ -122,6 +122,13 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             isNewArray = false;
             var tempReader = reader;
             tempReader.ReadToken(JsonTokenType.StartObject);
+            
+            if (tempReader.TokenType == JsonTokenType.EndObject)
+            {
+                value = new object();
+                return true;
+            }
+            
             var propName = tempReader.ReadPropertyName();
 
             var isId = propName == JsonAttributes.Id;
