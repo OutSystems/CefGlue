@@ -33,15 +33,15 @@ namespace Xilium.CefGlue
         ///
         /// For non-standard scheme URLs only the "scheme:" component is parsed and
         /// canonicalized. The remainder of the URL will be passed to the handler as-
-        /// is. For example, "scheme:///some%20text" will remain the same. Non-standard
-        /// scheme URLs cannot be used as a target for form submission.
+        /// is. For example, "scheme:///some%20text" will remain the same.
+        /// Non-standard scheme URLs cannot be used as a target for form submission.
         /// </summary>
         Standard = 1 << 0,
 
         /// <summary>
         /// If CEF_SCHEME_OPTION_LOCAL is set the scheme will be treated with the same
-        /// security rules as those applied to "file" URLs. Normal pages cannot link to
-        /// or access local URLs. Also, by default, local URLs can only perform
+        /// security rules as those applied to "file" URLs. Normal pages cannot link
+        /// to or access local URLs. Also, by default, local URLs can only perform
         /// XMLHttpRequest calls to the same URL (origin + path) that originated the
         /// request. To allow XMLHttpRequest calls from a local URL to other URLs with
         /// the same origin set the CefSettings.file_access_from_file_urls_allowed
@@ -54,17 +54,18 @@ namespace Xilium.CefGlue
         /// <summary>
         /// If CEF_SCHEME_OPTION_DISPLAY_ISOLATED is set the scheme can only be
         /// displayed from other content hosted with the same scheme. For example,
-        /// pages in other origins cannot create iframes or hyperlinks to URLs with the
-        /// scheme. For schemes that must be accessible from other schemes don't set
-        /// this, set CEF_SCHEME_OPTION_CORS_ENABLED, and use CORS
+        /// pages in other origins cannot create iframes or hyperlinks to URLs with
+        /// the scheme. For schemes that must be accessible from other schemes don't
+        /// set this, set CEF_SCHEME_OPTION_CORS_ENABLED, and use CORS
         /// "Access-Control-Allow-Origin" headers to further restrict access.
         /// </summary>
         DisplayIsolated = 1 << 2,
 
         /// <summary>
-        /// If CEF_SCHEME_OPTION_SECURE is set the scheme will be treated with the same
-        /// security rules as those applied to "https" URLs. For example, loading this
-        /// scheme from other secure schemes will not trigger mixed content warnings.
+        /// If CEF_SCHEME_OPTION_SECURE is set the scheme will be treated with the
+        /// same security rules as those applied to "https" URLs. For example, loading
+        /// this scheme from other secure schemes will not trigger mixed content
+        /// warnings.
         /// </summary>
         Secure = 1 << 3,
 

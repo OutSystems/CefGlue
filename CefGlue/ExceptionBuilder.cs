@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -51,9 +51,9 @@ namespace Xilium.CefGlue
             return new InvalidOperationException("Invalid self reference.");
         }
 
-        public static Exception FailedToCreateBrowser(int errorCode)
+        public static Exception FailedToCreateBrowser()
         {
-            return new InvalidOperationException($"Failed to create browser with error code ({errorCode})");
+            return new InvalidOperationException("Failed to create browser.");
         }
 
         public static Exception ObjectDisposed()

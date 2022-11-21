@@ -1,4 +1,4 @@
-// Copyright (c) 2011 Marshall A. Greenblatt. All rights reserved.
+// Copyright (c) 2021 Marshall A. Greenblatt. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -34,30 +34,16 @@
 // tools directory for more information.
 //
 
-#ifndef CEF_INCLUDE_CEF_REQUEST_CALLBACK_H_
-#define CEF_INCLUDE_CEF_REQUEST_CALLBACK_H_
+#ifndef CEF_INCLUDE_CEF_I18N_UTIL_H_
+#define CEF_INCLUDE_CEF_I18N_UTIL_H_
 #pragma once
 
 #include "include/cef_base.h"
 
 ///
-// Callback interface used for asynchronous continuation of url requests.
+/// Returns true if the application text direction is right-to-left.
 ///
-/*--cef(source=library)--*/
-class CefRequestCallback : public virtual CefBaseRefCounted {
- public:
-  ///
-  // Continue the url request. If |allow| is true the request will be continued.
-  // Otherwise, the request will be canceled.
-  ///
-  /*--cef(capi_name=cont)--*/
-  virtual void Continue(bool allow) = 0;
+/*--cef()--*/
+bool CefIsRTL();
 
-  ///
-  // Cancel the url request.
-  ///
-  /*--cef()--*/
-  virtual void Cancel() = 0;
-};
-
-#endif  // CEF_INCLUDE_CEF_REQUEST_CALLBACK_H_
+#endif  // CEF_INCLUDE_CEF_I18N_UTIL_H_

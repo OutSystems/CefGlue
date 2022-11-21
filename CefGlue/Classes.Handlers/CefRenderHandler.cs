@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -51,9 +51,9 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Called to retrieve the root window rectangle in screen coordinates. Return
-        /// true if the rectangle was provided. If this method returns false the
-        /// rectangle from GetViewRect will be used.
+        /// Called to retrieve the root window rectangle in screen DIP coordinates.
+        /// Return true if the rectangle was provided. If this method returns false
+        /// the rectangle from GetViewRect will be used.
         /// </summary>
         protected virtual bool GetRootScreenRect(CefBrowser browser, ref CefRectangle rect)
         {
@@ -78,8 +78,8 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Called to retrieve the view rectangle which is relative to screen
-        /// coordinates. This method must always provide a non-empty rectangle.
+        /// Called to retrieve the view rectangle in screen DIP coordinates. This
+        /// method must always provide a non-empty rectangle.
         /// </summary>
         protected abstract void GetViewRect(CefBrowser browser, out CefRectangle rect);
 
@@ -105,8 +105,10 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Called to retrieve the translation from view coordinates to actual screen
-        /// coordinates. Return true if the screen coordinates were provided.
+        /// Called to retrieve the translation from view DIP coordinates to screen
+        /// coordinates. Windows/Linux should provide screen device (pixel)
+        /// coordinates and MacOS should provide screen DIP coordinates. Return true
+        /// if the requested coordinates were provided.
         /// </summary>
         protected virtual bool GetScreenPoint(CefBrowser browser, int viewX, int viewY, ref int screenX, ref int screenY)
         {
@@ -205,10 +207,10 @@ namespace Xilium.CefGlue
         /// CefScreenInfo.device_scale_factor returned from GetScreenInfo. |type|
         /// indicates whether the element is the view or the popup widget. |buffer|
         /// contains the pixel data for the whole image. |dirtyRects| contains the set
-        /// of rectangles in pixel coordinates that need to be repainted. |buffer| will
-        /// be |width|*|height|*4 bytes in size and represents a BGRA image with an
-        /// upper-left origin. This method is only called when CefWindowInfo::SharedTextureEnabled
-        /// is set to false.
+        /// of rectangles in pixel coordinates that need to be repainted. |buffer|
+        /// will be |width|*|height|*4 bytes in size and represents a BGRA image with
+        /// an upper-left origin. This method is only called when
+        /// CefWindowInfo::shared_texture_enabled is set to false.
         /// </summary>
         protected abstract void OnPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr buffer, int width, int height);
 
@@ -249,15 +251,52 @@ namespace Xilium.CefGlue
         protected abstract void OnAcceleratedPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr sharedHandle);
 
 
+        private void get_touch_handle_size(cef_render_handler_t* self, cef_browser_t* browser, CefHorizontalAlignment orientation, cef_size_t* size)
+        {
+            CheckSelf(self);
+
+            var mBrowser = CefBrowser.FromNative(browser);
+            CefSize mSize;
+            GetTouchHandleSize(mBrowser, orientation, out mSize);
+            size->width = mSize.Width;
+            size->height = mSize.Height;
+        }
+
+        /// <summary>
+        /// Called to retrieve the size of the touch handle for the specified
+        /// |orientation|.
+        /// </summary>
+        protected virtual void GetTouchHandleSize(CefBrowser browser, CefHorizontalAlignment orientation, out CefSize size)
+            => size = default;
+
+
+        private void on_touch_handle_state_changed(cef_render_handler_t* self, cef_browser_t* browser, cef_touch_handle_state_t* state)
+        {
+            CheckSelf(self);
+
+            var mBrowser = CefBrowser.FromNative(browser);
+            // TODO: For CefGlue vNext structs should be passed by ref (`in` in this case),
+            // without copying, when possible.
+            OnTouchHandleStateChanged(mBrowser, new CefTouchHandleState(state));
+        }
+
+        /// <summary>
+        /// Called when touch handle state is updated. The client is responsible for
+        /// rendering the touch handles.
+        /// </summary>
+        protected virtual void OnTouchHandleStateChanged(CefBrowser browser, CefTouchHandleState state)
+        { }
+
+
         private int start_dragging(cef_render_handler_t* self, cef_browser_t* browser, cef_drag_data_t* drag_data, CefDragOperationsMask allowed_ops, int x, int y)
         {
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
-            var m_dragData = CefDragData.FromNative(drag_data); // TODO dispose?
+            var m_dragData = CefDragData.FromNative(drag_data);
 
             var m_result = StartDragging(m_browser, m_dragData, allowed_ops, x, y);
-            
+
             return m_result ? 1 : 0;
         }
 

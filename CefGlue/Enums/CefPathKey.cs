@@ -35,8 +35,8 @@ namespace Xilium.CefGlue
         FileExe,
 
         /// <summary>
-        /// Path and filename of the module containing the CEF code (usually the libcef
-        /// module).
+        /// Path and filename of the module containing the CEF code (usually the
+        /// libcef module).
         /// </summary>
         FileModule,
 
@@ -48,7 +48,7 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// "Application Data" directory under the user profile directory on Windows
-        /// and "~/Library/Application Support" directory on Mac OS X.
+        /// and "~/Library/Application Support" directory on MacOS.
         /// </summary>
         UserData,
 

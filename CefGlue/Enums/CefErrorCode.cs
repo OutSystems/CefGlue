@@ -273,14 +273,7 @@ namespace Xilium.CefGlue
         /// </summary>
         PROXY_AUTH_UNSUPPORTED = -115,
 
-        /// <summary>
-        /// During SSL renegotiation (rehandshake), the server sent a certificate with
-        /// an error.
-        ///
-        /// Note: this error is not in the -2xx range so that it won't be handled as a
-        /// certificate error.
-        /// </summary>
-        CERT_ERROR_IN_SSL_RENEGOTIATION = -116,
+        // Error -116 was removed (CERT_ERROR_IN_SSL_RENEGOTIATION)
 
         /// <summary>
         /// The SSL handshake failed because of a bad or missing client certificate.
@@ -630,6 +623,23 @@ namespace Xilium.CefGlue
         /// </summary>
         SSL_KEY_USAGE_INCOMPATIBLE = -181,
 
+        /// <summary>
+        /// The ECHConfigList fetched over DNS cannot be parsed.
+        /// </summary>
+        INVALID_ECH_CONFIG_LIST = -182,
+
+        /// <summary>
+        /// ECH was enabled, but the server was unable to decrypt the encrypted
+        /// ClientHello.
+        /// </summary>
+        ECH_NOT_NEGOTIATED = -183,
+
+        /// <summary>
+        /// ECH was enabled, the server was unable to decrypt the encrypted ClientHello,
+        /// and additionally did not present a certificate valid for the public name.
+        /// </summary>
+        ECH_FALLBACK_CERTIFICATE_INVALID = -184,
+
         // Certificate error codes
         //
         // The values of certificate error codes must be consecutive.
@@ -730,7 +740,7 @@ namespace Xilium.CefGlue
         /// </summary>
         CERT_WEAK_SIGNATURE_ALGORITHM = -208,
 
-        // -209 is availible: was CERT_NOT_IN_DNS.
+        // -209 is available: was CERT_NOT_IN_DNS.
 
         /// <summary>
         /// The host name specified in the certificate is not unique.
@@ -774,10 +784,8 @@ namespace Xilium.CefGlue
         /// </summary>
         CERT_KNOWN_INTERCEPTION_BLOCKED = -217,
 
-        /// <summary>
-        /// The connection uses an obsolete version of SSL/TLS.
-        /// </summary>
-        SSL_OBSOLETE_VERSION = -218,
+        // -218 was SSL_OBSOLETE_VERSION which is not longer used. TLS 1.0/1.1 instead
+        // cause SSL_VERSION_OR_CIPHER_MISMATCH now.
 
         // Add new certificate error codes here.
         //
@@ -1025,7 +1033,7 @@ namespace Xilium.CefGlue
         RESPONSE_HEADERS_TRUNCATED = -357,
 
         /// <summary>
-        /// The QUIC crytpo handshake failed.  This means that the server was unable
+        /// The QUIC crypto handshake failed.  This means that the server was unable
         /// to read any requests sent, so they may be resent.
         /// </summary>
         QUIC_HANDSHAKE_FAILED = -358,
@@ -1155,6 +1163,24 @@ namespace Xilium.CefGlue
         QUIC_GOAWAY_REQUEST_CAN_BE_RETRIED = -381,
 
         /// <summary>
+        /// The ACCEPT_CH restart has been triggered too many times
+        /// </summary>
+        TOO_MANY_ACCEPT_CH_RESTARTS = -382,
+
+        /// <summary>
+        /// The IP address space of the remote endpoint differed from the previous
+        /// observed value during the same request. Any cache entry for the affected
+        /// request should be invalidated.
+        /// </summary>
+        INCONSISTENT_IP_ADDRESS_SPACE = -383,
+
+        /// <summary>
+        /// The IP address space of the cached remote endpoint is blocked by private
+        /// network access check.
+        /// </summary>
+        CACHED_IP_ADDRESS_SPACE_BLOCKED_BY_PRIVATE_NETWORK_ACCESS_POLICY = -384,
+
+        /// <summary>
         /// The cache does not have the requested entry.
         /// </summary>
         CACHE_MISS = -400,
@@ -1220,7 +1246,7 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Internal not-quite error code for the HTTP cache. In-memory hints suggest
-        /// that the cache entry would not have been useable with the transaction's
+        /// that the cache entry would not have been usable with the transaction's
         /// current configuration (e.g. load flags, mode, etc.)
         /// </summary>
         CACHE_ENTRY_NOT_SUITABLE = -411,
@@ -1448,6 +1474,24 @@ namespace Xilium.CefGlue
         /// Failed to resolve the hostname of a DNS-over-HTTPS server.
         /// </summary>
         DNS_SECURE_RESOLVER_HOSTNAME_RESOLUTION_FAILED = -808,
+
+        /// <summary>
+        /// DNS identified the request as disallowed for insecure connection (http/ws).
+        /// Error should be handled as if an HTTP redirect was received to redirect to
+        /// https or wss.
+        /// </summary>
+        DNS_NAME_HTTPS_ONLY = -809,
+
+        /// <summary>
+        /// All DNS requests associated with this job have been cancelled.
+        /// </summary>
+        DNS_REQUEST_CANCELLED = -810,
+
+        /// <summary>
+        /// The hostname resolution of HTTPS record was expected to be resolved with
+        /// alpn values of supported protocols, but did not.
+        /// </summary>
+        DNS_NO_MACHING_SUPPORTED_ALPN = -811,
 
         // CefGlue backward compatiblity.
         // Generally we prefer .NET naming rules, but will care about later.

@@ -5,10 +5,10 @@
 namespace Xilium.CefGlue
 {
     /// <summary>
-    /// Policy for how the Referrer HTTP header value will be sent during navigation.
-    /// If the `--no-referrers` command-line flag is specified then the policy value
-    /// will be ignored and the Referrer value will never be sent.
-    /// Must be kept synchronized with net::URLRequest::ReferrerPolicy from Chromium.
+    /// Policy for how the Referrer HTTP header value will be sent during
+    /// navigation. If the `--no-referrers` command-line flag is specified then the
+    /// policy value will be ignored and the Referrer value will never be sent. Must
+    /// be kept synchronized with net::URLRequest::ReferrerPolicy from Chromium.
     /// </summary>
     public enum CefReferrerPolicy
     {

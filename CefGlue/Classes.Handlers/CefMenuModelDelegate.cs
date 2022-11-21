@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
+            var m_menuModel = CefMenuModel.FromNative(menu_model);
             ExecuteCommand(m_menuModel, command_id, event_flags);
         }
 
@@ -32,7 +32,7 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
+            var m_menuModel = CefMenuModel.FromNative(menu_model);
             var m_screenPoint = new CefPoint(screen_point->x, screen_point->y);
             MouseOutsideMenu(m_menuModel, m_screenPoint);
         }
@@ -48,7 +48,7 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
+            var m_menuModel = CefMenuModel.FromNative(menu_model);
             UnhandledOpenSubmenu(m_menuModel, is_rtl != 0);
         }
 
@@ -63,7 +63,7 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
+            var m_menuModel = CefMenuModel.FromNative(menu_model);
             UnhandledCloseSubmenu(m_menuModel, is_rtl != 0);
         }
 
@@ -78,7 +78,7 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
+            var m_menuModel = CefMenuModel.FromNative(menu_model);
             MenuWillShow(m_menuModel);
         }
 
@@ -92,7 +92,7 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
+            var m_menuModel = CefMenuModel.FromNative(menu_model);
             MenuClosed(m_menuModel);
         }
 
@@ -106,7 +106,7 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
+            var m_menuModel = CefMenuModel.FromNative(menu_model);
             var m_label = cef_string_t.ToString(label);
 
             if (FormatLabel(m_menuModel, ref m_label))

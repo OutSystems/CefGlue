@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -10,9 +10,9 @@ namespace Xilium.CefGlue
     /// Interface that should be implemented to handle V8 interceptor calls. The
     /// methods of this class will be called on the thread associated with the V8
     /// interceptor. Interceptor's named property handlers (with first argument of
-    /// type CefString) are called when object is indexed by string. Indexed property
-    /// handlers (with first argument of type int) are called when object is indexed
-    /// by integer.
+    /// type CefString) are called when object is indexed by string. Indexed
+    /// property handlers (with first argument of type int) are called when object
+    /// is indexed by integer.
     /// </summary>
     public abstract unsafe partial class CefV8Interceptor
     {
@@ -21,7 +21,7 @@ namespace Xilium.CefGlue
             CheckSelf(self);
 
             var m_name = cef_string_t.ToString(name);
-            var m_obj = CefV8Value.FromNative(@object); // TODO dispose?
+            var m_obj = CefV8Value.FromNative(@object);
 
             CefV8Value m_retval;
             string m_exception;
@@ -38,12 +38,12 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Handle retrieval of the interceptor value identified by |name|. |object| is
-        /// the receiver ('this' object) of the interceptor. If retrieval succeeds, set
-        /// |retval| to the return value. If the requested value does not exist, don't
-        /// set either |retval| or |exception|. If retrieval fails, set |exception| to
-        /// the exception that will be thrown. If the property has an associated
-        /// accessor, it will be called only if you don't set |retval|.
+        /// Handle retrieval of the interceptor value identified by |name|. |object|
+        /// is the receiver ('this' object) of the interceptor. If retrieval succeeds,
+        /// set |retval| to the return value. If the requested value does not exist,
+        /// don't set either |retval| or |exception|. If retrieval fails, set
+        /// |exception| to the exception that will be thrown. If the property has an
+        /// associated accessor, it will be called only if you don't set |retval|.
         /// Return true if interceptor retrieval was handled, false otherwise.
         /// </summary>
         protected virtual bool GetByName(string name, CefV8Value @object, out CefV8Value retval, out string exception)
@@ -95,8 +95,8 @@ namespace Xilium.CefGlue
             CheckSelf(self);
 
             var m_name = cef_string_t.ToString(name);
-            var m_obj = CefV8Value.FromNative(@object); // TODO dispose?
-            var m_value = CefV8Value.FromNative(value); // TODO dispose?
+            var m_obj = CefV8Value.FromNative(@object);
+            var m_value = CefV8Value.FromNative(value);
 
             string m_exception;
             if (SetByName(m_name, m_obj, m_value, out m_exception))
@@ -129,8 +129,8 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            var m_obj = CefV8Value.FromNative(@object); // TODO dispose?
-            var m_value = CefV8Value.FromNative(value); // TODO dispose?
+            var m_obj = CefV8Value.FromNative(@object);
+            var m_value = CefV8Value.FromNative(value);
 
             string m_exception;
             if (SetByIndex(index, m_obj, m_value, out m_exception))

@@ -12,8 +12,8 @@
     public sealed unsafe partial class CefDownloadItem
     {
         /// <summary>
-        /// Returns true if this object is valid. Do not call any other methods if this
-        /// function returns false.
+        /// Returns true if this object is valid. Do not call any other methods if
+        /// this function returns false.
         /// </summary>
         public bool IsValid
         {
@@ -80,24 +80,22 @@
         /// <summary>
         /// Returns the time that the download started.
         /// </summary>
-        public DateTime StartTime
+        public CefBaseTime StartTime
         {
             get
             {
-                var n_result = cef_download_item_t.get_start_time(_self);
-                return cef_time_t.ToDateTime(&n_result);
+                return cef_download_item_t.get_start_time(_self);
             }
         }
 
         /// <summary>
         /// Returns the time that the download ended.
         /// </summary>
-        public DateTime EndTime
+        public CefBaseTime EndTime
         {
             get
             {
-                var n_result = cef_download_item_t.get_end_time(_self);
-                return cef_time_t.ToDateTime(&n_result);
+                return cef_download_item_t.get_end_time(_self);
             }
         }
 

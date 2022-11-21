@@ -8,7 +8,8 @@
 
     /// <summary>
     /// Class used to implement browser process callbacks. The methods of this class
-    /// will be called on the browser process main thread unless otherwise indicated.
+    /// will be called on the browser process main thread unless otherwise
+    /// indicated.
     /// </summary>
     public abstract unsafe partial class CefBrowserProcessHandler
     {
@@ -32,18 +33,17 @@
         {
             CheckSelf(self);
 
-            using (var m_commandLine = CefCommandLine.FromNative(command_line))
-            {
+            var m_commandLine = CefCommandLine.FromNative(command_line);
             OnBeforeChildProcessLaunch(m_commandLine);
-            }
+            m_commandLine.Dispose();
         }
 
         /// <summary>
         /// Called before a child process is launched. Will be called on the browser
         /// process UI thread when launching a render process and on the browser
-        /// process IO thread when launching a GPU or plugin process. Provides an
-        /// opportunity to modify the child process command line. Do not keep a
-        /// reference to |command_line| outside of this method.
+        /// process IO thread when launching a GPU process. Provides an opportunity to
+        /// modify the child process command line. Do not keep a reference to
+        /// |command_line| outside of this method.
         /// </summary>
         protected virtual void OnBeforeChildProcessLaunch(CefCommandLine commandLine)
         {
@@ -57,17 +57,17 @@
         }
 
         /// <summary>
-        /// Called from any thread when work has been scheduled for the browser process
-        /// main (UI) thread. This callback is used in combination with CefSettings.
-        /// external_message_pump and CefDoMessageLoopWork() in cases where the CEF
-        /// message loop must be integrated into an existing application message loop
-        /// (see additional comments and warnings on CefDoMessageLoopWork). This
-        /// callback should schedule a CefDoMessageLoopWork() call to happen on the
-        /// main (UI) thread. |delay_ms| is the requested delay in milliseconds. If
-        /// |delay_ms| is &lt;= 0 then the call should happen reasonably soon. If
-        /// |delay_ms| is &gt; 0 then the call should be scheduled to happen after the
-        /// specified delay and any currently pending scheduled call should be
-        /// cancelled.
+        /// Called from any thread when work has been scheduled for the browser
+        /// process main (UI) thread. This callback is used in combination with
+        /// cef_settings_t.external_message_pump and CefDoMessageLoopWork() in cases
+        /// where the CEF message loop must be integrated into an existing application
+        /// message loop (see additional comments and warnings on
+        /// CefDoMessageLoopWork). This callback should schedule a
+        /// CefDoMessageLoopWork() call to happen on the main (UI) thread. |delay_ms|
+        /// is the requested delay in milliseconds. If |delay_ms| is &lt;= 0 then the
+        /// call should happen reasonably soon. If |delay_ms| is &gt; 0 then the call
+        /// should be scheduled to happen after the specified delay and any currently
+        /// pending scheduled call should be cancelled.
         /// </summary>
         protected virtual void OnScheduleMessagePumpWork(long delayMs) { }
 

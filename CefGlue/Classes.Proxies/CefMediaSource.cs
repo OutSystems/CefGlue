@@ -8,8 +8,8 @@
 
     /// <summary>
     /// Represents a source from which media can be routed. Instances of this object
-    /// are retrieved via CefMediaRouter::GetSource. The methods of this class may be
-    /// called on any browser process thread unless otherwise indicated.
+    /// are retrieved via CefMediaRouter::GetSource. The methods of this class may
+    /// be called on any browser process thread unless otherwise indicated.
     /// </summary>
     public sealed unsafe partial class CefMediaSource
     {

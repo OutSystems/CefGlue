@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            var m_request = CefUrlRequest.FromNative(request); // TODO dispose?
+            var m_request = CefUrlRequest.FromNative(request);
 
             OnRequestComplete(m_request);
         }
@@ -35,15 +35,15 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            var m_request = CefUrlRequest.FromNative(request); // TODO dispose?
+            var m_request = CefUrlRequest.FromNative(request);
 
             OnUploadProgress(m_request, current, total);
         }
 
         /// <summary>
         /// Notifies the client of upload progress. |current| denotes the number of
-        /// bytes sent so far and |total| is the total size of uploading data (or -1 if
-        /// chunked upload is enabled). This method will only be called if the
+        /// bytes sent so far and |total| is the total size of uploading data (or -1
+        /// if chunked upload is enabled). This method will only be called if the
         /// UR_FLAG_REPORT_UPLOAD_PROGRESS flag is set on the request.
         /// </summary>
         protected abstract void OnUploadProgress(CefUrlRequest request, long current, long total);
@@ -53,15 +53,15 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            var m_request = CefUrlRequest.FromNative(request); // TODO dispose?
+            var m_request = CefUrlRequest.FromNative(request);
 
             OnDownloadProgress(m_request, current, total);
         }
 
         /// <summary>
         /// Notifies the client of download progress. |current| denotes the number of
-        /// bytes received up to the call and |total| is the expected total size of the
-        /// response (or -1 if not determined).
+        /// bytes received up to the call and |total| is the expected total size of
+        /// the response (or -1 if not determined).
         /// </summary>
         protected abstract void OnDownloadProgress(CefUrlRequest request, long current, long total);
 
@@ -70,7 +70,7 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            var m_request = CefUrlRequest.FromNative(request); // TODO dispose?
+            var m_request = CefUrlRequest.FromNative(request);
 
             using (var stream = new UnmanagedMemoryStream((byte*)data, (long)data_length))
             {
@@ -103,9 +103,9 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Called on the IO thread when the browser needs credentials from the user.
-        /// |isProxy| indicates whether the host is a proxy server. |host| contains the
-        /// hostname and |port| contains the port number. Return true to continue the
-        /// request and call CefAuthCallback::Continue() when the authentication
+        /// |isProxy| indicates whether the host is a proxy server. |host| contains
+        /// the hostname and |port| contains the port number. Return true to continue
+        /// the request and call CefAuthCallback::Continue() when the authentication
         /// information is available. If the request has an associated browser/frame
         /// then returning false will result in a call to GetAuthCredentials on the
         /// CefRequestHandler associated with that browser, if any. Otherwise,
@@ -113,8 +113,6 @@ namespace Xilium.CefGlue
         /// be called for requests initiated from the browser process.
         /// </summary>
         protected virtual bool GetAuthCredentials(bool isProxy, string host, int port, string realm, string scheme, CefAuthCallback callback)
-        {
-            return false;
-        }
+            => false;
     }
 }

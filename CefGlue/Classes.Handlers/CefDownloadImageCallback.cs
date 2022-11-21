@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace Xilium.CefGlue
             CheckSelf(self);
 
             var m_imageUrl = cef_string_t.ToString(image_url);
-            var m_image = CefImage.FromNativeOrNull(image); // TODO dispose?
+            var m_image = CefImage.FromNativeOrNull(image);
             OnDownloadImageFinished(m_imageUrl, http_status_code, m_image);
         }
 

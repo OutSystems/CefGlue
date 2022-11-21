@@ -37,23 +37,22 @@
 #define CEF_INCLUDE_WRAPPER_CEF_STREAM_RESOURCE_HANDLER_H_
 #pragma once
 
-#include "include/base/cef_macros.h"
 #include "include/cef_resource_handler.h"
 #include "include/cef_response.h"
 #include "include/cef_stream.h"
 
 ///
-// Implementation of the CefResourceHandler class for reading from a CefStream.
+/// Implementation of the CefResourceHandler class for reading from a CefStream.
 ///
 class CefStreamResourceHandler : public CefResourceHandler {
  public:
   ///
-  // Create a new object with default response values.
+  /// Create a new object with default response values.
   ///
   CefStreamResourceHandler(const CefString& mime_type,
                            CefRefPtr<CefStreamReader> stream);
   ///
-  // Create a new object with explicit response values.
+  /// Create a new object with explicit response values.
   ///
   CefStreamResourceHandler(int status_code,
                            const CefString& status_text,
@@ -61,18 +60,21 @@ class CefStreamResourceHandler : public CefResourceHandler {
                            CefResponse::HeaderMap header_map,
                            CefRefPtr<CefStreamReader> stream);
 
+  CefStreamResourceHandler(const CefStreamResourceHandler&) = delete;
+  CefStreamResourceHandler& operator=(const CefStreamResourceHandler&) = delete;
+
   // CefResourceHandler methods.
   bool Open(CefRefPtr<CefRequest> request,
             bool& handle_request,
-            CefRefPtr<CefCallback> callback) OVERRIDE;
+            CefRefPtr<CefCallback> callback) override;
   void GetResponseHeaders(CefRefPtr<CefResponse> response,
                           int64& response_length,
-                          CefString& redirectUrl) OVERRIDE;
+                          CefString& redirectUrl) override;
   bool Read(void* data_out,
             int bytes_to_read,
             int& bytes_read,
-            CefRefPtr<CefResourceReadCallback> callback) OVERRIDE;
-  void Cancel() OVERRIDE;
+            CefRefPtr<CefResourceReadCallback> callback) override;
+  void Cancel() override;
 
  private:
   const int status_code_;
@@ -82,7 +84,6 @@ class CefStreamResourceHandler : public CefResourceHandler {
   const CefRefPtr<CefStreamReader> stream_;
 
   IMPLEMENT_REFCOUNTING(CefStreamResourceHandler);
-  DISALLOW_COPY_AND_ASSIGN(CefStreamResourceHandler);
 };
 
 #endif  // CEF_INCLUDE_WRAPPER_CEF_STREAM_RESOURCE_HANDLER_H_

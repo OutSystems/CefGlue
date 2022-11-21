@@ -5,7 +5,8 @@
 namespace Xilium.CefGlue
 {
     /// <summary>
-    /// Resource type for a request.
+    /// Resource type for a request. These constants match their equivalents in
+    /// Chromium's ResourceType and should not be renumbered.
     /// </summary>
     public enum CefResourceType
     {
@@ -99,5 +100,15 @@ namespace Xilium.CefGlue
         /// A resource that a plugin requested.
         /// </summary>
         PluginResource,
+
+        /// <summary>
+        /// A main-frame service worker navigation preload request.
+        /// </summary>
+        NavigationPreloadMainFrame = 19,
+
+        /// <summary>
+        /// A sub-frame service worker navigation preload request.
+        /// </summary>
+        NavigationPreloadSubFrame,
     }
 }

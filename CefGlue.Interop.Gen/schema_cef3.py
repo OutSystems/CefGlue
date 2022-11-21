@@ -171,4 +171,15 @@ classdef = {
     # 83
     'CefDevToolsMessageObserver': { 'role': ROLE_HANDLER },
     'CefMediaSinkDeviceInfoCallback': { 'role': ROLE_HANDLER, 'autodispose': True },
+    # 92
+    'CefFrameHandler': { 'role': ROLE_HANDLER },
+    # 101
+    'CefCommandHandler': { 'role': ROLE_HANDLER },
+    # 104
+    'CefRunQuickMenuCallback': { 'role': ROLE_PROXY },
+    'CefMediaAccessCallback': { 'role': ROLE_PROXY },
+    'CefPermissionPromptCallback': { 'role': ROLE_PROXY },
+    'CefPermissionHandler': { 'role': ROLE_HANDLER },
+    'CefSharedMemoryRegion': { 'role': ROLE_PROXY },
+    'CefSharedProcessMessageBuilder': { 'role': ROLE_PROXY },
     }

@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -7,8 +7,8 @@ namespace Xilium.CefGlue
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Implement this interface to handle events related to dragging. The methods of
-    /// this class will be called on the UI thread.
+    /// Implement this interface to handle events related to dragging. The methods
+    /// of this class will be called on the UI thread.
     /// </summary>
     public abstract unsafe partial class CefDragHandler
     {
@@ -17,7 +17,7 @@ namespace Xilium.CefGlue
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
-            var m_dragData = CefDragData.FromNative(dragData); // TODO dispose?
+            var m_dragData = CefDragData.FromNative(dragData);
             var m_result = OnDragEnter(m_browser, m_dragData, mask);
 
             return m_result ? 1 : 0;
@@ -48,7 +48,7 @@ namespace Xilium.CefGlue
                 m_regions = new CefDraggableRegion[m_count];
                 for (var i = 0; i < m_count; i++)
                 {
-                    m_regions[i] = CefDraggableRegion.FromNative(regions + i); // TODO dispose?
+                    m_regions[i] = CefDraggableRegion.FromNative(regions + i);
                 }
             }
 

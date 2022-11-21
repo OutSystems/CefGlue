@@ -33,7 +33,7 @@
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
-            var m_extraInfo = CefDictionaryValue.FromNative(extra_info); // TODO dispose?
+            var m_extraInfo = CefDictionaryValue.FromNativeOrNull(extra_info);
 
             OnBrowserCreated(m_browser, m_extraInfo);
         }
@@ -41,11 +41,12 @@
         /// <summary>
         /// Called after a browser has been created. When browsing cross-origin a new
         /// browser will be created before the old browser with the same identifier is
-        /// destroyed. |extra_info| is a read-only value originating from
+        /// destroyed. |extra_info| is an optional read-only value originating from
         /// CefBrowserHost::CreateBrowser(), CefBrowserHost::CreateBrowserSync(),
-        /// CefLifeSpanHandler::OnBeforePopup() or CefBrowserView::CreateBrowserView().
+        /// CefLifeSpanHandler::OnBeforePopup() or
+        /// CefBrowserView::CreateBrowserView().
         /// </summary>
-        protected virtual void OnBrowserCreated(CefBrowser browser, CefDictionaryValue extraInfo)
+        protected virtual void OnBrowserCreated(CefBrowser browser, CefDictionaryValue? extraInfo)
         {
         }
 
@@ -134,9 +135,9 @@
 
             var mBrowser = CefBrowser.FromNative(browser);
             var mFrame = CefFrame.FromNative(frame);
-            var mContext = CefV8Context.FromNative(context); // TODO dispose?
-            var mException = CefV8Exception.FromNative(exception); // TODO dispose?
-            var mStackTrace = CefV8StackTrace.FromNative(stackTrace); // TODO dispose?
+            var mContext = CefV8Context.FromNative(context);
+            var mException = CefV8Exception.FromNative(exception);
+            var mStackTrace = CefV8StackTrace.FromNative(stackTrace);
 
             OnUncaughtException(mBrowser, mFrame, mContext, mException, mStackTrace);
         }
@@ -144,7 +145,7 @@
         /// <summary>
         /// Called for global uncaught exceptions in a frame. Execution of this
         /// callback is disabled by default. To enable set
-        /// CefSettings.uncaught_exception_stack_size &gt; 0.
+        /// cef_settings_t.uncaught_exception_stack_size &gt; 0.
         /// </summary>
         protected virtual void OnUncaughtException(CefBrowser browser, CefFrame frame, CefV8Context context, CefV8Exception exception, CefV8StackTrace stackTrace)
         {
@@ -183,18 +184,19 @@
 
             var m_browser = CefBrowser.FromNative(browser);
             var m_frame = CefFrame.FromNative(frame);
-            using (var m_message = CefProcessMessage.FromNative(message))
-            {
+            var m_message = CefProcessMessage.FromNative(message);
+
             var result = OnProcessMessageReceived(m_browser, m_frame, source_process, m_message);
+
+            m_message.Dispose();
 
             return result ? 1 : 0;
         }
-        }
 
         /// <summary>
-        /// Called when a new message is received from a different process. Return true
-        /// if the message was handled or false otherwise. Do not keep a reference to
-        /// or attempt to access the message outside of this callback.
+        /// Called when a new message is received from a different process. Return
+        /// true if the message was handled or false otherwise. It is safe to keep a
+        /// reference to |message| outside of this callback.
         /// </summary>
         protected virtual bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {

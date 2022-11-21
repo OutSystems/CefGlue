@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +9,7 @@ namespace Xilium.CefGlue
     /// <summary>
     /// Class representing a list value. Can be used on any process and thread.
     /// </summary>
-    public sealed unsafe partial class CefListValue : ICefListValue
+    public sealed unsafe partial class CefListValue
     {
         /// <summary>
         /// Creates a new object that is not owned by any other object.
@@ -54,24 +54,24 @@ namespace Xilium.CefGlue
         /// data. If true modifications to this object will also affect |that| object
         /// and vice-versa.
         /// </summary>
-        public bool IsSame(ICefListValue that)
+        public bool IsSame(CefListValue that)
         {
-            return cef_list_value_t.is_same(_self, ((CefListValue)that).ToNative()) != 0;
+            return cef_list_value_t.is_same(_self, that.ToNative()) != 0;
         }
 
         /// <summary>
-        /// Returns true if this object and |that| object have an equivalent underlying
-        /// value but are not necessarily the same object.
+        /// Returns true if this object and |that| object have an equivalent
+        /// underlying value but are not necessarily the same object.
         /// </summary>
-        public bool IsEqual(ICefListValue that)
+        public bool IsEqual(CefListValue that)
         {
-            return cef_list_value_t.is_equal(_self, ((CefListValue)that).ToNative()) != 0;
+            return cef_list_value_t.is_equal(_self, that.ToNative()) != 0;
         }
 
         /// <summary>
         /// Returns a writable copy of this object.
         /// </summary>
-        public ICefListValue Copy()
+        public CefListValue Copy()
         {
             return CefListValue.FromNative(
                 cef_list_value_t.copy(_self)
@@ -170,7 +170,7 @@ namespace Xilium.CefGlue
         /// Returns the value at the specified index as type binary. The returned
         /// value will reference existing data.
         /// </summary>
-        public ICefBinaryValue GetBinary(int index)
+        public CefBinaryValue GetBinary(int index)
         {
             return CefBinaryValue.FromNativeOrNull(
                 cef_list_value_t.get_binary(_self, checked((UIntPtr)index))
@@ -182,7 +182,7 @@ namespace Xilium.CefGlue
         /// value will reference existing data and modifications to the value will
         /// modify this object.
         /// </summary>
-        public ICefDictionaryValue GetDictionary(int index)
+        public CefDictionaryValue GetDictionary(int index)
         {
             return CefDictionaryValue.FromNativeOrNull(
                 cef_list_value_t.get_dictionary(_self, checked((UIntPtr)index))
@@ -194,7 +194,7 @@ namespace Xilium.CefGlue
         /// value will reference existing data and modifications to the value will
         /// modify this object.
         /// </summary>
-        public ICefListValue GetList(int index)
+        public CefListValue GetList(int index)
         {
             return CefListValue.FromNativeOrNull(
                 cef_list_value_t.get_list(_self, checked((UIntPtr)index))
@@ -205,10 +205,10 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Sets the value at the specified index. Returns true if the value was set
         /// successfully. If |value| represents simple data then the underlying data
-        /// will be copied and modifications to |value| will not modify this object. If
-        /// |value| represents complex data (binary, dictionary or list) then the
-        /// underlying data will be referenced and modifications to |value| will modify
-        /// this object.
+        /// will be copied and modifications to |value| will not modify this object.
+        /// If |value| represents complex data (binary, dictionary or list) then the
+        /// underlying data will be referenced and modifications to |value| will
+        /// modify this object.
         /// </summary>
         public bool SetValue(int index, CefValue value)
         {
@@ -266,38 +266,38 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Sets the value at the specified index as type binary. Returns true if the
-        /// value was set successfully. If |value| is currently owned by another object
-        /// then the value will be copied and the |value| reference will not change.
-        /// Otherwise, ownership will be transferred to this object and the |value|
-        /// reference will be invalidated.
+        /// value was set successfully. If |value| is currently owned by another
+        /// object then the value will be copied and the |value| reference will not
+        /// change. Otherwise, ownership will be transferred to this object and the
+        /// |value| reference will be invalidated.
         /// </summary>
-        public bool SetBinary(int index, ICefBinaryValue value)
+        public bool SetBinary(int index, CefBinaryValue value)
         {
-            return cef_list_value_t.set_binary(_self, checked((UIntPtr)index), ((CefBinaryValue)value).ToNative()) != 0;
+            return cef_list_value_t.set_binary(_self, checked((UIntPtr)index), value.ToNative()) != 0;
         }
 
         /// <summary>
         /// Sets the value at the specified index as type dict. Returns true if the
-        /// value was set successfully. If |value| is currently owned by another object
-        /// then the value will be copied and the |value| reference will not change.
-        /// Otherwise, ownership will be transferred to this object and the |value|
-        /// reference will be invalidated.
+        /// value was set successfully. If |value| is currently owned by another
+        /// object then the value will be copied and the |value| reference will not
+        /// change. Otherwise, ownership will be transferred to this object and the
+        /// |value| reference will be invalidated.
         /// </summary>
-        public bool SetDictionary(int index, ICefDictionaryValue value)
+        public bool SetDictionary(int index, CefDictionaryValue value)
         {
-            return cef_list_value_t.set_dictionary(_self, checked((UIntPtr)index), ((CefDictionaryValue)value).ToNative()) != 0;
+            return cef_list_value_t.set_dictionary(_self, checked((UIntPtr)index), value.ToNative()) != 0;
         }
 
         /// <summary>
         /// Sets the value at the specified index as type list. Returns true if the
-        /// value was set successfully. If |value| is currently owned by another object
-        /// then the value will be copied and the |value| reference will not change.
-        /// Otherwise, ownership will be transferred to this object and the |value|
-        /// reference will be invalidated.
+        /// value was set successfully. If |value| is currently owned by another
+        /// object then the value will be copied and the |value| reference will not
+        /// change. Otherwise, ownership will be transferred to this object and the
+        /// |value| reference will be invalidated.
         /// </summary>
-        public bool SetList(int index, ICefListValue value)
+        public bool SetList(int index, CefListValue value)
         {
-            return cef_list_value_t.set_list(_self, checked((UIntPtr)index), ((CefListValue)value).ToNative()) != 0;
+            return cef_list_value_t.set_list(_self, checked((UIntPtr)index), value.ToNative()) != 0;
         }
     }
 }

@@ -68,8 +68,9 @@
             return cef_zip_reader_t.close(_self) != 0;
         }
 
+        // The below methods act on the file at the current cursor position.
+
         /// <summary>
-        /// The below methods act on the file at the current cursor position.
         /// Returns the name of the file.
         /// </summary>
         public string GetFileName()
@@ -89,10 +90,9 @@
         /// <summary>
         /// Returns the last modified timestamp for the file.
         /// </summary>
-        public DateTime GetFileLastModified()
+        public CefBaseTime GetFileLastModified()
         {
-            var time = cef_zip_reader_t.get_file_last_modified(_self);
-            return cef_time_t.ToDateTime(&time);
+            return cef_zip_reader_t.get_file_last_modified(_self);
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -17,10 +17,8 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            using (var mValue = CefValue.FromNativeOrNull(value))
-            {
-                OnAccessibilityTreeChange(mValue);
-            }
+            var mValue = CefValue.FromNativeOrNull(value);
+            OnAccessibilityTreeChange(mValue);
         }
         
         /// <summary>
@@ -33,10 +31,8 @@ namespace Xilium.CefGlue
         {
             CheckSelf(self);
 
-            using (var mValue = CefValue.FromNativeOrNull(value))
-            {
-                OnAccessibilityLocationChange(mValue);
-            }
+            var mValue = CefValue.FromNativeOrNull(value);
+            OnAccessibilityLocationChange(mValue);
         }
         
         /// <summary>

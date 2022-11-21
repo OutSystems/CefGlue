@@ -41,10 +41,10 @@
                 );
             }
         }
-        
+
         /// <summary>
-        /// Returns the extension manifest contents as a CefDictionaryValue object. See
-        /// https://developer.chrome.com/extensions/manifest for details.
+        /// Returns the extension manifest contents as a CefDictionaryValue object.
+        /// See https://developer.chrome.com/extensions/manifest for details.
         /// </summary>
         public CefDictionaryValue GetManifest()
         {
@@ -63,25 +63,26 @@
             var n_that = that != null ? that.ToNative() : null;
             return cef_extension_t.is_same(_self, n_that) != 0;
         }
-        
+
         /// <summary>
         /// Returns the handler for this extension. Will return NULL for internal
-        /// extensions or if no handler was passed to CefRequestContext::LoadExtension.
+        /// extensions or if no handler was passed to
+        /// CefRequestContext::LoadExtension.
         /// </summary>
-        public CefExtensionHandler GetHandler()
+        public CefExtensionHandler? GetHandler()
         {
             return CefExtensionHandler.FromNativeOrNull(
                 cef_extension_t.get_handler(_self)
                 );
         }
-        
+
         /// <summary>
         /// Returns the request context that loaded this extension. Will return NULL
         /// for internal extensions or if the extension has been unloaded. See the
         /// CefRequestContext::LoadExtension documentation for more information about
         /// loader contexts. Must be called on the browser process UI thread.
         /// </summary>
-        public CefRequestContext GetLoaderContext()
+        public CefRequestContext? GetLoaderContext()
         {
             return CefRequestContext.FromNativeOrNull(
                 cef_extension_t.get_loader_context(_self)

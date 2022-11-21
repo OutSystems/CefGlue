@@ -69,11 +69,6 @@
         #endregion
 
         /// <summary>
-        /// Gets whether the CEF runtime has been initialized;
-        /// </summary>
-        public static bool IsInitialized => _initialized;
-
-        /// <summary>
         /// Loads CEF runtime.
         /// </summary>
         /// <exception cref="DllNotFoundException"></exception>
@@ -170,13 +165,13 @@
         /// This function should be called from the application entry point function to
         /// execute a secondary process. It can be used to run secondary processes from
         /// the browser client executable (default behavior) or from a separate
-        /// executable specified by the CefSettings.browser_subprocess_path value. If
+        /// executable specified by the cef_settings_t.browser_subprocess_path value. If
         /// called for the browser process (identified by no "type" command-line value)
         /// it will return immediately with a value of -1. If called for a recognized
-        /// secondary process it will block until the process should exit and then return
-        /// the process exit code. The |application| parameter may be empty. The
-        /// |windows_sandbox_info| parameter is only used on Windows and may be NULL (see
-        /// cef_sandbox_win.h for details).
+        /// secondary process it will block until the process should exit and then
+        /// return the process exit code. The |application| parameter may be empty. The
+        /// |windows_sandbox_info| parameter is only used on Windows and may be NULL
+        /// (see cef_sandbox_win.h for details).
         /// </summary>
         public static int ExecuteProcess(CefMainArgs args, CefApp application, IntPtr windowsSandboxInfo)
         {
@@ -205,9 +200,9 @@
         /// <summary>
         /// This function should be called on the main application thread to initialize
         /// the CEF browser process. The |application| parameter may be empty. A return
-        /// value of true indicates that it succeeded and false indicates that it failed.
-        /// The |windows_sandbox_info| parameter is only used on Windows and may be NULL
-        /// (see cef_sandbox_win.h for details).
+        /// value of true indicates that it succeeded and false indicates that it
+        /// failed. The |windows_sandbox_info| parameter is only used on Windows and may
+        /// be NULL (see cef_sandbox_win.h for details).
         /// </summary>
         public static void Initialize(CefMainArgs args, CefSettings settings, CefApp application, IntPtr windowsSandboxInfo)
         {
@@ -240,7 +235,7 @@
             }
         }
 
-        [Obsolete]
+        [Obsolete("Use Initialize(CefMainArgs,CefSettings,CefApp,IntPtr) overload instead.")]
         public static void Initialize(CefMainArgs args, CefSettings settings, CefApp application)
         {
             Initialize(args, settings, application, IntPtr.Zero);
@@ -266,13 +261,14 @@
         /// provided for cases where the CEF message loop must be integrated into an
         /// existing application message loop. Use of this function is not recommended
         /// for most users; use either the CefRunMessageLoop() function or
-        /// CefSettings.multi_threaded_message_loop if possible. When using this function
-        /// care must be taken to balance performance against excessive CPU usage. It is
-        /// recommended to enable the CefSettings.external_message_pump option when using
-        /// this function so that CefBrowserProcessHandler::OnScheduleMessagePumpWork()
-        /// callbacks can facilitate the scheduling process. This function should only be
-        /// called on the main application thread and only if CefInitialize() is called
-        /// with a CefSettings.multi_threaded_message_loop value of false. This function
+        /// cef_settings_t.multi_threaded_message_loop if possible. When using this
+        /// function care must be taken to balance performance against excessive CPU
+        /// usage. It is recommended to enable the cef_settings_t.external_message_pump
+        /// option when using this function so that
+        /// CefBrowserProcessHandler::OnScheduleMessagePumpWork() callbacks can
+        /// facilitate the scheduling process. This function should only be called on
+        /// the main application thread and only if CefInitialize() is called with a
+        /// cef_settings_t.multi_threaded_message_loop value of false. This function
         /// will not block.
         /// </summary>
         public static void DoMessageLoopWork()
@@ -283,10 +279,10 @@
         /// <summary>
         /// Run the CEF message loop. Use this function instead of an application-
         /// provided message loop to get the best balance between performance and CPU
-        /// usage. This function should only be called on the main application thread and
-        /// only if CefInitialize() is called with a
-        /// CefSettings.multi_threaded_message_loop value of false. This function will
-        /// block until a quit message is received by the system.
+        /// usage. This function should only be called on the main application thread
+        /// and only if CefInitialize() is called with a
+        /// cef_settings_t.multi_threaded_message_loop value of false. This function
+        /// will block until a quit message is received by the system.
         /// </summary>
         public static void RunMessageLoop()
         {
@@ -313,9 +309,9 @@
         }
 
         /// <summary>
-        /// Call during process startup to enable High-DPI support on Windows 7 or newer.
-        /// Older versions of Windows should be left DPI-unaware because they do not
-        /// support DirectWrite and GDI fonts are kerned very badly.
+        /// Call during process startup to enable High-DPI support on Windows 7 or
+        /// newer. Older versions of Windows should be left DPI-unaware because they do
+        /// not support DirectWrite and GDI fonts are kerned very badly.
         /// </summary>
         public static void EnableHighDpiSupport()
         {
@@ -852,131 +848,6 @@
 
         #endregion
 
-        #region cef_web_plugin
-
-        // TODO: move web plugins methods to CefRuntime.WebPlugin.Xxx
-
-        /// <summary>
-        /// Visit web plugin information. Can be called on any thread in the browser
-        /// process.
-        /// </summary>
-        public static void VisitWebPluginInfo(CefWebPluginInfoVisitor visitor)
-        {
-            if (visitor == null) throw new ArgumentNullException("visitor");
-
-            libcef.visit_web_plugin_info(visitor.ToNative());
-        }
-
-        /// <summary>
-        /// Cause the plugin list to refresh the next time it is accessed regardless
-        /// of whether it has already been loaded. Can be called on any thread in the
-        /// browser process.
-        /// </summary>
-        public static void RefreshWebPlugins()
-        {
-            libcef.refresh_web_plugins();
-        }
-
-        /// <summary>
-        /// Unregister an internal plugin. This may be undone the next time
-        /// CefRefreshWebPlugins() is called. Can be called on any thread in the browser
-        /// process.
-        /// </summary>
-        public static void UnregisterInternalWebPlugin(string path)
-        {
-            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException("path");
-
-            fixed (char* path_str = path)
-            {
-                var n_path = new cef_string_t(path_str, path.Length);
-                libcef.unregister_internal_web_plugin(&n_path);
-            }
-        }
-
-        /// <summary>
-        /// Register a plugin crash. Can be called on any thread in the browser process
-        /// but will be executed on the IO thread.
-        /// </summary>
-        public static void RegisterWebPluginCrash(string path)
-        {
-            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException("path");
-
-            fixed (char* path_str = path)
-            {
-                var n_path = new cef_string_t(path_str, path.Length);
-                libcef.register_web_plugin_crash(&n_path);
-            }
-        }
-
-        /// <summary>
-        /// Query if a plugin is unstable. Can be called on any thread in the browser
-        /// process.
-        /// </summary>
-        public static void IsWebPluginUnstable(string path, CefWebPluginUnstableCallback callback)
-        {
-            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException("path");
-            if (callback == null) throw new ArgumentNullException("callback");
-
-            fixed (char* path_str = path)
-            {
-                var n_path = new cef_string_t(path_str, path.Length);
-                libcef.is_web_plugin_unstable(&n_path, callback.ToNative());
-            }
-        }
-
-        /// <summary>
-        /// Register the Widevine CDM plugin.
-        ///
-        /// The client application is responsible for downloading an appropriate
-        /// platform-specific CDM binary distribution from Google, extracting the
-        /// contents, and building the required directory structure on the local machine.
-        /// The CefBrowserHost::StartDownload method and CefZipArchive class can be used
-        /// to implement this functionality in CEF. Contact Google via
-        /// https://www.widevine.com/contact.html for details on CDM download.
-        ///
-        /// |path| is a directory that must contain the following files:
-        ///   1. manifest.json file from the CDM binary distribution (see below).
-        ///   2. widevinecdm file from the CDM binary distribution (e.g.
-        ///      widevinecdm.dll on on Windows, libwidevinecdm.dylib on OS X,
-        ///      libwidevinecdm.so on Linux).
-        ///
-        /// If any of these files are missing or if the manifest file has incorrect
-        /// contents the registration will fail and |callback| will receive a |result|
-        /// value of CEF_CDM_REGISTRATION_ERROR_INCORRECT_CONTENTS.
-        ///
-        /// The manifest.json file must contain the following keys:
-        ///   A. "os": Supported OS (e.g. "mac", "win" or "linux").
-        ///   B. "arch": Supported architecture (e.g. "ia32" or "x64").
-        ///   C. "x-cdm-module-versions": Module API version (e.g. "4").
-        ///   D. "x-cdm-interface-versions": Interface API version (e.g. "8").
-        ///   E. "x-cdm-host-versions": Host API version (e.g. "8").
-        ///   F. "version": CDM version (e.g. "1.4.8.903").
-        ///   G. "x-cdm-codecs": List of supported codecs (e.g. "vp8,vp9.0,avc1").
-        ///
-        /// A through E are used to verify compatibility with the current Chromium
-        /// version. If the CDM is not compatible the registration will fail and
-        /// |callback| will receive a |result| value of
-        /// CEF_CDM_REGISTRATION_ERROR_INCOMPATIBLE.
-        ///
-        /// |callback| will be executed asynchronously once registration is complete.
-        ///
-        /// On Linux this function must be called before CefInitialize() and the
-        /// registration cannot be changed during runtime. If registration is not
-        /// supported at the time that CefRegisterWidevineCdm() is called then |callback|
-        /// will receive a |result| value of CEF_CDM_REGISTRATION_ERROR_NOT_SUPPORTED.
-        /// </summary>
-        public static void CefRegisterWidevineCdm(string path, CefRegisterCdmCallback callback = null)
-        {
-            fixed (char* path_str = path)
-            {
-                var n_path = new cef_string_t(path_str, path.Length);
-                libcef.register_widevine_cdm(&n_path,
-                    callback != null ? callback.ToNative() : null);
-            }
-        }
-
-        #endregion
-
         #region cef_path_util
 
         /// <summary>
@@ -1175,6 +1046,15 @@
                 libcef.load_crlsets_file(&n_path);
             }
         }
+
+        #endregion
+
+        #region i18n
+
+        /// <summary>
+        /// Returns true if the application text direction is right-to-left.
+        /// </summary>
+        public static bool IsRtl() => libcef.is_rtl() != 0;
 
         #endregion
 

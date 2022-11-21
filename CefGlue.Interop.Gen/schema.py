@@ -65,7 +65,6 @@ c2cs_types = {
     'cef_proxy_info_t': 'cef_proxy_info_t',
     'cef_popup_features_t': 'cef_popup_features_t',
     'cef_browser_settings_t': 'cef_browser_settings_t',
-    'cef_time_t': 'cef_time_t',
     'cef_cookie_t': 'cef_cookie_t',
     'cef_settings_t': 'cef_settings_t',
     'cef_key_event_t': 'cef_key_event_t',
@@ -84,7 +83,9 @@ c2cs_types = {
     'cef_touch_event_t': 'cef_touch_event_t',
     'cef_audio_parameters_t': 'cef_audio_parameters_t',
     'cef_media_sink_device_info_t': 'cef_media_sink_device_info_t',
-    
+    'cef_touch_handle_state_t': 'cef_touch_handle_state_t',
+    'cef_basetime_t': 'CefBaseTime',
+    'cef_time_t': 'CefTime',
 
     # platform dependend structs
     'cef_main_args_t': 'cef_main_args_t',
@@ -168,6 +169,12 @@ c2cs_enumtypes = {
     'cef_media_route_connection_state_t': 'CefMediaRouteConnectionState',
     'cef_media_route_create_result_t': 'CefMediaRouteCreateResult',
     'cef_media_sink_icon_type_t': 'CefMediaSinkIconType',
+    'cef_quick_menu_edit_state_flags_t': 'CefQuickMenuEditStateFlags',
+    'cef_touch_handle_state_flags_t': 'CefTouchHandleStateFlags',
+    'cef_horizontal_alignment_t': 'CefHorizontalAlignment',
+    'cef_media_access_permission_types_t': 'CefMediaAccessPermissionTypes',
+    'cef_permission_request_types_t': 'CefPermissionRequestTypes',
+    'cef_permission_request_result_t': 'CefPermissionRequestResult',
     }
 
 c2cs_structtypes = { }

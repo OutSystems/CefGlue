@@ -26,8 +26,8 @@
         }
 
         /// <summary>
-        /// Returns true if this object is valid. Do not call any other methods if this
-        /// function returns false.
+        /// Returns true if this object is valid. Do not call any other methods if
+        /// this function returns false.
         /// </summary>
         public bool IsValid
         {
@@ -45,10 +45,11 @@
 
         /// <summary>
         /// Returns a writable copy of this object.
+        /// Returns nullptr when message contains a shared memory region.
         /// </summary>
-        public CefProcessMessage Copy()
+        public CefProcessMessage? Copy()
         {
-            return CefProcessMessage.FromNative(
+            return CefProcessMessage.FromNativeOrNull(
                 cef_process_message_t.copy(_self)
                 );
         }
@@ -68,16 +69,28 @@
 
         /// <summary>
         /// Returns the list of arguments.
+        /// Returns nullptr when message contains a shared memory region.
         /// </summary>
-        public CefListValue Arguments
+        public CefListValue? Arguments
         {
             get
             {
-                return CefListValue.FromNative(
+                return CefListValue.FromNativeOrNull(
                     cef_process_message_t.get_argument_list(_self)
                     );
                 // FIXME: caching ?
             }
+        }
+
+        /// <summary>
+        /// Returns the shared memory region.
+        /// Returns nullptr when message contains an argument list.
+        /// </summary>
+        public CefSharedMemoryRegion? GetSharedMemoryRegion()
+        {
+            return CefSharedMemoryRegion.FromNativeOrNull(
+                cef_process_message_t.get_shared_memory_region(_self)
+                );
         }
     }
 }

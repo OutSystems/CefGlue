@@ -7,8 +7,7 @@
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Implement this interface to handle audio events
-    /// All methods will be called on the UI thread
+    /// Implement this interface to handle audio events.
     /// </summary>
     public abstract unsafe partial class CefAudioHandler
     {
@@ -41,7 +40,7 @@
 
         /// <summary>
         /// Called on a browser audio capture thread when the browser starts
-        /// streaming audio. OnAudioSteamStopped will always be called after
+        /// streaming audio. OnAudioStreamStopped will always be called after
         /// OnAudioStreamStarted; both methods may be called multiple times
         /// for the same browser. |params| contains the audio parameters like
         /// sample rate and channel layout. |channels| is the number of channels.
@@ -62,12 +61,10 @@
         /// stream. |data| is an array representing the raw PCM data as a floating
         /// point type, i.e. 4-byte value(s). |frames| is the number of frames in the
         /// PCM packet. |pts| is the presentation timestamp (in milliseconds since the
-        /// Unix Epoch) and represents the time at which the decompressed packet should
-        /// be presented to the user. Based on |frames| and the |channel_layout| value
-        /// passed to OnAudioStreamStarted you can calculate the size of the |data|
-        /// array in bytes.
-        /// 
-        /// |data| is |float**|, readonly!
+        /// Unix Epoch) and represents the time at which the decompressed packet
+        /// should be presented to the user. Based on |frames| and the
+        /// |channel_layout| value passed to OnAudioStreamStarted you can calculate
+        /// the size of the |data| array in bytes.
         /// </summary>
         protected abstract void OnAudioStreamPacket(CefBrowser browser, IntPtr data, int frames, long pts);
 

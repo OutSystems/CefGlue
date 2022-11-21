@@ -8,8 +8,8 @@
 
     /// <summary>
     /// Class that wraps other data value types. Complex types (binary, dictionary
-    /// and list) will be referenced but not owned by this object. Can be used on any
-    /// process and thread.
+    /// and list) will be referenced but not owned by this object. Can be used on
+    /// any process and thread.
     /// </summary>
     public sealed unsafe partial class CefValue
     {
@@ -24,10 +24,10 @@
         /// <summary>
         /// Returns true if the underlying data is valid. This will always be true for
         /// simple types. For complex types (binary, dictionary and list) the
-        /// underlying data may become invalid if owned by another object (e.g. list or
-        /// dictionary) and that other object is then modified or destroyed. This value
-        /// object can be re-used by calling Set*() even if the underlying data is
-        /// invalid.
+        /// underlying data may become invalid if owned by another object (e.g. list
+        /// or dictionary) and that other object is then modified or destroyed. This
+        /// value object can be re-used by calling Set*() even if the underlying data
+        /// is invalid.
         /// </summary>
         public bool IsValid
         {
@@ -71,8 +71,8 @@
         }
 
         /// <summary>
-        /// Returns true if this object and |that| object have an equivalent underlying
-        /// value but are not necessarily the same object.
+        /// Returns true if this object and |that| object have an equivalent
+        /// underlying value but are not necessarily the same object.
         /// </summary>
         public bool IsEqual(CefValue that)
         {
@@ -146,9 +146,9 @@
         }
 
         /// <summary>
-        /// Returns the underlying value as type dictionary. The returned reference may
-        /// become invalid if the value is owned by another object or if ownership is
-        /// transferred to another object in the future. To maintain a reference to
+        /// Returns the underlying value as type dictionary. The returned reference
+        /// may become invalid if the value is owned by another object or if ownership
+        /// is transferred to another object in the future. To maintain a reference to
         /// the value after assigning ownership to a dictionary or list pass this
         /// object to the SetValue() method instead of passing the returned reference
         /// to SetDictionary().
@@ -203,8 +203,8 @@
         }
 
         /// <summary>
-        /// Sets the underlying value as type double. Returns true if the value was set
-        /// successfully.
+        /// Sets the underlying value as type double. Returns true if the value was
+        /// set successfully.
         /// </summary>
         public bool SetDouble(double value)
         {
@@ -212,8 +212,8 @@
         }
 
         /// <summary>
-        /// Sets the underlying value as type string. Returns true if the value was set
-        /// successfully.
+        /// Sets the underlying value as type string. Returns true if the value was
+        /// set successfully.
         /// </summary>
         public bool SetString(string value)
         {
@@ -226,9 +226,9 @@
         }
 
         /// <summary>
-        /// Sets the underlying value as type binary. Returns true if the value was set
-        /// successfully. This object keeps a reference to |value| and ownership of the
-        /// underlying data remains unchanged.
+        /// Sets the underlying value as type binary. Returns true if the value was
+        /// set successfully. This object keeps a reference to |value| and ownership
+        /// of the underlying data remains unchanged.
         /// </summary>
         public bool SetBinary(CefBinaryValue value)
         {
@@ -237,8 +237,8 @@
 
         /// <summary>
         /// Sets the underlying value as type dict. Returns true if the value was set
-        /// successfully. This object keeps a reference to |value| and ownership of the
-        /// underlying data remains unchanged.
+        /// successfully. This object keeps a reference to |value| and ownership of
+        /// the underlying data remains unchanged.
         /// </summary>
         public bool SetDictionary(CefDictionaryValue value)
         {
@@ -247,8 +247,8 @@
 
         /// <summary>
         /// Sets the underlying value as type list. Returns true if the value was set
-        /// successfully. This object keeps a reference to |value| and ownership of the
-        /// underlying data remains unchanged.
+        /// successfully. This object keeps a reference to |value| and ownership of
+        /// the underlying data remains unchanged.
         /// </summary>
         public bool SetList(CefListValue value)
         {

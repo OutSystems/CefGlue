@@ -7,7 +7,7 @@
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Provides information about the context menu state. The ethods of this class
+    /// Provides information about the context menu state. The methods of this class
     /// can only be accessed on browser process the UI thread.
     /// </summary>
     public sealed unsafe partial class CefContextMenuParams
@@ -67,7 +67,8 @@
 
         /// <summary>
         /// Returns the source URL, if any, for the element that the context menu was
-        /// invoked on. Example of elements with source URLs are img, audio, and video.
+        /// invoked on. Example of elements with source URLs are img, audio, and
+        /// video.
         /// </summary>
         public string SourceUrl
         {
@@ -101,7 +102,8 @@
         }
 
         /// <summary>
-        /// Returns the URL of the top level page that the context menu was invoked on.
+        /// Returns the URL of the top level page that the context menu was invoked
+        /// on.
         /// </summary>
         public string PageUrl
         {
@@ -218,7 +220,7 @@
 
         /// <summary>
         /// Returns true if the context menu contains items specified by the renderer
-        /// process (for example, plugin placeholder or pepper plugin menu items).
+        /// process.
         /// </summary>
         public bool IsCustomMenu
         {
