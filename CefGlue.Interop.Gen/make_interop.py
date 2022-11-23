@@ -311,6 +311,7 @@ def make_wrapper_g_file(cls):
     body.append('using System.Diagnostics;')
     body.append('using System.Runtime.InteropServices;')
     # body.append('using System.Diagnostics.CodeAnalysis;')
+    body.append('using System.Threading;')
     body.append('using %s;' % schema.interop_namespace)
     body.append('')
 
@@ -380,27 +381,30 @@ def make_proxy_g_body(cls):
 
     # private fields
     result.append('private %s* _self;' % iname)
+    result.append('private int _disposed = 0;')
     result.append('')
+
+    isRefCounted = cls.get_parent_capi_name() == "cef_base_ref_counted_t"
+    isScoped = cls.get_parent_capi_name() == "cef_base_scoped_t"
 
     # ctor
     result.append('private %(csname)s(%(iname)s* ptr)' % { 'csname' : csname, 'iname' : iname })
     result.append('{')
     result.append(indent + 'if (ptr == null) throw new ArgumentNullException("ptr");')
     result.append(indent + '_self = ptr;')
+    if isRefCounted:
+            result.append(indent + 'CefObjectTracker.Track(this);')
     #
     # todo: diagnostics code: Interlocked.Increment(ref _objCt);
     #
     result.append('}')
     result.append('')
 
-    isRefCounted = cls.get_parent_capi_name() == "cef_base_ref_counted_t"
-    isScoped = cls.get_parent_capi_name() == "cef_base_scoped_t"
-
     if isRefCounted:
         # disposable
         result.append('~%s()' % csname)
         result.append('{')
-        result.append(indent + 'if (_self != null)')
+        result.append(indent + 'if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)')
         result.append(indent + '{')
         result.append(indent + indent + 'Release();')
         result.append(indent + indent + '_self = null;')
@@ -410,11 +414,12 @@ def make_proxy_g_body(cls):
 
         result.append('public void Dispose()')
         result.append('{')
-        result.append(indent + 'if (_self != null)')
+        result.append(indent + 'if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)')
         result.append(indent + '{')
         result.append(indent + indent + 'Release();')
         result.append(indent + indent + '_self = null;')
         result.append(indent + '}')
+        result.append(indent + 'CefObjectTracker.Untrack(this);')
         result.append(indent + 'GC.SuppressFinalize(this);')
         result.append('}')
         result.append('')
@@ -484,8 +489,6 @@ def make_handler_g_body(cls):
     # result.append('private bool _disposed;')
     result.append('')
 
-    result.append('protected object SyncRoot { get { return this; } }')
-    result.append('')
 
     if schema.is_reversible(cls):
         result.append('internal static %s FromNativeOrNull(%s* ptr)' % (csname, iname))
@@ -495,6 +498,8 @@ def make_handler_g_body(cls):
         result.append(indent + 'lock (_roots)')
         result.append(indent + '{')
         result.append(indent + indent + 'found = _roots.TryGetValue((IntPtr)ptr, out value);')
+        result.append(indent + indent + '// as we\'re getting the ref from the outside, it\'s our responsibility to decrement it')
+        result.append(indent + indent + 'value.release(ptr);')
         result.append(indent + '}')
         result.append(indent + 'return found ? value : null;')
         result.append('}')
@@ -553,43 +558,35 @@ def make_handler_g_body(cls):
     # todo: verify self pointer in debug
     result.append('private void add_ref(%s* self)' % iname)
     result.append('{')
-    result.append(indent + 'lock (SyncRoot)')
+    result.append(indent + 'if (Interlocked.Increment(ref _refct) == 1)')
     result.append(indent + '{')
-    result.append(indent + indent + 'var result = ++_refct;')
-    result.append(indent + indent + 'if (result == 1)')
-    result.append(indent + indent + '{')
-    result.append(indent + indent + indent + 'lock (_roots) { _roots.Add((IntPtr)_self, this); }')
-    result.append(indent + indent + '}')
+    result.append(indent + indent + 'lock (_roots) { _roots.Add((IntPtr)_self, this); }')
     result.append(indent + '}')
     result.append('}')
     result.append('')
 
     result.append('private int release(%s* self)' % iname)
     result.append('{')
-    result.append(indent + 'lock (SyncRoot)')
+    result.append(indent + 'if (Interlocked.Decrement(ref _refct) == 0)')
     result.append(indent + '{')
-    result.append(indent + indent + 'var result = --_refct;')
-    result.append(indent + indent + 'if (result == 0)')
-    result.append(indent + indent + '{')
-    result.append(indent + indent + indent + 'lock (_roots) { _roots.Remove((IntPtr)_self); }')
+    result.append(indent + indent + 'lock (_roots) { _roots.Remove((IntPtr)_self); }')
     if schema.is_autodispose(cls):
-        result.append(indent + indent + indent + 'Dispose();')
-    result.append(indent + indent + indent + 'return 1;')
-    result.append(indent + indent + '}')
-    result.append(indent + indent + 'return 0;')
+        result.append(indent + indent + 'Dispose();')
+    result.append(indent + indent + 'return 1;')
     result.append(indent + '}')
+    result.append(indent + 'return 0;')
     result.append('}')
     result.append('')
 
     result.append('private int has_one_ref(%s* self)' % iname)
     result.append('{')
-    result.append(indent + 'lock (SyncRoot) { return _refct == 1 ? 1 : 0; }')
+    result.append(indent + 'return _refct == 1 ? 1 : 0;')
     result.append('}')
     result.append('')
 
     result.append('private int has_at_least_one_ref(%s* self)' % iname)
     result.append('{')
-    result.append(indent + 'lock (SyncRoot) { return _refct != 0 ? 1 : 0; }')
+    result.append(indent + 'return _refct != 0 ? 1 : 0;')
     result.append('}')
     result.append('')
 
