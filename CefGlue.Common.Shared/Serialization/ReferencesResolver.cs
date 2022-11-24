@@ -47,7 +47,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 return value;
             }
 
-            throw new ArgumentException($"Reference not found - id={referenceId}");
+            throw new ArgumentOutOfRangeException($"Reference not found - id={referenceId}");
             
         }
 

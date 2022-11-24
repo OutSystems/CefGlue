@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -8,23 +9,24 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal class ObjectJsonConverter : JsonConverter<object>
     {
-        private class ReadState
+        private record ReadState
         {
-            public ReadState(int? arrayIndex, bool hasReference, object objectHolder)
+            public ReadState(object objectHolder) : this(arrayIndex: null, objectHolder) { }
+            
+            public ReadState(int? arrayIndex, object objectHolder)
             {
                 ArrayIndex = arrayIndex;
-                HasReference = hasReference;
                 ObjectHolder = objectHolder;
             }
 
-            public bool HasReference { get; }
-
             public object ObjectHolder { get; }
-            
+
             public string PropertyName { get; set; }
-            
+
             public int? ArrayIndex { get; set; }
         }
+
+        private static readonly ReadState ListWrapperMarker = new ReadState(objectHolder: null);
 
         public override bool CanConvert(Type typeToConvert)
         {
@@ -33,16 +35,16 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
         public override object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var stateStack = new Stack<ReadState>();
+            var state = new Stack<ReadState>();
             var root = new object[1];
             var referencesMap = new Dictionary<string, object>();
 
-            stateStack.Push(new ReadState(0, false, root));
+            state.Push(new ReadState(0, root));
 
             do
             {
                 object value = null;
-                var currentState = stateStack.Peek();
+                var currentState = state.Peek();
 
                 switch (reader.TokenType)
                 {
@@ -69,33 +71,26 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
                     case JsonTokenType.StartArray:
                         value = new object[reader.PeekAndCalculateArraySize()];
-                        stateStack.Push(new ReadState(0, false, value));
+                        state.Push(new ReadState(0, value));
                         break;
 
                     case JsonTokenType.EndArray:
-                        if (!currentState.HasReference)
-                        {
-                            stateStack.Pop();
-                        }
+                        state.Pop();
                         continue;
 
                     case JsonTokenType.StartObject:
-                        if (!HandleReferences(ref reader, referencesMap, out value, out var isNewArray))
-                        {
-                            value = new Dictionary<string, object>();
-                        }
-                        stateStack.Push(new ReadState(isNewArray ? 0 : null, true, value));
+                        value = ReadComplexObject(ref reader, state, referencesMap);
                         break;
 
                     case JsonTokenType.EndObject:
-                        stateStack.Pop();
+                        state.Pop();
                         continue;
                 }
 
                 SetObjectPropertyOrArrayIndex(currentState, value);
             } while (reader.Read());
 
-            if (stateStack.Count > 1 && stateStack.Pop().ObjectHolder != root)
+            if (state.Count > 1 && state.Pop().ObjectHolder != root)
             {
                 throw new InvalidOperationException("Invalid json format - missing enclosing EndArray or EndObject token(s).");
             }
@@ -117,55 +112,59 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             }
         }
 
-        private bool HandleReferences(ref Utf8JsonReader reader, Dictionary<string, object> referencesMap, out object value, out bool isNewArray)
+        private object ReadComplexObject(ref Utf8JsonReader reader, Stack<ReadState> state, IDictionary<string, object> referencesMap)
         {
-            isNewArray = false;
             var tempReader = reader;
+            object obj = null;
+            ReadState newState = null;
+
             tempReader.ReadToken(JsonTokenType.StartObject);
-            
+
             if (tempReader.TokenType == JsonTokenType.EndObject)
             {
-                value = new object();
-                return true;
-            }
-            
-            var propName = tempReader.ReadPropertyName();
-
-            var isId = propName == JsonAttributes.Id;
-            var isRef = !isId && propName == JsonAttributes.Ref;
-            if (!isId && !isRef)
-            {
-                value = null;
-                return false;
-            }
-
-            reader.ReadToken(JsonTokenType.StartObject);
-            reader.ReadToken(JsonTokenType.PropertyName);
-            var objId = reader.GetString();
-
-            if (isRef)
-            {
-                value = referencesMap[objId];
-                return true;
-            }
-
-            // it's $id="N"
-            // check if it's followed by $values=[...]
-            tempReader.Read(); // $id Value
-            propName = tempReader.ReadPropertyName();
-            if (propName == JsonAttributes.Values)
-            {
-                reader.Read(); // objId
-                reader.Read(); // $values PropertyName
-                value = new object[reader.PeekAndCalculateArraySize()];
-                isNewArray = true;
+                // empty object
+                obj = new object();
             }
             else
             {
-                value = new Dictionary<string, object>();
+                // peek first prop name
+                var propName = tempReader.ReadPropertyName();
+                switch (propName)
+                {
+                    case JsonAttributes.Ref:
+                        reader.ReadToken(JsonTokenType.StartObject);
+                        reader.ReadPropertyName();  // skip the $ref
+                        var refId = reader.GetString();
+                        obj = referencesMap[refId];
+                        break;
+
+                    case JsonAttributes.Id:
+                        reader.ReadToken(JsonTokenType.StartObject);
+                        reader.ReadPropertyName(); // skip the $id
+                        var id = tempReader.ReadString();
+                        if (tempReader.ReadPropertyName() == JsonAttributes.Values)
+                        {
+                            // it's a list
+                            reader.Read(); // skip the $id
+                            reader.ReadPropertyName(); // advance reader to the beginning of the list
+                            obj = new object[reader.PeekAndCalculateArraySize()];
+                            state.Push(ListWrapperMarker);
+                            newState = new ReadState(arrayIndex: 0, objectHolder: obj);
+                        }
+                        obj ??= new Dictionary<string, object>();
+                        referencesMap.Add(id, obj);
+                        break;
+
+                    default:
+                        obj = new Dictionary<string, object>();
+                        break;
+                }
             }
-            referencesMap.Add(objId, value);
-            return true;
+
+            newState ??= new ReadState(obj);
+            state.Push(newState);
+
+            return obj;
         }
 
         public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)

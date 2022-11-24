@@ -166,20 +166,17 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                                 case JsonAttributes.Ref:
                                     return referencesResolver.ResolveReference(cefDictionary.GetString(JsonAttributes.Ref));
                                 case JsonAttributes.Id:
-                                    var refId = cefDictionary.GetString(JsonAttributes.Id);
+                                    var id = cefDictionary.GetString(JsonAttributes.Id);
 
+                                    // it's a list
                                     if (keys.Length == 2 && keys.Last() == JsonAttributes.Values)
                                     {
                                         var cefList = cefDictionary.GetList(JsonAttributes.Values);
-                                        var array = new object[cefList.Count];
-                                        
-                                        referencesResolver.AddReference(refId, array);
-                                        DeserializeCefListToArray(cefList, array, referencesResolver);
-                                        return array;
+                                        return DeserializeCefList<object>(cefList, id, referencesResolver);
                                     }
 
                                     dictionary = new ExpandoObject();
-                                    referencesResolver.AddReference(cefDictionary.GetString(JsonAttributes.Id), dictionary);
+                                    referencesResolver.AddReference(id, dictionary);
                                     break;
                                 default:
                                     dictionary = new ExpandoObject();
@@ -235,17 +232,24 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
         internal static TListElementType[] DeserializeCefList<TListElementType>(ICefListValue cefList, IReferencesResolver<object> referencesResolver = null)
         {
-            var array = new TListElementType[cefList.Count];
-            DeserializeCefListToArray(cefList, array, referencesResolver);
-            return array;
+            return DeserializeCefList<TListElementType>(cefList, null, referencesResolver);
         }
 
-        private static void DeserializeCefListToArray<TListElementType>(ICefListValue cefList, TListElementType[] targetArray, IReferencesResolver<object> referencesResolver = null)
+        private static TListElementType[] DeserializeCefList<TListElementType>(ICefListValue cefList, string id, IReferencesResolver<object> referencesResolver)
         {
+            var array = new TListElementType[cefList.Count];
+            
+            if (!string.IsNullOrEmpty(id) && referencesResolver != null)
+            {
+                referencesResolver.AddReference(id, array);
+            }
+
             for (var i = 0; i < cefList.Count; i++)
             {
-                targetArray[i] = (TListElementType)DeserializeCefValue(new CefListWrapper(cefList, i), referencesResolver);
+                array[i] = (TListElementType)DeserializeCefValue(new CefListWrapper(cefList, i), referencesResolver);
             }
+
+            return array;
         }
     }
 }

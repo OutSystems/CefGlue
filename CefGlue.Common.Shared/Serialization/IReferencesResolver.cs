@@ -10,12 +10,12 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal interface IReferencesResolver<T>
     {
-        public string AddReference(T value);
+        string AddReference(T value);
 
-        public void AddReference(string referenceId, T value);
+        void AddReference(string referenceId, T value);
 
-        public T ResolveReference(string referenceId);
+        T ResolveReference(string referenceId);
 
-        public bool TryGetReferenceId(T value, out string referenceId);
+        bool TryGetReferenceId(T value, out string referenceId);
     }
 }
