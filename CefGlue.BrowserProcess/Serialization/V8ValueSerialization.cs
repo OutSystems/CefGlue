@@ -6,6 +6,12 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
 {
     internal static class V8ValueSerialization
     {
+        private enum ObjectReferenceStatus
+        {
+            New,
+            Existing
+        }
+
         /// <summary>
         /// Converts a V8Value to a CefValue (used when sending values from the browser process to the main process)
         /// </summary>
@@ -50,12 +56,10 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                 {
                     using (var cefDictionary = CefDictionaryValue.Create())
                     {
-                        if (!TryHandleExistingObjectReference(obj, cefDictionary, referencesResolver))
+                        if (HandleObjectReference(obj, cefDictionary, referencesResolver) == ObjectReferenceStatus.New)
                         {
                             using (var cefList = CefListValue.Create())
                             {
-                                HandleNewObjectReference(obj, cefDictionary, referencesResolver);
-
                                 var keys = obj.GetKeys();
 
                                 for (var i = 0; i < arrLength; i++)
@@ -89,10 +93,8 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
                 {
                     using (var cefDictionary = CefDictionaryValue.Create())
                     {
-                        if (!TryHandleExistingObjectReference(obj, cefDictionary, referencesResolver))
+                        if (HandleObjectReference(obj, cefDictionary, referencesResolver) == ObjectReferenceStatus.New)
                         {
-                            HandleNewObjectReference(obj, cefDictionary, referencesResolver);
-                            
                             foreach (var key in keys.Where(k => obj.HasValue(k)))
                             {
                                 SerializeV8ObjectToCefValue(obj.GetValue(key), new CefDictionaryWrapper(cefDictionary, key), referencesResolver);
@@ -150,21 +152,17 @@ namespace Xilium.CefGlue.BrowserProcess.Serialization
             return CefV8Value.CreateUndefined();
         }
 
-        private static bool TryHandleExistingObjectReference(CefV8Value obj, CefDictionaryValue cefDictionary, IReferencesResolver<CefV8Value> referencesResolver)
+        private static ObjectReferenceStatus HandleObjectReference(CefV8Value obj, CefDictionaryValue cefDictionary, IReferencesResolver<CefV8Value> referencesResolver)
         {
-            if (!referencesResolver.TryGetReferenceId(obj, out var refId))
+            if (referencesResolver.TryGetReferenceId(obj, out var refId))
             {
-                return false;
+                cefDictionary.SetString(JsonAttributes.Ref, refId);
+                return ObjectReferenceStatus.Existing;
             }
-
-            cefDictionary.SetString(JsonAttributes.Ref, refId);
-            return true;
-        }
-
-        private static void HandleNewObjectReference(CefV8Value obj, CefDictionaryValue cefDictionary, IReferencesResolver<CefV8Value> referencesResolver)
-        {
-            var refId = referencesResolver.AddReference(obj);
+            
+            refId = referencesResolver.AddReference(obj);
             cefDictionary.SetString(JsonAttributes.Id, refId);
+            return ObjectReferenceStatus.New;
         }
     }
 }

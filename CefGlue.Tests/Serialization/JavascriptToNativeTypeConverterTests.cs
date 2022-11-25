@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Xilium.CefGlue.Common.Helpers;
 
@@ -93,6 +94,29 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
+        public void CyclicObjects()
+        {
+            // cyclic object
+            var rootObj = new Dictionary<string, object>
+            {
+                { nameof(CyclicObj.stringField), "root" },
+                { nameof(CyclicObj.otherObj), null },
+            };
+            var innerObj = new Dictionary<string, object>
+            {
+                { nameof(CyclicObj.stringField), "inner" },
+                { nameof(CyclicObj.otherObj), rootObj },
+            };
+            rootObj[nameof(CyclicObj.otherObj)] = innerObj;
+
+            var obtainedObj = JavascriptToNativeTypeConverter.ConvertToNative<CyclicObj>(rootObj);
+            Assert.AreEqual("root", obtainedObj.stringField);
+            Assert.NotNull(obtainedObj.otherObj);
+            Assert.AreEqual("inner", obtainedObj.otherObj.stringField);
+            Assert.AreSame(obtainedObj, obtainedObj.otherObj.otherObj);
+        }
+
+        [Test]
         public void Arrays()
         {
             var emptyStringList = JavascriptToNativeTypeConverter.ConvertToNative<string[]>(new object[0]);
@@ -130,6 +154,18 @@ namespace CefGlue.Tests.Serialization
                 new ChildObj() { stringField = "test2", intField = 2 },
             };
             CollectionAssert.AreEqual(expectedStructList, JavascriptToNativeTypeConverter.ConvertToNative<ChildObj[]>(structList));
+
+            // array with reference objects
+            var refObj = new Dictionary<string, object>
+            {
+                { nameof(CyclicObj.stringField), "objName" },
+                { nameof(CyclicObj.otherObj), null },
+            };
+            var referenceObjectsList = new object[] { refObj, refObj };
+            var obtainedReferenceObjectsList = JavascriptToNativeTypeConverter.ConvertToNative<CyclicObj[]>(referenceObjectsList);
+            Assert.AreEqual(2, obtainedReferenceObjectsList.Count());
+            Assert.AreEqual("objName", obtainedReferenceObjectsList[0].stringField);
+            Assert.AreSame(obtainedReferenceObjectsList[0], obtainedReferenceObjectsList[1]);
         }
     }
 }

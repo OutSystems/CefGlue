@@ -83,7 +83,7 @@ namespace Xilium.CefGlue.Common.Helpers
 
             if (expectedType.IsCollection() || expectedType.IsArray() || expectedType.IsEnumerable())
             {
-                return ConvertToNativeList(obj, expectedType);
+                return ConvertToNativeList(obj, expectedType, convertedObjectsMap);
             }
 
             return ConvertToNativeObject(obj, expectedType, convertedObjectsMap);
@@ -105,7 +105,7 @@ namespace Xilium.CefGlue.Common.Helpers
             return source.GetTypeInfo().IsGenericType && source.GetGenericTypeDefinition() == typeof(IEnumerable<>);
         }
 
-        private static object ConvertToNativeList(object obj, Type expectedType)
+        private static object ConvertToNativeList(object obj, Type expectedType, Dictionary<object, object> convertedObjectsMap)
         {
             if (!(obj is ICollection collection))
             {
@@ -132,7 +132,7 @@ namespace Xilium.CefGlue.Common.Helpers
                     if (typeof(IDictionary<string, object>).IsAssignableFrom(itemType) ||
                         typeof(IList<object>).IsAssignableFrom(itemType))
                     {
-                        convertedItem = ConvertToNative(item, listItemType);
+                        convertedItem = ConvertToNative(item, listItemType, convertedObjectsMap);
                     }
                 }
 

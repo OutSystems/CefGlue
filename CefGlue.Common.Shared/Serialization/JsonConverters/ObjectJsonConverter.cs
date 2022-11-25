@@ -11,9 +11,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
     {
         private record ReadState
         {
-            public ReadState(object objectHolder) : this(arrayIndex: null, objectHolder) { }
-            
-            public ReadState(int? arrayIndex, object objectHolder)
+            public ReadState(object objectHolder, long arrayIndex = -1)
             {
                 ArrayIndex = arrayIndex;
                 ObjectHolder = objectHolder;
@@ -23,7 +21,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
             public string PropertyName { get; set; }
 
-            public int? ArrayIndex { get; set; }
+            public long ArrayIndex { get; set; }
         }
 
         private static readonly ReadState ListWrapperMarker = new ReadState(objectHolder: null);
@@ -39,7 +37,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             var root = new object[1];
             var referencesMap = new Dictionary<string, object>();
 
-            state.Push(new ReadState(0, root));
+            state.Push(new ReadState(root, 0));
 
             do
             {
@@ -71,17 +69,14 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
                     case JsonTokenType.StartArray:
                         value = new object[reader.PeekAndCalculateArraySize()];
-                        state.Push(new ReadState(0, value));
+                        state.Push(new ReadState(value, 0));
                         break;
-
-                    case JsonTokenType.EndArray:
-                        state.Pop();
-                        continue;
 
                     case JsonTokenType.StartObject:
                         value = ReadComplexObject(ref reader, state, referencesMap);
                         break;
 
+                    case JsonTokenType.EndArray:
                     case JsonTokenType.EndObject:
                         state.Pop();
                         continue;
@@ -105,9 +100,9 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             {
                 ((Dictionary<string, object>)obj)[state.PropertyName] = value;
             }
-            else if (state.ArrayIndex != null)
+            else if (state.ArrayIndex >= 0)
             {
-                ((object[])obj)[state.ArrayIndex.Value] = value;
+                ((object[])obj)[state.ArrayIndex] = value;
                 state.ArrayIndex++;
             }
         }
@@ -151,7 +146,10 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                             state.Push(ListWrapperMarker);
                             newState = new ReadState(arrayIndex: 0, objectHolder: obj);
                         }
-                        obj ??= new Dictionary<string, object>();
+                        else
+                        {
+                            obj = new Dictionary<string, object>();
+                        }
                         referencesMap.Add(id, obj);
                         break;
 

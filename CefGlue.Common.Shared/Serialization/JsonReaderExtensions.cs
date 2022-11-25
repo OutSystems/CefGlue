@@ -5,7 +5,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal static class JsonReaderExtensions
     {
-        internal static object GetNumber(this Utf8JsonReader reader)
+        public static object GetNumber(this Utf8JsonReader reader)
         {
             reader.AssertToken(JsonTokenType.Number);
 
@@ -27,7 +27,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         /// A DateTime if DateTimeMarker is found.
         /// A byte[] if BinaryMarker is found.
         /// </returns>
-        internal static object GetObjectFromString(this Utf8JsonReader reader)
+        public static object GetObjectFromString(this Utf8JsonReader reader)
         {
             var stringValue = reader.GetString();
             if (stringValue.Length >= DataMarkers.MarkerLength)
@@ -56,13 +56,13 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             }
         }
 
-        internal static void ReadToken(this ref Utf8JsonReader reader, JsonTokenType token)
+        public static void ReadToken(this ref Utf8JsonReader reader, JsonTokenType token)
         {
             reader.AssertToken(token);
             reader.Read();
         }
 
-        internal static string ReadPropertyName(this ref Utf8JsonReader reader)
+        public static string ReadPropertyName(this ref Utf8JsonReader reader)
         {
             reader.AssertToken(JsonTokenType.PropertyName);
             var propertyName = reader.GetString();
@@ -70,7 +70,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             return propertyName;
         }
 
-        internal static string ReadString(this ref Utf8JsonReader reader)
+        public static string ReadString(this ref Utf8JsonReader reader)
         {
             reader.AssertToken(JsonTokenType.String);
             var result = reader.GetString();
@@ -78,7 +78,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             return result;
         }
 
-        internal static int PeekAndCalculateArraySize(this Utf8JsonReader reader)
+        public static int PeekAndCalculateArraySize(this Utf8JsonReader reader)
         {
             var arraySize = 0;
             var startDepth = reader.CurrentDepth;

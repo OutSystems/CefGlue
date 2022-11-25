@@ -32,4 +32,10 @@ namespace CefGlue.Tests.Serialization
         public byte[] binaryField;
         public double doubleField;
     }
+
+    public class CyclicObj
+    {
+        public string stringField;
+        public CyclicObj otherObj;
+    }
 }
