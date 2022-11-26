@@ -8,6 +8,8 @@
     <PropertyGroup>
         <PackageOutputPath>$(MSBuildProjectDirectory)\..\Nuget\output</PackageOutputPath>
         <Version>91.4472.31</Version>
+<!--        <Version>106.0.26</Version>-->
+
         <Authors>XiliumHQ,OutSystems</Authors>
         <Product>CefGlue</Product>
         <AssemblyTitle>CefGlue</AssemblyTitle>

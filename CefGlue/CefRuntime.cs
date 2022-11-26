@@ -69,6 +69,11 @@
         #endregion
 
         /// <summary>
+        /// Gets whether the CEF runtime has been initialized;
+        /// </summary>
+        public static bool IsInitialized => _initialized;
+
+        /// <summary>
         /// Loads CEF runtime.
         /// </summary>
         /// <exception cref="DllNotFoundException"></exception>
