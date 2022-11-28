@@ -17,7 +17,7 @@
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model);
+            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
             ExecuteCommand(m_menuModel, command_id, event_flags);
         }
 
@@ -32,7 +32,7 @@
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model);
+            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
             var m_screenPoint = new CefPoint(screen_point->x, screen_point->y);
             MouseOutsideMenu(m_menuModel, m_screenPoint);
         }
@@ -48,7 +48,7 @@
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model);
+            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
             UnhandledOpenSubmenu(m_menuModel, is_rtl != 0);
         }
 
@@ -63,7 +63,7 @@
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model);
+            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
             UnhandledCloseSubmenu(m_menuModel, is_rtl != 0);
         }
 
@@ -78,7 +78,7 @@
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model);
+            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
             MenuWillShow(m_menuModel);
         }
 
@@ -92,7 +92,7 @@
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model);
+            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
             MenuClosed(m_menuModel);
         }
 
@@ -106,7 +106,7 @@
         {
             CheckSelf(self);
 
-            var m_menuModel = CefMenuModel.FromNative(menu_model);
+            var m_menuModel = CefMenuModel.FromNative(menu_model); // TODO dispose?
             var m_label = cef_string_t.ToString(label);
 
             if (FormatLabel(m_menuModel, ref m_label))
