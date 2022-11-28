@@ -293,7 +293,7 @@
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
-            var m_dragData = CefDragData.FromNative(drag_data);
+            var m_dragData = CefDragData.FromNative(drag_data); // TODO dispose?
 
             var m_result = StartDragging(m_browser, m_dragData, allowed_ops, x, y);
 
