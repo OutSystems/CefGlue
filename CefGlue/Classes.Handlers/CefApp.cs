@@ -16,11 +16,10 @@
             CheckSelf(self);
 
             var processType = cef_string_t.ToString(process_type);
-            var m_commandLine = CefCommandLine.FromNative(command_line);
-
-            OnBeforeCommandLineProcessing(processType, m_commandLine);
-
-            m_commandLine.Dispose();
+            using (var m_commandLine = CefCommandLine.FromNative(command_line))
+            {
+                OnBeforeCommandLineProcessing(processType, m_commandLine);
+            }
         }
 
         /// <summary>
@@ -46,9 +45,14 @@
 
             var m_registrar = CefSchemeRegistrar.FromNative(registrar);
 
-            OnRegisterCustomSchemes(m_registrar);
-
-            m_registrar.ReleaseObject();
+            try
+            {
+                OnRegisterCustomSchemes(m_registrar);
+            }
+            finally
+            {
+                m_registrar.ReleaseObject();
+            }
         }
 
         /// <summary>
