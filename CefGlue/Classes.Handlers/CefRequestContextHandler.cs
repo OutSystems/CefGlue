@@ -17,7 +17,7 @@
         {
             CheckSelf(self);
 
-            var mRequestContext = CefRequestContext.FromNative(request_context);
+            var mRequestContext = CefRequestContext.FromNative(request_context); // TODO dispose?
             OnRequestContextInitialized(mRequestContext);
         }
 
@@ -34,7 +34,7 @@
 
             var m_browser = CefBrowser.FromNativeOrNull(browser);
             var m_frame = CefFrame.FromNativeOrNull(frame);
-            var m_request = CefRequest.FromNative(request);
+            var m_request = CefRequest.FromNative(request); // TODO dispose?
             var m_isNavigation = is_navigation != 0;
             var m_isDownload = is_download != 0;
             var m_requestInitiator = cef_string_t.ToString(request_initiator);
