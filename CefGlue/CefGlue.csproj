@@ -5,7 +5,6 @@
     <AssemblyName>Xilium.CefGlue</AssemblyName>
     <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
