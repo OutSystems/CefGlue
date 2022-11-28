@@ -138,7 +138,12 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             }
         }
 
-        internal static object DeserializeCefValue(CefValueWrapper cefValue, IReferencesResolver<object> referencesResolver = null)
+        internal static object DeserializeCefValue(CefValueWrapper cefValue)
+        {
+            return DeserializeCefValue(cefValue, null);
+        }
+
+        private static object DeserializeCefValue(CefValueWrapper cefValue, IReferencesResolver<object> referencesResolver = null)
         {
             switch (cefValue.GetValueType())
             {
