@@ -18,7 +18,7 @@
 
             var m_browser = CefBrowser.FromNative(browser);
             var m_frame = CefFrame.FromNative(frame);
-            var m_request = CefRequest.FromNative(request);
+            var m_request = CefRequest.FromNative(request); // TODO dispose?
             var m_userGesture = user_gesture != 0;
             var m_isRedirect = is_redirect != 0;
 
@@ -87,7 +87,7 @@
 
             var m_browser = CefBrowser.FromNativeOrNull(browser);
             var m_frame = CefFrame.FromNativeOrNull(frame);
-            var m_request = CefRequest.FromNative(request);
+            var m_request = CefRequest.FromNative(request); // TODO dispose?
             var m_isNavigation = is_navigation != 0;
             var m_isDownload = is_download != 0;
             var m_requestInitiator = cef_string_t.ToString(request_initiator);
@@ -185,7 +185,7 @@
 
             var m_browser = CefBrowser.FromNative(browser);
             var m_request_url = cef_string_t.ToString(request_url);
-            var m_ssl_info = CefSslInfo.FromNative(ssl_info);
+            var m_ssl_info = CefSslInfo.FromNative(ssl_info); // TODO dispose?
             var m_callback = CefCallback.FromNativeOrNull(callback);
 
             var result = OnCertificateError(m_browser, cert_error, m_request_url, m_ssl_info, m_callback);
