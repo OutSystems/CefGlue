@@ -19,7 +19,7 @@
 
             var m_browser = CefBrowser.FromNativeOrNull(browser);
             var m_frame = CefFrame.FromNativeOrNull(frame);
-            var m_request = CefRequest.FromNative(request);
+            var m_request = CefRequest.FromNative(request); // TODO dispose?
 
             var m_result = GetCookieAccessFilter(m_browser, m_frame, m_request);
 
@@ -42,7 +42,7 @@
 
             var m_browser = CefBrowser.FromNativeOrNull(browser);
             var m_frame = CefFrame.FromNativeOrNull(frame);
-            var m_request = CefRequest.FromNative(request);
+            var m_request = CefRequest.FromNative(request); // TODO dispose?
             var m_callback = CefCallback.FromNative(callback);
 
             var result = OnBeforeResourceLoad(m_browser, m_frame, m_request, m_callback);
@@ -81,13 +81,12 @@
 
             var m_browser = CefBrowser.FromNativeOrNull(browser);
             var m_frame = CefFrame.FromNativeOrNull(frame);
-            var m_request = CefRequest.FromNative(request);
+            using (var m_request = CefRequest.FromNative(request))
+            {
+                var handler = GetResourceHandler(m_browser, m_frame, m_request);
 
-            var handler = GetResourceHandler(m_browser, m_frame, m_request);
-
-            m_request.Dispose();
-
-            return handler != null ? handler.ToNative() : null;
+                return handler != null ? handler.ToNative() : null;
+            }
         }
 
         /// <summary>
@@ -108,8 +107,8 @@
 
             var m_browser = CefBrowser.FromNativeOrNull(browser);
             var m_frame = CefFrame.FromNativeOrNull(frame);
-            var m_request = CefRequest.FromNative(request);
-            var m_response = CefResponse.FromNative(response);
+            var m_request = CefRequest.FromNative(request); // TODO dispose?
+            var m_response = CefResponse.FromNative(response); // TODO dispose?
             var m_newUrl = cef_string_t.ToString(new_url);
 
             var o_newUrl = m_newUrl;
@@ -142,8 +141,8 @@
 
             var m_browser = CefBrowser.FromNativeOrNull(browser);
             var m_frame = CefFrame.FromNativeOrNull(frame);
-            var m_request = CefRequest.FromNative(request);
-            var m_response = CefResponse.FromNative(response);
+            var m_request = CefRequest.FromNative(request); // TODO dispose?
+            var m_response = CefResponse.FromNative(response); // TODO dispose?
 
             var m_result = OnResourceResponse(m_browser, m_frame, m_request, m_response);
 
@@ -174,8 +173,8 @@
 
             var mBrowser = CefBrowser.FromNativeOrNull(browser);
             var mFrame = CefFrame.FromNativeOrNull(frame);
-            var mRequest = CefRequest.FromNative(request);
-            var mResponse = CefResponse.FromNative(response);
+            var mRequest = CefRequest.FromNative(request); // TODO dispose?
+            var mResponse = CefResponse.FromNative(response); // TODO dispose?
 
             var result = GetResourceResponseFilter(mBrowser, mFrame, mRequest, mResponse);
 
@@ -204,8 +203,8 @@
 
             var mBrowser = CefBrowser.FromNativeOrNull(browser);
             var mFrame = CefFrame.FromNativeOrNull(frame);
-            var mRequest = CefRequest.FromNative(request);
-            var mResponse = CefResponse.FromNative(response);
+            var mRequest = CefRequest.FromNative(request); // TODO dispose?
+            var mResponse = CefResponse.FromNative(response); // TODO dispose?
 
             OnResourceLoadComplete(mBrowser, mFrame, mRequest, mResponse, status, received_content_length);
         }
@@ -237,7 +236,7 @@
 
             var m_browser = CefBrowser.FromNativeOrNull(browser);
             var m_frame = CefFrame.FromNativeOrNull(frame);
-            var m_request = CefRequest.FromNative(request);
+            var m_request = CefRequest.FromNative(request); // TODO dispose?
             var m_allow_os_execution = *allow_os_execution != 0;
 
             OnProtocolExecution(m_browser, m_frame, m_request, ref m_allow_os_execution);
