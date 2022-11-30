@@ -18,7 +18,7 @@
         {
             CheckSelf(self);
 
-            var m_request = CefUrlRequest.FromNative(request);
+            var m_request = CefUrlRequest.FromNative(request); // TODO dispose?
 
             OnRequestComplete(m_request);
         }
@@ -35,7 +35,7 @@
         {
             CheckSelf(self);
 
-            var m_request = CefUrlRequest.FromNative(request);
+            var m_request = CefUrlRequest.FromNative(request); // TODO dispose?
 
             OnUploadProgress(m_request, current, total);
         }
@@ -53,7 +53,7 @@
         {
             CheckSelf(self);
 
-            var m_request = CefUrlRequest.FromNative(request);
+            var m_request = CefUrlRequest.FromNative(request); // TODO dispose?
 
             OnDownloadProgress(m_request, current, total);
         }
@@ -70,7 +70,7 @@
         {
             CheckSelf(self);
 
-            var m_request = CefUrlRequest.FromNative(request);
+            var m_request = CefUrlRequest.FromNative(request); // TODO dispose?
 
             using (var stream = new UnmanagedMemoryStream((byte*)data, (long)data_length))
             {
@@ -94,7 +94,7 @@
             var m_host = cef_string_t.ToString(host);
             var m_realm = cef_string_t.ToString(realm);
             var m_scheme = cef_string_t.ToString(scheme);
-            var m_callback = CefAuthCallback.FromNative(callback);
+            var m_callback = CefAuthCallback.FromNative(callback); // TODO dispose?
 
             var m_result = GetAuthCredentials(m_isProxy, m_host, port, m_realm, m_scheme, m_callback);
 
