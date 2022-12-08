@@ -31,7 +31,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
         public IEnumerable<string> MethodsNames => _methods.Keys;
 
-        public void ExecuteMethod(string methodName, object[] args, Action<object, Exception> handleResult)
+        public void ExecuteMethod(string methodName, string argsJson, Action<object, Exception> handleResult)
         {
             if (!_methods.TryGetValue(methodName ?? "", out var method))
             {
@@ -41,12 +41,12 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
             if (_methodHandler == null)
             {
-                method.Execute(_target, args, handleResult);
+                method.Execute(_target, argsJson, handleResult);
                 return;
             }
 
-            var innerMethod = method.MakeDelegate(_target, args);
-            _methodHandler.Execute(_methodHandlerTarget, new[] { innerMethod }, (result, exception) =>
+            var innerMethod = method.MakeDelegate(_target, argsJson);
+            _methodHandler.Execute(_methodHandlerTarget, innerMethod, (result, exception) =>
             {
                 if (result is Task task)
                 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers;
 
@@ -23,22 +24,29 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             _optionalParameter = parameters.Skip(_mandatoryParameters.Length).FirstOrDefault();
         }
         
-        public Func<object> MakeDelegate(object targetObj, object[] args)
+        public Func<object> MakeDelegate(object targetObj, string argsJson)
         {
-            var convertedArgs = ConvertArguments(args);
-
-            return () => ExecuteMethod(targetObj, convertedArgs);
+            return () => ExecuteMethod(targetObj, ConvertArguments(argsJson));
         }
 
-        public void Execute(object targetObj, object[] args, Action<object, Exception> handleResult)
+        public void Execute(object targetObj, string argsJson, Action<object, Exception> handleResult)
+        {
+            Execute(targetObj, ConvertArguments(argsJson), handleResult);
+        }
+
+        public void Execute(object targetObj, Func<object> innerMethod, Action<object, Exception> handleResult)
+        {
+            Execute(targetObj, new[] { innerMethod }, handleResult);
+        }
+
+        private void Execute(object targetObj, object[] args, Action<object, Exception> handleResult)
         {
             object result = null;
             Exception exception = null;
             try
             {
-                var convertedArgs = ConvertArguments(args);
-                result = ExecuteMethod(targetObj, convertedArgs);
-            } 
+                result = ExecuteMethod(targetObj, args);
+            }
             catch (Exception e)
             {
                 exception = e;
@@ -72,12 +80,17 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             }
         }
 
-        private object[] ConvertArguments(object[] args)
+        private object[] ConvertArguments(string argsJson)
         {
-            if (args.Length < _mandatoryParameters.Length)
+            if (string.IsNullOrEmpty(argsJson))
             {
-                throw new ArgumentException($"Number of arguments provided does not match the number of {_methodInfo.Name} method required parameters.");
+                ValidateMandatoryArguments(Array.Empty<object>());
+                return Array.Empty<object>();
             }
+
+            var args = Shared.Serialization.CefValueSerialization.DeserializeAsJson<object[]>(argsJson);
+            
+            ValidateMandatoryArguments(args);
 
             var argIndex = 0;
             var convertedArgs = new List<object>(_mandatoryParameters.Length + 1);
@@ -94,6 +107,14 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             }
 
             return convertedArgs.ToArray();
+        }
+
+        private void ValidateMandatoryArguments(object[] args)
+        {
+            if (args.Length < _mandatoryParameters.Length)
+            {
+                throw new ArgumentException($"Number of arguments provided does not match the number of {_methodInfo.Name} method required parameters.");
+            }
         }
 
         private static bool IsParamArray(ParameterInfo paramInfo)

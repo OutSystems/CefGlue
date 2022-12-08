@@ -31,7 +31,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 return;
             }
 
-            nativeObject.ExecuteMethod(message.MemberName, message.ArgumentsOut, (result, exception) =>
+            nativeObject.ExecuteMethod(message.MemberName, message.ArgumentsJson, (result, exception) =>
             {
                 using (CefObjectTracker.StartTracking())
                 {

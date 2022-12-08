@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using Xilium.CefGlue.Common.Shared.Serialization;
 
@@ -140,16 +140,15 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
             }
         }
 
-        public struct NativeObjectCallRequest : IDisposable
+        public struct NativeObjectCallRequest
         {
             public const string Name = nameof(NativeObjectCallRequest);
 
             public int CallId;
             public string ObjectName;
             public string MemberName;
-            public ICefListValue ArgumentsIn;
-            public object[] ArgumentsOut;
-
+            public string ArgumentsJson;
+            
             public CefProcessMessage ToCefProcessMessage()
             {
                 var message = CefProcessMessage.Create(Name);
@@ -158,9 +157,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                     arguments.SetInt(0, CallId);
                     arguments.SetString(1, ObjectName);
                     arguments.SetString(2, MemberName);
-                    arguments.SetList(3, ArgumentsIn);
-                    ArgumentsIn.Dispose();
-                    ArgumentsIn = null;
+                    arguments.SetString(3, ArgumentsJson);
                 }
                 return message;
             }
@@ -168,23 +165,15 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
             public static NativeObjectCallRequest FromCefMessage(CefProcessMessage message)
             {
                 using (var arguments = message.Arguments)
-                using (var argsArgs = arguments.GetList(3))
                 {
                     return new NativeObjectCallRequest()
                     {
                         CallId = arguments.GetInt(0),
                         ObjectName = arguments.GetString(1),
                         MemberName = arguments.GetString(2),
-                        ArgumentsIn = null,
-                        ArgumentsOut = CefValueSerialization.DeserializeCefList<object>(argsArgs),
+                        ArgumentsJson = arguments.GetString(3),
                     };
                 }
-            }
-
-            public void Dispose()
-            {
-                ArgumentsIn?.Dispose();
-                ArgumentsIn = null;
             }
         }
 

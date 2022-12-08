@@ -128,12 +128,7 @@ namespace Xilium.CefGlue.Common.Helpers
                 else
                 {
                     var itemType = item.GetType();
-                    // if the collection item is a list or dictionary then we'll attempt to convert it
-                    if (typeof(IDictionary<string, object>).IsAssignableFrom(itemType) ||
-                        typeof(IList<object>).IsAssignableFrom(itemType))
-                    {
-                        convertedItem = ConvertToNative(item, listItemType, convertedObjectsMap);
-                    }
+                    convertedItem = ConvertToNative(item, listItemType, convertedObjectsMap);
                 }
 
                 nativeList[i++] = convertedItem;

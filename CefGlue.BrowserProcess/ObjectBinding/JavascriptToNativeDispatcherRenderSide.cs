@@ -176,16 +176,16 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     foreach (var objectInfo in objectInfos)
                     {
                         var handler = new V8FunctionHandler(objectInfo.Name, HandleNativeObjectCall);
-                        var attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontDelete;
-
+                        
                         var v8Obj = CefV8Value.CreateObject();
                         foreach (var methodName in objectInfo.MethodsNames)
                         {
                             var v8Function = CefV8Value.CreateFunction(methodName, handler);
-                            v8Obj.SetValue(methodName, v8Function, attributes);
+                            v8Obj.SetValue(methodName, v8Function);
                         }
 
-                        global.SetValue(objectInfo.Name, v8Obj);
+                        var interceptorObj = JavascriptHelper.CreateInterceptorObject(context, v8Obj);
+                        global.SetValue(objectInfo.Name, interceptorObj);
                     }
 
                     return true;

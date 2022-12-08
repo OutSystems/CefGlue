@@ -118,6 +118,19 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             }
         }
 
+        internal static string SerializeAsJson(object value)
+        {
+            try
+            {
+                return JsonSerializer.Serialize(value, _jsonSerializerOptions);
+            }
+            catch (JsonException e)
+            {
+                // wrap the json exception
+                throw new InvalidOperationException(e.Message);
+            }
+        }
+
         /// <summary>
         /// Using JSON serialization is usually faster than using CefList and CefDictionary.
         /// </summary>
@@ -126,16 +139,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         /// <exception cref="InvalidOperationException"></exception>
         private static void SerializeAsJson(object value, CefValueWrapper cefValue)
         {
-            try
-            {
-                var json = JsonSerializer.Serialize(value, _jsonSerializerOptions);
-                cefValue.SetString(json);
-            }
-            catch (JsonException e)
-            {
-                // wrap the json exception
-                throw new InvalidOperationException(e.Message);
-            }
+            cefValue.SetString(SerializeAsJson(value));
         }
 
         internal static object DeserializeCefValue(CefValueWrapper cefValue)
@@ -224,9 +228,14 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
         private static object DeserializeAsJson(string value)
         {
+            return DeserializeAsJson<object>(value);
+        }
+
+        internal static TargetType DeserializeAsJson<TargetType>(string value)
+        {
             try
             {
-                return JsonSerializer.Deserialize<object>(value, _jsonDeserializerOptions);
+                return (TargetType)JsonSerializer.Deserialize(value, typeof(TargetType), _jsonDeserializerOptions);
             }
             catch (JsonException e)
             {

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using Xilium.CefGlue.Common.ObjectBinding;
+using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace CefGlue.Tests.Javascript
 {
@@ -56,11 +58,16 @@ namespace CefGlue.Tests.Javascript
             nativeObject = new NativeObject("test", nativeTestObject);
         }
 
+        private string GetStringifiedArgs(object[] args)
+        {
+            return CefValueSerialization.SerializeAsJson(args);
+        }
+
         private object ExecuteMethod(string name, object[] args)
         {
             object result = null;
             Exception exception = null;
-            nativeObject.ExecuteMethod(name, args, (r, e) =>
+            nativeObject.ExecuteMethod(name, GetStringifiedArgs(args), (r, e) =>
             {
                 result = r;
                 exception = e;
@@ -75,7 +82,7 @@ namespace CefGlue.Tests.Javascript
         private Task<object> ExecuteAsyncMethod(string name, object[] args)
         {
             var tcs = new TaskCompletionSource<object>();
-            nativeObject.ExecuteMethod(name, args, (r, e) =>
+            nativeObject.ExecuteMethod(name, GetStringifiedArgs(args), (r, e) =>
             {
                 if (e != null)
                 {
