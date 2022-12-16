@@ -251,7 +251,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
             if (objectTypeInfo.ObjectType == typeof(object))
             {
-                return DictionaryDeserializerState.Create(objectTypeInfo);
+                return DynamicDeserializerState.Create(objectTypeInfo);
             }
 
             return ObjectDeserializerState.Create(objectTypeInfo);
@@ -261,7 +261,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         {
             if (obj is IDictionary<string, object> dictionaryObj)
             {
-                return new DictionaryDeserializerState(dictionaryObj, newTypeInfo);
+                return new DynamicDeserializerState(dictionaryObj, newTypeInfo);
             }
 
             if (obj is Array arrayObj)

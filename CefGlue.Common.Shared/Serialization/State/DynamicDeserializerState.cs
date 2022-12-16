@@ -5,14 +5,14 @@ using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
-    internal class DictionaryDeserializerState : BaseDeserializerState<IDictionary<string, object>>
+    internal class DynamicDeserializerState : BaseDeserializerState<IDictionary<string, object>>
     {
-        public DictionaryDeserializerState(IDictionary<string, object> objectHolder, JsonTypeInfo objectTypeInfo) : base(objectHolder, objectTypeInfo) { }
+        public DynamicDeserializerState(IDictionary<string, object> objectHolder, JsonTypeInfo objectTypeInfo) : base(objectHolder, objectTypeInfo) { }
 
-        internal static DictionaryDeserializerState Create(JsonTypeInfo objectTypeInfo)
+        internal static DynamicDeserializerState Create(JsonTypeInfo objectTypeInfo)
         {
             var obj = CreateObjectInstance();
-            return new DictionaryDeserializerState(obj, objectTypeInfo);
+            return new DynamicDeserializerState(obj, objectTypeInfo);
         }
 
         public override void SetValue(object value)

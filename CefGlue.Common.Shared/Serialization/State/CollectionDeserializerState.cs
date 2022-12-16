@@ -37,7 +37,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
         private static object CreateCollection(JsonTypeInfo objectTypeInfo, string propertyName, out Type collectionElementType)
         {
-            // is it an args array? (it is when the root object is an array and the parametersTypes argument was passed to the Deserializer function)
             collectionElementType = objectTypeInfo.GetCollectionElementType(propertyName);
             return Activator.CreateInstance(objectTypeInfo.ObjectType, nonPublic: true);
         }
