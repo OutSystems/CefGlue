@@ -60,6 +60,13 @@ namespace CefGlue.Tests.Javascript
                 MethodWithParamsCalled?.Invoke(new object[] { param1, param2, param3, param4 });
             }
 
+            public event Action<object[]> MethodWithStringAndObjectsParamsCalled;
+
+            public void MethodWithStringAndObjectsParams(string param1, Person person1, Person person2, Person person3)
+            {
+                MethodWithStringAndObjectsParamsCalled?.Invoke(new object[] { param1, person1, person2, person3 });
+            }
+
             public event Action<object[]> MethodWithStringParamCalled;
 
             public void MethodWithStringParam(string param1)
@@ -242,7 +249,6 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public async Task MethodWithCyclicObjectParamIsPassed()
         {
-            // TODO - bcs - test with a couple of parameters that share the same instances
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithCyclicObjectParamCalled += (args) => taskCompletionSource.SetResult(args);
 
@@ -262,6 +268,30 @@ namespace CefGlue.Tests.Javascript
             Assert.AreEqual("child1", arg.Child.Name);
             Assert.NotNull(arg.Child.Parent);
             Assert.AreSame(arg, arg.Child.Parent);
+        }
+
+        [Test]
+        public async Task MethodWithStringAndObjectsParamsIsPassed()
+        {
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithStringAndObjectsParamsCalled += (args) => taskCompletionSource.SetResult(args);
+
+            var script = @$"const person1 = {{'Name': 'person1', 'Age': 10, 'BirthDate': new Date('{Date}') }};
+                            const person2 = {{'Name': 'person2', 'Age': 15, 'BirthDate': new Date('{Date}') }};
+                            {ObjName}.methodWithStringAndObjectsParams('stringParam', person1, person2, person1);";
+            Execute(script);
+
+            var result = await taskCompletionSource.Task;
+            Assert.AreEqual(4, result.Length);
+            Assert.IsInstanceOf<string>(result[0]);
+            Assert.IsInstanceOf<Person>(result[1]);
+            Assert.IsInstanceOf<Person>(result[2]);
+            Assert.IsInstanceOf<Person>(result[3]);
+
+            Assert.AreEqual("stringParam", result[0]);
+            Assert.AreEqual("person1", ((Person)result[1]).Name);
+            Assert.AreEqual("person2", ((Person)result[2]).Name);
+            Assert.AreSame(result[1], result[3]);
         }
 
         [Test]
