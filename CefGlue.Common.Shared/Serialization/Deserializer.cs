@@ -10,8 +10,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal class Deserializer
     {
-        // TODO - bcs - consider expanding the DeserlizerMaxDepth to integer.MaxValue
-        private const int DeserializerMaxDepth = int.MaxValue; //255;
+        private const int DeserializerMaxDepth = byte.MaxValue * 2;
 
         private record ReferenceInfo
         {

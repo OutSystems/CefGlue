@@ -68,7 +68,6 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 var message = Messages.JsEvaluationRequest.FromCefMessage(args.Message);
 
-                // TODO - bcs - move method to JavaScriptHelper
                 // send script to browser
                 var success = context.V8Context.TryEval($"{GlobalObjectName}.{EvaluateScriptFunctionName}(() => ({message.Script}))", message.Url, message.Line, out var value, out var exception);
 
