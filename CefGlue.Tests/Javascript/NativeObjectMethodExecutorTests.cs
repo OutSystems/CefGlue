@@ -60,7 +60,7 @@ namespace CefGlue.Tests.Javascript
 
         private string GetStringifiedArgs(object[] args)
         {
-            return CefValueSerialization.SerializeAsJson(args);
+            return Serializer.Serialize(args);
         }
 
         private object ExecuteMethod(string name, object[] args)

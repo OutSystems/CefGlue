@@ -149,7 +149,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         {
             return string.IsNullOrEmpty(args) ?
                 Array.Empty<object>() :
-                JsonDeserializer.Deserialize<object[]>(
+                Deserializer.Deserialize<object[]>(
                     args, 
                     new Shared.Serialization.State.ParametersDeserializerState.ParametersTypes(
                         _mandatoryParameters.Select(p => p.ParameterType).ToArray(), 

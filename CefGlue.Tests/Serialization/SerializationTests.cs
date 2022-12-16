@@ -4,9 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using Xilium.CefGlue;
 using Xilium.CefGlue.Common.Shared.Serialization;
-using static Xilium.CefGlue.Common.Shared.Serialization.CefValueSerialization;
+using static Xilium.CefGlue.Common.Shared.Serialization.Serializer;
 
 // TODO - bcs - rename file
 namespace CefGlue.Tests.Serialization
@@ -29,8 +28,8 @@ namespace CefGlue.Tests.Serialization
 
         private static ObjectType SerializeAndDeserialize<ObjectType>(ObjectType value)
         {
-            var json = SerializeAsJson(value);
-            var result = JsonDeserializer.Deserialize<ObjectType>(json);
+            var json = Serialize(value);
+            var result = Deserializer.Deserialize<ObjectType>(json);
             return result;
         }
 
@@ -255,7 +254,7 @@ namespace CefGlue.Tests.Serialization
                 child = nestedChild;
             }
 
-            Assert.DoesNotThrow(() => SerializeAsJson(list));
+            Assert.DoesNotThrow(() => Serialize(list));
         }
 
         [Test]
@@ -278,10 +277,10 @@ namespace CefGlue.Tests.Serialization
                 IncludeFields = true,
                 MaxDepth = int.MaxValue,
             };
-            var json = System.Text.Json.JsonSerializer.Serialize(list, jsonSerializerOptions);
+            var json = JsonSerializer.Serialize(list, jsonSerializerOptions);
             object obtainedValue = null;
 
-            Assert.DoesNotThrow(() => obtainedValue = JsonDeserializer.Deserialize<List<object>>(json));
+            Assert.DoesNotThrow(() => obtainedValue = Deserializer.Deserialize<List<object>>(json));
         }
 
         [Test]
@@ -294,8 +293,8 @@ namespace CefGlue.Tests.Serialization
 
             string json = string.Empty;
             List<object> obtainedValue = null;
-            Assert.DoesNotThrow(() => json = SerializeAsJson(list));
-            Assert.DoesNotThrow(() => obtainedValue = JsonDeserializer.Deserialize<List<object>>(json));
+            Assert.DoesNotThrow(() => json = Serialize(list));
+            Assert.DoesNotThrow(() => obtainedValue = Deserializer.Deserialize<List<object>>(json));
             Assert.AreEqual(2, obtainedValue.Count());
             Assert.AreSame(obtainedValue[0], obtainedValue[1]);
         }

@@ -143,7 +143,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                     throw task.Exception.InnerException;
                 }
 
-                return JsonDeserializer.Deserialize<T>(task.Result);
+                return Deserializer.Deserialize<T>(task.Result);
             }
             catch (Exception e)
             {

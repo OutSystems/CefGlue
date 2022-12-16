@@ -59,7 +59,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 try
                 {
-                    resultMessage.ResultAsJson = CefValueSerialization.SerializeAsJson(result);
+                    resultMessage.ResultAsJson = Serializer.Serialize(result);
                 }
                 catch (Exception e)
                 {

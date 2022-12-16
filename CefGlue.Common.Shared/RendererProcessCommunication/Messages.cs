@@ -93,7 +93,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 using (var arguments = message.Arguments)
                 {
                     arguments.SetString(0, ObjectName);
-                    arguments.SetString(1, CefValueSerialization.SerializeAsJson(MethodsNames));
+                    arguments.SetString(1, Serializer.Serialize(MethodsNames));
                 }
                 return message;
             }
@@ -106,7 +106,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                     return new NativeObjectRegistrationRequest()
                     {
                         ObjectName = arguments.GetString(0),
-                        MethodsNames = JsonDeserializer.Deserialize<string[]>(methodsNamesAsJson)
+                        MethodsNames = Deserializer.Deserialize<string[]>(methodsNamesAsJson)
                     };
                 }
             }
