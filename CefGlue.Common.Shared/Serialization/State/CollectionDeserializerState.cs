@@ -23,8 +23,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             return new CollectionDeserializerState(newCollection, objectTypeInfo, collectionElementType);
         }
 
-        public override bool IsStructObjectType => false;
-
         public override void SetValue(object value)
         {
             var parameters = string.IsNullOrEmpty(PropertyName) ?

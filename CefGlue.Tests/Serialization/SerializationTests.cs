@@ -227,6 +227,13 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
+        public void HandlesArraysOfStructs()
+        {
+            var list = new StructObject[] { new StructObject("first", 1), new StructObject("second", 2) };
+            AssertSerialization(list);
+        }
+
+        [Test]
         public void HandlesObjectsArray()
         {
             var list = new object[]

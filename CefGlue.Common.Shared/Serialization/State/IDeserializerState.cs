@@ -6,8 +6,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
     {
         object ObjectHolder { get; }
 
-        bool IsStructObjectType { get; }
-
         string PropertyName { get; set; }
 
         JsonTypeInfo ObjectTypeInfo { get; }

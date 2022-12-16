@@ -66,66 +66,71 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             var state = new Stack<IDeserializerState>();
             var root = new object[1];
             var referencesMap = new Dictionary<string, ReferenceInfo>();
+            IDeserializerState previousStateIfEndArray = null;
 
-            //System.Diagnostics.Debugger.Launch();
             state.Push(new ArrayDeserializerState(root, typeToConvert));
 
             do
             {
-                object value = null;
                 var currentState = state.Peek();
 
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.Null:
-                        value = null;
+                        currentState.SetValue(null);
                         break;
 
                     case JsonTokenType.Number:
-                        value = reader.GetNumber(currentState.ObjectTypeInfo.GetPropertyType(currentState.PropertyName));
+                        currentState.SetValue(
+                            reader.GetNumber(currentState.ObjectTypeInfo.GetPropertyType(currentState.PropertyName))
+                            );
                         break;
 
                     case JsonTokenType.String:
-                        value = reader.GetObjectFromString(currentState.ObjectTypeInfo.GetPropertyType(currentState.PropertyName));
+                        currentState.SetValue(
+                            reader.GetObjectFromString(currentState.ObjectTypeInfo.GetPropertyType(currentState.PropertyName))
+                            );
                         break;
 
                     case JsonTokenType.False:
                     case JsonTokenType.True:
-                        value = reader.GetBoolean();
+                        currentState.SetValue(reader.GetBoolean());
                         break;
 
                     case JsonTokenType.PropertyName:
                         currentState.PropertyName = reader.GetString();
-                        continue;
+                        break;
 
                     case JsonTokenType.StartArray:
                         var isRootObjectHolder = currentState.ObjectHolder == root;
                         var newState = CreateNewDeserializerState(reader, currentState, isRootObjectHolder, parametersTypes);
-                        value = newState.ObjectHolder;
+                        currentState.SetValue(newState.ObjectHolder);
                         state.Push(newState);
                         break;
 
                     case JsonTokenType.StartObject:
-                        value = ReadComplexObject(ref reader, state, isRootObjectHolder: currentState.ObjectHolder == root, parametersTypes, referencesMap);
+                        ReadComplexObject(ref reader, state, isRootObjectHolder: currentState.ObjectHolder == root, parametersTypes, referencesMap);
                         break;
 
                     case JsonTokenType.EndArray:
                         state.Pop();
-                        continue;
+                        break;
 
                     case JsonTokenType.EndObject:
                         state.Pop();
-                        // Structs are immutable so, the properties/fields that were set in the deserialization need to be propagated to the parent object
-                        var parentState = state.Peek();
-                        if (currentState.IsStructObjectType && parentState.ObjectHolder != root)
+                        // The value is only set at the EndObject so it is be able to properly deserialize not only classes, but also Structs, which are immutable so,
+                        // they can only be stored in an object after all of the properties/fields that were set in the deserialization
+                        var stateHoldingArrayOrObject = currentState == ListWrapperMarker ? previousStateIfEndArray : currentState;
+                        if (stateHoldingArrayOrObject == null)
                         {
-                            // TODO - bcs - what about arrays that contain Structs? create a test for this and check how they behave
-                            parentState.SetValue(currentState.ObjectHolder);
+                            throw new InvalidOperationException("A ListWrapperMarker must always be preceeded by a state that holds an array.");
                         }
-                        continue;
+                        var parentState = state.Peek();
+                        parentState.SetValue(stateHoldingArrayOrObject.ObjectHolder);
+                        break;
                 }
 
-                currentState.SetValue(value);
+                previousStateIfEndArray = reader.TokenType == JsonTokenType.EndArray ? currentState : null;
             } while (reader.Read());
 
             if (state.Count > 1 && state.Pop().ObjectHolder != root)
@@ -142,7 +147,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             object obj;
             IDeserializerState newState = null;
             JsonTypeInfo newTypeInfo = null;
-            
+
             tempReader.ReadToken(JsonTokenType.StartObject);
 
             if (tempReader.TokenType == JsonTokenType.EndObject)
@@ -209,9 +214,9 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         }
 
         private static IDeserializerState CreateNewDeserializerState(
-            Utf8JsonReader reader, 
-            IDeserializerState currentState, 
-            bool isRootObjectHolder, 
+            Utf8JsonReader reader,
+            IDeserializerState currentState,
+            bool isRootObjectHolder,
             ParametersTypes parametersTypes)
         {
             return CreateNewDerializerState(reader, currentState.ObjectTypeInfo, currentState.PropertyName, isRootObjectHolder, parametersTypes);

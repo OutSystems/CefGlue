@@ -39,8 +39,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             return new ParametersDeserializerState(newArray, parametersTypes);
         }
 
-        public override bool IsStructObjectType => false;
-
         public override JsonTypeInfo ObjectTypeInfo => 
             IsAtOptionalParameterPosition ? 
             _optionalParameterInfo :

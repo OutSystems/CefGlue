@@ -25,8 +25,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
         object IDeserializerState.ObjectHolder => ObjectHolder;
 
-        public abstract bool IsStructObjectType { get; }
-
         public string PropertyName { get; set; }
 
         public virtual JsonTypeInfo ObjectTypeInfo => _objectTypeInfo;

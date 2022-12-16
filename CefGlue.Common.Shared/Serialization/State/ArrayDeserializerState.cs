@@ -17,8 +17,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             return new ArrayDeserializerState(newArray, arrayElementType);
         }
 
-        public override bool IsStructObjectType => false;
-
         public override void SetValue(object value)
         {
             ObjectHolder.SetValue(value, _arrayIndex);

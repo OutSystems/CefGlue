@@ -14,8 +14,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             return new ObjectDeserializerState(obj, objectTypeInfo);
         }
 
-        public override bool IsStructObjectType => ObjectTypeInfo?.ObjectType?.IsValueType == true;
-
         public override void SetValue(object value)
         {
             if (ObjectHolder == null)
@@ -43,9 +41,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             if (type == typeof(object))
             {
                 throw new InvalidOperationException("Use the DictionaryDeserializerState instead.");
-                //// When the deserializer receives 'dynamic' or object as the target collectionType,
-                //// we need to instantiate an ExpandoObject, so that we can set the object's properties even considering the TypeInfo doesn't have them defined
-                //return new ExpandoObject();
             }
             return Activator.CreateInstance(type, nonPublic: true);
         }

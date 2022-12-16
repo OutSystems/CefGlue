@@ -15,8 +15,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             return new DictionaryDeserializerState(obj, objectTypeInfo);
         }
 
-        public override bool IsStructObjectType => false;
-
         public override void SetValue(object value)
         {
             ObjectHolder[PropertyName] = value;
