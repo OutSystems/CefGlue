@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
     <PropertyGroup>
-        <CefRedistVersion>91.1.6</CefRedistVersion>
-        <CefRedistOSXVersion>91.1.6</CefRedistOSXVersion>
+        <CefRedistVersion>106.0.26</CefRedistVersion>
+        <CefRedistOSXVersion>106.0.26</CefRedistOSXVersion>
     </PropertyGroup>
 
     <PropertyGroup>
         <PackageOutputPath>$(MSBuildProjectDirectory)\..\Nuget\output</PackageOutputPath>
-        <Version>91.4472.31</Version>
-<!--        <Version>106.0.26</Version>-->
+        <Version>106.5249.26</Version>
 
         <Authors>XiliumHQ,OutSystems</Authors>
         <Product>CefGlue</Product>
