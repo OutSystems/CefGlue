@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -38,6 +40,30 @@ namespace CefGlue.Tests.Javascript
         {
             var result = await EvaluateJavascript<int[]>("return [1, 2, 3];");
             CollectionAssert.AreEqual(new[] { 1, 2, 3 }, result);
+        }
+
+        [Test]
+        public async Task DictionaryCollectionReturn()
+        {
+            var result = await EvaluateJavascript<Dictionary<string, int>>("return {\"first\":1,\"second\":2,\"third\":3};");
+            var expected = new Dictionary<string, int>() {
+                    { "first" , 1 },
+                    { "second" , 2 },
+                    { "third" , 3 }
+                };
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public async Task NonGenericCollectionReturn()
+        {
+            var result = await EvaluateJavascript<Hashtable>("return {\"first\":1,\"second\":'second',\"third\":null};");
+            var expected = new Hashtable() {
+                    { "first" , 1 },
+                    { "second" , "second" },
+                    { "third" , null }
+                };
+            CollectionAssert.AreEqual(expected, result);
         }
 
         [Test]

@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
@@ -113,7 +112,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     {
                         if (message.Success)
                         {
-                            var value = V8ValueSerialization.SerializeCefValue(message.Result);
+                            var value = CefV8Value.CreateString(message.ResultAsJson);
                             resolve(value);
                         }
                         else
@@ -176,16 +175,16 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     foreach (var objectInfo in objectInfos)
                     {
                         var handler = new V8FunctionHandler(objectInfo.Name, HandleNativeObjectCall);
-                        var attributes = CefV8PropertyAttribute.ReadOnly | CefV8PropertyAttribute.DontDelete;
-
+                        
                         var v8Obj = CefV8Value.CreateObject();
                         foreach (var methodName in objectInfo.MethodsNames)
                         {
                             var v8Function = CefV8Value.CreateFunction(methodName, handler);
-                            v8Obj.SetValue(methodName, v8Function, attributes);
+                            v8Obj.SetValue(methodName, v8Function);
                         }
 
-                        global.SetValue(objectInfo.Name, v8Obj);
+                        var interceptorObj = JavascriptHelper.CreateInterceptorObject(context, v8Obj);
+                        global.SetValue(objectInfo.Name, interceptorObj);
                     }
 
                     return true;

@@ -33,6 +33,18 @@ namespace CefGlue.Tests.Serialization
         public double doubleField;
     }
 
+    public struct StructObject
+    {
+        public StructObject(string name, int number)
+        {
+            NameProp = name;
+            numberField = number;
+        }
+
+        public int numberField;
+        public string NameProp { get; set; }
+    }
+
     public class CyclicObj
     {
         public string stringField;

@@ -1,5 +1,4 @@
-using System;
-using Xilium.CefGlue.BrowserProcess.JavascriptExecution;
+﻿using System;
 using Xilium.CefGlue.BrowserProcess.ObjectBinding;
 using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
@@ -10,7 +9,6 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
     {
         private CefBrowser _browser;
         private string _crashPipeName;
-        private JavascriptExecutionEngineRenderSide _javascriptExecutionEngine;
         private JavascriptToNativeDispatcherRenderSide _javascriptToNativeDispatcher;
         
         private readonly MessageDispatcher _messageDispatcher = new MessageDispatcher();
@@ -23,7 +21,7 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
         protected override void OnWebKitInitialized()
         {
             base.OnWebKitInitialized();
-            _javascriptExecutionEngine = new JavascriptExecutionEngineRenderSide(_messageDispatcher);
+            JavascriptHelper.RegisterJavascriptExecution(_messageDispatcher);
             _javascriptToNativeDispatcher = new JavascriptToNativeDispatcherRenderSide(_messageDispatcher);
         }
 

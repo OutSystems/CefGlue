@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using Xilium.CefGlue.Common.Shared.Serialization;
 
@@ -49,7 +49,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
 
             public int TaskId;
             public bool Success;
-            public CefValueHolder Result;
+            public string ResultAsJson;
             public string Exception;
 
             public CefProcessMessage ToCefProcessMessage()
@@ -59,7 +59,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 {
                     arguments.SetInt(0, TaskId);
                     arguments.SetBool(1, Success);
-                    Result?.AssignToListAndClearReference(arguments, 2);
+                    arguments.SetString(2, ResultAsJson);
                     arguments.SetString(3, Exception);
                 }
                 return message;
@@ -73,7 +73,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                     {
                         TaskId = arguments.GetInt(0),
                         Success = arguments.GetBool(1),
-                        Result = new CefValueHolder(arguments.GetValue(2)),
+                        ResultAsJson = arguments.GetString(2),
                         Exception = arguments.GetString(3)
                     };
                 }
@@ -93,7 +93,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 using (var arguments = message.Arguments)
                 {
                     arguments.SetString(0, ObjectName);
-                    CefValueSerialization.Serialize(MethodsNames, new CefListWrapper(arguments, 1));
+                    arguments.SetString(1, Serializer.Serialize(MethodsNames));
                 }
                 return message;
             }
@@ -102,11 +102,11 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
             {
                 using (var arguments = message.Arguments)
                 {
-                    var methodsNames = new CefListWrapper(arguments, 1);
+                    var methodsNamesAsJson = arguments.GetString(1);
                     return new NativeObjectRegistrationRequest()
                     {
                         ObjectName = arguments.GetString(0),
-                        MethodsNames = ((object[]) CefValueSerialization.DeserializeCefValue(methodsNames)).Cast<string>().ToArray()
+                        MethodsNames = Deserializer.Deserialize<string[]>(methodsNamesAsJson)
                     };
                 }
             }
@@ -140,16 +140,15 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
             }
         }
 
-        public struct NativeObjectCallRequest : IDisposable
+        public struct NativeObjectCallRequest
         {
             public const string Name = nameof(NativeObjectCallRequest);
 
             public int CallId;
             public string ObjectName;
             public string MemberName;
-            public ICefListValue ArgumentsIn;
-            public object[] ArgumentsOut;
-
+            public string ArgumentsJson;
+            
             public CefProcessMessage ToCefProcessMessage()
             {
                 var message = CefProcessMessage.Create(Name);
@@ -158,9 +157,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                     arguments.SetInt(0, CallId);
                     arguments.SetString(1, ObjectName);
                     arguments.SetString(2, MemberName);
-                    arguments.SetList(3, ArgumentsIn);
-                    ArgumentsIn.Dispose();
-                    ArgumentsIn = null;
+                    arguments.SetString(3, ArgumentsJson);
                 }
                 return message;
             }
@@ -168,23 +165,15 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
             public static NativeObjectCallRequest FromCefMessage(CefProcessMessage message)
             {
                 using (var arguments = message.Arguments)
-                using (var argsArgs = arguments.GetList(3))
                 {
                     return new NativeObjectCallRequest()
                     {
                         CallId = arguments.GetInt(0),
                         ObjectName = arguments.GetString(1),
                         MemberName = arguments.GetString(2),
-                        ArgumentsIn = null,
-                        ArgumentsOut = CefValueSerialization.DeserializeCefList<object>(argsArgs),
+                        ArgumentsJson = arguments.GetString(3),
                     };
                 }
-            }
-
-            public void Dispose()
-            {
-                ArgumentsIn?.Dispose();
-                ArgumentsIn = null;
             }
         }
 
@@ -194,7 +183,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
 
             public int CallId;
             public bool Success;
-            public CefValueHolder Result;
+            public string ResultAsJson;
             public string Exception;
 
             public CefProcessMessage ToCefProcessMessage()
@@ -205,7 +194,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 {
                     arguments.SetInt(0, CallId);
                     arguments.SetBool(1, Success);
-                    Result?.AssignToListAndClearReference(arguments, 2);
+                    arguments.SetString(2, ResultAsJson);
                     arguments.SetString(3, Exception);
                 }
                 return message;
@@ -219,7 +208,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                     {
                         CallId = arguments.GetInt(0),
                         Success = arguments.GetBool(1),
-                        Result = new CefValueHolder(arguments.GetValue(2)),
+                        ResultAsJson = arguments.GetString(2),
                         Exception = arguments.GetString(3)
                     };
                 }
