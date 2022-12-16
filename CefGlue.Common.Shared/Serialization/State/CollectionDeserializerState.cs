@@ -3,7 +3,6 @@ using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
-    // TODO - bcs - create Interface for StateManagement (rename the 'DeserializerState') and create 3 concrete classes - for objects, arrays and dictionaries
     internal class CollectionDeserializerState : BaseDeserializerState<object>
     {
         private JsonTypeInfo _collectionTypeInfo;

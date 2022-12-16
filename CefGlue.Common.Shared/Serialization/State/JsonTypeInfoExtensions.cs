@@ -41,7 +41,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
         private static Type GetArrayElementType(Type arrayType)
         {
-            // TODO - bcs - Is this first condition needed?
             if (arrayType == typeof(object))
             {
                 return JsonTypeInfoCache.DefaultTypeInfo.ObjectType;
@@ -71,13 +70,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             }
         }
 
-        // TODO - bcs - move this extension to a specific file for TypeExtensions
-        internal static bool IsCollection(this Type type)
-        {
-            return typeof(ICollection).IsAssignableFrom(type) ||
-                typeof(ICollection<>).IsAssignableFrom(type);
-        }
-
         private static Type GetCollectionElementType(Type collectionType)
         {
             // TODO - bcs - create unit test with a class that inherits from ICollection in JavascriptToNativeType
@@ -86,7 +78,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             if (collectionGenericInterface != null)
             {
                 var tmpGenericInterfaceArgument = collectionGenericInterface.GetGenericArguments().Single();
-                if (tmpGenericInterfaceArgument.IsGenericType && 
+                if (tmpGenericInterfaceArgument.IsGenericType &&
                     tmpGenericInterfaceArgument.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
                 {
                     return tmpGenericInterfaceArgument.GenericTypeArguments[1];
@@ -100,7 +92,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
                 return JsonTypeInfoCache.DefaultTypeInfo.ObjectType;
             }
 
-            throw new InvalidCastException($"Cannot deserialize an array to a non collection type: '{collectionType.Name}'!");
+            throw new InvalidOperationException($"GetCollectionElementType() called for a non collection type: '{collectionType.Name}'!");
         }
     }
 }

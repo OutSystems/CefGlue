@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.Serialization.State;
 using static Xilium.CefGlue.Common.Shared.Serialization.State.ParametersDeserializerState;
 

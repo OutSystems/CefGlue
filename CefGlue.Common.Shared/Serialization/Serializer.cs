@@ -7,7 +7,6 @@ using System.Text.Json.Serialization;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization
 {
-    // TODO - bcs - rename file
     internal static class Serializer
     {
         private const int SerializerMaxDepth = int.MaxValue;

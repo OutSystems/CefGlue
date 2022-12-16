@@ -7,7 +7,6 @@ using System.Text.Json;
 using Xilium.CefGlue.Common.Shared.Serialization;
 using static Xilium.CefGlue.Common.Shared.Serialization.Serializer;
 
-// TODO - bcs - rename file
 namespace CefGlue.Tests.Serialization
 {
     [TestFixture]

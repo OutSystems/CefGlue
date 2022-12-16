@@ -36,9 +36,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 case TypeCode.Decimal:
                     return reader.GetDecimal();
                 default:
-                    // TODO - bcs - cleanup
-                    //throw new InvalidOperationException($"Type mismatch. A numeric type was expected, instead it's trying to parse to a '{typeCode}'.");
-                    // eg convert to the object tyoe used in ExpandoObjects
+                    // e.g. convert to the object type used in ExpandoObjects
                     return Convert.ChangeType(reader.GetDouble(), typeToConvert);
             }
         }

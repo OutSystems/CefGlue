@@ -85,10 +85,6 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         {
             var argsAsObject = (object)args;
             
-            // TODO - bcs - breakdown the deserialization in two steps
-            // 1. Obtain an array of JsonElements
-            // 2. Deserialize each JsonElement to the respective target type
-
             if (typeof(T) == typeof(string)) {
                 var nativeArgs = ConvertToNative((string)argsAsObject);
                 ValidateMandatoryArguments(nativeArgs);
