@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
+using Xilium.CefGlue.Common.Shared.Helpers;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
