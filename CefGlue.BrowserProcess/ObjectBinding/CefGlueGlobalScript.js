@@ -143,6 +143,9 @@ if (!$GlobalObjectName$) {
             deleteObjectBound: function (objName) {
                 native function $UnbindNativeFunctionName$();
                 $UnbindNativeFunctionName$(objName);
+            },
+            evaluateScript: function (fn) {
+                return JSON.stringify(fn(), argumentsStringifier());
             }
         };
     })();

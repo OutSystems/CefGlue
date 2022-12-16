@@ -242,6 +242,7 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public async Task MethodWithCyclicObjectParamIsPassed()
         {
+            // TODO - bcs - test with a couple of parameters that share the same instances
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithCyclicObjectParamCalled += (args) => taskCompletionSource.SetResult(args);
 

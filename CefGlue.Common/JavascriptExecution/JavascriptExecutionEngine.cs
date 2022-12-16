@@ -14,7 +14,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
     {
         private static volatile int lastTaskId;
 
-        private readonly ConcurrentDictionary<int, TaskCompletionSource<object>> _pendingTasks = new ConcurrentDictionary<int, TaskCompletionSource<object>>();
+        private readonly ConcurrentDictionary<int, TaskCompletionSource<string>> _pendingTasks = new ConcurrentDictionary<int, TaskCompletionSource<string>>();
 
         public JavascriptExecutionEngine(MessageDispatcher dispatcher)
         {
@@ -38,7 +38,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             {
                 if (message.Success)
                 {
-                    pendingTask.SetResult(CefValueSerialization.DeserializeCefValue(message.Result));
+                    pendingTask.SetResult(message.ResultAsJson);
                 }
                 else
                 {
@@ -85,7 +85,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 Line = line
             };
 
-            var messageReceiveCompletionSource = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var messageReceiveCompletionSource = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
 
             _pendingTasks.TryAdd(taskId, messageReceiveCompletionSource);
 
@@ -128,7 +128,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             }
         }
 
-        private T ProcessResult<T>(Task<object> task, int taskId, bool timedOut = false)
+        private T ProcessResult<T>(Task<string> task, int taskId, bool timedOut = false)
         {
             try
             {
@@ -143,7 +143,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                     throw task.Exception.InnerException;
                 }
 
-                return JavascriptToNativeTypeConverter.ConvertToNative<T>(task.Result);
+                return JsonDeserializer.Deserialize<T>(task.Result);
             }
             catch (Exception e)
             {

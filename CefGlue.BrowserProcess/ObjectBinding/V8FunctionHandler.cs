@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Xilium.CefGlue.BrowserProcess.Serialization;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 using Xilium.CefGlue.Common.Shared.Serialization;
 

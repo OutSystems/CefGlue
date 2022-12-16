@@ -1,20 +1,46 @@
 ﻿using System;
+using System.Reflection;
 using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal static class JsonReaderExtensions
     {
-        public static object GetNumber(this Utf8JsonReader reader)
+        public static object GetNumber(this Utf8JsonReader reader, Type typeToConvert)
         {
             reader.AssertToken(JsonTokenType.Number);
 
-            if (reader.TryGetInt64(out var longVal))
+            var typeCode = TypeInfo.GetTypeCode(typeToConvert);
+            switch (typeCode)
             {
-                return longVal;
+                case TypeCode.Byte:
+                    return reader.GetByte();
+                case TypeCode.SByte:
+                    return reader.GetSByte();
+                case TypeCode.Int16:
+                    return reader.GetInt16();
+                case TypeCode.Int32:
+                    return reader.GetInt32();
+                case TypeCode.Int64:
+                    return reader.GetInt64();
+                case TypeCode.UInt16:
+                    return reader.GetUInt16();
+                case TypeCode.UInt32:
+                    return reader.GetUInt32();
+                case TypeCode.UInt64:
+                    return reader.GetUInt64();
+                case TypeCode.Single:
+                    return reader.GetSingle();
+                case TypeCode.Double:
+                    return reader.GetDouble();
+                case TypeCode.Decimal:
+                    return reader.GetDecimal();
+                default:
+                    // TODO - bcs - cleanup
+                    //throw new InvalidOperationException($"Type mismatch. A numeric type was expected, instead it's trying to parse to a '{typeCode}'.");
+                    // eg convert to the object tyoe used in ExpandoObjects
+                    return Convert.ChangeType(reader.GetDouble(), typeToConvert);
             }
-
-            return reader.GetDouble();
         }
 
         /// <summary>
@@ -27,7 +53,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         /// A DateTime if DateTimeMarker is found.
         /// A byte[] if BinaryMarker is found.
         /// </returns>
-        public static object GetObjectFromString(this Utf8JsonReader reader)
+        public static object GetObjectFromString(this Utf8JsonReader reader, Type typeToConvert)
         {
             var stringValue = reader.GetString();
             if (stringValue.Length >= DataMarkers.MarkerLength)
@@ -35,7 +61,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 switch (stringValue.Substring(0, DataMarkers.MarkerLength))
                 {
                     case DataMarkers.StringMarker:
-                        return stringValue.Substring(DataMarkers.MarkerLength);
+                        stringValue = stringValue.Substring(DataMarkers.MarkerLength);
+                        break;
 
                     case DataMarkers.DateTimeMarker:
                         return JsonSerializer.Deserialize<DateTime>("\"" + stringValue.Substring(DataMarkers.MarkerLength) + "\"");
@@ -45,7 +72,10 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 }
             }
 
-            return stringValue;
+            return
+                typeToConvert == typeof(string) ?
+                stringValue :
+                Convert.ChangeType(stringValue, typeToConvert);
         }
 
         private static void AssertToken(this Utf8JsonReader reader, JsonTokenType token)

@@ -15,7 +15,5 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         void AddReference(string referenceId, T value);
 
         T ResolveReference(string referenceId);
-
-        bool TryGetReferenceId(T value, out string referenceId);
     }
 }

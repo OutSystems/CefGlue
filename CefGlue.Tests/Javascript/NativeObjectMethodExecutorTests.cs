@@ -67,7 +67,7 @@ namespace CefGlue.Tests.Javascript
         {
             object result = null;
             Exception exception = null;
-            nativeObject.ExecuteMethod(name, GetStringifiedArgs(args), (r, e) =>
+            nativeObject.ExecuteMethod(name, args, (r, e) =>
             {
                 result = r;
                 exception = e;
@@ -82,7 +82,7 @@ namespace CefGlue.Tests.Javascript
         private Task<object> ExecuteAsyncMethod(string name, object[] args)
         {
             var tcs = new TaskCompletionSource<object>();
-            nativeObject.ExecuteMethod(name, GetStringifiedArgs(args), (r, e) =>
+            nativeObject.ExecuteMethod(name, args, (r, e) =>
             {
                 if (e != null)
                 {
@@ -152,7 +152,7 @@ namespace CefGlue.Tests.Javascript
         {
             const string Arg1 = "arg1";
             var arg2 = new int[] { 1, 2 , 3 };
-            var result = (object[])ExecuteMethod("methodWithFixedAndOptionalParams", new object[] { Arg1, 1, 2, 3 });
+            var result = (object[])ExecuteMethod("methodWithFixedAndOptionalParams", new object[] { Arg1, (int)1, (int)2, (int)3 });
 
             Assert.AreEqual(2, result.Length);
             Assert.AreEqual(Arg1, result[0]);

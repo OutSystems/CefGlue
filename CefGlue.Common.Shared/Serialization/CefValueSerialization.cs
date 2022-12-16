@@ -7,10 +7,10 @@ using System.Text.Json.Serialization;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization
 {
+    // TODO - bcs - rename file
     internal static class CefValueSerialization
     {
         private const int SerializerMaxDepth = int.MaxValue;
-        private const int DeserializerMaxDepth = 255;
         
         private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
         {
@@ -23,15 +23,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             IncludeFields = true,
             MaxDepth = SerializerMaxDepth,
             ReferenceHandler = ReferenceHandler.Preserve,
-        };
-
-        private static readonly JsonSerializerOptions _jsonDeserializerOptions = new JsonSerializerOptions()
-        {
-            Converters =
-            {
-                new ObjectJsonConverter()
-            },
-            MaxDepth = DeserializerMaxDepth,
         };
 
         public static void Serialize(object value, CefValueWrapper cefValue)
@@ -217,7 +208,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     {
                         return value;
                     }
-                    return DeserializeAsJson(value);
+                    return DeserializeFromJson(value);
 
                 case CefValueType.Null:
                     return null;
@@ -226,22 +217,9 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             return null;
         }
 
-        private static object DeserializeAsJson(string value)
+        private static object DeserializeFromJson(string value)
         {
-            return DeserializeAsJson<object>(value);
-        }
-
-        internal static TargetType DeserializeAsJson<TargetType>(string value)
-        {
-            try
-            {
-                return (TargetType)JsonSerializer.Deserialize(value, typeof(TargetType), _jsonDeserializerOptions);
-            }
-            catch (JsonException e)
-            {
-                // wrap the json exception
-                throw new InvalidOperationException(e.Message);
-            }
+            return JsonDeserializer.Deserialize<object>(value);
         }
 
         internal static TListElementType[] DeserializeCefList<TListElementType>(ICefListValue cefList, IReferencesResolver<object> referencesResolver = null)
