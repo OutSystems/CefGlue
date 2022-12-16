@@ -10,7 +10,9 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
     {
         internal static Type GetPropertyType(this JsonTypeInfo ownerTypeInfo, string propertyName)
         {
-            if (string.IsNullOrEmpty(propertyName))
+            // Return the type itself when no propertyName was passed OR it's a primitive valuetype (e.g. int32, byte, etc).
+            // The IsPrimitive is to exclude Structs, which are also ValueTypes but that contain proerties and fields
+            if (string.IsNullOrEmpty(propertyName) || (ownerTypeInfo.ObjectType.IsPrimitive && ownerTypeInfo.ObjectType.IsValueType))
             {
                 return ownerTypeInfo.ObjectType;
             }
@@ -72,7 +74,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
         private static Type GetCollectionElementType(Type collectionType)
         {
-            // TODO - bcs - create unit test with a class that inherits from ICollection in JavascriptToNativeType
             var interfaces = collectionType.GetInterfaces();
             var collectionGenericInterface = interfaces.FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICollection<>));
             if (collectionGenericInterface != null)

@@ -14,7 +14,7 @@ namespace CefGlue.Tests.Serialization
     {
         private class Person
         {
-            public Person() {}
+            public Person() { }
             public Person(string name)
             {
                 Name = name;
@@ -156,7 +156,7 @@ namespace CefGlue.Tests.Serialization
             dict.Add("first", dict);
 
             var obtainedValue = AssertSerialization(dict, assertEquality: false);
-            Assert.AreSame(obtainedValue,obtainedValue.First().Value);
+            Assert.AreSame(obtainedValue, obtainedValue.First().Value);
         }
 
         [Test]
@@ -215,6 +215,17 @@ namespace CefGlue.Tests.Serialization
                 },
             };
             AssertSerialization(list);
+        }
+
+        [Test]
+        public void HandlesDictionaryOfPrimitiveValueTypeCollection()
+        {
+            var dict = new Dictionary<string, int>() {
+                    { "first" , 1 },
+                    { "second" , 2 },
+                    { "third" , 3 },
+                };
+            AssertSerialization(dict);
         }
 
         [Test]
@@ -359,7 +370,7 @@ namespace CefGlue.Tests.Serialization
                     boolField = true,
                     dateField = DateTime.Now,
                     doubleField = 5.5,
-                    binaryField = new byte[] {0, 1, 2}
+                    binaryField = new byte[] { 0, 1, 2 }
                 }
             };
 
