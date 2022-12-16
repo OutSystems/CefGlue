@@ -144,7 +144,7 @@ if (!$GlobalObjectName$) {
                 native function $UnbindNativeFunctionName$();
                 $UnbindNativeFunctionName$(objName);
             },
-            evaluateScript: function (fn) {
+            $EvaluateScriptFunctionName$: function (fn) {
                 return JSON.stringify(fn(), argumentsStringifier());
             }
         };

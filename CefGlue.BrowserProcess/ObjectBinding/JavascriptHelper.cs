@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using System.Text;
+using Xilium.CefGlue.Common.Shared.Helpers;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
@@ -12,6 +14,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         private const string InterceptorFactoryFunctionName = "createInterceptor";
         private const string BindNativeFunctionName = "Bind";
         private const string UnbindNativeFunctionName = "Unbind";
+        private const string EvaluateScriptFunctionName = "evaluateScript";
 
         public static void Register(INativeObjectRegistry nativeObjectRegistry)
         {
@@ -23,6 +26,11 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                 CefRuntime.RegisterExtension("cefglue", cefGlueGlobalScript, new V8BuiltinFunctionHandler(nativeObjectRegistry));
             }
                 
+        }
+
+        public static void RegisterJavascriptExecution(MessageDispatcher dispatcher)
+        {
+            dispatcher.RegisterMessageHandler(Messages.JsEvaluationRequest.Name, HandleJavascriptEvaluation);
         }
 
         public static PromiseHolder CreatePromise(this CefV8Context context)
@@ -52,6 +60,31 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             return interceptorFactory.ExecuteFunctionWithContext(context, null, new[] { targetObj });
         }
 
+        private static void HandleJavascriptEvaluation(MessageReceivedEventArgs args)
+        {
+            var frame = args.Frame;
+
+            using (var context = frame.V8Context.EnterOrFail())
+            {
+                var message = Messages.JsEvaluationRequest.FromCefMessage(args.Message);
+
+                // TODO - bcs - move method to JavaScriptHelper
+                // send script to browser
+                var success = context.V8Context.TryEval($"{GlobalObjectName}.{EvaluateScriptFunctionName}(() => ({message.Script}))", message.Url, message.Line, out var value, out var exception);
+
+                var response = new Messages.JsEvaluationResult()
+                {
+                    TaskId = message.TaskId,
+                    Success = success,
+                    Exception = success ? null : exception.Message,
+                    ResultAsJson = value?.GetStringValue()
+                };
+
+                var cefResponseMessage = response.ToCefProcessMessage();
+                frame.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
+            }
+        }
+
         private static string ReplaceScriptGlobalVariables(string script)
         {
             var sb = new StringBuilder(script);
@@ -68,6 +101,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                 .Replace("$InterceptorFactoryFunctionName$", InterceptorFactoryFunctionName)
                 .Replace("$BindNativeFunctionName$", BindNativeFunctionName)
                 .Replace("$UnbindNativeFunctionName$", UnbindNativeFunctionName)
+                .Replace("$EvaluateScriptFunctionName$", EvaluateScriptFunctionName)
                 ).ToString();
         }
     }
