@@ -10,6 +10,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
