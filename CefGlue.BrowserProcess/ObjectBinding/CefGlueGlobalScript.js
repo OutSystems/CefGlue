@@ -15,6 +15,9 @@ if (!$GlobalObjectName$) {
             }
             return byteArray;
         }
+        function convertBinaryToBase64(byteArray) {
+            return btoa(String.fromCharCode(...byteArray));
+        }
         function revive(name, value, refs, pendingRefs) {
             if (value) {
                 const id = value[idPropertyName];
@@ -69,11 +72,21 @@ if (!$GlobalObjectName$) {
                     return null;
                 }
                 const valueType = typeof value;
-                // case the property is of type Date, the argument 'value' will be of type 'string',
-                // in this case, we need to return the date as a string, but prefixed with a marker,
+                // strings, with the exception of $id and $ref, must be returned prefixed with a Marker
                 // so it can be properly deserialized
-                if (valueType === "string" && Reflect.get(this, key) instanceof Date) {
-                    return "$DateTimeMarker$" + value;
+                if (valueType === "string") {
+                    if (key === idPropertyName || key === refPropertyName) {
+                        return value;
+                    }
+                    // case the property is of type Date, the argument 'value' is of type 'string',
+                    // in this case, we need to return the date as a string, but prefixed with the DateTimeMarker
+                    if (Reflect.get(this, key) instanceof Date) {
+                        return "$DateTimeMarker$" + value;
+                    }
+                    return "$StringMarker$" + value;
+                }
+                if (value instanceof Uint8Array) {
+                    return "$BinaryMarker$" + convertBinaryToBase64(value);
                 }
                 if (valueType !== "object" || Reflect.has(value, marker) || (key === valuesPropertyName && Reflect.has(this, marker))) {
                     return value;

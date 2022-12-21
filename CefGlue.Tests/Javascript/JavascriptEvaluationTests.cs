@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace CefGlue.Tests.Javascript
 {
@@ -33,6 +35,29 @@ namespace CefGlue.Tests.Javascript
             const string Result = "this is a test";
             var result = await EvaluateJavascript<string>($"return '{Result}';");
             Assert.AreEqual(Result, result);
+            var stringEqualToDate = $"{DataMarkers.DateTimeMarker}{DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture)}";
+            result = await EvaluateJavascript<string>($"return '{stringEqualToDate}';");
+            Assert.AreEqual(stringEqualToDate, result);
+        }
+
+        [Test]
+        public async Task DateTimeReturn()
+        {
+            var expected = DateTime.Parse("2022-12-20T15:50:21.817Z");
+            var result = await EvaluateJavascript<DateTime>($"return new Date('{expected.ToString("o", CultureInfo.InvariantCulture)}');");
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public async Task BinaryReturn()
+        {
+            var expected = new byte[byte.MaxValue+1];
+            for (int i = 0; i <= byte.MaxValue; i++)
+            {
+                expected[i] = (byte)i;
+            }
+            var result = await EvaluateJavascript<byte[]>($"return new Uint8Array([{string.Join(",",expected)}]);");
+            Assert.AreEqual(expected, result);
         }
 
         [Test]
