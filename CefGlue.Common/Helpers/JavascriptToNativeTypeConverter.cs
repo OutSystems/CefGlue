@@ -48,6 +48,14 @@ namespace Xilium.CefGlue.Common.Helpers
                 return Convert.ToDouble(obj);
             }
 
+            // TEMPORARY FIX for date serialization
+            if (expectedType == typeof(DateTime)
+                && obj is Dictionary<string,object> { Count: 1 } objValue
+                && objValue.TryGetValue("Ticks", out var dateTicks)) {
+                var ticks = Convert.ToDouble(dateTicks);
+                return (new DateTime(1601,1,1)).AddMilliseconds(ticks / 1000);
+            }
+
             var objType = obj.GetType();
 
             // expectedType can be assigned directly from objectType
