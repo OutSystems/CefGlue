@@ -272,7 +272,9 @@ namespace Xilium.CefGlue
             var m_frame = CefFrame.FromNative(frame);
             using (var m_message = CefProcessMessage.FromNative(message))
             {
+                Debug.WriteLine($"CefClient#on_process_message_received#(From: {source_process})#{m_message.Name} #Started", DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffff"));
                 var result = OnProcessMessageReceived(m_browser, m_frame, source_process, m_message);
+                Debug.WriteLine($"CefClient#on_process_message_received#(From: {source_process})#{m_message.Name} #Finished", DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffff"));
                 return result ? 1 : 0;
             }
         }

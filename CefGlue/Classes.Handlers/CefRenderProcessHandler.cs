@@ -87,6 +87,7 @@
 
         private void on_context_created(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8context_t* context)
         {
+            Debug.WriteLine("CefRenderProcessHandler#on_context_created#Started", DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffff"));
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
@@ -94,6 +95,7 @@
             var m_context = CefV8Context.FromNative(context);
 
             OnContextCreated(m_browser, m_frame, m_context);
+            Debug.WriteLine("CefRenderProcessHandler#on_context_created#Finished", DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffff"));
         }
 
         /// <summary>
@@ -110,6 +112,7 @@
 
         private void on_context_released(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8context_t* context)
         {
+            Debug.WriteLine("CefRenderProcessHandler#on_context_released#Started", DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffff"));
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
@@ -117,6 +120,7 @@
             var m_context = CefV8Context.FromNative(context);
 
             OnContextReleased(m_browser, m_frame, m_context);
+            Debug.WriteLine("CefRenderProcessHandler#on_context_released#Finished", DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffff"));
         }
 
         /// <summary>

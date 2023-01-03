@@ -3,12 +3,15 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using System;
+using System.Diagnostics;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Avalonia;
+using Xilium.CefGlue.Common.Events;
 
 namespace Xilium.CefGlue.Demo.Avalonia
 {
@@ -81,25 +84,32 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
         public async void EvaluateJavascript()
         {
-            var result = new StringWriter();
+            Debug.WriteLine("BrowserView#EvaluateJavascript#Started", DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffff"));
 
-            result.WriteLine(await browser.EvaluateJavaScript<string>("\"Hello World!\""));
+            var contextCreatedCompletionSource = new TaskCompletionSource<bool>();
+            var contextReleasedCompletionSource = new TaskCompletionSource<bool>();
 
-            result.WriteLine(await browser.EvaluateJavaScript<int>("1+1"));
+            void OnJavascriptContextCreated(object sender, JavascriptContextLifetimeEventArgs e)
+            {
+                contextCreatedCompletionSource.SetResult(true);
+                browser.JavascriptContextCreated -= OnJavascriptContextCreated;
+            }
 
-            result.WriteLine(await browser.EvaluateJavaScript<bool>("false"));
+            void OnJavascriptContextReleased(object sender, JavascriptContextLifetimeEventArgs e)
+            {
+                contextReleasedCompletionSource.SetResult(true);
+                browser.JavascriptContextReleased -= OnJavascriptContextReleased;
+            }
 
-            result.WriteLine(await browser.EvaluateJavaScript<double>("1.5+1.5"));
+            browser.JavascriptContextCreated += OnJavascriptContextCreated;
+            browser.JavascriptContextReleased += OnJavascriptContextReleased;
 
-            result.WriteLine(await browser.EvaluateJavaScript<double>("3+1.5"));
+            await browser.LoadContent($"<script>1+1</script>");
+            await contextCreatedCompletionSource.Task;
 
-            result.WriteLine(await browser.EvaluateJavaScript<DateTime>("new Date()"));
-
-            result.WriteLine(string.Join(", ", await browser.EvaluateJavaScript<object[]>("[1, 2, 3]")));
-
-            result.WriteLine(string.Join(", ", (await browser.EvaluateJavaScript<ExpandoObject>("(function() { return { a: 'valueA', b: 1, c: true } })()")).Select(p => p.Key + ":" + p.Value)));
-
-            browser.ExecuteJavaScript($"alert(\"{result.ToString().Replace("\r\n", " | ").Replace("\"", "\\\"")}\")");
+            await browser.LoadContent($"<html/>");
+            await contextReleasedCompletionSource.Task;
+            Debug.WriteLine("BrowserView#EvaluateJavascript#Finished", DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffff"));
         }
 
         public void BindJavascriptObject()
@@ -132,6 +142,48 @@ namespace Xilium.CefGlue.Demo.Avalonia
         public void Dispose()
         {
             browser.Dispose();
+        }
+    }
+
+    public static class BrowserExtensions
+    {
+        public static Task LoadContent(this AvaloniaCefBrowser browser, string content)
+        {
+            var loadTask = browser.AwaitLoad();
+
+            var url = "data:text/html;charset=utf-8;base64," + Convert.ToBase64String(UTF8Encoding.UTF8.GetBytes(content));
+            browser.Address = url;
+            return loadTask;
+        }
+
+        public static Task AwaitLoad(this AvaloniaCefBrowser browser)
+        {
+            var taskCompletionSource = new TaskCompletionSource<bool>();
+
+            void UnsubcribeEvents()
+            {
+                browser.LoadEnd -= OnBrowserLoadEnd;
+                browser.LoadError -= OnBrowserLoadError;
+            }
+
+            void OnBrowserLoadError(object sender, LoadErrorEventArgs e)
+            {
+                UnsubcribeEvents();
+                taskCompletionSource.SetException(new Exception(e.ErrorText));
+            }
+
+            void OnBrowserLoadEnd(object sender, LoadEndEventArgs e)
+            {
+                if (e.Frame.Url.StartsWith("data:") || e.Frame.Url.StartsWith("test:"))
+                {
+                    UnsubcribeEvents();
+                    taskCompletionSource.SetResult(true);
+                }
+            }
+
+            browser.LoadEnd += OnBrowserLoadEnd;
+            browser.LoadError += OnBrowserLoadError;
+            return taskCompletionSource.Task;
         }
     }
 }
