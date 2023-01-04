@@ -38,7 +38,8 @@ namespace Xilium.CefGlue.Demo.Avalonia
             }
         }
 
-        private BrowserView ActiveBrowserView => (BrowserView) this.FindControl<TabControl>("tabControl").SelectedContent;
+        private BrowserView ActiveBrowserView =>
+            (BrowserView)this.FindControl<TabControl>("tabControl").SelectedContent;
 
         private void CreateNewTab()
         {
@@ -52,9 +53,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
             var closeButton = new Button()
             {
-                Content = "X",
-                Padding = new Thickness(2),
-                Margin = new Thickness(5, 0, 0, 0)
+                Content = "X", Padding = new Thickness(2), Margin = new Thickness(5, 0, 0, 0)
             };
             closeButton.Click += delegate
             {
@@ -63,10 +62,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             };
             DockPanel.SetDock(closeButton, Dock.Right);
 
-            var tabTitle = new TextBlock()
-            {
-                Text = "New Tab"
-            };
+            var tabTitle = new TextBlock() { Text = "New Tab" };
             headerPanel.Children.Add(tabTitle);
             headerPanel.Children.Add(closeButton);
 
@@ -89,6 +85,11 @@ namespace Xilium.CefGlue.Demo.Avalonia
             CreateNewTab();
         }
 
+        private void OnTestScenarioNativeMenuItemClick(object sender, EventArgs e)
+        {
+            ActiveBrowserView.TestScenario();
+        }
+
         private void OnEvaluateJavascriptNativeMenuItemClick(object sender, EventArgs e)
         {
             ActiveBrowserView.EvaluateJavascript();
@@ -107,6 +108,11 @@ namespace Xilium.CefGlue.Demo.Avalonia
         private void OnNewTabMenuItemClick(object sender, RoutedEventArgs e)
         {
             CreateNewTab();
+        }
+
+        private void OnTestScenarioMenuItemClick(object sender, RoutedEventArgs e)
+        {
+            ActiveBrowserView.TestScenario();
         }
 
         private void OnEvaluateJavascriptMenuItemClick(object sender, RoutedEventArgs e)

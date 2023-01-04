@@ -112,6 +112,29 @@ namespace Xilium.CefGlue.Demo.Avalonia
             Debug.WriteLine("BrowserView#EvaluateJavascript#Finished", DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffff"));
         }
 
+        public async void TestScenario()
+        {
+            var loadEndCompletionSource = new TaskCompletionSource<bool>();
+
+            void OnLoadEnd(object sender, LoadEndEventArgs args) {
+                loadEndCompletionSource.SetResult(true);
+                browser.LoadEnd -= OnLoadEnd;
+            }
+
+            // void OnLoadError(object sender, LoadErrorEventArgs args) {
+            //     loadEndCompletionSource.SetResult(false);
+            //     browser.LoadError -= OnLoadError;
+            // }
+
+            browser.LoadEnd += OnLoadEnd;
+            // browser.LoadError += OnLoadError;
+
+            browser.Address = "local://webview.1/index.html";
+            var res = await loadEndCompletionSource.Task;
+
+            System.Diagnostics.Debug.WriteLine($"BrowserView#TestScenario#Finished {res}", DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffff"));
+        }
+
         public void BindJavascriptObject()
         {
             const string TestObject = "dotNetObject";

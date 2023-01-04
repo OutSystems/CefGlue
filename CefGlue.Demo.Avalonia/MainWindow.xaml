@@ -11,7 +11,8 @@
                     <NativeMenu>
                         <NativeMenuItem Header="New Tab" Clicked="OnNewTabNativeMenuItemClick" />
                         <NativeMenuItem Header="Open Dev Tools..." Clicked="OnOpenDevToolsNativeMenuItemClick"/>
-                        <NativeMenuItem Header="Test Events" Clicked="OnEvaluateJavascriptNativeMenuItemClick" />
+                        <NativeMenuItem Header="Test Scenario" Clicked="OnTestScenarioNativeMenuItemClick" />
+                        <NativeMenuItem Header="Evaluate Javascript" Clicked="OnEvaluateJavascriptNativeMenuItemClick" />
                         <NativeMenuItem Header="Bind Javascript Object" Clicked="OnBindJavascriptObjectNativeMenuItemClick" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
@@ -24,7 +25,8 @@
             <MenuItem Header="_File">
                 <MenuItem Header="_New Tab" Click="OnNewTabMenuItemClick" />
                 <MenuItem Header="_Open Dev Tools..." Click="OnOpenDevToolsMenuItemClick"/>
-                <MenuItem Header="_Test Events" Click="OnEvaluateJavascriptMenuItemClick" />
+                <MenuItem Header="_Test Scenario" Click="OnTestScenarioMenuItemClick" />
+                <MenuItem Header="_Evaluate Javascript" Click="OnEvaluateJavascriptMenuItemClick" />
                 <MenuItem Header="_Bind Javascript Object" Click="OnBindJavascriptObjectMenuItemClick" />
             </MenuItem>
         </Menu>
