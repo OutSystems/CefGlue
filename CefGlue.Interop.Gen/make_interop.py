@@ -393,7 +393,7 @@ def make_proxy_g_body(cls):
     result.append(indent + 'if (ptr == null) throw new ArgumentNullException("ptr");')
     result.append(indent + '_self = ptr;')
     if isRefCounted:
-            result.append(indent + 'CefObjectTracker.Track(this);')
+        result.append(indent + 'CefObjectTracker.Track(this);')
     #
     # todo: diagnostics code: Interlocked.Increment(ref _objCt);
     #
