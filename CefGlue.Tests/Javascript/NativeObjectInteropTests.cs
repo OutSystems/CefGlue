@@ -274,11 +274,21 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public async Task NativeObjectMethodDateTimeResultIsReturned()
         {
+            //Setup
+            var win32Epoch = new DateTime(1601, 1, 1);
+
+            // Act
             Execute($"{ObjName}.methodWithDateTimeReturn().then(r => {ObjName}.setResult(r));");
 
             var result = await nativeObject.ResultTask;
 
-            Assert.AreEqual(nativeObject.MethodWithDateTimeReturn(), result);
+            // Assert
+            var nativeObjectDateTime = nativeObject.MethodWithDateTimeReturn();
+            var elapsedMicrosecondsFromWin32Epoch =
+                (nativeObjectDateTime - win32Epoch).TotalMilliseconds * 1000;
+
+            Assert.IsTrue(result is IDictionary<string, object>);
+            Assert.AreEqual(elapsedMicrosecondsFromWin32Epoch, ((IDictionary<string, object>)result)["Ticks"]);
         }
 
         [Test]
