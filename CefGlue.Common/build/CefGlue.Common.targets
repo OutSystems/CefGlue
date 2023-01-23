@@ -17,6 +17,15 @@
             <PublishState>Included</PublishState>
         </None>
     </ItemGroup>
+    <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'osx'">
+        <None Include="@(CefRedistOSX64)">
+            <Visible>false</Visible>
+            <Link>$(OutputDirectory)\CefGlueBrowserProcess\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <PublishState>Included</PublishState>
+        </None>
+    </ItemGroup>
     <ItemGroup>
         <None Include="@(CefGlueBrowserProcessFiles)">
             <Visible>false</Visible>

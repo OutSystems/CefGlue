@@ -34,7 +34,7 @@
             <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
             <IncludeAssets>CefGlue.Common.Shared.dll</IncludeAssets>
         </ProjectReference>
-        
+
         <ProjectReference Include="..\CefGlue\CefGlue.csproj">
             <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
             <IncludeAssets>CefGlue.dll</IncludeAssets>
@@ -47,16 +47,15 @@
     <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
         <ItemGroup>
             <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
-            <BuildOutputInPackage Condition="'$(TargetFramework)' == 'net472'" Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\net472\Xilium.CefGlue.BrowserProcess.*" />
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\net5.0\win-x64\publish\**\*">
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\net6.0\win-x64\publish\**\*">
                 <PackagePath>bin\win</PackagePath>
             </TfmSpecificPackageFile>
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\net5.0\osx-x64\publish\**\*">
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\net6.0\osx-x64\publish\**\*">
                 <PackagePath>bin\osx</PackagePath>
             </TfmSpecificPackageFile>
         </ItemGroup>
     </Target>
-    
+
 </Project>
