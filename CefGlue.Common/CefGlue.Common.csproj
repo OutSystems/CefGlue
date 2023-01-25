@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFramework>$(DotnetStandardVersion)</TargetFramework>
         <AssemblyName>Xilium.CefGlue.Common</AssemblyName>
         <RootNamespace>Xilium.CefGlue.Common</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -48,11 +48,11 @@
         <ItemGroup>
             <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\net6.0\win-x64\publish\**\*">
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\win-x64\publish\**\*">
                 <PackagePath>bin\win</PackagePath>
             </TfmSpecificPackageFile>
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\net6.0\osx-x64\publish\**\*">
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\osx-x64\publish\**\*">
                 <PackagePath>bin\osx</PackagePath>
             </TfmSpecificPackageFile>
         </ItemGroup>

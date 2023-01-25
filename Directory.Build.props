@@ -31,4 +31,10 @@
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
+
+    <PropertyGroup>
+        <DotnetVersion>net6.0</DotnetVersion>
+        <DotnetStandardVersion>netstandard2.0</DotnetStandardVersion>
+    </PropertyGroup>
+
 </Project>
