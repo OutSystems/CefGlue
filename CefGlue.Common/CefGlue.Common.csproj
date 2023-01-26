@@ -49,11 +49,11 @@
             <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
             <BuildOutputInPackage Condition="'$(TargetFramework)' == 'net472'" Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\net472\Xilium.CefGlue.BrowserProcess.*" />
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\net5.0\win-x64\publish\**\*">
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\net6.0\win-x64\publish\**\*">
                 <PackagePath>bin\win</PackagePath>
             </TfmSpecificPackageFile>
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\net5.0\osx-x64\publish\**\*">
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\net6.0\osx-x64\publish\**\*">
                 <PackagePath>bin\osx</PackagePath>
             </TfmSpecificPackageFile>
         </ItemGroup>
