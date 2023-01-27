@@ -574,6 +574,16 @@ namespace Xilium.CefGlue.Common
             LoadingStateChange?.Invoke(_eventsEmitter, new LoadingStateChangeEventArgs(isLoading, canGoBack, canGoForward));
         }
 
+        void ICefBrowserHost.HandleFrameAttached(CefBrowser browser, CefFrame frame, bool reattached)
+        {
+            _javascriptExecutionEngine.HandleFrameAttached(frame);
+        }
+
+        void ICefBrowserHost.HandleFrameDetached(CefBrowser browser, CefFrame frame)
+        {
+            _javascriptExecutionEngine.HandleFrameDetached(frame);
+        }
+
         void ICefBrowserHost.HandleOpenContextMenu(CefContextMenuParams parameters, CefMenuModel model, CefRunContextMenuCallback callback)
         {
             Control.OpenContextMenu(MenuEntry.FromCefModel(model), parameters.X, parameters.Y, callback);

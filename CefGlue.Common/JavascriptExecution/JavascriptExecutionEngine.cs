@@ -19,8 +19,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
         public JavascriptExecutionEngine(MessageDispatcher dispatcher)
         {
             dispatcher.RegisterMessageHandler(Messages.JsEvaluationResult.Name, HandleScriptEvaluationResultMessage);
-            dispatcher.RegisterMessageHandler(Messages.JsContextCreated.Name, HandleContextCreatedMessage);
-            dispatcher.RegisterMessageHandler(Messages.JsContextReleased.Name, HandleContextReleasedMessage);
             dispatcher.RegisterMessageHandler(Messages.JsUncaughtException.Name, HandleUncaughtExceptionMessage);
         }
 
@@ -47,31 +45,30 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             }
         }
 
-        private void HandleContextCreatedMessage(MessageReceivedEventArgs args)
-        {
-            var message = Messages.JsContextCreated.FromCefMessage(args.Message);
-            if (args.Frame.IsMain)
-            {
-                IsMainFrameContextInitialized = true;
-            }
-            ContextCreated?.Invoke(args.Frame);
-        }
-
-        private void HandleContextReleasedMessage(MessageReceivedEventArgs args)
-        {
-            var message = Messages.JsContextReleased.FromCefMessage(args.Message);
-            if (args.Frame.IsMain)
-            {
-                IsMainFrameContextInitialized = false;
-            }
-            ContextReleased?.Invoke(args.Frame);
-        }
-
         private void HandleUncaughtExceptionMessage(MessageReceivedEventArgs args)
         {
             var message = Messages.JsUncaughtException.FromCefMessage(args.Message);
             var stackFrames = message.StackFrames.Select(f => new JavascriptStackFrame(f.FunctionName, f.ScriptNameOrSourceUrl, f.Column, f.LineNumber));
             UncaughtException?.Invoke(new JavascriptUncaughtExceptionEventArgs(args.Frame, message.Message, stackFrames.ToArray()));
+        }
+
+        public void HandleFrameAttached(CefFrame frame)
+        {
+            if (frame.IsMain)
+            {
+                IsMainFrameContextInitialized = true;
+            }
+            ContextCreated?.Invoke(frame);
+        }
+
+        public void HandleFrameDetached(CefFrame frame)
+        {
+            if (frame.IsMain)
+            {
+                IsMainFrameContextInitialized = false;
+            }
+            System.Diagnostics.Debug.WriteLine($"###JavascriptExecutionEngine#HandleFrameDetached {frame.Url} - EventCallbackIsAvailable: {ContextReleased != null}", DateTime.Now.ToString("o"));
+            ContextReleased?.Invoke(frame);
         }
 
         public Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame, TimeSpan? timeout = null)
@@ -119,6 +116,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         public void Dispose()
         {
+            System.Diagnostics.Debug.WriteLine($"###JavascriptExecutionEngine#Dispose", DateTime.Now.ToString("o"));
             ContextCreated = null;
             ContextReleased = null;
             UncaughtException = null;
