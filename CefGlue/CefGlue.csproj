@@ -9,7 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 
-    <Version>107.0.3</Version>
+    <Version>107.1.12</Version>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
