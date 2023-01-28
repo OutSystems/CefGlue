@@ -246,12 +246,17 @@
         /// This function should be called on the main application thread to shut down
         /// the CEF browser process before the application exits.
         /// </summary>
-        public static void Shutdown()
+        /// <param name="skipGC">If set to <see langword="false"/> perform GC
+        /// and wait for pending finalizers.</param>
+        public static void Shutdown(bool skipGC = false)
         {
             if (!_initialized) return;
 
-            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
-            GC.WaitForPendingFinalizers();
+            if (!skipGC)
+            {
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+                GC.WaitForPendingFinalizers();
+            }
 
             libcef.shutdown();
         }
