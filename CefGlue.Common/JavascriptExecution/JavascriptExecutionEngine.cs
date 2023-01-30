@@ -115,7 +115,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         public void Dispose()
         {
-            System.Diagnostics.Debug.WriteLine($"###JavascriptExecutionEngine#Dispose", DateTime.Now.ToString("o"));
             ContextCreated = null;
             ContextReleased = null;
             UncaughtException = null;
