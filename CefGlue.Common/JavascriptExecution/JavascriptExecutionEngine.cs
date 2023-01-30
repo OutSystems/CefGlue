@@ -67,7 +67,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             {
                 IsMainFrameContextInitialized = false;
             }
-            System.Diagnostics.Debug.WriteLine($"###JavascriptExecutionEngine#HandleFrameDetached {frame.Url} - EventCallbackIsAvailable: {ContextReleased != null}", DateTime.Now.ToString("o"));
             ContextReleased?.Invoke(frame);
         }
 
