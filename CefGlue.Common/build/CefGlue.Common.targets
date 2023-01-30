@@ -16,13 +16,6 @@
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>
         </None>
-        <None Include="@(CefRedistOSX64)">
-            <Visible>false</Visible>
-            <Link>$(OutputDirectory)\CefGlueBrowserProcess\%(RecursiveDir)%(FileName)%(Extension)</Link>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-            <PublishState>Included</PublishState>
-        </None>
     </ItemGroup>
     <ItemGroup>
         <None Include="@(CefGlueBrowserProcessFiles)">
@@ -33,4 +26,14 @@
             <PublishState>Included</PublishState>
         </None>
     </ItemGroup>
+
+    <ItemGroup>
+        <FilesToMove Include="$(OutDir)\libEGL.dylib"/>
+        <FilesToMove Include="$(OutDir)\libGLESv2.dylib"/>
+        <FilesToMove Include="$(OutDir)\libvk_swiftshader.dylib"/>
+    </ItemGroup>
+    <Target Name="MoveCeflib" AfterTargets="Build">
+        <Message Text="Moving Files @(FilesToMove)[$(ProjectFileName)]"/>
+        <Move SourceFiles="@(FilesToMove)" DestinationFolder="$(OutDir)\CefGlueBrowserProcess\"/>
+    </Target>
 </Project>
