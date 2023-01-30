@@ -12,7 +12,7 @@ namespace Xilium.CefGlue.BrowserProcess.Helpers
         /// </summary>
         public static void Install()
         {
-#if NET5_0
+#if NET6_0
             string extension = null;
             var basePath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".."));
 

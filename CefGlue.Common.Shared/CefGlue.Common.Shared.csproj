@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>$(DotnetStandardVersion)</TargetFramework>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <AssemblyName>Xilium.CefGlue.Common.Shared</AssemblyName>
     <RootNamespace>Xilium.CefGlue.Common.Shared</RootNamespace>
     <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
