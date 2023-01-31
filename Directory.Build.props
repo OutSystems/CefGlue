@@ -36,4 +36,9 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <TargetFramework>$(DotnetVersion)</TargetFramework>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
 </Project>
