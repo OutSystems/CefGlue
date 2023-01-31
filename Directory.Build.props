@@ -6,6 +6,11 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <DotnetVersion>net6.0</DotnetVersion>
+        <DotnetStandardVersion>netstandard2.0</DotnetStandardVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <PackageOutputPath>$(MSBuildProjectDirectory)\..\Nuget\output</PackageOutputPath>
         <Version>106.5249.0</Version>
         <Authors>XiliumHQ,OutSystems</Authors>
@@ -30,4 +35,5 @@
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
+
 </Project>
