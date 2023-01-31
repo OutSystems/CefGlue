@@ -24,8 +24,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         public bool IsMainFrameContextInitialized { get; private set; }
 
-        public event Action<CefFrame> ContextCreated;
-        public event Action<CefFrame> ContextReleased;
         public event Action<JavascriptUncaughtExceptionEventArgs> UncaughtException;
 
         private void HandleScriptEvaluationResultMessage(MessageReceivedEventArgs args)
@@ -58,7 +56,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             {
                 IsMainFrameContextInitialized = true;
             }
-            ContextCreated?.Invoke(frame);
         }
 
         public void HandleFrameDetached(CefFrame frame)
@@ -67,7 +64,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             {
                 IsMainFrameContextInitialized = false;
             }
-            ContextReleased?.Invoke(frame);
         }
 
         public Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame, TimeSpan? timeout = null)
@@ -115,8 +111,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         public void Dispose()
         {
-            ContextCreated = null;
-            ContextReleased = null;
             UncaughtException = null;
             foreach (var task in _pendingTasks)
             {

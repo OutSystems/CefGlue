@@ -322,16 +322,6 @@ namespace Xilium.CefGlue.Common
             windowInfo.SetAsChild(hostViewHandle, new CefRectangle(0, 0, width, height));
         }
 
-        private void OnJavascriptExecutionEngineContextCreated(CefFrame frame)
-        {
-            JavascriptContextCreated?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
-        }
-
-        private void OnJavascriptExecutionEngineContextReleased(CefFrame frame)
-        {
-            JavascriptContextReleased?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
-        }
-
         private void OnJavascriptExecutionEngineUncaughtException(JavascriptUncaughtExceptionEventArgs args)
         {
             JavascriptUncaughtException?.Invoke(_eventsEmitter, args);
@@ -417,8 +407,6 @@ namespace Xilium.CefGlue.Common
                 if (dispatcher != null)
                 {
                     var javascriptExecutionEngine = new JavascriptExecutionEngine(dispatcher);
-                    javascriptExecutionEngine.ContextCreated += OnJavascriptExecutionEngineContextCreated;
-                    javascriptExecutionEngine.ContextReleased += OnJavascriptExecutionEngineContextReleased;
                     javascriptExecutionEngine.UncaughtException += OnJavascriptExecutionEngineUncaughtException;
                     _javascriptExecutionEngine = javascriptExecutionEngine;
 
@@ -462,6 +450,9 @@ namespace Xilium.CefGlue.Common
             _crashServerPipe?.Dispose();
 
             browser.Dispose();
+
+            JavascriptContextCreated = null;
+            JavascriptContextReleased = null;
 
             _javascriptExecutionEngine.Dispose();
             _objectRegistry.Dispose();
@@ -577,11 +568,13 @@ namespace Xilium.CefGlue.Common
         void ICefBrowserHost.HandleFrameAttached(CefBrowser browser, CefFrame frame, bool reattached)
         {
             _javascriptExecutionEngine.HandleFrameAttached(frame);
+            JavascriptContextCreated?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
         }
 
         void ICefBrowserHost.HandleFrameDetached(CefBrowser browser, CefFrame frame)
         {
             _javascriptExecutionEngine.HandleFrameDetached(frame);
+            JavascriptContextReleased?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
         }
 
         void ICefBrowserHost.HandleOpenContextMenu(CefContextMenuParams parameters, CefMenuModel model, CefRunContextMenuCallback callback)
