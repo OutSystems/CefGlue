@@ -18,11 +18,16 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         protected override bool Execute(string name, CefV8Value obj, CefV8Value[] arguments, out CefV8Value returnValue, out string exception)
         {
+            if (arguments.Length > 1)
+            {
+                throw new ArgumentException($"The '{nameof(arguments)}' array must be either empty or contain only one argument, a json string. The array has {arguments.Length} elements.");
+            }
+
             var message = new Messages.NativeObjectCallRequest()
             {
                 ObjectName = _objectName,
                 MemberName = name,
-                ArgumentsJson = arguments.Any() ? arguments[0].GetStringValue() : string.Empty
+                ArgumentsAsJson = arguments.Any() ? arguments[0].GetStringValue() : string.Empty
             };
 
             var promiseHolder = _functionCallHandler(message);

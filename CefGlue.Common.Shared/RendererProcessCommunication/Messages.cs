@@ -147,7 +147,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
             public int CallId;
             public string ObjectName;
             public string MemberName;
-            public string ArgumentsJson;
+            public string ArgumentsAsJson;
             
             public CefProcessMessage ToCefProcessMessage()
             {
@@ -157,7 +157,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                     arguments.SetInt(0, CallId);
                     arguments.SetString(1, ObjectName);
                     arguments.SetString(2, MemberName);
-                    arguments.SetString(3, ArgumentsJson);
+                    arguments.SetString(3, ArgumentsAsJson);
                 }
                 return message;
             }
@@ -171,7 +171,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                         CallId = arguments.GetInt(0),
                         ObjectName = arguments.GetString(1),
                         MemberName = arguments.GetString(2),
-                        ArgumentsJson = arguments.GetString(3),
+                        ArgumentsAsJson = arguments.GetString(3),
                     };
                 }
             }

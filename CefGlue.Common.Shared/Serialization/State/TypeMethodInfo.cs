@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
-    internal record TypeMethodInfo
+    internal class TypeMethodInfo
     {
         private readonly Action<object, object[]> _action;
 

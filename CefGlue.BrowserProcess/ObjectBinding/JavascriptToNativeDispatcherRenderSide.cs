@@ -183,6 +183,8 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                             v8Obj.SetValue(methodName, v8Function);
                         }
 
+                        // the interceptor object is a proxy that will trap all calls to the native object and
+                        // and pass the arguments serialized as json (to the native method)
                         var interceptorObj = JavascriptHelper.CreateInterceptorObject(context, v8Obj);
                         global.SetValue(objectInfo.Name, interceptorObj);
                     }

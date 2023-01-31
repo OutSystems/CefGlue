@@ -64,7 +64,7 @@ namespace Xilium.CefGlue.Common.InternalHandlers
         {
             if (_logger.IsDebugEnabled)
             {
-                _logger.Debug($"TypeInfo: {type} Buffer: {buffer.ToInt64()} Width: {width} Height: {height}");
+                _logger.Debug($"Type: {type} Buffer: {buffer.ToInt64()} Width: {width} Height: {height}");
                 foreach (var rect in dirtyRects)
                 {
                     _logger.Debug($"   DirtyRect: X={rect.X} Y={rect.Y} W={rect.Width} H={rect.Height}");

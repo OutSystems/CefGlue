@@ -12,17 +12,18 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         private const string GlobalObjectName = "cefglue";
         private const string PromiseFactoryFunctionName = "createPromise";
         private const string InterceptorFactoryFunctionName = "createInterceptor";
+        private const string EvaluateScriptFunctionName = "evaluateScript";
         private const string BindNativeFunctionName = "Bind";
         private const string UnbindNativeFunctionName = "Unbind";
-        private const string EvaluateScriptFunctionName = "evaluateScript";
 
         public static void Register(INativeObjectRegistry nativeObjectRegistry)
         {
-            var currentNamespace = typeof(JavascriptHelper).Namespace;
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            using (var stream = new StreamReader(assembly.GetManifestResourceStream($"{currentNamespace}.{CefGlueGlobalScriptFileName}")))
+            var currentType = typeof(JavascriptHelper);
+            var currentNamespace = currentType.Namespace;
+            var currentAssembly = currentType.Assembly;
+            using (var stream = new StreamReader(currentAssembly.GetManifestResourceStream($"{currentNamespace}.{CefGlueGlobalScriptFileName}")))
             {
-                var cefGlueGlobalScript = ReplaceScriptGlobalVariables(stream.ReadToEnd());
+                var cefGlueGlobalScript = FillScriptPlaceholders(stream.ReadToEnd());
                 CefRuntime.RegisterExtension("cefglue", cefGlueGlobalScript, new V8BuiltinFunctionHandler(nativeObjectRegistry));
             }
                 
@@ -35,9 +36,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         public static PromiseHolder CreatePromise(this CefV8Context context)
         {
-            var global = context.GetGlobal();
-            var cefGlueGlobal = global.GetValue(GlobalObjectName); // TODO what if cefGlueGlobal == null?
-            var promiseFactory = cefGlueGlobal.GetValue(PromiseFactoryFunctionName);
+            var promiseFactory = GetGlobalInnerValue(context, PromiseFactoryFunctionName);
             var promiseData = promiseFactory.ExecuteFunctionWithContext(context, null, new CefV8Value[0]); // create a promise and return the resolve and reject callbacks
 
             var promise = promiseData.GetValue("promise");
@@ -53,11 +52,17 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         public static CefV8Value CreateInterceptorObject(this CefV8Context context, CefV8Value targetObj)
         {
-            var global = context.GetGlobal();
-            var cefGlueGlobal = global.GetValue(GlobalObjectName);
-            var interceptorFactory = cefGlueGlobal.GetValue(InterceptorFactoryFunctionName);
-
+            var interceptorFactory = GetGlobalInnerValue(context, InterceptorFactoryFunctionName);
+            
             return interceptorFactory.ExecuteFunctionWithContext(context, null, new[] { targetObj });
+        }
+
+        private static CefV8Value GetGlobalInnerValue(CefV8Context context, string innerValueKey)
+        {
+            var global = context.GetGlobal();
+            var cefGlueGlobal = global.GetValue(GlobalObjectName); // TODO what if cefGlueGlobal == null?
+            
+            return cefGlueGlobal.GetValue(innerValueKey);
         }
 
         private static void HandleJavascriptEvaluation(MessageReceivedEventArgs args)
@@ -69,7 +74,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                 var message = Messages.JsEvaluationRequest.FromCefMessage(args.Message);
 
                 // send script to browser
-                var success = context.V8Context.TryEval($"{GlobalObjectName}.{EvaluateScriptFunctionName}(() => ({message.Script}))", message.Url, message.Line, out var value, out var exception);
+                var success = context.V8Context.TryEval(WrapScriptForEvaluation(message.Script), message.Url, message.Line, out var value, out var exception);
 
                 var response = new Messages.JsEvaluationResult()
                 {
@@ -84,10 +89,15 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             }
         }
 
-        private static string ReplaceScriptGlobalVariables(string script)
+        private static string WrapScriptForEvaluation(string script)
+        {
+            return $"{GlobalObjectName}.{EvaluateScriptFunctionName}(() => ({script}))";
+        }
+
+        private static string FillScriptPlaceholders(string script)
         {
             var sb = new StringBuilder(script);
-            return (sb
+            return sb
                 .Replace("$GlobalObjectName$", GlobalObjectName)
                 .Replace("$JsonIdAttribute$", JsonAttributes.Id)
                 .Replace("$JsonRefAttribute$", JsonAttributes.Ref)
@@ -101,7 +111,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                 .Replace("$BindNativeFunctionName$", BindNativeFunctionName)
                 .Replace("$UnbindNativeFunctionName$", UnbindNativeFunctionName)
                 .Replace("$EvaluateScriptFunctionName$", EvaluateScriptFunctionName)
-                ).ToString();
+                .ToString();
         }
     }
 }

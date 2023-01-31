@@ -68,8 +68,8 @@ if (!$GlobalObjectName$) {
             const refs = new Map();
             const marker = Symbol("marker");
             return function (key, value) {
-                if (value === null) {
-                    return null;
+                if (value === null || value === undefined) {
+                    return value;
                 }
                 const valueType = typeof value;
                 // strings, with the exception of $id and $ref, must be returned prefixed with a Marker
@@ -136,8 +136,8 @@ if (!$GlobalObjectName$) {
                             return targetValue;
                         }
                         const interceptor = function (...args) {
-                            const argsJson = args.length === 0 ? "" : JSON.stringify(args, argumentsStringifier());
-                            return targetValue.apply(target, [argsJson]);
+                            const convertedArgs = args.length === 0 ? args : [JSON.stringify(args, argumentsStringifier())];
+                            return targetValue.apply(target, convertedArgs);
                         };
                         functionsMap.set(propKey, interceptor);
                         return interceptor;

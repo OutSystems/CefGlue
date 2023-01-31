@@ -36,9 +36,9 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             InnerExecuteMethod(methodName, args, handleResult);
         }
 
-        public void ExecuteMethod(string methodName, string argsJson, Action<object, Exception> handleResult)
+        public void ExecuteMethod(string methodName, string argsAsJson, Action<object, Exception> handleResult)
         {
-            InnerExecuteMethod(methodName, argsJson, handleResult);
+            InnerExecuteMethod(methodName, argsAsJson, handleResult);
         }
 
         private void InnerExecuteMethod<T>(string methodName, T args, Action<object, Exception> handleResult)
