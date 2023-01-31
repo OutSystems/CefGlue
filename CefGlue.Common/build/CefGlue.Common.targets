@@ -31,7 +31,7 @@
         </None>
     </ItemGroup>
 
-    <Target Name="MoveCeflib" AfterTargets="Build">
+    <Target Name="MoveCeflib" AfterTargets="Build" Condition="'$(CefGlueTargetPlatform)' == 'osx'">
         <ItemGroup>
             <FilesToMove Include="$(OutDir)\libEGL.dylib"/>
             <FilesToMove Include="$(OutDir)\libGLESv2.dylib"/>
