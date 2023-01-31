@@ -1,4 +1,8 @@
 <Project>
+    <PropertyGroup>
+        <CefGlueBrowserProcessDir>CefGlueBrowserProcess</CefGlueBrowserProcessDir>
+    </PropertyGroup>
+
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'win'">
         <None Include="@(CefRedist64)">
             <Visible>false</Visible>
@@ -20,7 +24,7 @@
     <ItemGroup>
         <None Include="@(CefGlueBrowserProcessFiles)">
             <Visible>false</Visible>
-            <Link>$(OutputDirectory)\CefGlueBrowserProcess\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <Link>$(OutputDirectory)\$(CefGlueBrowserProcessDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>
@@ -28,12 +32,12 @@
     </ItemGroup>
 
     <Target Name="MoveCeflib" AfterTargets="Build">
-            <ItemGroup>
-                <FilesToMove Include="$(OutDir)\libEGL.dylib"/>
-                <FilesToMove Include="$(OutDir)\libGLESv2.dylib"/>
-                <FilesToMove Include="$(OutDir)\libvk_swiftshader.dylib"/>
-           </ItemGroup>
+        <ItemGroup>
+            <FilesToMove Include="$(OutDir)\libEGL.dylib"/>
+            <FilesToMove Include="$(OutDir)\libGLESv2.dylib"/>
+            <FilesToMove Include="$(OutDir)\libvk_swiftshader.dylib"/>
+        </ItemGroup>
         <Message Text="Moving Files @(FilesToMove)[$(ProjectFileName)]"/>
-        <Move SourceFiles="@(FilesToMove)" DestinationFolder="$(OutDir)\CefGlueBrowserProcess\"/>
+        <Move SourceFiles="@(FilesToMove)" DestinationFolder="$(OutDir)\$(CefGlueBrowserProcessDir)\"/>
     </Target>
 </Project>
