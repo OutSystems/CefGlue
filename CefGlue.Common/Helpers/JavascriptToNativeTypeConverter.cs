@@ -11,7 +11,7 @@ namespace Xilium.CefGlue.Common.Helpers
     {
         private delegate IList ListContructor(int length, out Type genericType);
 
-        private static readonly DateTime _win32Epoch = new DateTime(1601, 1, 1);
+        private static readonly DateTime _windowsEpoch = new DateTime(1601, 1, 1);
         private static readonly IDictionary<Type, MemberInfo[]> _typeMembersCache = new Dictionary<Type, MemberInfo[]>();
         private static readonly IDictionary<Type, ListContructor> _typeListConstructorCache = new Dictionary<Type, ListContructor>();
 
@@ -53,7 +53,7 @@ namespace Xilium.CefGlue.Common.Helpers
                 && obj is Dictionary<string,object> { Count: 1 } objValue
                 && objValue.TryGetValue("Ticks", out var dateTicksInMicroseconds)) {
                 var milliseconds = Convert.ToDouble(dateTicksInMicroseconds) / 1000;
-                return _win32Epoch.AddMilliseconds(milliseconds);
+                return _windowsEpoch.AddMilliseconds(milliseconds);
             }
 
             var objType = obj.GetType();
