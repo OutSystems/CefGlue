@@ -35,7 +35,4 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
-    <PropertyGroup Condition="$(TargetFramework)==$(DotnetVersion)">
-        <DefineConstants>NET_LATEST</DefineConstants>
-    </PropertyGroup>
 </Project>
