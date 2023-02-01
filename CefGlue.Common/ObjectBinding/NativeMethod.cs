@@ -116,29 +116,6 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             }
 
             return convertedArgs.ToArray();
-
-            //var originalArgs = 
-            //    typeof(T) == typeof(string) ?
-            //    ConvertToNative((string)argsAsObject) :
-            //    (object[])argsAsObject;
-
-            //ValidateMandatoryArguments(originalArgs);
-
-            //var argIndex = 0;
-            //var convertedArgs = new List<object>(_mandatoryParameters.Length + 1);
-
-            //for (; argIndex < _mandatoryParameters.Length; argIndex++)
-            //{
-            //    convertedArgs.Add(JavascriptToNativeTypeConverter.ConvertToNative(originalArgs[argIndex], _mandatoryParameters[argIndex].ParameterType));
-            //}
-
-            //if (_optionalParameter != null)
-            //{
-            //    var optionalArgs = originalArgs.Skip(argIndex).ToArray();
-            //    convertedArgs.Add(JavascriptToNativeTypeConverter.ConvertToNative(optionalArgs, _optionalParameter.ParameterType));
-            //}
-
-            //return convertedArgs.ToArray();
         }
 
         private object[] ConvertToNative(string args)

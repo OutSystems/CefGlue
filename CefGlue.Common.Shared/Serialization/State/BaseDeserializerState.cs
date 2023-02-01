@@ -28,6 +28,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
         public virtual JsonTypeInfo ObjectTypeInfo => _objectTypeInfo;
 
+        public Type GetPropertyType() => ObjectTypeInfo.GetPropertyType(PropertyName);
+
         public abstract void SetValue(object value);
 
         public abstract ObjectHolderType CreateObjectInstance(Utf8JsonReader reader);

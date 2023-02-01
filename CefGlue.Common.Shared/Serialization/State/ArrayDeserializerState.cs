@@ -34,4 +34,9 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             return Array.CreateInstance(arrayElementType, reader.PeekAndCalculateArraySize());
         }
     }
+
+    internal class ArrayDeserializerState<ArrayElementType> : ArrayDeserializerState
+    {
+        public ArrayDeserializerState(Array objectHolder) : base(objectHolder, typeof(ArrayElementType)) { }
+    }
 }

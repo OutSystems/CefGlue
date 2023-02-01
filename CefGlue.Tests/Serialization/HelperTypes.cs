@@ -23,14 +23,16 @@ namespace CefGlue.Tests.Serialization
             dateField = default;
             binaryField = default;
             doubleField = default;
+            referenceField = default;
         }
         
         public string stringField;
         public int intField;
-        public bool boolField;
+        public bool boolField;  
         public DateTime dateField;
         public byte[] binaryField;
         public double doubleField;
+        public object referenceField;
     }
 
     public struct StructObject

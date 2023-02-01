@@ -50,6 +50,13 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
+        public void HandlesPlainObject()
+        {
+            var obtainedValue = AssertSerialization(new object(), assertEquality: false);
+            Assert.NotNull(obtainedValue);
+        }
+
+        [Test]
         public void HandlesBooleans()
         {
             AssertSerialization(true);
@@ -370,7 +377,8 @@ namespace CefGlue.Tests.Serialization
                     boolField = true,
                     dateField = DateTime.Now,
                     doubleField = 5.5,
-                    binaryField = new byte[] { 0, 1, 2 }
+                    binaryField = new byte[] { 0, 1, 2 },
+                    referenceField = new object()
                 }
             };
 
@@ -384,6 +392,7 @@ namespace CefGlue.Tests.Serialization
             Assert.AreEqual(child.doubleField, obtainedChild.doubleField);
             Assert.AreEqual(child.intField, obtainedChild.intField);
             Assert.AreEqual(child.stringField, obtainedChild.stringField);
+            Assert.NotNull(obtainedChild.referenceField); // Assert.Equal fails when comparing two plain object instances, hence the Assert.NotNull 
         }
     }
 }
