@@ -155,7 +155,7 @@ namespace Xilium.CefGlue.Common
             set => BrowserHost?.SetZoomLevel(value);
         }
 
-        public bool IsJavascriptEngineInitialized => _javascriptExecutionEngine?.IsMainFrameContextInitialized == true;
+        public bool IsJavascriptEngineInitialized { get; private set; }
 
         public CefBrowserSettings Settings { get; } = new CefBrowserSettings();
 
@@ -451,9 +451,6 @@ namespace Xilium.CefGlue.Common
 
             browser.Dispose();
 
-            JavascriptContextCreated = null;
-            JavascriptContextReleased = null;
-
             _javascriptExecutionEngine.Dispose();
             _objectRegistry.Dispose();
 
@@ -567,13 +564,19 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandleFrameAttached(CefBrowser browser, CefFrame frame, bool reattached)
         {
-            _javascriptExecutionEngine.HandleFrameAttached(frame);
+            if (frame.IsMain)
+            {
+                IsJavascriptEngineInitialized = true;
+            }
             JavascriptContextCreated?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
         }
 
         void ICefBrowserHost.HandleFrameDetached(CefBrowser browser, CefFrame frame)
         {
-            _javascriptExecutionEngine.HandleFrameDetached(frame);
+            if (frame.IsMain)
+            {
+                IsJavascriptEngineInitialized = false;
+            }
             JavascriptContextReleased?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
         }
 

@@ -22,8 +22,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             dispatcher.RegisterMessageHandler(Messages.JsUncaughtException.Name, HandleUncaughtExceptionMessage);
         }
 
-        public bool IsMainFrameContextInitialized { get; private set; }
-
         public event Action<JavascriptUncaughtExceptionEventArgs> UncaughtException;
 
         private void HandleScriptEvaluationResultMessage(MessageReceivedEventArgs args)
@@ -48,22 +46,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             var message = Messages.JsUncaughtException.FromCefMessage(args.Message);
             var stackFrames = message.StackFrames.Select(f => new JavascriptStackFrame(f.FunctionName, f.ScriptNameOrSourceUrl, f.Column, f.LineNumber));
             UncaughtException?.Invoke(new JavascriptUncaughtExceptionEventArgs(args.Frame, message.Message, stackFrames.ToArray()));
-        }
-
-        public void HandleFrameAttached(CefFrame frame)
-        {
-            if (frame.IsMain)
-            {
-                IsMainFrameContextInitialized = true;
-            }
-        }
-
-        public void HandleFrameDetached(CefFrame frame)
-        {
-            if (frame.IsMain)
-            {
-                IsMainFrameContextInitialized = false;
-            }
         }
 
         public Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame, TimeSpan? timeout = null)
