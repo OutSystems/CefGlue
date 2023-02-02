@@ -3,7 +3,6 @@
     <PropertyGroup>
         <DotnetVersion>net6.0</DotnetVersion>
         <DotnetStandardVersion>netstandard2.0</DotnetStandardVersion>
-        <TargetFramework>$(DotnetVersion)</TargetFramework>
         <LangVersion>latest</LangVersion>
         <CefRedistVersion>106.0.26</CefRedistVersion>
         <CefRedistOSXVersion>106.0.26</CefRedistOSXVersion>
