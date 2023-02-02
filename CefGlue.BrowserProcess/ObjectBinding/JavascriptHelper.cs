@@ -29,11 +29,6 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                 
         }
 
-        public static void RegisterJavascriptExecution(MessageDispatcher dispatcher)
-        {
-            dispatcher.RegisterMessageHandler(Messages.JsEvaluationRequest.Name, HandleJavascriptEvaluation);
-        }
-
         public static PromiseHolder CreatePromise(this CefV8Context context)
         {
             var promiseFactory = GetGlobalInnerValue(context, PromiseFactoryFunctionName);
@@ -65,31 +60,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             return cefGlueGlobal.GetValue(innerValueKey);
         }
 
-        private static void HandleJavascriptEvaluation(MessageReceivedEventArgs args)
-        {
-            var frame = args.Frame;
-
-            using (var context = frame.V8Context.EnterOrFail())
-            {
-                var message = Messages.JsEvaluationRequest.FromCefMessage(args.Message);
-
-                // send script to browser
-                var success = context.V8Context.TryEval(WrapScriptForEvaluation(message.Script), message.Url, message.Line, out var value, out var exception);
-
-                var response = new Messages.JsEvaluationResult()
-                {
-                    TaskId = message.TaskId,
-                    Success = success,
-                    Exception = success ? null : exception.Message,
-                    ResultAsJson = value?.GetStringValue()
-                };
-
-                var cefResponseMessage = response.ToCefProcessMessage();
-                frame.SendProcessMessage(CefProcessId.Browser, cefResponseMessage);
-            }
-        }
-
-        private static string WrapScriptForEvaluation(string script)
+        public static string WrapScriptForEvaluation(string script)
         {
             return $"{GlobalObjectName}.{EvaluateScriptFunctionName}(() => ({script}))";
         }

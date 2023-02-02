@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -392,6 +391,7 @@ namespace CefGlue.Tests.Serialization
             Assert.AreEqual(child.doubleField, obtainedChild.doubleField);
             Assert.AreEqual(child.intField, obtainedChild.intField);
             Assert.AreEqual(child.stringField, obtainedChild.stringField);
+            Assert.AreSame(child.referenceField.GetType(), obtainedChild.referenceField.GetType());
             Assert.NotNull(obtainedChild.referenceField); // Assert.Equal fails when comparing two plain object instances, hence the Assert.NotNull 
         }
     }
