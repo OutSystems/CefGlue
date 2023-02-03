@@ -114,15 +114,21 @@ namespace CefGlue.Tests.Events
             {
                 contextCreatedEventsCompletionSource.SetResult(true);
             }
+            try
+            {
+                Browser.JavascriptContextCreated += OnJavascriptContextCreated;
 
-            Browser.JavascriptContextCreated += OnJavascriptContextCreated;
-
-            await Browser.LoadContent($"<script>1+1</script>");
-            await contextCreatedEventsCompletionSource.Task;
+                await Browser.LoadContent($"<script>1+1</script>");
+                await contextCreatedEventsCompletionSource.Task;
+            }
+            finally
+            {
+                Browser.JavascriptContextCreated -= OnJavascriptContextCreated;
+            }
         }
 
         [Test]
-        public async Task JavascriptContextCreatedaAreFiredWhenMultipleContextsCreated()
+        public async Task JavascriptContextCreatedAreFiredWhenMultipleContextsCreated()
         {
             var mainFrameContextCreatedEventsCompletionSource = new TaskCompletionSource<bool>();
             var innerFrameContextCreatedEventsCompletionSource = new TaskCompletionSource<bool>();
@@ -138,11 +144,18 @@ namespace CefGlue.Tests.Events
                 }
             }
 
-            Browser.JavascriptContextCreated += OnJavascriptContextCreated;
+            try
+            {
+                Browser.JavascriptContextCreated += OnJavascriptContextCreated;
 
-            await Browser.LoadContent($"<html><body><iframe /></body></html>");
-            await mainFrameContextCreatedEventsCompletionSource.Task;
-            await innerFrameContextCreatedEventsCompletionSource.Task;
+                await Browser.LoadContent($"<html><body><iframe /></body></html>");
+                await mainFrameContextCreatedEventsCompletionSource.Task;
+                await innerFrameContextCreatedEventsCompletionSource.Task;
+            }
+            finally
+            {
+                Browser.JavascriptContextCreated -= OnJavascriptContextCreated;
+            }
         }
 
         [Test]
@@ -164,11 +177,19 @@ namespace CefGlue.Tests.Events
                 }
             }
 
-            Browser.JavascriptContextCreated += OnJavascriptContextCreated;
+            try
+            {
+                Browser.JavascriptContextCreated += OnJavascriptContextCreated;
 
-            await Browser.LoadContent($"<script>1+1</script>");
-            await Browser.LoadContent($"<html/>");
-            await contextCreatedEventsCompletionSource.Task;
+                await Browser.LoadContent($"<script>1+1</script>");
+                await Browser.LoadContent($"<html/>");
+                await contextCreatedEventsCompletionSource.Task;
+            }
+            finally
+            {
+                Browser.JavascriptContextCreated -= OnJavascriptContextCreated;
+            }
+
         }
 
         [Test]
@@ -181,14 +202,18 @@ namespace CefGlue.Tests.Events
                 contextReleasedEventsCompletionSource.SetResult(true);
             }
 
-            Browser.JavascriptContextReleased += OnJavascriptContextReleased;
+            try
+            {
+                Browser.JavascriptContextReleased += OnJavascriptContextReleased;
 
-            await Browser.LoadContent($"<script>1+1</script>");
-            await Browser.LoadContent($"<html/>");
-            await contextReleasedEventsCompletionSource.Task;
-
-            // Avoid calling context released after disposing the browser
-            Browser.JavascriptContextReleased -= OnJavascriptContextReleased;
+                await Browser.LoadContent($"<script>1+1</script>");
+                await Browser.LoadContent($"<html/>");
+                await contextReleasedEventsCompletionSource.Task;
+            }
+            finally
+            {
+                Browser.JavascriptContextReleased -= OnJavascriptContextReleased;
+            }
         }
 
         [Test]
@@ -209,15 +234,19 @@ namespace CefGlue.Tests.Events
                 }
             }
 
-            Browser.JavascriptContextReleased += OnJavascriptContextReleased;
+            try
+            {
+                Browser.JavascriptContextReleased += OnJavascriptContextReleased;
 
-            await Browser.LoadContent($"<html><body><iframe /></body></html>");
-            await Browser.LoadContent($"<html/>");
-            await mainFrameContextReleasedEventsCompletionSource.Task;
-            await innerFrameContextReleasedEventsCompletionSource.Task;
-
-            // Avoid calling context released after disposing the browser
-            Browser.JavascriptContextReleased -= OnJavascriptContextReleased;
+                await Browser.LoadContent($"<html><body><iframe /></body></html>");
+                await Browser.LoadContent($"<html/>");
+                await mainFrameContextReleasedEventsCompletionSource.Task;
+                await innerFrameContextReleasedEventsCompletionSource.Task;
+            }
+            finally
+            {
+                Browser.JavascriptContextReleased -= OnJavascriptContextReleased;
+            }
         }
 
         [Test]
