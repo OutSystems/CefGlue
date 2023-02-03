@@ -11,7 +11,6 @@
     <Compile Remove="Wrapper\**" />
     <EmbeddedResource Remove="Wrapper\**" />
     <None Remove="Wrapper\**" />
-    <None Remove="CefGlue.g.props" />
   </ItemGroup>
 
   <ItemGroup>
