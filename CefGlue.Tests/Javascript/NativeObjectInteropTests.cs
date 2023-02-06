@@ -60,6 +60,20 @@ namespace CefGlue.Tests.Javascript
                 MethodWithParamsCalled?.Invoke(new object[] { param1, param2, param3, param4 });
             }
 
+            public event Action<object[]> MethodWithFixedAndOptionalParamsCalled;
+
+            public void MethodWithFixedAndOptionalParams(int p1, params string[] args)
+            {
+                MethodWithFixedAndOptionalParamsCalled?.Invoke(new object[] { p1, args });
+            }
+
+            public event Action<string[]> MethodWithOptionalParamsCalled;
+
+            public void MethodWithOptionalParams(params string[] args)
+            {
+                MethodWithOptionalParamsCalled?.Invoke(args);
+            }
+
             public event Action<object[]> MethodWithStringAndObjectsParamsCalled;
 
             public void MethodWithStringAndObjectsParams(string param1, Person person1, Person person2, Person person3)
@@ -196,6 +210,46 @@ namespace CefGlue.Tests.Javascript
             Assert.AreEqual(Arg2, result[1]);
             Assert.AreEqual(DateTime.Parse(Date), result[2]);
             Assert.AreEqual(true, result[3]);
+        }
+
+        [Test]
+        public async Task MethodFixedAndOptionalParamsArePassed()
+        {
+            const int P1 = 7;
+            const string Arg1 = "test";
+            const string Arg2 = "s2";
+
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithFixedAndOptionalParamsCalled += (args) => taskCompletionSource.SetResult(args);
+
+            Execute($"{ObjName}.methodWithFixedAndOptionalParams({P1}, '{Arg1}', '{Arg2}')");
+
+            var result = await taskCompletionSource.Task;
+
+            Assert.AreEqual(2, result.Length);
+            Assert.AreEqual(P1, result[0]);
+            Assert.IsInstanceOf<string[]>(result[1]);
+            var optionalParams = (string[])result[1];
+            Assert.AreEqual(Arg1, optionalParams[0]);
+            Assert.AreEqual(Arg2, optionalParams[1]);
+        }
+
+        [Test]
+        public async Task MethodOptionalParamsArePassed()
+        {
+            const string Arg1 = "test";
+            const string Arg2 = "s2";
+
+            var taskCompletionSource = new TaskCompletionSource<string[]>();
+            nativeObject.MethodWithOptionalParamsCalled += (args) => taskCompletionSource.SetResult(args);
+
+            Execute($"{ObjName}.methodWithOptionalParams('{Arg1}', '{Arg2}')");
+
+            var result = await taskCompletionSource.Task;
+
+            Assert.AreEqual(2, result.Length);
+            Assert.AreEqual(Arg1, result[0]);
+            Assert.AreEqual(Arg2, result[1]);
         }
 
         [Test]

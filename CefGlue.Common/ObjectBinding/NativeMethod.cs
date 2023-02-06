@@ -106,12 +106,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             if (_optionalParameter != null)
             {
                 // the optionalParameterType is always a ParamArray of some type (eg int[]), so we need the ElementType
-                var optionalArgsArray = Array.CreateInstance(_optionalParameter.ParameterType.GetElementType(), originalArgs.Length - argIndex);
-                var optionalArgIndex = 0;
-                foreach (var optionalArg in originalArgs.Skip(argIndex))
-                {
-                    optionalArgsArray.SetValue(optionalArg, optionalArgIndex++);
-                }
+                var optionalArgsArray = ExtractArray(originalArgs, argIndex, _optionalParameter.ParameterType.GetElementType());
                 convertedArgs.Add(optionalArgsArray);
             }
 
@@ -120,13 +115,54 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
         private object[] ConvertToNative(string args)
         {
-            return string.IsNullOrEmpty(args) ?
-                Array.Empty<object>() :
-                Deserializer.Deserialize<object[]>(
-                    args, 
-                    new Shared.Serialization.State.ParametersDeserializerState.ParametersTypes(
-                        _mandatoryParameters.Select(p => p.ParameterType).ToArray(), 
-                        _optionalParameter?.ParameterType));
+            if (string.IsNullOrEmpty(args))
+            {
+                return Array.Empty<object>();
+            }
+
+            var targetTypes = _mandatoryParameters.Select(p => p.ParameterType);
+            Type optionalParameterElementType = null;
+            
+            if (_optionalParameter != null)
+            {
+                // the optionalParameterType is always a ParamArray of some type (eg int[]), so we need the ElementType
+                optionalParameterElementType = _optionalParameter.ParameterType.GetElementType();
+                targetTypes = targetTypes.Append(optionalParameterElementType);
+            }
+
+            if (targetTypes.Count() == 1)
+            {
+                // To force the deserializer to return an object array containing elements of the desired type,
+                // more than 1 type must be passed as an argument,
+                // hence, we're adding a dummy extra argument to the targetTypes
+                targetTypes = targetTypes.Append(typeof(object));
+            }
+
+            var tempResult = (object[])Deserializer.Deserialize(args, targetTypes.ToArray());
+
+            if (_optionalParameter == null)
+            {
+                return tempResult;
+            }
+
+            // reaching here, it means we have to convert the tempArray to a new array like
+            // [arg1, ..., <optionalParameterType>[opt1, ...]]
+            return 
+                tempResult
+                .Take(_mandatoryParameters.Length)
+                .Append(ExtractArray(tempResult, _mandatoryParameters.Length, optionalParameterElementType))
+                .ToArray();
+        }
+
+        private static Array ExtractArray(object[] args, int elementsToSkip, Type arrayElementType)
+        {
+            var result = Array.CreateInstance(arrayElementType, args.Length - elementsToSkip);
+            var arrayIndex = 0;
+            foreach (var arg in args.Skip(elementsToSkip))
+            {
+                result.SetValue(arg, arrayIndex++);
+            }
+            return result;
         }
 
         private void ValidateMandatoryArguments(object[] args)
