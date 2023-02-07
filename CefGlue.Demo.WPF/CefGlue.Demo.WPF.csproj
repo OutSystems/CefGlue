@@ -47,9 +47,6 @@
 
     <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />
 
-    <ItemGroup>
-        <PackageReference Include="Dotnet.Bundle" />
-    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\CefGlue.WPF\CefGlue.WPF.csproj" />
