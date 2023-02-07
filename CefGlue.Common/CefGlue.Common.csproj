@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>$(DotnetStandardVersion)</TargetFramework>
+        <TargetFramework>$(DotnetVersion)</TargetFramework>
         <AssemblyName>Xilium.CefGlue.Common</AssemblyName>
         <RootNamespace>Xilium.CefGlue.Common</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
