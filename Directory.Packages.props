@@ -34,5 +34,7 @@
         <PackageVersion Include="Moq" Version="4.10.1" />
 
         <PackageVersion Include="System.Data.DataSetExtensions" Version="4.5.0" />
+
+        <PackageVersion Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
     </ItemGroup>
 </Project>

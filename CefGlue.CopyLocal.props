@@ -6,7 +6,7 @@
     </ItemGroup>
 
     <PropertyGroup>
-        <BrowserProcessDir>$(MSBuildThisFileDirectory)CefGlue.BrowserProcess\bin\$(Configuration)\$(TargetFramework)</BrowserProcessDir>
+        <BrowserProcessDir>$(MSBuildThisFileDirectory)CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)</BrowserProcessDir>
         <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
     </PropertyGroup>
 
