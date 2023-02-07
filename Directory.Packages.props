@@ -34,5 +34,8 @@
         <PackageVersion Include="Moq" Version="4.10.1" />
 
         <PackageVersion Include="System.Data.DataSetExtensions" Version="4.5.0" />
+
+        <PackageVersion Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.355802" />
+        <PackageVersion Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
     </ItemGroup>
 </Project>
