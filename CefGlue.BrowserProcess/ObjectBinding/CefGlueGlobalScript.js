@@ -13,10 +13,21 @@ if (!$GlobalObjectName$) {
             for (let i = 0; i < byteCharacters.length; i++) {
                 byteArray[i] = byteCharacters.charCodeAt(i);
             }
-            return byteArray;
+            return new Uint8Array(byteArray);;
         }
         function convertBinaryToBase64(byteArray) {
             return btoa(String.fromCharCode(...byteArray));
+        }
+        function convertStringToJsType(value) {
+            switch (value.substring(0, $DataMarkerLength$)) {
+                case "$StringMarker$":
+                    return value.substring($DataMarkerLength$);
+                case "$DateTimeMarker$":
+                    return new Date(value.substring($DataMarkerLength$));
+                case "$BinaryMarker$":
+                    return convertBase64ToBinary(value.substring($DataMarkerLength$));
+            }
+            return value;
         }
         function revive(name, value, refs, pendingRefs) {
             if (value) {
@@ -47,14 +58,7 @@ if (!$GlobalObjectName$) {
                     return value;
                 }
                 if (isString(value)) {
-                    switch (value.substring(0, $DataMarkerLength$)) {
-                        case "$StringMarker$":
-                            return value.substring($DataMarkerLength$);
-                        case "$DateTimeMarker$":
-                            return new Date(value.substring($DataMarkerLength$));
-                        case "$BinaryMarker$":
-                            return convertBase64ToBinary(value.substring($DataMarkerLength$));
-                    }
+                    return convertStringToJsType(value);
                 }
             }
             return value;
