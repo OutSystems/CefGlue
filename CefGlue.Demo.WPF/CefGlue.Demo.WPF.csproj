@@ -59,17 +59,4 @@
     </ItemGroup>
 
     <Import Project="$(ProjectDir)..\CefGlue.Common\build\CefGlue.Common.targets" />
-
-    <ItemGroup>
-        <Reference Include="System" />
-        <Reference Include="System.Data" />
-        <Reference Include="System.Xml" />
-        <Reference Include="System.Core" />
-        <Reference Include="System.Xml.Linq" />
-        <Reference Include="System.Data.DataSetExtensions" />
-        <Reference Include="WindowsBase" />
-        <Reference Include="PresentationCore" />
-        <Reference Include="PresentationFramework" />
-        <Reference Include="System.Xaml" Condition="$(TargetFrameworkVersion)!='v3.5'" />
-    </ItemGroup>
 </Project>
