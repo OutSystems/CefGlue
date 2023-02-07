@@ -63,9 +63,6 @@
     
   <ItemGroup>
     <PackageReference PrivateAssets="all" Include="System.Data.DataSetExtensions" />
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers">
-       <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" />
   </ItemGroup>
 </Project>

@@ -72,14 +72,4 @@
         <Reference Include="PresentationFramework" />
         <Reference Include="System.Xaml" Condition="$(TargetFrameworkVersion)!='v3.5'" />
     </ItemGroup>
-
 </Project>
-
-
-
-
-
-  
-  
-
-  
