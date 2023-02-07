@@ -15,21 +15,6 @@
         <DefineConstants>$(DefineConstants);WINDOWLESS</DefineConstants>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <CFBundleName>Xilium.CefGlue.Demo.WPF</CFBundleName>
-        <!-- Also defines .app file name -->
-        <CFBundleDisplayName>CefGlueDemoWPF</CFBundleDisplayName>
-        <CFBundleIdentifier>com.example</CFBundleIdentifier>
-        <CFBundleVersion>1.0.0</CFBundleVersion>
-        <CFBundlePackageType>AAPL</CFBundlePackageType>
-        <CFBundleSignature>4242</CFBundleSignature>
-        <CFBundleShortVersionString>DemoWPF</CFBundleShortVersionString>
-        <CFBundleExecutable>Xilium.CefGlue.Demo.WPF</CFBundleExecutable>
-        <CFBundleIconFile>AppName.icns</CFBundleIconFile>
-        <!-- Will be copied from output directory -->
-        <NSPrincipalClass>NSApplication</NSPrincipalClass>
-        <NSHighResolutionCapable>true</NSHighResolutionCapable>
-    </PropertyGroup>
 
     <ItemGroup>
         <None Remove="App.xaml" />
