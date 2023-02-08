@@ -98,7 +98,6 @@ namespace CefGlue.Tests.Serialization
             AssertSerialization("");
         }
 
-
         [Test]
         public void HandlesStringsWithSpecialChars()
         {
@@ -183,7 +182,6 @@ namespace CefGlue.Tests.Serialization
             AssertSerialization(new List<string>());
         }
 
-
         [Test]
         public void HandlesNestedLists()
         {
@@ -194,7 +192,6 @@ namespace CefGlue.Tests.Serialization
             };
             AssertSerialization(list);
         }
-
 
         [Test]
         public void HandlesListsOfObjects()
@@ -224,7 +221,6 @@ namespace CefGlue.Tests.Serialization
             AssertSerialization(dict);
         }
 
-
         [Test]
         public void HandlesArrays()
         {
@@ -239,7 +235,6 @@ namespace CefGlue.Tests.Serialization
             var list = new StructObject[] { new StructObject("first", 1), new StructObject("second", 2) };
             AssertSerialization(list);
         }
-
 
         [Test]
         public void HandlesObjectsArray()
