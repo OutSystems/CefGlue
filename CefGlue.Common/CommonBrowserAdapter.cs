@@ -155,7 +155,7 @@ namespace Xilium.CefGlue.Common
             set => BrowserHost?.SetZoomLevel(value);
         }
 
-        public bool IsJavascriptEngineInitialized => _javascriptExecutionEngine?.IsMainFrameContextInitialized == true;
+        public bool IsJavascriptEngineInitialized { get; private set; }
 
         public CefBrowserSettings Settings { get; } = new CefBrowserSettings();
 
@@ -322,13 +322,21 @@ namespace Xilium.CefGlue.Common
             windowInfo.SetAsChild(hostViewHandle, new CefRectangle(0, 0, width, height));
         }
 
-        private void OnJavascriptExecutionEngineContextCreated(CefFrame frame)
+        private void HandleJavascriptExecutionEngineContextCreated(CefFrame frame)
         {
+            if (frame.IsMain)
+            {
+                IsJavascriptEngineInitialized = true;
+            }
             JavascriptContextCreated?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
         }
 
-        private void OnJavascriptExecutionEngineContextReleased(CefFrame frame)
+        private void HandleJavascriptExecutionEngineContextReleased(CefFrame frame)
         {
+            if (frame.IsMain)
+            {
+                IsJavascriptEngineInitialized = false;
+            }
             JavascriptContextReleased?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
         }
 
@@ -417,8 +425,8 @@ namespace Xilium.CefGlue.Common
                 if (dispatcher != null)
                 {
                     var javascriptExecutionEngine = new JavascriptExecutionEngine(dispatcher);
-                    javascriptExecutionEngine.ContextCreated += OnJavascriptExecutionEngineContextCreated;
-                    javascriptExecutionEngine.ContextReleased += OnJavascriptExecutionEngineContextReleased;
+                    javascriptExecutionEngine.ContextCreated += HandleJavascriptExecutionEngineContextCreated;
+                    javascriptExecutionEngine.ContextReleased += HandleJavascriptExecutionEngineContextReleased;
                     javascriptExecutionEngine.UncaughtException += OnJavascriptExecutionEngineUncaughtException;
                     _javascriptExecutionEngine = javascriptExecutionEngine;
 
@@ -602,7 +610,7 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandleFrameDetached(CefBrowser browser, CefFrame frame)
         {
-            _javascriptExecutionEngine?.HandleFrameDetached(frame);
+            HandleJavascriptExecutionEngineContextReleased(frame);
         }
 
         #endregion

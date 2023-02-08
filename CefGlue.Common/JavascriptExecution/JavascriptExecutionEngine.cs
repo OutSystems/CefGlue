@@ -24,8 +24,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             dispatcher.RegisterMessageHandler(Messages.JsUncaughtException.Name, HandleUncaughtExceptionMessage);
         }
 
-        public bool IsMainFrameContextInitialized { get; private set; }
-
         public event Action<CefFrame> ContextCreated;
         public event Action<CefFrame> ContextReleased;
         public event Action<JavascriptUncaughtExceptionEventArgs> UncaughtException;
@@ -49,26 +47,12 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         private void HandleContextCreatedMessage(MessageReceivedEventArgs args)
         {
-            var message = Messages.JsContextCreated.FromCefMessage(args.Message);
-            if (args.Frame.IsMain)
-            {
-                IsMainFrameContextInitialized = true;
-            }
             ContextCreated?.Invoke(args.Frame);
         }
 
         private void HandleContextReleasedMessage(MessageReceivedEventArgs args)
         {
-            ReleaseFrameContext(args.Frame);
-        }
-
-        private void ReleaseFrameContext(CefFrame frame)
-        {
-            if (frame.IsMain)
-            {
-                IsMainFrameContextInitialized = false;
-            }
-            ContextReleased?.Invoke(frame);
+            ContextReleased?.Invoke(args.Frame);
         }
 
         private void HandleUncaughtExceptionMessage(MessageReceivedEventArgs args)
@@ -76,11 +60,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             var message = Messages.JsUncaughtException.FromCefMessage(args.Message);
             var stackFrames = message.StackFrames.Select(f => new JavascriptStackFrame(f.FunctionName, f.ScriptNameOrSourceUrl, f.Column, f.LineNumber));
             UncaughtException?.Invoke(new JavascriptUncaughtExceptionEventArgs(args.Frame, message.Message, stackFrames.ToArray()));
-        }
-
-        public void HandleFrameDetached(CefFrame frame)
-        {
-            ReleaseFrameContext(frame);
         }
 
         public Task<T> Evaluate<T>(string script, string url, int line, CefFrame frame, TimeSpan? timeout = null)
