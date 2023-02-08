@@ -19,9 +19,13 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
         public JavascriptExecutionEngine(MessageDispatcher dispatcher)
         {
             dispatcher.RegisterMessageHandler(Messages.JsEvaluationResult.Name, HandleScriptEvaluationResultMessage);
+            dispatcher.RegisterMessageHandler(Messages.JsContextCreated.Name, HandleContextCreatedMessage);
+            dispatcher.RegisterMessageHandler(Messages.JsContextReleased.Name, HandleContextReleasedMessage);
             dispatcher.RegisterMessageHandler(Messages.JsUncaughtException.Name, HandleUncaughtExceptionMessage);
         }
 
+        public event Action<CefFrame> ContextCreated;
+        public event Action<CefFrame> ContextReleased;
         public event Action<JavascriptUncaughtExceptionEventArgs> UncaughtException;
 
         private void HandleScriptEvaluationResultMessage(MessageReceivedEventArgs args)
@@ -39,6 +43,16 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                     pendingTask.SetException(new Exception(message.Exception));
                 }
             }
+        }
+
+        private void HandleContextCreatedMessage(MessageReceivedEventArgs args)
+        {
+            ContextCreated?.Invoke(args.Frame);
+        }
+
+        private void HandleContextReleasedMessage(MessageReceivedEventArgs args)
+        {
+            ContextReleased?.Invoke(args.Frame);
         }
 
         private void HandleUncaughtExceptionMessage(MessageReceivedEventArgs args)
@@ -93,6 +107,8 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         public void Dispose()
         {
+            ContextCreated = null;
+            ContextReleased = null;
             UncaughtException = null;
             foreach (var task in _pendingTasks)
             {

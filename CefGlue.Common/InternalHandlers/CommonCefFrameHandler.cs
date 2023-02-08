@@ -13,12 +13,6 @@ namespace Xilium.CefGlue.Common.InternalHandlers
             _owner = owner;
         }
 
-        protected override void OnFrameAttached(CefBrowser browser, CefFrame frame, bool reattached)
-        {
-            base.OnFrameAttached(browser, frame, reattached);
-            _owner.HandleFrameAttached(browser, frame, reattached);
-        }
-
         protected override void OnFrameDetached(CefBrowser browser, CefFrame frame)
         {
             base.OnFrameDetached(browser, frame);

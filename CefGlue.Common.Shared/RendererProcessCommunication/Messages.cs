@@ -215,6 +215,36 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
             }
         }
 
+        public struct JsContextCreated
+        {
+            public const string Name = nameof(JsContextCreated);
+
+            public CefProcessMessage ToCefProcessMessage()
+            {
+                return CefProcessMessage.Create(Name);
+            }
+
+            public static JsContextCreated FromCefMessage(CefProcessMessage message)
+            {
+                return new JsContextCreated();
+            }
+        }
+
+        public struct JsContextReleased
+        {
+            public const string Name = nameof(JsContextReleased);
+
+            public CefProcessMessage ToCefProcessMessage()
+            {
+                return CefProcessMessage.Create(Name);
+            }
+
+            public static JsContextReleased FromCefMessage(CefProcessMessage message)
+            {
+                return new JsContextReleased();
+            }
+        }
+
         public struct JsUncaughtException
         {
             public const string Name = nameof(JsUncaughtException);

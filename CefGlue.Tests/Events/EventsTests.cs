@@ -217,6 +217,58 @@ namespace CefGlue.Tests.Events
         }
 
         [Test]
+        public async Task JavascriptContextCreatedIsFiredWhenReloadingContent()
+        {
+            var contextCreatedEventsCompletionSource = new TaskCompletionSource<bool>();
+
+            void OnJavascriptContextCreated(object sender, JavascriptContextLifetimeEventArgs e)
+            {
+                contextCreatedEventsCompletionSource.SetResult(true);
+            }
+
+            try
+            {
+                await Browser.LoadContent($"<html/>");
+
+                Browser.JavascriptContextCreated += OnJavascriptContextCreated;
+
+                Browser.Reload();
+
+                await contextCreatedEventsCompletionSource.Task;
+            }
+            finally
+            {
+                Browser.JavascriptContextCreated -= OnJavascriptContextCreated;
+            }
+        }
+
+        [Test]
+        public async Task JavascriptContextReleasedIsFiredWhenReloadingContent()
+        {
+            var contextReleasedEventsCompletionSource = new TaskCompletionSource<bool>();
+
+            void OnJavascriptContextReleased(object sender, JavascriptContextLifetimeEventArgs e)
+            {
+                contextReleasedEventsCompletionSource.SetResult(true);
+            }
+
+            try
+            {
+                await Browser.LoadContent($"<html/>");
+
+                Browser.JavascriptContextReleased += OnJavascriptContextReleased;
+
+                Browser.Reload();
+
+                await contextReleasedEventsCompletionSource.Task;
+            }
+            finally
+            {
+                Browser.JavascriptContextReleased -= OnJavascriptContextReleased;
+            }
+        }
+
+        [Test]
         public async Task JavascriptContextReleasedAreFiredWhenMultipleContextsReleased()
         {
             var mainFrameContextReleasedEventsCompletionSource = new TaskCompletionSource<bool>();
