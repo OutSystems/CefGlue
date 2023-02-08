@@ -27,7 +27,8 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         
         public Func<object> MakeDelegate<T>(object targetObj, T args)
         {
-            return () => ExecuteMethod(targetObj, ConvertArguments(args));
+            var convertedArgs = ConvertArguments(args);
+            return () => ExecuteMethod(targetObj, convertedArgs);
         }
 
         public void Execute<T>(object targetObj, T args, Action<object, Exception> handleResult)
@@ -40,7 +41,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             Execute(targetObj, new[] { innerMethod }, handleResult);
         }
 
-        internal void Execute(object targetObj, object[] args, Action<object, Exception> handleResult)
+        public void Execute(object targetObj, object[] args, Action<object, Exception> handleResult)
         {
             object result = null;
             Exception exception = null;
@@ -96,21 +97,22 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             ValidateMandatoryArguments(originalArgs);
 
             var argIndex = 0;
-            var convertedArgs = new List<object>(_mandatoryParameters.Length + 1);
+            var convertedArgsLength = _optionalParameter == null ? _mandatoryParameters.Length : _mandatoryParameters.Length + 1;
+            var convertedArgs = new object[convertedArgsLength];
 
             for (; argIndex < _mandatoryParameters.Length; argIndex++)
             {
-                convertedArgs.Add(originalArgs[argIndex]);
+                convertedArgs[argIndex] = originalArgs[argIndex];
             }
 
             if (_optionalParameter != null)
             {
                 // the optionalParameterType is always a ParamArray of some type (eg int[]), so we need the ElementType
                 var optionalArgsArray = ExtractArray(originalArgs, argIndex, _optionalParameter.ParameterType.GetElementType());
-                convertedArgs.Add(optionalArgsArray);
+                convertedArgs[convertedArgsLength - 1] = optionalArgsArray;
             }
 
-            return convertedArgs.ToArray();
+            return convertedArgs;
         }
 
         private object[] ConvertToNative(string args)
