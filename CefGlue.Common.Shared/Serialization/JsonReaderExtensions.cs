@@ -51,7 +51,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         /// A DateTime if DateTimeMarker is found.
         /// A byte[] if BinaryMarker is found.
         /// </returns>
-        public static object GetObjectFromString(this Utf8JsonReader reader, Type typeToConvert)
+        public static object Deserialize(this Utf8JsonReader reader, Type typeToConvert)
         {
             var stringValue = reader.GetString();
             if (stringValue.Length >= DataMarkers.MarkerLength)

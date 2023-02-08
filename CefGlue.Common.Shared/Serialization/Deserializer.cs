@@ -101,7 +101,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                         break;
 
                     case JsonTokenType.String:
-                        currentState.SetValue(reader.GetObjectFromString(currentState.GetPropertyType()));
+                        currentState.SetValue(reader.Deserialize(currentState.GetPropertyType()));
                         break;
 
                     case JsonTokenType.False:
@@ -230,7 +230,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         {
             if (currentState.ObjectTypesInfo?.Length > 1)
             {
-                return ArrayDeserializerState.Create(reader, currentState.ObjectTypesInfo);
+                return new ArrayDeserializerState(reader, currentState.ObjectTypesInfo);
             }
             
             var newTypeInfo = string.IsNullOrEmpty(newStatePropertyName) ?
@@ -239,20 +239,20 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
             if (newTypeInfo.ObjectType.IsCollection() && !newTypeInfo.ObjectType.IsArray)
             {
-                return CollectionDeserializerState.Create(newTypeInfo, newStatePropertyName);
+                return new CollectionDeserializerState(newTypeInfo, newStatePropertyName);
             }
 
             if (reader.TokenType == JsonTokenType.StartArray || newTypeInfo.ObjectType.IsArray)
             {
-                return ArrayDeserializerState.Create(reader, newTypeInfo, newStatePropertyName);
+                return new ArrayDeserializerState(reader, newTypeInfo, newStatePropertyName);
             }
 
             if (newTypeInfo.ObjectType == typeof(object))
             {
-                return DynamicDeserializerState.Create(newTypeInfo);
+                return new DynamicDeserializerState(newTypeInfo);
             }
 
-            return ObjectDeserializerState.Create(newTypeInfo);
+            return new ObjectDeserializerState(newTypeInfo);
         }
 
         private static IDeserializerState CreateNewDeserializerState(object obj, JsonTypeInfo newTypeInfo)

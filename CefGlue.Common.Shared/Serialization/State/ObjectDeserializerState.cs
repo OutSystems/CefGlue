@@ -6,13 +6,9 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
     internal class ObjectDeserializerState : BaseDeserializerState<object>
     {
-        public ObjectDeserializerState(object objectHolder, JsonTypeInfo objectTypeInfo) : base(objectHolder, objectTypeInfo) { }
+        public ObjectDeserializerState(JsonTypeInfo objectTypeInfo) : this(CreateObjectInstance(objectTypeInfo.ObjectType), objectTypeInfo) { }
 
-        internal static ObjectDeserializerState Create(JsonTypeInfo objectTypeInfo)
-        {
-            var obj = CreateObjectInstance(objectTypeInfo.ObjectType);
-            return new ObjectDeserializerState(obj, objectTypeInfo);
-        }
+        public ObjectDeserializerState(object objectHolder, JsonTypeInfo objectTypeInfo) : base(objectHolder, objectTypeInfo) { }
 
         public override void SetValue(object value)
         {

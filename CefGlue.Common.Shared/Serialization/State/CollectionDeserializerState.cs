@@ -6,7 +6,14 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
     internal class CollectionDeserializerState : BaseDeserializerState<object>
     {
         private JsonTypeInfo _collectionTypeInfo;
-    
+
+        public CollectionDeserializerState(JsonTypeInfo objectTypeInfo, string propertyName) :
+            this(
+                CreateCollection(objectTypeInfo, propertyName, out var collectionElementType),
+                objectTypeInfo,
+                collectionElementType
+                ) { }
+
         public CollectionDeserializerState(object objectHolder, JsonTypeInfo collectionTypeInfo, Type collectionElementType) : base(objectHolder, collectionElementType) 
         {
             _collectionTypeInfo = collectionTypeInfo;
@@ -14,12 +21,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             {
                 throw new ArgumentException($"CollectionTypeInfo argument must contain an Add method.");
             }
-        }
-
-        internal static CollectionDeserializerState Create(JsonTypeInfo objectTypeInfo, string propertyName)
-        {
-            var newCollection = CreateCollection(objectTypeInfo, propertyName, out var collectionElementType);
-            return new CollectionDeserializerState(newCollection, objectTypeInfo, collectionElementType);
         }
 
         public override void SetValue(object value)

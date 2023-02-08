@@ -10,6 +10,18 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
         private long _arrayIndex;
 
+        public ArrayDeserializerState(Utf8JsonReader reader, JsonTypeInfo[] arrayElementsTypeInfo) :
+            this(
+                CreateArray(reader, arrayElementsTypeInfo.Length > 1 ? typeof(object) : arrayElementsTypeInfo[0].ObjectType),
+                arrayElementsTypeInfo
+                ) { }
+
+        public ArrayDeserializerState(Utf8JsonReader reader, JsonTypeInfo objectTypeInfo, string propertyName) :
+            this(
+                CreateArray(reader, objectTypeInfo, propertyName, out var arrayElementType),
+                arrayElementType
+                ) { }
+
         public ArrayDeserializerState(Array objectHolder, Type arrayElementType) : 
             this(objectHolder, new[] { JsonTypeInfoCache.GetOrAddTypeInfo(arrayElementType) }) { }
 
@@ -22,18 +34,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             base(objectHolder)
         {
             _arrayElementsTypeInfo = arrayElementsTypeInfo;
-        }
-
-        internal static ArrayDeserializerState Create(Utf8JsonReader reader, JsonTypeInfo[] arrayElementsTypeInfo)
-        {
-            var newArray = CreateArray(reader, arrayElementsTypeInfo.Length > 1 ? typeof(object) : arrayElementsTypeInfo[0].ObjectType);
-            return new ArrayDeserializerState(newArray, arrayElementsTypeInfo);
-        }
-
-        internal static ArrayDeserializerState Create(Utf8JsonReader reader, JsonTypeInfo objectTypeInfo, string propertyName)
-        {
-            var newArray = CreateArray(reader, objectTypeInfo, propertyName, out var arrayElementType);
-            return new ArrayDeserializerState(newArray, arrayElementType);
         }
 
         public override JsonTypeInfo ObjectTypeInfo =>
