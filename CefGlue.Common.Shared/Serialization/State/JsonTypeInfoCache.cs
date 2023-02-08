@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Linq;
-using System.Reflection;
-using Xilium.CefGlue.Common.Shared.Helpers;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
@@ -40,39 +37,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
                     return 
                         type == null ? 
                         null :
-                        TypesInfoCache.GetOrAdd(type, (_) =>
-                        {
-                            var eligibleMembers = BindingFlags.Public | BindingFlags.Instance;
-
-                            var properties = type
-                                .GetProperties(eligibleMembers)
-                                .Where(p => p.CanWrite)
-                                .Where(p => !p.GetIndexParameters().Any());
-
-                            var fields = type
-                                .GetFields(eligibleMembers)
-                                .Where(f => !f.IsInitOnly);
-
-                            var typeInfo = new JsonTypeInfo(type);
-
-                            foreach (var prop in properties)
-                            {
-                                typeInfo.TypeMembers.Add(prop.Name, new TypeMemberInfo(prop.PropertyType, (obj, value) => prop.SetValue(obj, value)));
-                            }
-
-                            foreach (var field in fields)
-                            {
-                                typeInfo.TypeMembers.Add(field.Name, new TypeMemberInfo(field.FieldType, (obj, value) => field.SetValue(obj, value)));
-                            }
-
-                            MethodInfo addMethod;
-                            if (type.IsCollection() && (addMethod = type.GetMethod("Add")) != null)
-                            {
-                                typeInfo.CollectionAddMethod = new TypeMethodInfo((obj, value) => addMethod.Invoke(obj, value));
-                            }
-
-                            return typeInfo;
-                        });
+                        TypesInfoCache.GetOrAdd(type, (_) => new JsonTypeInfo(type));
             }
         }
 
