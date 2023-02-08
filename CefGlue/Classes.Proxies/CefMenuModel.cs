@@ -46,7 +46,7 @@
         /// <summary>
         /// Returns the number of items in this menu.
         /// </summary>
-        public int Count
+        public nuint Count
         {
             get { return cef_menu_model_t.get_count(_self); }
         }
@@ -114,7 +114,7 @@
         /// Insert a separator in the menu at the specified |index|. Returns true on
         /// success.
         /// </summary>
-        public bool InsertSeparatorAt(int index)
+        public bool InsertSeparatorAt(nuint index)
         {
             return cef_menu_model_t.insert_separator_at(_self, index) != 0;
         }
@@ -123,7 +123,7 @@
         /// Insert an item in the menu at the specified |index|. Returns true on
         /// success.
         /// </summary>
-        public bool InsertItemAt(int index, int commandId, string label)
+        public bool InsertItemAt(nuint index, int commandId, string label)
         {
             fixed (char* label_str = label)
             {
@@ -136,7 +136,7 @@
         /// Insert a check item in the menu at the specified |index|. Returns true on
         /// success.
         /// </summary>
-        public bool InsertCheckItemAt(int index, int commandId, string label)
+        public bool InsertCheckItemAt(nuint index, int commandId, string label)
         {
             fixed (char* label_str = label)
             {
@@ -150,7 +150,7 @@
         /// item with the specified |group_id| can be checked at a time. Returns true
         /// on success.
         /// </summary>
-        public bool InsertRadioItemAt(int index, int commandId, string label, int groupId)
+        public bool InsertRadioItemAt(nuint index, int commandId, string label, int groupId)
         {
             fixed (char* label_str = label)
             {
@@ -163,7 +163,7 @@
         /// Insert a sub-menu in the menu at the specified |index|. The new sub-menu
         /// is returned.
         /// </summary>
-        public CefMenuModel InsertSubMenuAt(int index, int commandId, string label)
+        public CefMenuModel InsertSubMenuAt(nuint index, int commandId, string label)
         {
             fixed (char* label_str = label)
             {
@@ -185,7 +185,7 @@
         /// <summary>
         /// Removes the item at the specified |index|. Returns true on success.
         /// </summary>
-        public bool RemoveAt(int index)
+        public bool RemoveAt(nuint index)
         {
             return cef_menu_model_t.remove_at(_self, index) != 0;
         }
@@ -203,7 +203,7 @@
         /// Returns the command id at the specified |index| or -1 if not found due to
         /// invalid range or the index being a separator.
         /// </summary>
-        public int GetCommandIdAt(int index)
+        public int GetCommandIdAt(nuint index)
         {
             return cef_menu_model_t.get_command_id_at(_self, index);
         }
@@ -211,7 +211,7 @@
         /// <summary>
         /// Sets the command id at the specified |index|. Returns true on success.
         /// </summary>
-        public bool SetCommandIdAt(int index, int commandId)
+        public bool SetCommandIdAt(nuint index, int commandId)
         {
             return cef_menu_model_t.set_command_id_at(_self, index, commandId) != 0;
         }
@@ -229,7 +229,7 @@
         /// Returns the label at the specified |index| or empty if not found due to
         /// invalid range or the index being a separator.
         /// </summary>
-        public string GetLabelAt(int index)
+        public string GetLabelAt(nuint index)
         {
             var n_result = cef_menu_model_t.get_label_at(_self, index);
             return cef_string_userfree.ToString(n_result);
@@ -250,7 +250,7 @@
         /// <summary>
         /// Set the label at the specified |index|. Returns true on success.
         /// </summary>
-        public bool SetLabelAt(int index, string label)
+        public bool SetLabelAt(nuint index, string label)
         {
             fixed (char* label_str = label)
             {
@@ -270,7 +270,7 @@
         /// <summary>
         /// Returns the item type at the specified |index|.
         /// </summary>
-        public CefMenuItemType GetItemTypeAt(int index)
+        public CefMenuItemType GetItemTypeAt(nuint index)
         {
             return cef_menu_model_t.get_type_at(_self, index);
         }
@@ -286,7 +286,7 @@
         /// <summary>
         /// Returns the group id at the specified |index| or -1 if invalid.
         /// </summary>
-        public int GetGroupIdAt(int index)
+        public int GetGroupIdAt(nuint index)
         {
             return cef_menu_model_t.get_group_id_at(_self, index);
         }
@@ -302,7 +302,7 @@
         /// <summary>
         /// Sets the group id at the specified |index|. Returns true on success.
         /// </summary>
-        public bool SetGroupIdAt(int index, int groupId)
+        public bool SetGroupIdAt(nuint index, int groupId)
         {
             return cef_menu_model_t.set_group_id_at(_self, index, groupId) != 0;
         }
@@ -320,7 +320,7 @@
         /// <summary>
         /// Returns the submenu at the specified |index| or empty if invalid.
         /// </summary>
-        public CefMenuModel GetSubMenuAt(int index)
+        public CefMenuModel GetSubMenuAt(nuint index)
         {
             return CefMenuModel.FromNativeOrNull(
                 cef_menu_model_t.get_sub_menu_at(_self, index)
@@ -338,9 +338,9 @@
         /// <summary>
         /// Returns true if the specified |index| is visible.
         /// </summary>
-        public bool IsVisibleAt(int index)
+        public bool IsVisibleAt(nuint index)
         {
-            return cef_menu_model_t.is_visible(_self, index) != 0;
+            return cef_menu_model_t.is_visible_at(_self, index) != 0;
         }
 
         /// <summary>
@@ -355,9 +355,9 @@
         /// <summary>
         /// Change the visibility at the specified |index|. Returns true on success.
         /// </summary>
-        public bool SetVisibleAt(int index, bool visible)
+        public bool SetVisibleAt(nuint index, bool visible)
         {
-            return cef_menu_model_t.set_visible(_self, index, visible ? 1 : 0) != 0;
+            return cef_menu_model_t.set_visible_at(_self, index, visible ? 1 : 0) != 0;
         }
 
         /// <summary>
@@ -371,7 +371,7 @@
         /// <summary>
         /// Returns true if the specified |index| is enabled.
         /// </summary>
-        public bool IsEnabledAt(int index)
+        public bool IsEnabledAt(nuint index)
         {
             return cef_menu_model_t.is_enabled_at(_self, index) != 0;
         }
@@ -389,7 +389,7 @@
         /// Change the enabled status at the specified |index|. Returns true on
         /// success.
         /// </summary>
-        public bool SetEnabledAt(int index, bool enabled)
+        public bool SetEnabledAt(nuint index, bool enabled)
         {
             return cef_menu_model_t.set_enabled_at(_self, index, enabled ? 1 : 0) != 0;
         }
@@ -407,7 +407,7 @@
         /// Returns true if the specified |index| is checked. Only applies to check
         /// and radio items.
         /// </summary>
-        public bool IsCheckedAt(int index)
+        public bool IsCheckedAt(nuint index)
         {
             return cef_menu_model_t.is_checked_at(_self, index) != 0;
         }
@@ -422,10 +422,10 @@
         }
 
         /// <summary>
-        /// Check the specified |index|. Only applies to check and radio items. Returns
-        /// true on success.
+        /// Check the specified |index|. Only applies to check and radio items.
+        /// Returns true on success.
         /// </summary>
-        public bool SetCheckedAt(int index, bool value)
+        public bool SetCheckedAt(nuint index, bool value)
         {
             return cef_menu_model_t.set_checked_at(_self, index, value ? 1 : 0) != 0;
         }
@@ -442,14 +442,14 @@
         /// <summary>
         /// Returns true if the specified |index| has a keyboard accelerator assigned.
         /// </summary>
-        public bool HasAcceleratorAt(int index)
+        public bool HasAcceleratorAt(nuint index)
         {
-            return cef_menu_model_t.has_accelerator(_self, index) != 0;
+            return cef_menu_model_t.has_accelerator_at(_self, index) != 0;
         }
 
         /// <summary>
-        /// Set the keyboard accelerator for the specified |commandId|. |key_code| can
-        /// be any virtual key or character value. Returns true on success.
+        /// Set the keyboard accelerator for the specified |commandId|. |key_code|
+        /// can be any virtual key or character value. Returns true on success.
         /// </summary>
         public bool SetAccelerator(int commandId, int keyCode, bool shiftPressed, bool ctrlPressed, bool altPressed)
         {
@@ -467,7 +467,7 @@
         /// Set the keyboard accelerator at the specified |index|. |key_code| can be
         /// any virtual key or character value. Returns true on success.
         /// </summary>
-        public bool SetAcceleratorAt(int index, int keyCode, bool shiftPressed, bool ctrlPressed, bool altPressed)
+        public bool SetAcceleratorAt(nuint index, int keyCode, bool shiftPressed, bool ctrlPressed, bool altPressed)
         {
             return cef_menu_model_t.set_accelerator_at(
                 _self,
@@ -492,7 +492,7 @@
         /// Remove the keyboard accelerator at the specified |index|. Returns true on
         /// success.
         /// </summary>
-        public bool RemoveAcceleratorAt(int index)
+        public bool RemoveAcceleratorAt(nuint index)
         {
             return cef_menu_model_t.remove_accelerator_at(_self, index) != 0;
         }
@@ -522,7 +522,7 @@
         /// Retrieves the keyboard accelerator for the specified |index|. Returns true
         /// on success.
         /// </summary>
-        public bool GetAcceleratorAt(int index, out int keyCode, out bool shiftPressed, out bool ctrlPressed, out bool altPressed)
+        public bool GetAcceleratorAt(nuint index, out int keyCode, out bool shiftPressed, out bool ctrlPressed, out bool altPressed)
         {
             int n_keyCode;
             int n_shiftPressed;
@@ -594,8 +594,8 @@
         /// the system font will be used. Returns true on success. The format is
         /// "&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;", where:
         /// - FONT_FAMILY_LIST is a comma-separated list of font family names,
-        /// - STYLES is an optional space-separated list of style names (case-sensitive
-        /// "Bold" and "Italic" are supported), and
+        /// - STYLES is an optional space-separated list of style names
+        /// (case-sensitive "Bold" and "Italic" are supported), and
         /// - SIZE is an integer font size in pixels with the suffix "px".
         /// Here are examples of valid font description strings:
         /// - "Arial, Helvetica, Bold Italic 14px"
@@ -616,8 +616,8 @@
         /// be used. Returns true on success. The format is
         /// "&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;", where:
         /// - FONT_FAMILY_LIST is a comma-separated list of font family names,
-        /// - STYLES is an optional space-separated list of style names (case-sensitive
-        /// "Bold" and "Italic" are supported), and
+        /// - STYLES is an optional space-separated list of style names
+        /// (case-sensitive "Bold" and "Italic" are supported), and
         /// - SIZE is an integer font size in pixels with the suffix "px".
         /// Here are examples of valid font description strings:
         /// - "Arial, Helvetica, Bold Italic 14px"

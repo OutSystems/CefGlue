@@ -99,13 +99,7 @@ def get_comment(body, name):
     line = data['line'].strip()
     pos = data['start']
     if len(line) == 0:
-      # check if the next previous line is a comment
-      prevdata = get_prev_line(body, pos)
-      prevline = prevdata['line'].strip()
-      if prevline[0:2] == '//' and prevline[0:3] != '///':
-        result.append(None)
-      else:
-        break
+      break
     # single line /*--cef()--*/
     elif line[0:2] == '/*' and line[-2:] == '*/':
       continue
@@ -119,9 +113,9 @@ def get_comment(body, name):
       continue
     elif in_block_comment:
       continue
-    elif line[0:2] == '//':
+    elif line[0:3] == '///':
       # keep the comment line including any leading spaces
-      result.append(line[2:])
+      result.append(line[3:])
     else:
       break
 
@@ -132,15 +126,9 @@ def get_comment(body, name):
 def validate_comment(file, name, comment):
   """ Validate the comment array returned by get_comment(). """
   # Verify that the comment contains beginning and ending '///' as required by
-  # CppDoc (the leading '//' from each line will already have been removed by
-  # the get_comment() logic). There may be additional comments proceeding the
-  # CppDoc block so we look at the quantity of lines equaling '/' and expect
-  # the last line to be '/'.
-  docct = 0
-  for line in comment:
-    if not line is None and len(line) > 0 and line == '/':
-      docct = docct + 1
-  if docct != 2 or len(comment) < 3 or comment[len(comment) - 1] != '/':
+  # Doxygen (the leading '///' from each line will already have been removed by
+  # the get_comment() logic).
+  if len(comment) < 3 or len(comment[0]) != 0 or len(comment[-1]) != 0:
     raise Exception('Missing or incorrect comment in %s for: %s' % \
         (file, name))
 
@@ -157,14 +145,13 @@ def format_comment(comment, indent, translate_map=None, maxchars=80):
   hasemptyline = False
   for line in comment:
     # if the line starts with a leading space, remove that space
-    if not line is None and len(line) > 0 and line[0:1] == ' ':
+    if not line is None and len(line) > 0 and line[0] == ' ':
       line = line[1:]
       didremovespace = True
     else:
       didremovespace = False
 
-    if line is None or len(line) == 0 or line[0:1] == ' ' \
-        or line[0:1] == '/':
+    if line is None or len(line) == 0 or line[0] == ' ':
       # the previous paragraph, if any, has ended
       if len(wrapme) > 0:
         if not translate_map is None:
@@ -172,14 +159,14 @@ def format_comment(comment, indent, translate_map=None, maxchars=80):
           for key in translate_keys:
             wrapme = wrapme.replace(key, translate_map[key])
         # output the previous paragraph
-        result += wrap_text(wrapme, indent + '// ', maxchars)
+        result += wrap_text(wrapme, indent + '/// ', maxchars)
         wrapme = ''
 
     if not line is None:
-      if len(line) == 0 or line[0:1] == ' ' or line[0:1] == '/':
+      if len(line) == 0 or line[0] == ' ':
         # blank lines or anything that's further indented should be
         # output as-is
-        result += indent + '//'
+        result += indent + '///'
         if len(line) > 0:
           if didremovespace:
             result += ' ' + line
@@ -200,7 +187,7 @@ def format_comment(comment, indent, translate_map=None, maxchars=80):
       for key in translate_map.keys():
         wrapme = wrapme.replace(key, translate_map[key])
     # output the previous paragraph
-    result += wrap_text(wrapme, indent + '// ', maxchars)
+    result += wrap_text(wrapme, indent + '/// ', maxchars)
 
   if hasemptyline:
     # an empty line means a break between comments, so the comment is
@@ -265,6 +252,9 @@ def format_translation_includes(header, body):
 
   if body.find('cef_api_hash(') > 0:
     result += '#include "include/cef_api_hash.h"\n'
+
+  if body.find('template_util::has_valid_size(') > 0:
+    result += '#include "libcef_dll/template_util.h"\n'
 
   # identify what CppToC classes are being used
   p = re.compile('([A-Za-z0-9_]{1,})CppToC')
@@ -391,21 +381,35 @@ _simpletypes = {
     'char* const': ['char* const', 'NULL'],
     'cef_color_t': ['cef_color_t', '0'],
     'cef_json_parser_error_t': ['cef_json_parser_error_t', 'JSON_NO_ERROR'],
-    'cef_plugin_policy_t': ['cef_plugin_policy_t', 'PLUGIN_POLICY_ALLOW'],
-    'CefCursorHandle': ['cef_cursor_handle_t', 'kNullCursorHandle'],
+    'CefAudioParameters': ['cef_audio_parameters_t', 'CefAudioParameters()'],
+    'CefBaseTime': ['cef_basetime_t', 'CefBaseTime()'],
+    'CefBoxLayoutSettings': [
+        'cef_box_layout_settings_t', 'CefBoxLayoutSettings()'
+    ],
     'CefCompositionUnderline': [
         'cef_composition_underline_t', 'CefCompositionUnderline()'
     ],
-    'CefEventHandle': ['cef_event_handle_t', 'kNullEventHandle'],
-    'CefWindowHandle': ['cef_window_handle_t', 'kNullWindowHandle'],
-    'CefPoint': ['cef_point_t', 'CefPoint()'],
-    'CefRect': ['cef_rect_t', 'CefRect()'],
-    'CefSize': ['cef_size_t', 'CefSize()'],
-    'CefRange': ['cef_range_t', 'CefRange()'],
+    'CefCursorHandle': ['cef_cursor_handle_t', 'kNullCursorHandle'],
+    'CefCursorInfo': ['cef_cursor_info_t', 'CefCursorInfo()'],
     'CefDraggableRegion': ['cef_draggable_region_t', 'CefDraggableRegion()'],
+    'CefEventHandle': ['cef_event_handle_t', 'kNullEventHandle'],
+    'CefInsets': ['cef_insets_t', 'CefInsets()'],
+    'CefKeyEvent': ['cef_key_event_t', 'CefKeyEvent()'],
+    'CefMainArgs': ['cef_main_args_t', 'CefMainArgs()'],
+    'CefMouseEvent': ['cef_mouse_event_t', 'CefMouseEvent()'],
+    'CefPoint': ['cef_point_t', 'CefPoint()'],
+    'CefPopupFeatures': ['cef_popup_features_t', 'CefPopupFeatures()'],
+    'CefRange': ['cef_range_t', 'CefRange()'],
+    'CefRect': ['cef_rect_t', 'CefRect()'],
+    'CefScreenInfo': ['cef_screen_info_t', 'CefScreenInfo()'],
+    'CefSize': ['cef_size_t', 'CefSize()'],
+    'CefTouchEvent': ['cef_touch_event_t', 'CefTouchEvent()'],
+    'CefTouchHandleState': [
+        'cef_touch_handle_state_t', 'CefTouchHandleState()'
+    ],
     'CefThreadId': ['cef_thread_id_t', 'TID_UI'],
     'CefTime': ['cef_time_t', 'CefTime()'],
-    'CefAudioParameters': ['cef_audio_parameters_t', 'CefAudioParameters()']
+    'CefWindowHandle': ['cef_window_handle_t', 'kNullWindowHandle'],
 }
 
 
@@ -445,10 +449,11 @@ def get_function_impls(content, ident, has_impl=True):
 
     # parse the arguments
     args = []
-    for v in argval.split(','):
-      v = v.strip()
-      if len(v) > 0:
-        args.append(v)
+    if argval != 'void':
+      for v in argval.split(','):
+        v = v.strip()
+        if len(v) > 0:
+          args.append(v)
 
     result.append({
         'retval': retval.strip(),
@@ -1204,7 +1209,7 @@ class obj_function:
     for cls in self.arguments:
       cls.get_types(list)
 
-  def get_capi_parts(self, defined_structs=[], prefix=None):
+  def get_capi_parts(self, defined_structs=[], isimpl=False, prefix=None):
     """ Return the parts of the C API function definition. """
     retval = ''
     dict = self.retval.get_type().get_capi(defined_structs)
@@ -1221,6 +1226,8 @@ class obj_function:
         # const virtual functions get const self pointers
         str = 'const ' + str
       args.append(str)
+    elif not isimpl and len(self.arguments) == 0:
+      args.append('void')
 
     if len(self.arguments) > 0:
       for cls in self.arguments:
@@ -1241,9 +1248,9 @@ class obj_function:
 
     return {'retval': retval, 'name': name, 'args': args}
 
-  def get_capi_proto(self, defined_structs=[], prefix=None):
+  def get_capi_proto(self, defined_structs=[], isimpl=False, prefix=None):
     """ Return the prototype of the C API function. """
-    parts = self.get_capi_parts(defined_structs, prefix)
+    parts = self.get_capi_parts(defined_structs, isimpl, prefix)
     result = parts['retval']+' '+parts['name']+ \
              '('+', '.join(parts['args'])+')'
     return result
@@ -2094,7 +2101,7 @@ if __name__ == "__main__":
   funcs = header.get_funcs()
   if len(funcs) > 0:
     for func in funcs:
-      result += func.get_capi_proto(defined_names) + ';\n'
+      result += func.get_capi_proto(defined_names, True) + ';\n'
     result += '\n'
 
   classes = header.get_classes()
@@ -2104,7 +2111,7 @@ if __name__ == "__main__":
     funcs = cls.get_virtual_funcs()
     if len(funcs) > 0:
       for func in funcs:
-        result += '\t' + func.get_capi_proto(defined_names) + ';\n'
+        result += '\t' + func.get_capi_proto(defined_names, True) + ';\n'
     result += '}\n\n'
 
     defined_names.append(cls.get_capi_name())
@@ -2113,6 +2120,6 @@ if __name__ == "__main__":
     funcs = cls.get_static_funcs()
     if len(funcs) > 0:
       for func in funcs:
-        result += func.get_capi_proto(defined_names) + ';\n'
+        result += func.get_capi_proto(defined_names, True) + ';\n'
       result += '\n'
   sys.stdout.write(result)

@@ -10,10 +10,10 @@
     /// A request context provides request handling for a set of related browser
     /// or URL request objects. A request context can be specified when creating a
     /// new browser via the CefBrowserHost static factory methods or when creating a
-    /// new URL request via the CefURLRequest static factory methods. Browser objects
-    /// with different request contexts will never be hosted in the same render
-    /// process. Browser objects with the same request context may or may not be
-    /// hosted in the same render process depending on the process model. Browser
+    /// new URL request via the CefURLRequest static factory methods. Browser
+    /// objects with different request contexts will never be hosted in the same
+    /// render process. Browser objects with the same request context may or may not
+    /// be hosted in the same render process depending on the process model. Browser
     /// objects created indirectly via the JavaScript window.open function or
     /// targeted links will share the same render process and the same request
     /// context as the source browser. When running in single-process mode there is
@@ -145,9 +145,9 @@
         /// will be ignored for non-standard schemes. If |scheme_name| is a built-in
         /// scheme and no handler is returned by |factory| then the built-in scheme
         /// handler factory will be called. If |scheme_name| is a custom scheme then
-        /// you must also implement the CefApp::OnRegisterCustomSchemes() method in all
-        /// processes. This function may be called multiple times to change or remove
-        /// the factory that matches the specified |scheme_name| and optional
+        /// you must also implement the CefApp::OnRegisterCustomSchemes() method in
+        /// all processes. This function may be called multiple times to change or
+        /// remove the factory that matches the specified |scheme_name| and optional
         /// |domain_name|. Returns false if an error occurs. This function may be
         /// called on any thread in the browser process.
         /// </summary>
@@ -167,23 +167,12 @@
         }
 
         /// <summary>
-        /// Clear all registered scheme handler factories. Returns false on error. This
-        /// function may be called on any thread in the browser process.
+        /// Clear all registered scheme handler factories. Returns false on error.
+        /// This function may be called on any thread in the browser process.
         /// </summary>
         public bool ClearSchemeHandlerFactories()
         {
             return cef_request_context_t.clear_scheme_handler_factories(_self) != 0;
-        }
-
-        /// <summary>
-        /// Tells all renderer processes associated with this context to throw away
-        /// their plugin list cache. If |reload_pages| is true they will also reload
-        /// all pages with plugins. CefRequestContextHandler::OnBeforePluginLoad may
-        /// be called to rebuild the plugin list cache.
-        /// </summary>
-        public void PurgePluginListCache(bool reloadPages)
-        {
-            cef_request_context_t.purge_plugin_list_cache(_self, reloadPages ? 1 : 0);
         }
 
         /// <summary>
@@ -202,11 +191,11 @@
         /// <summary>
         /// Returns the value for the preference with the specified |name|. Returns
         /// NULL if the preference does not exist. The returned object contains a copy
-        /// of the underlying preference value and modifications to the returned object
-        /// will not modify the underlying preference value. This method must be called
-        /// on the browser process UI thread.
+        /// of the underlying preference value and modifications to the returned
+        /// object will not modify the underlying preference value. This method must
+        /// be called on the browser process UI thread.
         /// </summary>
-        public CefValue GetPreference(string name)
+        public CefValue? GetPreference(string name)
         {
             fixed (char* name_str = name)
             {
@@ -217,9 +206,9 @@
         }
 
         /// <summary>
-        /// Returns all preferences as a dictionary. If |include_defaults| is true then
-        /// preferences currently at their default value will be included. The returned
-        /// object contains a copy of the underlying preference values and
+        /// Returns all preferences as a dictionary. If |include_defaults| is true
+        /// then preferences currently at their default value will be included. The
+        /// returned object contains a copy of the underlying preference values and
         /// modifications to the returned object will not modify the underlying
         /// preference values. This method must be called on the browser process UI
         /// thread.
@@ -248,11 +237,12 @@
         /// <summary>
         /// Set the |value| associated with preference |name|. Returns true if the
         /// value is set successfully and false otherwise. If |value| is NULL the
-        /// preference will be restored to its default value. If setting the preference
-        /// fails then |error| will be populated with a detailed description of the
-        /// problem. This method must be called on the browser process UI thread.
+        /// preference will be restored to its default value. If setting the
+        /// preference fails then |error| will be populated with a detailed
+        /// description of the problem. This method must be called on the browser
+        /// process UI thread.
         /// </summary>
-        public bool SetPreference(string name, CefValue value, out string error)
+        public bool SetPreference(string name, CefValue? value, out string error)
         {
             fixed (char* name_str = name)
             {
@@ -326,11 +316,12 @@
         /// If extension resources will be read from disk using the default load
         /// implementation then |root_directory| should be the absolute path to the
         /// extension resources directory and |manifest| should be NULL. If extension
-        /// resources will be provided by the client (e.g. via CefRequestHandler and/or
-        /// CefExtensionHandler) then |root_directory| should be a path component
-        /// unique to the extension (if not absolute this will be internally prefixed
-        /// with the PK_DIR_RESOURCES path) and |manifest| should contain the contents
-        /// that would otherwise be read from the "manifest.json" file on disk.
+        /// resources will be provided by the client (e.g. via CefRequestHandler
+        /// and/or CefExtensionHandler) then |root_directory| should be a path
+        /// component unique to the extension (if not absolute this will be internally
+        /// prefixed with the PK_DIR_RESOURCES path) and |manifest| should contain the
+        /// contents that would otherwise be read from the "manifest.json" file on
+        /// disk.
         /// The loaded extension will be accessible in all contexts sharing the same
         /// storage (HasExtension returns true). However, only the context on which
         /// this method was called is considered the loader (DidLoadExtension returns
@@ -346,8 +337,9 @@
         /// manifest to determine the correct extension URL to load and then pass that
         /// URL to the CefBrowserHost::CreateBrowser* function after the extension has
         /// loaded. For example, the client can look for the "browser_action" manifest
-        /// key as documented at https://developer.chrome.com/extensions/browserAction.
-        /// Extension URLs take the form "chrome-extension://&lt;extension_id&gt;/&lt;path&gt;".
+        /// key as documented at
+        /// https://developer.chrome.com/extensions/browserAction. Extension URLs take
+        /// the form "chrome-extension://&lt;extension_id&gt;/&lt;path&gt;".
         /// Browsers that host extensions differ from normal browsers as follows:
         /// - Can access chrome.* JavaScript APIs if allowed by the manifest. Visit
         /// chrome://extensions-support for the list of extension APIs currently
@@ -388,8 +380,8 @@
         /// <summary>
         /// Returns true if this context has access to the extension identified by
         /// |extension_id|. This may not be the context that was used to load the
-        /// extension (see DidLoadExtension). This method must be called on the browser
-        /// process UI thread.
+        /// extension (see DidLoadExtension). This method must be called on the
+        /// browser process UI thread.
         /// </summary>
         public bool HasExtension(string extensionId)
         {
@@ -402,9 +394,9 @@
 
         /// <summary>
         /// Retrieve the list of all extensions that this context has access to (see
-        /// HasExtension). |extension_ids| will be populated with the list of extension
-        /// ID values. Returns true on success. This method must be called on the
-        /// browser process UI thread.
+        /// HasExtension). |extension_ids| will be populated with the list of
+        /// extension ID values. Returns true on success. This method must be called
+        /// on the browser process UI thread.
         /// </summary>
         public bool GetExtensions(out string[] extensionIds)
         {
@@ -440,9 +432,9 @@
         }
 
         /// <summary>
-        /// Returns the MediaRouter object associated with this context. If |callback|
-        /// is non-NULL it will be executed asnychronously on the UI thread after the
-        /// manager's context has been initialized.
+        /// Returns the MediaRouter object associated with this context.  If
+        /// |callback| is non-NULL it will be executed asnychronously on the UI thread
+        /// after the manager's context has been initialized.
         /// </summary>
         public CefMediaRouter GetMediaRouter(CefCompletionCallback? callback)
         {

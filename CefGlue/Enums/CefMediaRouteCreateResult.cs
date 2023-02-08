@@ -5,8 +5,8 @@
 namespace Xilium.CefGlue
 {
     /// <summary>
-    /// Result codes for CefMediaRouter::CreateRoute. These constants match
-    /// their equivalents in Chromium's route_request_result.h and should not be
+    /// Result codes for CefMediaRouter::CreateRoute. Should be kept in sync with
+    /// Chromium's media_router::mojom::RouteRequestResultCode type.
     /// renumbered.
     /// </summary>
     public enum CefMediaRouteCreateResult
@@ -21,7 +21,5 @@ namespace Xilium.CefGlue
         Cancelled = 8,
         RouteAlreadyExists = 9,
         RouteAlreadyTerminated = 11,
-
-        // CEF_MRCR_TOTAL_COUNT = 12  // The total number of values.
     }
 }

@@ -15,6 +15,7 @@
         {
             JSQueryFunction = "cefQuery";
             JSCancelFunction = "cefQueryCancel";
+            MessageSizeThreshold = CefMessageRouter.ResponseSizeThreshold;
         }
 
         /// <summary>
@@ -29,11 +30,23 @@
         /// </summary>
         public string JSCancelFunction { get; set; }
 
+        /// <summary>
+        /// Messages of size (in bytes) larger than this threshold will be sent via
+        /// shared memory region.
+        /// </summary>
+        /// <remarks>Not implemented and has no effect.</remarks>
+        public int MessageSizeThreshold { get; set; }
+
         // Validate configuration settings.
         internal bool Validate()
         {
             // Must specify function names.
             if (string.IsNullOrEmpty(JSQueryFunction) || string.IsNullOrEmpty(JSCancelFunction))
+            {
+                return false;
+            }
+
+            if (MessageSizeThreshold < 0)
             {
                 return false;
             }

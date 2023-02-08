@@ -83,21 +83,21 @@ namespace Xilium.CefGlue.Demo.Avalonia
         {
             var result = new StringWriter();
 
-            result.WriteLine(await browser.EvaluateJavaScript<string>("\"Hello World!\""));
+            result.Write(await browser.EvaluateJavaScript<string>("\"Hello World!\""));
 
-            result.WriteLine(await browser.EvaluateJavaScript<int>("1+1"));
+            result.Write("; " + await browser.EvaluateJavaScript<int>("1+1"));
 
-            result.WriteLine(await browser.EvaluateJavaScript<bool>("false"));
+            result.Write("; " + await browser.EvaluateJavaScript<bool>("false"));
 
-            result.WriteLine(await browser.EvaluateJavaScript<double>("1.5+1.5"));
+            result.Write ("; " + await browser.EvaluateJavaScript<double>("1.5+1.5"));
 
-            result.WriteLine(await browser.EvaluateJavaScript<double>("3+1.5"));
+            result.Write("; " + await browser.EvaluateJavaScript<double>("3+1.5"));
 
-            result.WriteLine(await browser.EvaluateJavaScript<DateTime>("new Date()"));
+            result.Write("; " + await browser.EvaluateJavaScript<DateTime>("new Date()"));
 
-            result.WriteLine(string.Join(", ", await browser.EvaluateJavaScript<object[]>("[1, 2, 3]")));
+            result.Write("; " + string.Join(", ", await browser.EvaluateJavaScript<object[]>("[1, 2, 3]")));
 
-            result.WriteLine(string.Join(", ", (await browser.EvaluateJavaScript<ExpandoObject>("(function() { return { a: 'valueA', b: 1, c: true } })()")).Select(p => p.Key + ":" + p.Value)));
+            result.Write("; " + string.Join(", ", (await browser.EvaluateJavaScript<ExpandoObject>("(function() { return { a: 'valueA', b: 1, c: true } })()")).Select(p => p.Key + ":" + p.Value)));
 
             browser.ExecuteJavaScript($"alert(\"{result.ToString().Replace("\r\n", " | ").Replace("\"", "\\\"")}\")");
         }

@@ -19,15 +19,9 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
         public JavascriptExecutionEngine(MessageDispatcher dispatcher)
         {
             dispatcher.RegisterMessageHandler(Messages.JsEvaluationResult.Name, HandleScriptEvaluationResultMessage);
-            dispatcher.RegisterMessageHandler(Messages.JsContextCreated.Name, HandleContextCreatedMessage);
-            dispatcher.RegisterMessageHandler(Messages.JsContextReleased.Name, HandleContextReleasedMessage);
             dispatcher.RegisterMessageHandler(Messages.JsUncaughtException.Name, HandleUncaughtExceptionMessage);
         }
 
-        public bool IsMainFrameContextInitialized { get; private set; }
-
-        public event Action<CefFrame> ContextCreated;
-        public event Action<CefFrame> ContextReleased;
         public event Action<JavascriptUncaughtExceptionEventArgs> UncaughtException;
 
         private void HandleScriptEvaluationResultMessage(MessageReceivedEventArgs args)
@@ -45,26 +39,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                     pendingTask.SetException(new Exception(message.Exception));
                 }
             }
-        }
-
-        private void HandleContextCreatedMessage(MessageReceivedEventArgs args)
-        {
-            var message = Messages.JsContextCreated.FromCefMessage(args.Message);
-            if (args.Frame.IsMain)
-            {
-                IsMainFrameContextInitialized = true;
-            }
-            ContextCreated?.Invoke(args.Frame);
-        }
-
-        private void HandleContextReleasedMessage(MessageReceivedEventArgs args)
-        {
-            var message = Messages.JsContextReleased.FromCefMessage(args.Message);
-            if (args.Frame.IsMain)
-            {
-                IsMainFrameContextInitialized = false;
-            }
-            ContextReleased?.Invoke(args.Frame);
         }
 
         private void HandleUncaughtExceptionMessage(MessageReceivedEventArgs args)
@@ -119,8 +93,6 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
         public void Dispose()
         {
-            ContextCreated = null;
-            ContextReleased = null;
             UncaughtException = null;
             foreach (var task in _pendingTasks)
             {

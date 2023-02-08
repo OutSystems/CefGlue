@@ -23,9 +23,9 @@
         }
 
         /// <summary>
-        /// Method that will be executed when the route creation has finished. |result|
-        /// will be CEF_MRCR_OK if the route creation succeeded. |error| will be a
-        /// description of the error if the route creation failed. |route| is the
+        /// Method that will be executed when the route creation has finished.
+        /// |result| will be CEF_MRCR_OK if the route creation succeeded. |error| will
+        /// be a description of the error if the route creation failed. |route| is the
         /// resulting route, or empty if the route creation failed.
         /// </summary>
         protected abstract void OnMediaRouteCreateFinished(CefMediaRouteCreateResult result, string error, CefMediaRoute route);

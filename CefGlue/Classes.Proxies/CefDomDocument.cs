@@ -7,8 +7,8 @@
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Class used to represent a DOM document. The methods of this class should only
-    /// be called on the render process main thread thread.
+    /// Class used to represent a DOM document. The methods of this class should
+    /// only be called on the render process main thread thread.
     /// </summary>
     public sealed unsafe partial class CefDomDocument
     {

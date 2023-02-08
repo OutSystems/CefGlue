@@ -8,8 +8,8 @@
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Class used to write data to a stream. The methods of this class may be called
-    /// on any thread.
+    /// Class used to write data to a stream. The methods of this class may be
+    /// called on any thread.
     /// </summary>
     public sealed unsafe partial class CefStreamWriter
     {

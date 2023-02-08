@@ -36,22 +36,20 @@
 #ifdef __cplusplus
 #include <string>
 
-#include "include/base/cef_macros.h"
-
 extern "C" {
 #endif  // __cplusplus
 
 ///
-// Load the CEF library at the specified |path|. Returns true (1) on
-// success and false (0) on failure.
+/// Load the CEF library at the specified |path|. Returns true (1) on
+/// success and false (0) on failure.
 ///
 int cef_load_library(const char* path);
 
 ///
-// Unload the CEF library that was previously loaded. Returns true (1)
-// on success and false (0) on failure.
+/// Unload the CEF library that was previously loaded. Returns true (1)
+/// on success and false (0) on failure.
 ///
-int cef_unload_library();
+int cef_unload_library(void);
 
 #ifdef __cplusplus
 }
@@ -59,59 +57,67 @@ int cef_unload_library();
 #if defined(OS_MAC)
 
 ///
-// Scoped helper for loading and unloading the CEF framework library at
-// runtime from the expected location in the app bundle. Loading at runtime
-// instead of linking directly is a requirement of the macOS sandbox
-// implementation.
-//
-// Example usage in the main process:
-//
-//   #include "include/wrapper/cef_library_loader.h"
-//
-//   int main(int argc, char* argv[]) {
-//     // Dynamically load the CEF framework library.
-//     CefScopedLibraryLoader library_loader;
-//     if (!library_loader.LoadInMain())
-//       return 1;
-//
-//     // Continue with CEF initialization...
-//   }
-//
-// Example usage in the helper process:
-//
-//   #include "include/cef_sandbox_mac.h"
-//   #include "include/wrapper/cef_library_loader.h"
-//
-//   int main(int argc, char* argv[]) {
-//     // Initialize the macOS sandbox for this helper process.
-//     CefScopedSandboxContext sandbox_context;
-//     if (!sandbox_context.Initialize(argc, argv))
-//       return 1;
-//
-//     // Dynamically load the CEF framework library.
-//     CefScopedLibraryLoader library_loader;
-//     if (!library_loader.LoadInHelper())
-//       return 1;
-//
-//     // Continue with CEF initialization...
-//   }
+/// Scoped helper for loading and unloading the CEF framework library at
+/// runtime from the expected location in the app bundle. Loading at runtime
+/// instead of linking directly is a requirement of the macOS sandbox
+/// implementation.
+///
+/// Example usage in the main process:
+///
+/// <pre>
+///   #include "include/wrapper/cef_library_loader.h"
+///
+///   int main(int argc, char* argv[]) {
+///     // Dynamically load the CEF framework library.
+///     CefScopedLibraryLoader library_loader;
+///     if (!library_loader.LoadInMain())
+///       return 1;
+///
+///     // Continue with CEF initialization...
+///   }
+/// </pre>
+///
+/// Example usage in the helper process:
+///
+/// <pre>
+///   #include "include/cef_sandbox_mac.h"
+///   #include "include/wrapper/cef_library_loader.h"
+///
+///   int main(int argc, char* argv[]) {
+///     // Initialize the macOS sandbox for this helper process.
+///     CefScopedSandboxContext sandbox_context;
+///     if (!sandbox_context.Initialize(argc, argv))
+///       return 1;
+///
+///     // Dynamically load the CEF framework library.
+///     CefScopedLibraryLoader library_loader;
+///     if (!library_loader.LoadInHelper())
+///       return 1;
+///
+///     // Continue with CEF initialization...
+///   }
+/// </pre>
 ///
 class CefScopedLibraryLoader {
  public:
   CefScopedLibraryLoader();
+
+  CefScopedLibraryLoader(const CefScopedLibraryLoader&) = delete;
+  CefScopedLibraryLoader& operator=(const CefScopedLibraryLoader&) = delete;
+
   ~CefScopedLibraryLoader();
 
   ///
-  // Load the CEF framework in the main process from the expected app
-  // bundle location relative to the executable. Returns true if the
-  // load succeeds.
+  /// Load the CEF framework in the main process from the expected app
+  /// bundle location relative to the executable. Returns true if the
+  /// load succeeds.
   ///
   bool LoadInMain() { return Load(false); }
 
   ///
-  // Load the CEF framework in the helper process from the expected app
-  // bundle location relative to the executable. Returns true if the
-  // load succeeds.
+  /// Load the CEF framework in the helper process from the expected app
+  /// bundle location relative to the executable. Returns true if the
+  /// load succeeds.
   ///
   bool LoadInHelper() { return Load(true); }
 
@@ -119,7 +125,6 @@ class CefScopedLibraryLoader {
   bool Load(bool helper);
 
   bool loaded_;
-  DISALLOW_COPY_AND_ASSIGN(CefScopedLibraryLoader);
 };
 
 #endif  // defined(OS_MAC)

@@ -22,6 +22,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _on_popup_size;
         internal IntPtr _on_paint;
         internal IntPtr _on_accelerated_paint;
+        internal IntPtr _get_touch_handle_size;
+        internal IntPtr _on_touch_handle_state_changed;
         internal IntPtr _start_dragging;
         internal IntPtr _update_drag_cursor;
         internal IntPtr _on_scroll_offset_changed;
@@ -106,6 +108,18 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_accelerated_paint_delegate(cef_render_handler_t* self, cef_browser_t* browser, CefPaintElementType type, UIntPtr dirtyRectsCount, cef_rect_t* dirtyRects, void* shared_handle);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void get_touch_handle_size_delegate(cef_render_handler_t* self, cef_browser_t* browser, CefHorizontalAlignment orientation, cef_size_t* size);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void on_touch_handle_state_changed_delegate(cef_render_handler_t* self, cef_browser_t* browser, cef_touch_handle_state_t* state);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

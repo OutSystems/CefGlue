@@ -11,6 +11,7 @@ namespace Xilium.CefGlue.Common.Helpers
     {
         private delegate IList ListContructor(int length, out Type genericType);
 
+        private static readonly DateTime _windowsEpoch = new DateTime(1601, 1, 1);
         private static readonly IDictionary<Type, MemberInfo[]> _typeMembersCache = new Dictionary<Type, MemberInfo[]>();
         private static readonly IDictionary<Type, ListContructor> _typeListConstructorCache = new Dictionary<Type, ListContructor>();
 
@@ -46,6 +47,13 @@ namespace Xilium.CefGlue.Common.Helpers
             {
                 // javascript numbers sometimes can lose the decimal part becoming integers, prevent that
                 return Convert.ToDouble(obj);
+            }
+
+            if (expectedType == typeof(DateTime)
+                && obj is Dictionary<string,object> { Count: 1 } objValue
+                && objValue.TryGetValue("Ticks", out var dateTicksInMicroseconds)) {
+                var milliseconds = Convert.ToDouble(dateTicksInMicroseconds) / 1000;
+                return _windowsEpoch.AddMilliseconds(milliseconds);
             }
 
             var objType = obj.GetType();

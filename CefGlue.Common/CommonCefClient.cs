@@ -12,6 +12,7 @@ namespace Xilium.CefGlue.Common
         private readonly CefDisplayHandler _displayHandler;
         private readonly CefRenderHandler _renderHandler;
         private readonly CefLoadHandler _loadHandler;
+        private readonly CefFrameHandler _frameHandler;
         private readonly CefContextMenuHandler _contextMenuHandler;
         private readonly ICefBrowserHost _owner;
 
@@ -29,6 +30,8 @@ namespace Xilium.CefGlue.Common
             _lifeSpanHandler = new CommonCefLifeSpanHandler(owner);
             _displayHandler = new CommonCefDisplayHandler(owner);
             _loadHandler = new CommonCefLoadHandler(owner);
+            _frameHandler = new CommonCefFrameHandler(owner);
+
             _contextMenuHandler = new CommonCefContextMenuHandler(owner);
         }
 
@@ -95,6 +98,11 @@ namespace Xilium.CefGlue.Common
         protected override CefLoadHandler GetLoadHandler()
         {
             return _loadHandler;
+        }
+
+        protected override CefFrameHandler GetFrameHandler()
+        {
+            return _frameHandler;
         }
 
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)

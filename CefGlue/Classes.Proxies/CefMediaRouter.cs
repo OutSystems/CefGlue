@@ -27,8 +27,8 @@
         }
 
         /// <summary>
-        /// Add an observer for MediaRouter events. The observer will remain registered
-        /// until the returned Registration object is destroyed.
+        /// Add an observer for MediaRouter events. The observer will remain
+        /// registered until the returned Registration object is destroyed.
         /// </summary>
         public CefRegistration AddObserver(CefMediaObserver observer)
         {

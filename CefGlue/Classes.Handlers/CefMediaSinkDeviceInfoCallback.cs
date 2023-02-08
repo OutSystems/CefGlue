@@ -26,10 +26,10 @@
 
             OnMediaSinkDeviceInfo(in mDeviceInfo);
         }
-        
+
         /// <summary>
-        /// Method that will be executed asyncronously once device information has been
-        /// retrieved.
+        /// Method that will be executed asyncronously once device information has
+        /// been retrieved.
         /// </summary>
         protected abstract void OnMediaSinkDeviceInfo(in CefMediaSinkDeviceInfo deviceInfo);
     }

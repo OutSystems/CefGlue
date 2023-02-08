@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -31,7 +31,7 @@ namespace Xilium.CefGlue
         {
             if (Interlocked.CompareExchange(ref _keepObject, 0, 1) == 1)
             {
-                 release(_self);
+                release(_self);
             }
         }
 
@@ -176,12 +176,12 @@ namespace Xilium.CefGlue
         /// bytes copied, and return true. To read the data at a later time keep a
         /// pointer to |data_out|, set |bytes_read| to 0, return true and execute
         /// |callback| when the data is available (|response| will remain valid until
-        /// the callback is executed). To indicate response completion set |bytes_read|
-        /// to 0 and return false. To indicate failure set |bytes_read| to &lt; 0 (e.g. -2
-        /// for ERR_FAILED) and return false. This method will be called in sequence
-        /// but not from a dedicated thread. For backwards compatibility set
-        /// |bytes_read| to -1 and return false and the ReadResponse method will be
-        /// called.
+        /// the callback is executed). To indicate response completion set
+        /// |bytes_read| to 0 and return false. To indicate failure set |bytes_read|
+        /// to &lt; 0 (e.g. -2 for ERR_FAILED) and return false. This method will be
+        /// called in sequence but not from a dedicated thread. For backwards
+        /// compatibility set |bytes_read| to -1 and return false and the ReadResponse
+        /// method will be called.
         /// </summary>
         protected abstract bool Read(Stream response, int bytesToRead, out int bytesRead, CefResourceReadCallback callback);
 

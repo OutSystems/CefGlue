@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>$(DotnetVersion)-windows</TargetFramework>
     <OutputType>Library</OutputType>
     <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
     <RootNamespace>Xilium.CefGlue.WPF</RootNamespace>
@@ -63,5 +63,6 @@
     
   <ItemGroup>
     <PackageReference PrivateAssets="all" Include="System.Data.DataSetExtensions" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" />
   </ItemGroup>
 </Project>

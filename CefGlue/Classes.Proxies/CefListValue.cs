@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -60,8 +60,8 @@ namespace Xilium.CefGlue
         }
 
         /// <summary>
-        /// Returns true if this object and |that| object have an equivalent underlying
-        /// value but are not necessarily the same object.
+        /// Returns true if this object and |that| object have an equivalent
+        /// underlying value but are not necessarily the same object.
         /// </summary>
         public bool IsEqual(ICefListValue that)
         {
@@ -205,10 +205,10 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Sets the value at the specified index. Returns true if the value was set
         /// successfully. If |value| represents simple data then the underlying data
-        /// will be copied and modifications to |value| will not modify this object. If
-        /// |value| represents complex data (binary, dictionary or list) then the
-        /// underlying data will be referenced and modifications to |value| will modify
-        /// this object.
+        /// will be copied and modifications to |value| will not modify this object.
+        /// If |value| represents complex data (binary, dictionary or list) then the
+        /// underlying data will be referenced and modifications to |value| will
+        /// modify this object.
         /// </summary>
         public bool SetValue(int index, CefValue value)
         {
@@ -266,10 +266,10 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Sets the value at the specified index as type binary. Returns true if the
-        /// value was set successfully. If |value| is currently owned by another object
-        /// then the value will be copied and the |value| reference will not change.
-        /// Otherwise, ownership will be transferred to this object and the |value|
-        /// reference will be invalidated.
+        /// value was set successfully. If |value| is currently owned by another
+        /// object then the value will be copied and the |value| reference will not
+        /// change. Otherwise, ownership will be transferred to this object and the
+        /// |value| reference will be invalidated.
         /// </summary>
         public bool SetBinary(int index, ICefBinaryValue value)
         {
@@ -278,10 +278,10 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Sets the value at the specified index as type dict. Returns true if the
-        /// value was set successfully. If |value| is currently owned by another object
-        /// then the value will be copied and the |value| reference will not change.
-        /// Otherwise, ownership will be transferred to this object and the |value|
-        /// reference will be invalidated.
+        /// value was set successfully. If |value| is currently owned by another
+        /// object then the value will be copied and the |value| reference will not
+        /// change. Otherwise, ownership will be transferred to this object and the
+        /// |value| reference will be invalidated.
         /// </summary>
         public bool SetDictionary(int index, ICefDictionaryValue value)
         {
@@ -290,10 +290,10 @@ namespace Xilium.CefGlue
 
         /// <summary>
         /// Sets the value at the specified index as type list. Returns true if the
-        /// value was set successfully. If |value| is currently owned by another object
-        /// then the value will be copied and the |value| reference will not change.
-        /// Otherwise, ownership will be transferred to this object and the |value|
-        /// reference will be invalidated.
+        /// value was set successfully. If |value| is currently owned by another
+        /// object then the value will be copied and the |value| reference will not
+        /// change. Otherwise, ownership will be transferred to this object and the
+        /// |value| reference will be invalidated.
         /// </summary>
         public bool SetList(int index, ICefListValue value)
         {

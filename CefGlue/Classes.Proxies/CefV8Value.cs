@@ -10,8 +10,8 @@
     /// Class representing a V8 value handle. V8 handles can only be accessed from
     /// the thread on which they are created. Valid threads for creating a V8 handle
     /// include the render process main thread (TID_RENDERER) and WebWorker threads.
-    /// A task runner for posting tasks on the associated thread can be retrieved via
-    /// the CefV8Context::GetTaskRunner() method.
+    /// A task runner for posting tasks on the associated thread can be retrieved
+    /// via the CefV8Context::GetTaskRunner() method.
     /// </summary>
     public sealed unsafe partial class CefV8Value
     {
@@ -81,11 +81,10 @@
         /// CefV8Accessor callback, or in combination with calling Enter() and Exit()
         /// on a stored CefV8Context reference.
         /// </summary>
-        public static CefV8Value CreateDate(DateTime value)
+        public static CefV8Value CreateDate(CefBaseTime value)
         {
-            var n_value = new cef_time_t(value);
             return CefV8Value.FromNative(
-                cef_v8value_t.create_date(&n_value)
+                cef_v8value_t.create_date(value)
                 );
         }
 
@@ -104,13 +103,13 @@
         }
 
         /// <summary>
-        /// Create a new CefV8Value object of type object with optional accessor and/or
-        /// interceptor. This method should only be called from within the scope of a
-        /// CefRenderProcessHandler, CefV8Handler or CefV8Accessor callback, or in
-        /// combination with calling Enter() and Exit() on a stored CefV8Context
-        /// reference.
+        /// Create a new CefV8Value object of type object with optional accessor
+        /// and/or interceptor. This method should only be called from within the
+        /// scope of a CefRenderProcessHandler, CefV8Handler or CefV8Accessor
+        /// callback, or in combination with calling Enter() and Exit() on a stored
+        /// CefV8Context reference.
         /// </summary>
-        public static CefV8Value CreateObject(CefV8Accessor accessor = null, CefV8Interceptor interceptor = null)
+        public static CefV8Value CreateObject(CefV8Accessor? accessor = null, CefV8Interceptor? interceptor = null)
         {
             return CefV8Value.FromNative(
                 cef_v8value_t.create_object(
@@ -135,14 +134,14 @@
         }
 
         /// <summary>
-        /// Create a new CefV8Value object of type ArrayBuffer which wraps the provided
-        /// |buffer| of size |length| bytes. The ArrayBuffer is externalized, meaning
-        /// that it does not own |buffer|. The caller is responsible for freeing
-        /// |buffer| when requested via a call to CefV8ArrayBufferReleaseCallback::
-        /// ReleaseBuffer. This method should only be called from within the scope of a
-        /// CefRenderProcessHandler, CefV8Handler or CefV8Accessor callback, or in
-        /// combination with calling Enter() and Exit() on a stored CefV8Context
-        /// reference.
+        /// Create a new CefV8Value object of type ArrayBuffer which wraps the
+        /// provided |buffer| of size |length| bytes. The ArrayBuffer is externalized,
+        /// meaning that it does not own |buffer|. The caller is responsible for
+        /// freeing |buffer| when requested via a call to
+        /// CefV8ArrayBufferReleaseCallback::ReleaseBuffer. This method should only
+        /// be called from within the scope of a CefRenderProcessHandler, CefV8Handler
+        /// or CefV8Accessor callback, or in combination with calling Enter() and
+        /// Exit() on a stored CefV8Context reference.
         /// </summary>
         public static CefV8Value CreateArrayBuffer(IntPtr buffer, ulong length, CefV8ArrayBufferReleaseCallback releaseCallback)
         {
@@ -158,10 +157,10 @@
         }
 
         /// <summary>
-        /// Create a new CefV8Value object of type function. This method should only be
-        /// called from within the scope of a CefRenderProcessHandler, CefV8Handler or
-        /// CefV8Accessor callback, or in combination with calling Enter() and Exit()
-        /// on a stored CefV8Context reference.
+        /// Create a new CefV8Value object of type function. This method should only
+        /// be called from within the scope of a CefRenderProcessHandler, CefV8Handler
+        /// or CefV8Accessor callback, or in combination with calling Enter() and
+        /// Exit() on a stored CefV8Context reference.
         /// </summary>
         public static CefV8Value CreateFunction(string name, CefV8Handler handler)
         {
@@ -327,10 +326,9 @@
         /// <summary>
         /// Return a Date value.
         /// </summary>
-        public DateTime GetDateValue()
+        public CefBaseTime GetDateValue()
         {
-            var value = cef_v8value_t.get_date_value(_self);
-            return cef_time_t.ToDateTime(&value);
+            return cef_v8value_t.get_date_value(_self);
         }
 
         /// <summary>
@@ -382,8 +380,8 @@
         }
 
         /// <summary>
-        /// Returns true if this object will re-throw future exceptions. This attribute
-        /// exists only in the scope of the current CEF value object.
+        /// Returns true if this object will re-throw future exceptions. This
+        /// attribute exists only in the scope of the current CEF value object.
         /// </summary>
         public bool WillRethrowExceptions()
         {
@@ -424,9 +422,9 @@
 
         /// <summary>
         /// Deletes the value with the specified identifier and returns true on
-        /// success. Returns false if this method is called incorrectly or an exception
-        /// is thrown. For read-only and don't-delete values this method will return
-        /// true even though deletion failed.
+        /// success. Returns false if this method is called incorrectly or an
+        /// exception is thrown. For read-only and don't-delete values this method
+        /// will return true even though deletion failed.
         /// </summary>
         public bool DeleteValue(string key)
         {
@@ -439,9 +437,9 @@
 
         /// <summary>
         /// Deletes the value with the specified identifier and returns true on
-        /// success. Returns false if this method is called incorrectly, deletion fails
-        /// or an exception is thrown. For read-only and don't-delete values this
-        /// method will return true even though deletion failed.
+        /// success. Returns false if this method is called incorrectly, deletion
+        /// fails or an exception is thrown. For read-only and don't-delete values
+        /// this method will return true even though deletion failed.
         /// </summary>
         public bool DeleteValue(int index)
         {
@@ -476,9 +474,9 @@
 
         /// <summary>
         /// Associates a value with the specified identifier and returns true on
-        /// success. Returns false if this method is called incorrectly or an exception
-        /// is thrown. For read-only values this method will return true even though
-        /// assignment failed.
+        /// success. Returns false if this method is called incorrectly or an
+        /// exception is thrown. For read-only values this method will return true
+        /// even though assignment failed.
         /// </summary>
         public bool SetValue(string key, CefV8Value value, CefV8PropertyAttribute attribute = CefV8PropertyAttribute.None)
         {
@@ -491,9 +489,9 @@
 
         /// <summary>
         /// Associates a value with the specified identifier and returns true on
-        /// success. Returns false if this method is called incorrectly or an exception
-        /// is thrown. For read-only values this method will return true even though
-        /// assignment failed.
+        /// success. Returns false if this method is called incorrectly or an
+        /// exception is thrown. For read-only values this method will return true
+        /// even though assignment failed.
         /// </summary>
         public bool SetValue(int index, CefV8Value value)
         {
@@ -586,8 +584,9 @@
             return cef_v8value_t.adjust_externally_allocated_memory(_self, changeInBytes);
         }
 
+        // ARRAY METHODS - These methods are only available on arrays.
+
         /// <summary>
-        /// ARRAY METHODS - These methods are only available on arrays.
         /// Returns the number of elements in the array.
         /// </summary>
         public int GetArrayLength()
@@ -595,8 +594,9 @@
             return cef_v8value_t.get_array_length(_self);
         }
 
+        // ARRAY BUFFER METHODS - These methods are only available on ArrayBuffers.
+
         /// <summary>
-        /// ARRAY BUFFER METHODS - These methods are only available on ArrayBuffers.
         /// Returns the ReleaseCallback object associated with the ArrayBuffer or NULL
         /// if the ArrayBuffer was not created with CreateArrayBuffer.
         /// </summary>
@@ -617,8 +617,9 @@
             return cef_v8value_t.neuter_array_buffer(_self) != 0;
         }
 
+        // FUNCTION METHODS - These methods are only available on functions.
+
         /// <summary>
-        /// FUNCTION METHODS - These methods are only available on functions.
         /// Returns the function name.
         /// </summary>
         public string GetFunctionName()

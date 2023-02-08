@@ -8,27 +8,27 @@
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Class representing a server that supports HTTP and WebSocket requests. Server
-    /// capacity is limited and is intended to handle only a small number of
+    /// Class representing a server that supports HTTP and WebSocket requests.
+    /// Server capacity is limited and is intended to handle only a small number of
     /// simultaneous connections (e.g. for communicating between applications on
-    /// localhost). The methods of this class are safe to call from any thread in the
-    /// brower process unless otherwise indicated.
+    /// localhost). The methods of this class are safe to call from any thread in
+    /// the brower process unless otherwise indicated.
     /// </summary>
     public sealed unsafe partial class CefServer
     {
         /// <summary>
-        /// Create a new server that binds to |address| and |port|. |address| must be a
-        /// valid IPv4 or IPv6 address (e.g. 127.0.0.1 or ::1) and |port| must be a
+        /// Create a new server that binds to |address| and |port|. |address| must be
+        /// a valid IPv4 or IPv6 address (e.g. 127.0.0.1 or ::1) and |port| must be a
         /// port number outside of the reserved range (e.g. between 1025 and 65535 on
         /// most platforms). |backlog| is the maximum number of pending connections.
         /// A new thread will be created for each CreateServer call (the "dedicated
         /// server thread"). It is therefore recommended to use a different
-        /// CefServerHandler instance for each CreateServer call to avoid thread safety
-        /// issues in the CefServerHandler implementation. The
+        /// CefServerHandler instance for each CreateServer call to avoid thread
+        /// safety issues in the CefServerHandler implementation. The
         /// CefServerHandler::OnServerCreated method will be called on the dedicated
         /// server thread to report success or failure. See
-        /// CefServerHandler::OnServerCreated documentation for a description of server
-        /// lifespan.
+        /// CefServerHandler::OnServerCreated documentation for a description of
+        /// server lifespan.
         /// </summary>
         public static void Create(string address, ushort port, int backlog, CefServerHandler handler)
         {
@@ -62,8 +62,8 @@
         /// <summary>
         /// Returns true if the server is currently running and accepting incoming
         /// connections. See CefServerHandler::OnServerCreated documentation for a
-        /// description of server lifespan. This method must be called on the dedicated
-        /// server thread.
+        /// description of server lifespan. This method must be called on the
+        /// dedicated server thread.
         /// </summary>
         public bool IsRunning
         {

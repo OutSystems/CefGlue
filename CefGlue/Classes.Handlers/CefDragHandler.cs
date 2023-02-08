@@ -1,4 +1,4 @@
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -7,8 +7,8 @@ namespace Xilium.CefGlue
     using Xilium.CefGlue.Interop;
 
     /// <summary>
-    /// Implement this interface to handle events related to dragging. The methods of
-    /// this class will be called on the UI thread.
+    /// Implement this interface to handle events related to dragging. The methods
+    /// of this class will be called on the UI thread.
     /// </summary>
     public abstract unsafe partial class CefDragHandler
     {

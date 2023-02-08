@@ -46,11 +46,11 @@
         }
 
         /// <summary>
-        /// Add a bitmap image representation for |scale_factor|. Only 32-bit RGBA/BGRA
-        /// formats are supported. |pixel_width| and |pixel_height| are the bitmap
-        /// representation size in pixel coordinates. |pixel_data| is the array of
-        /// pixel data and should be |pixel_width| x |pixel_height| x 4 bytes in size.
-        /// |color_type| and |alpha_type| values specify the pixel format.
+        /// Add a bitmap image representation for |scale_factor|. Only 32-bit
+        /// RGBA/BGRA formats are supported. |pixel_width| and |pixel_height| are the
+        /// bitmap representation size in pixel coordinates. |pixel_data| is the array
+        /// of pixel data and should be |pixel_width| x |pixel_height| x 4 bytes in
+        /// size. |color_type| and |alpha_type| values specify the pixel format.
         /// </summary>
         public bool AddBitmap(float scaleFactor, int pixelWidth, int pixelHeight, CefColorType colorType, CefAlphaType alphaType, IntPtr pixelData, int pixelDataSize)
         {
@@ -160,14 +160,14 @@
         }
 
         /// <summary>
-        /// Returns the bitmap representation that most closely matches |scale_factor|.
-        /// Only 32-bit RGBA/BGRA formats are supported. |color_type| and |alpha_type|
-        /// values specify the desired output pixel format. |pixel_width| and
-        /// |pixel_height| are the output representation size in pixel coordinates.
-        /// Returns a CefBinaryValue containing the pixel data on success or NULL on
-        /// failure.
+        /// Returns the bitmap representation that most closely matches
+        /// |scale_factor|. Only 32-bit RGBA/BGRA formats are supported. |color_type|
+        /// and |alpha_type| values specify the desired output pixel format.
+        /// |pixel_width| and |pixel_height| are the output representation size in
+        /// pixel coordinates. Returns a CefBinaryValue containing the pixel data on
+        /// success or NULL on failure.
         /// </summary>
-        public CefBinaryValue GetAsBitmap(float scaleFactor, CefColorType colorType, CefAlphaType alphaType, out int pixelWidth, out int pixelHeight)
+        public CefBinaryValue? GetAsBitmap(float scaleFactor, CefColorType colorType, CefAlphaType alphaType, out int pixelWidth, out int pixelHeight)
         {
             int n_pixelWidth;
             int n_pixelHeight;
@@ -187,13 +187,14 @@
         }
 
         /// <summary>
-        /// Returns the PNG representation that most closely matches |scale_factor|. If
-        /// |with_transparency| is true any alpha transparency in the image will be
-        /// represented in the resulting PNG data. |pixel_width| and |pixel_height| are
-        /// the output representation size in pixel coordinates. Returns a
-        /// CefBinaryValue containing the PNG image data on success or NULL on failure.
+        /// Returns the PNG representation that most closely matches |scale_factor|.
+        /// If |with_transparency| is true any alpha transparency in the image will be
+        /// represented in the resulting PNG data. |pixel_width| and |pixel_height|
+        /// are the output representation size in pixel coordinates. Returns a
+        /// CefBinaryValue containing the PNG image data on success or NULL on
+        /// failure.
         /// </summary>
-        public CefBinaryValue GetAsPng(float scaleFactor, bool withTransparency, out int pixelWidth, out int pixelHeight)
+        public CefBinaryValue? GetAsPng(float scaleFactor, bool withTransparency, out int pixelWidth, out int pixelHeight)
         {
             int n_pixelWidth;
             int n_pixelHeight;
