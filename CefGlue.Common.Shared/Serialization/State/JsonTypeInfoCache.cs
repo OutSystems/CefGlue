@@ -10,9 +10,9 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
     {
         private static readonly ConcurrentDictionary<Type, JsonTypeInfo> TypesInfoCache = new ConcurrentDictionary<Type, JsonTypeInfo>();
 
-        internal static readonly JsonTypeInfo DefaultTypeInfo = new JsonTypeInfo(typeof(object));
+        public static readonly JsonTypeInfo DefaultTypeInfo = new JsonTypeInfo(typeof(object));
 
-        internal static JsonTypeInfo GetOrAddTypeInfo(Type type)
+        public static JsonTypeInfo GetOrAddTypeInfo(Type type)
         {
             switch (Type.GetTypeCode(type))
             {
@@ -37,43 +37,46 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
                 case TypeCode.String:
                     return DefaultTypeInfo;
                 default:
-                    return TypesInfoCache.GetOrAdd(type, (_) =>
-                    {
-                        var eligibleMembers = BindingFlags.Public | BindingFlags.Instance;
-
-                        var properties = type
-                            .GetProperties(eligibleMembers)
-                            .Where(p => p.CanWrite)
-                            .Where(p => !p.GetIndexParameters().Any());
-
-                        var fields = type
-                            .GetFields(eligibleMembers)
-                            .Where(f => !f.IsInitOnly);
-
-                        var typeInfo = new JsonTypeInfo(type);
-
-                        foreach (var prop in properties)
+                    return 
+                        type == null ? 
+                        null :
+                        TypesInfoCache.GetOrAdd(type, (_) =>
                         {
-                            typeInfo.TypeMembers.Add(prop.Name, new TypeMemberInfo(prop.PropertyType, (obj, value) => prop.SetValue(obj, value)));
-                        }
+                            var eligibleMembers = BindingFlags.Public | BindingFlags.Instance;
 
-                        foreach (var field in fields)
-                        {
-                            typeInfo.TypeMembers.Add(field.Name, new TypeMemberInfo(field.FieldType, (obj, value) => field.SetValue(obj, value)));
-                        }
+                            var properties = type
+                                .GetProperties(eligibleMembers)
+                                .Where(p => p.CanWrite)
+                                .Where(p => !p.GetIndexParameters().Any());
 
-                        MethodInfo addMethod;
-                        if (type.IsCollection() && (addMethod = type.GetMethod("Add")) != null)
-                        {
-                            typeInfo.CollectionAddMethod = new TypeMethodInfo((obj, value) => addMethod.Invoke(obj, value));
-                        }
+                            var fields = type
+                                .GetFields(eligibleMembers)
+                                .Where(f => !f.IsInitOnly);
 
-                        return typeInfo;
-                    });
+                            var typeInfo = new JsonTypeInfo(type);
+
+                            foreach (var prop in properties)
+                            {
+                                typeInfo.TypeMembers.Add(prop.Name, new TypeMemberInfo(prop.PropertyType, (obj, value) => prop.SetValue(obj, value)));
+                            }
+
+                            foreach (var field in fields)
+                            {
+                                typeInfo.TypeMembers.Add(field.Name, new TypeMemberInfo(field.FieldType, (obj, value) => field.SetValue(obj, value)));
+                            }
+
+                            MethodInfo addMethod;
+                            if (type.IsCollection() && (addMethod = type.GetMethod("Add")) != null)
+                            {
+                                typeInfo.CollectionAddMethod = new TypeMethodInfo((obj, value) => addMethod.Invoke(obj, value));
+                            }
+
+                            return typeInfo;
+                        });
             }
         }
 
-        internal static JsonTypeInfo GetOrAddTypeInfo(JsonTypeInfo ownerTypeInfo, string propertyName)
+        public static JsonTypeInfo GetOrAddTypeInfo(JsonTypeInfo ownerTypeInfo, string propertyName)
         {
             if (string.IsNullOrEmpty(propertyName))
             {

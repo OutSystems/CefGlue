@@ -11,7 +11,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
     internal class Deserializer
     {
         private const int DeserializerMaxDepth = int.MaxValue;
-
+        
         private record ReferenceInfo
         {
             public ReferenceInfo(object obj, JsonTypeInfo typeInfo)
@@ -36,7 +36,11 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         /// <exception cref="InvalidOperationException"></exception>
         public static TargetType Deserialize<TargetType>(string jsonString)
         {
-            return (TargetType)Deserialize(jsonString, typeof(TargetType));
+            if (jsonString == null)
+            {
+                return default;
+            }
+            return (TargetType)InnerDeserialize(jsonString, typeof(TargetType));
         }
 
         /// <summary>
@@ -62,35 +66,26 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 return Activator.CreateInstance(targetTypes[0], nonPublic: true);
             }
 
-            try
-            {
-                return InnerDeserialize(jsonString, targetTypes);
-            }
-            catch (JsonException e)
-            {
-                // wrap the json exception
-                throw new InvalidOperationException(e.Message);
-            }
+            return InnerDeserialize(jsonString, targetTypes);
         }
 
-        private static object InnerDeserialize(string jsonString, Type[] targetTypes)
+        private static object InnerDeserialize(string jsonString, params Type[] targetTypes)
         {
             var bytes = Encoding.UTF8.GetBytes(jsonString);
             var reader = new Utf8JsonReader(bytes, new JsonReaderOptions() { MaxDepth = DeserializerMaxDepth });
 
             reader.Read();
-            return Deserialize(ref reader, targetTypes);
+            return InnerDeserialize(ref reader, targetTypes);
         }
 
-        private static object Deserialize(ref Utf8JsonReader reader, Type[] targetTypes)
+        private static object InnerDeserialize(ref Utf8JsonReader reader, Type[] targetTypes)
         {
             var state = new Stack<IDeserializerState>();
             var root = new object[1];
             var referencesMap = new Dictionary<string, ReferenceInfo>();
-            IDeserializerState previousStateIfEndArray = null;
 
-            state.Push(new ArrayDeserializerState(root, targetTypes[0]));
-
+            state.Push(new ArrayDeserializerState(root, targetTypes));
+            
             do
             {
                 var currentState = state.Peek();
@@ -119,35 +114,33 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                         break;
 
                     case JsonTokenType.StartArray:
-                        var isRootObjectHolder = currentState.ObjectHolder == root;
-                        var newState = CreateNewDeserializerState(reader, currentState, isRootObjectHolder, targetTypes);
+                        var newState = CreateNewDeserializerState(reader, currentState, currentState.PropertyName);
                         currentState.SetValue(newState.ObjectHolder);
                         state.Push(newState);
                         break;
 
                     case JsonTokenType.StartObject:
-                        ReadComplexObject(ref reader, state, isRootObjectHolder: currentState.ObjectHolder == root, targetTypes, referencesMap);
+                        ReadComplexObject(ref reader, state, referencesMap);
                         break;
 
                     case JsonTokenType.EndArray:
                         state.Pop();
+                        if (state.Peek() == ListWrapperMarker)
+                        {
+                            state.Pop();
+                            reader.ReadToken(JsonTokenType.EndArray);
+                            SetParentStateValue(state, currentState);
+                        }
+
                         break;
 
                     case JsonTokenType.EndObject:
                         state.Pop();
                         // The value is only set at the EndObject so it is be able to properly deserialize not only classes, but also Structs, which are immutable so,
                         // they can only be stored in an object after all of the properties/fields that were set in the deserialization
-                        var stateHoldingArrayOrObject = currentState == ListWrapperMarker ? previousStateIfEndArray : currentState;
-                        if (stateHoldingArrayOrObject == null)
-                        {
-                            throw new InvalidOperationException("A ListWrapperMarker must always be preceeded by a state that holds an array.");
-                        }
-                        var parentState = state.Peek();
-                        parentState.SetValue(stateHoldingArrayOrObject.ObjectHolder);
+                        SetParentStateValue(state, currentState);
                         break;
                 }
-
-                previousStateIfEndArray = reader.TokenType == JsonTokenType.EndArray ? currentState : null;
             } while (reader.Read());
 
             if (state.Count > 1 && state.Pop().ObjectHolder != root)
@@ -158,7 +151,13 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             return root.First();
         }
 
-        private static object ReadComplexObject(ref Utf8JsonReader reader, Stack<IDeserializerState> state, bool isRootObjectHolder, Type[] targetTypes, IDictionary<string, ReferenceInfo> referencesMap)
+        private static void SetParentStateValue(Stack<IDeserializerState> state, IDeserializerState currentState)
+        {
+            var parentState = state.Peek();
+            parentState.SetValue(currentState.ObjectHolder);
+        }
+
+        private static object ReadComplexObject(ref Utf8JsonReader reader, Stack<IDeserializerState> state, IDictionary<string, ReferenceInfo> referencesMap)
         {
             var tempReader = reader;
             IDeserializerState newState;
@@ -191,7 +190,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                         break;
 
                     case JsonAttributes.Id:
-                        JsonTypeInfo newTypeInfo;
                         reader.ReadToken(JsonTokenType.StartObject);
                         reader.ReadPropertyName(); // skip the $id
                         var id = tempReader.ReadString();
@@ -203,22 +201,19 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
                             currentState = state.Peek();
                             state.Push(ListWrapperMarker);
-                            newState = CreateNewDeserializerState(reader, currentState, isRootObjectHolder, targetTypes);
-                            newTypeInfo = newState.ObjectTypeInfo;
+                            newState = CreateNewDeserializerState(reader, currentState, currentState.PropertyName);
                         }
                         else
                         {
                             currentState = state.Peek();
-                            newTypeInfo = currentState.ObjectTypeInfo;
-                            newState = CreateNewDerializerState(reader, newTypeInfo, string.Empty, isRootObjectHolder, targetTypes);
+                            newState = CreateNewDeserializerState(reader, currentState, string.Empty);
                         }
-                        referencesMap.Add(id, new ReferenceInfo(newState.ObjectHolder, newTypeInfo));
+                        referencesMap.Add(id, new ReferenceInfo(newState.ObjectHolder, newState.ObjectTypeInfo));
                         break;
 
                     default:
                         currentState = state.Peek();
-                        newTypeInfo = JsonTypeInfoCache.GetOrAddTypeInfo(currentState.ObjectTypeInfo, currentState.PropertyName);
-                        newState = CreateNewDerializerState(reader, newTypeInfo, currentState.PropertyName, isRootObjectHolder, targetTypes);
+                        newState = CreateNewDeserializerState(reader, currentState, currentState.PropertyName);
                         break;
                 }
             }
@@ -231,40 +226,33 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         private static IDeserializerState CreateNewDeserializerState(
             Utf8JsonReader reader,
             IDeserializerState currentState,
-            bool isRootObjectHolder,
-            Type[] targetTypes)
+            string newStatePropertyName)
         {
-            return CreateNewDerializerState(reader, currentState.ObjectTypeInfo, currentState.PropertyName, isRootObjectHolder, targetTypes);
-        }
-
-        private static IDeserializerState CreateNewDerializerState(
-            Utf8JsonReader reader,
-            JsonTypeInfo objectTypeInfo,
-            string propertyName,
-            bool isRootObjectHolder,
-            Type[] targetTypes)
-        {
-            if (isRootObjectHolder && targetTypes.Length > 1)
+            if (currentState.ObjectTypesInfo?.Length > 1)
             {
-                return ArrayDeserializerState.Create(reader, targetTypes);
+                return ArrayDeserializerState.Create(reader, currentState.ObjectTypesInfo);
+            }
+            
+            var newTypeInfo = string.IsNullOrEmpty(newStatePropertyName) ?
+                currentState.ObjectTypeInfo :
+                JsonTypeInfoCache.GetOrAddTypeInfo(currentState.ObjectTypeInfo, newStatePropertyName);
+
+            if (newTypeInfo.ObjectType.IsCollection() && !newTypeInfo.ObjectType.IsArray)
+            {
+                return CollectionDeserializerState.Create(newTypeInfo, newStatePropertyName);
             }
 
-            if (objectTypeInfo.ObjectType.IsCollection() && !objectTypeInfo.ObjectType.IsArray)
+            if (reader.TokenType == JsonTokenType.StartArray || newTypeInfo.ObjectType.IsArray)
             {
-                return CollectionDeserializerState.Create(objectTypeInfo, propertyName);
+                return ArrayDeserializerState.Create(reader, newTypeInfo, newStatePropertyName);
             }
 
-            if (reader.TokenType == JsonTokenType.StartArray || objectTypeInfo.ObjectType.IsArray)
+            if (newTypeInfo.ObjectType == typeof(object))
             {
-                return ArrayDeserializerState.Create(reader, objectTypeInfo, propertyName);
+                return DynamicDeserializerState.Create(newTypeInfo);
             }
 
-            if (objectTypeInfo.ObjectType == typeof(object))
-            {
-                return DynamicDeserializerState.Create(objectTypeInfo);
-            }
-
-            return ObjectDeserializerState.Create(objectTypeInfo);
+            return ObjectDeserializerState.Create(newTypeInfo);
         }
 
         private static IDeserializerState CreateNewDeserializerState(object obj, JsonTypeInfo newTypeInfo)

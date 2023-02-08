@@ -28,6 +28,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
         public virtual JsonTypeInfo ObjectTypeInfo => _objectTypeInfo;
 
+        public virtual JsonTypeInfo[] ObjectTypesInfo => null;
+
         public Type GetPropertyType() => ObjectTypeInfo.GetPropertyType(PropertyName);
 
         public abstract void SetValue(object value);

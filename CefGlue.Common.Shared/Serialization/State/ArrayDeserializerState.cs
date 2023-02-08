@@ -1,25 +1,33 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
     internal class ArrayDeserializerState : BaseDeserializerState<Array>
     {
-        private readonly Type[] _targetTypes;
+        private readonly JsonTypeInfo[] _arrayElementsTypeInfo;
 
         private long _arrayIndex;
 
-        public ArrayDeserializerState(Array objectHolder, Type arrayElementType) : this(objectHolder, new[] { arrayElementType }) { }
+        public ArrayDeserializerState(Array objectHolder, Type arrayElementType) : 
+            this(objectHolder, new[] { JsonTypeInfoCache.GetOrAddTypeInfo(arrayElementType) }) { }
 
-        public ArrayDeserializerState(Array objectHolder, Type[] targetTypes) : base(objectHolder)
-        {
-            _targetTypes = targetTypes;
+        public ArrayDeserializerState(Array objectHolder, Type[] targetTypes) : 
+            base(objectHolder, type: typeof(Type[])) { 
+            _arrayElementsTypeInfo = targetTypes.Select(t => JsonTypeInfoCache.GetOrAddTypeInfo(t)).ToArray();
         }
 
-        internal static ArrayDeserializerState Create(Utf8JsonReader reader, Type[] targetTypes)
+        public ArrayDeserializerState(Array objectHolder, JsonTypeInfo[] arrayElementsTypeInfo) : 
+            base(objectHolder)
         {
-            var newArray = CreateArray(reader, targetTypes.Length > 1 ? typeof(object) : targetTypes[0]);
-            return new ArrayDeserializerState(newArray, targetTypes);
+            _arrayElementsTypeInfo = arrayElementsTypeInfo;
+        }
+
+        internal static ArrayDeserializerState Create(Utf8JsonReader reader, JsonTypeInfo[] arrayElementsTypeInfo)
+        {
+            var newArray = CreateArray(reader, arrayElementsTypeInfo.Length > 1 ? typeof(object) : arrayElementsTypeInfo[0].ObjectType);
+            return new ArrayDeserializerState(newArray, arrayElementsTypeInfo);
         }
 
         internal static ArrayDeserializerState Create(Utf8JsonReader reader, JsonTypeInfo objectTypeInfo, string propertyName)
@@ -29,10 +37,15 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
         }
 
         public override JsonTypeInfo ObjectTypeInfo =>
-            JsonTypeInfoCache.GetOrAddTypeInfo(
-                _targetTypes[_arrayIndex < _targetTypes.Length ? _arrayIndex : _targetTypes.Length - 1]
-                );
+            _arrayElementsTypeInfo[_arrayIndex < _arrayElementsTypeInfo.Length ? _arrayIndex : _arrayElementsTypeInfo.Length - 1];
 
+        /// <summary>
+        /// If the ArrayDeserializerState was instantiated with an array of TargetTypes, 
+        /// this property returns the array of TypeInfo of its elements, otherwise returns null
+        /// </summary>
+        public override JsonTypeInfo[] ObjectTypesInfo => 
+            base.ObjectTypeInfo?.ObjectType == typeof(Type[]) ? _arrayElementsTypeInfo : null;
+        
         public override void SetValue(object value)
         {
             ObjectHolder.SetValue(value, _arrayIndex);

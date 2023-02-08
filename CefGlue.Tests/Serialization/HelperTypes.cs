@@ -35,6 +35,19 @@ namespace CefGlue.Tests.Serialization
         public object referenceField;
     }
 
+    public class Person
+    {
+        public Person() { }
+        public Person(string name)
+        {
+            Name = name;
+        }
+
+        public string Name;
+        public Person Parent;
+        public Person Child;
+    }
+
     public struct StructObject
     {
         public StructObject(string name, int number)

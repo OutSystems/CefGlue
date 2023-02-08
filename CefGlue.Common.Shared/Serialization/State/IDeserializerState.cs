@@ -11,6 +11,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
         JsonTypeInfo ObjectTypeInfo { get; }
 
+        JsonTypeInfo[] ObjectTypesInfo { get; }
+
         Type GetPropertyType();
 
         object CreateObjectInstance(Utf8JsonReader reader);

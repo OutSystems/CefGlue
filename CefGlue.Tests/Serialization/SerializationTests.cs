@@ -11,19 +11,6 @@ namespace CefGlue.Tests.Serialization
     [TestFixture]
     public class SerializationTests
     {
-        private class Person
-        {
-            public Person() { }
-            public Person(string name)
-            {
-                Name = name;
-            }
-
-            public string Name;
-            public Person Parent;
-            public Person Child;
-        }
-
         private static ObjectType SerializeAndDeserialize<ObjectType>(ObjectType value)
         {
             var json = Serialize(value);
@@ -261,6 +248,25 @@ namespace CefGlue.Tests.Serialization
                 true
             };
             AssertSerialization(list);
+        }
+
+        [Test]
+        public void HandlesMultiTargetTypeArray()
+        {
+            var list = new object[]
+            {
+                "1",
+                10.5,
+                new string[] {"a", "b"},
+                true,
+                new StructObject { NameProp = "structName", numberField = 5 },
+                5,
+                4,
+                3,
+            };
+            var json = Serialize(list);
+            var obtained = Deserializer.Deserialize(json, new[] {typeof(string), typeof(decimal), typeof(string[]), typeof(bool), typeof(StructObject), typeof(int)});
+            Assert.AreEqual(list, obtained);
         }
 
         [Test]
