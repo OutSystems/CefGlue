@@ -87,7 +87,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             var argsAsObject = (object)args;
             
             if (typeof(T) == typeof(string)) {
-                var nativeArgs = ConvertToNative((string)argsAsObject);
+                var nativeArgs = InnerConvertArguments((string)argsAsObject);
                 ValidateMandatoryArguments(nativeArgs);
                 return nativeArgs;
             }
@@ -115,7 +115,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             return convertedArgs;
         }
 
-        private object[] ConvertToNative(string args)
+        private object[] InnerConvertArguments(string args)
         {
             if (string.IsNullOrEmpty(args))
             {
