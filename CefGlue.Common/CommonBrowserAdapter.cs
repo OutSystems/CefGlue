@@ -322,6 +322,24 @@ namespace Xilium.CefGlue.Common
             windowInfo.SetAsChild(hostViewHandle, new CefRectangle(0, 0, width, height));
         }
 
+        private void HandleJavascriptExecutionEngineContextCreated(CefFrame frame)
+        {
+            if (frame.IsMain)
+            {
+                IsJavascriptEngineInitialized = true;
+            }
+            JavascriptContextCreated?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
+        }
+
+        private void HandleJavascriptExecutionEngineContextReleased(CefFrame frame)
+        {
+            if (frame.IsMain)
+            {
+                IsJavascriptEngineInitialized = false;
+            }
+            JavascriptContextReleased?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
+        }
+
         private void OnJavascriptExecutionEngineUncaughtException(JavascriptUncaughtExceptionEventArgs args)
         {
             JavascriptUncaughtException?.Invoke(_eventsEmitter, args);
@@ -407,6 +425,8 @@ namespace Xilium.CefGlue.Common
                 if (dispatcher != null)
                 {
                     var javascriptExecutionEngine = new JavascriptExecutionEngine(dispatcher);
+                    javascriptExecutionEngine.ContextCreated += HandleJavascriptExecutionEngineContextCreated;
+                    javascriptExecutionEngine.ContextReleased += HandleJavascriptExecutionEngineContextReleased;
                     javascriptExecutionEngine.UncaughtException += OnJavascriptExecutionEngineUncaughtException;
                     _javascriptExecutionEngine = javascriptExecutionEngine;
 
@@ -562,24 +582,6 @@ namespace Xilium.CefGlue.Common
             LoadingStateChange?.Invoke(_eventsEmitter, new LoadingStateChangeEventArgs(isLoading, canGoBack, canGoForward));
         }
 
-        void ICefBrowserHost.HandleFrameAttached(CefBrowser browser, CefFrame frame, bool reattached)
-        {
-            if (frame.IsMain)
-            {
-                IsJavascriptEngineInitialized = true;
-            }
-            JavascriptContextCreated?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
-        }
-
-        void ICefBrowserHost.HandleFrameDetached(CefBrowser browser, CefFrame frame)
-        {
-            if (frame.IsMain)
-            {
-                IsJavascriptEngineInitialized = false;
-            }
-            JavascriptContextReleased?.Invoke(_eventsEmitter, new JavascriptContextLifetimeEventArgs(frame));
-        }
-
         void ICefBrowserHost.HandleOpenContextMenu(CefContextMenuParams parameters, CefMenuModel model, CefRunContextMenuCallback callback)
         {
             Control.OpenContextMenu(MenuEntry.FromCefModel(model), parameters.X, parameters.Y, callback);
@@ -604,6 +606,11 @@ namespace Xilium.CefGlue.Common
             });
 
             return result;
+        }
+
+        void ICefBrowserHost.HandleFrameDetached(CefBrowser browser, CefFrame frame)
+        {
+            HandleJavascriptExecutionEngineContextReleased(frame);
         }
 
         #endregion
