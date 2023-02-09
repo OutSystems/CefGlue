@@ -4,26 +4,38 @@ using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
-    internal class ObjectDeserializerState : BaseDeserializerState<object>
+    internal class ObjectDeserializerState : IDeserializerState<object>
     {
+        private readonly JsonTypeInfo _objectTypeInfo;
+
         public ObjectDeserializerState(JsonTypeInfo objectTypeInfo) : this(CreateObjectInstance(objectTypeInfo.ObjectType), objectTypeInfo) { }
 
-        public ObjectDeserializerState(object objectHolder, JsonTypeInfo objectTypeInfo) : base(objectHolder, objectTypeInfo) { }
+        public ObjectDeserializerState(object objectHolder, JsonTypeInfo objectTypeInfo)
+        {
+            ObjectHolder = objectHolder;
+            _objectTypeInfo = objectTypeInfo;
+        }
 
-        public override void SetValue(object value)
+        public object ObjectHolder { get; }
+
+        public string PropertyName { private get; set; }
+
+        public JsonTypeInfo CurrentElementTypeInfo => _objectTypeInfo.GetPropertyTypeInfo(PropertyName);
+
+        public void SetValue(object value)
         {
             if (ObjectHolder == null)
             {
-                throw new InvalidOperationException($"Cannot set value for a null ObjectHolder!");
+                throw new InvalidOperationException($"Cannot set value for a null {nameof(ObjectHolder)}.");
             }
 
-            if (ObjectTypeInfo.TypeMembers.TryGetValue(PropertyName, out var typeMemberInfo))
+            if (_objectTypeInfo.TypeMembers.TryGetValue(PropertyName, out var typeMemberInfo))
             {
                 typeMemberInfo.SetValue(ObjectHolder, value);
             }
             else
             {
-                throw new InvalidOperationException($"Property or Field '{PropertyName}' does not exist in collectionType '{ObjectTypeInfo.ObjectType.Name}'");
+                throw new InvalidOperationException($"Property or Field '{PropertyName}' does not exist in objectType '{_objectTypeInfo.ObjectType.Name}'.");
             }
         }
 
@@ -31,7 +43,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
         {
             if (type == typeof(object))
             {
-                throw new InvalidOperationException("Use the DictionaryDeserializerState instead.");
+                throw new InvalidOperationException($"Use the {nameof(DynamicDeserializerState)} instead.");
             }
             return Activator.CreateInstance(type, nonPublic: true);
         }

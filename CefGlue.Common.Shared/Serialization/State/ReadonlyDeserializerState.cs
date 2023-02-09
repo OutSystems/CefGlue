@@ -4,13 +4,22 @@ using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
-    internal class ReadonlyDeserializerState : BaseDeserializerState<object>
+    internal class ReadonlyDeserializerState : IDeserializerState<object>
     {
-        public ReadonlyDeserializerState(object objectHolder, JsonTypeInfo objectTypeInfo) : base(objectHolder, objectTypeInfo) { }
-
-        public override void SetValue(object value)
+        public ReadonlyDeserializerState(object objectHolder) 
         {
-            throw new InvalidOperationException($"Cannot set value for a null {nameof(ReadonlyDeserializerState)}!");
+            ObjectHolder = objectHolder;
+        }
+
+        public object ObjectHolder { get; }
+
+        public string PropertyName { private get; set; }
+
+        public JsonTypeInfo CurrentElementTypeInfo => null;
+
+        public void SetValue(object value)
+        {
+            throw new InvalidOperationException($"Cannot set value for a null {nameof(ReadonlyDeserializerState)}.");
         }
     }
 }

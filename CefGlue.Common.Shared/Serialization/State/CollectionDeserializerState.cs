@@ -3,27 +3,30 @@ using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
-    internal class CollectionDeserializerState : BaseDeserializerState<object>
+    internal class CollectionDeserializerState : IDeserializerState<object>
     {
-        private JsonTypeInfo _collectionTypeInfo;
+        private readonly JsonTypeInfo _collectionTypeInfo;
+        private readonly JsonTypeInfo _collectionElementTypeInfo;
 
-        public CollectionDeserializerState(JsonTypeInfo objectTypeInfo, string propertyName) :
-            this(
-                CreateCollection(objectTypeInfo, propertyName, out var collectionElementType),
-                objectTypeInfo,
-                collectionElementType
-                ) { }
-
-        public CollectionDeserializerState(object objectHolder, JsonTypeInfo collectionTypeInfo, Type collectionElementType) : base(objectHolder, collectionElementType) 
+        public CollectionDeserializerState(JsonTypeInfo collectionTypeInfo)
         {
-            _collectionTypeInfo = collectionTypeInfo;
-            if (_collectionTypeInfo.CollectionAddMethod == null)
+            if (collectionTypeInfo.CollectionAddMethod == null)
             {
-                throw new ArgumentException($"CollectionTypeInfo argument must contain an Add method.");
+                throw new ArgumentException("Argument must contain an Add method.", nameof(collectionTypeInfo));
             }
+
+            ObjectHolder = CreateCollection(collectionTypeInfo);
+            _collectionTypeInfo = collectionTypeInfo;
+            _collectionElementTypeInfo = collectionTypeInfo.CollectionElementTypeInfo;
         }
 
-        public override void SetValue(object value)
+        public object ObjectHolder { get; }
+
+        public string PropertyName { private get; set; }
+
+        public JsonTypeInfo CurrentElementTypeInfo => _collectionElementTypeInfo;
+
+        public void SetValue(object value)
         {
             var parameters = string.IsNullOrEmpty(PropertyName) ?
                 new[] { value } :
@@ -31,9 +34,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             _collectionTypeInfo.CollectionAddMethod.Invoke(ObjectHolder, parameters);
         }
 
-        private static object CreateCollection(JsonTypeInfo objectTypeInfo, string propertyName, out Type collectionElementType)
+        private static object CreateCollection(JsonTypeInfo objectTypeInfo)
         {
-            collectionElementType = objectTypeInfo.GetCollectionElementType(propertyName);
             return Activator.CreateInstance(objectTypeInfo.ObjectType, nonPublic: true);
         }
     }

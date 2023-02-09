@@ -7,19 +7,17 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
     {
         object ObjectHolder { get; }
 
-        string PropertyName { get; set; }
+        string PropertyName { set; }
 
-        JsonTypeInfo ObjectTypeInfo { get; }
-
-        JsonTypeInfo[] ObjectTypesInfo { get; }
-
-        Type GetPropertyType();
+        JsonTypeInfo CurrentElementTypeInfo { get; }
 
         void SetValue(object value);
     }
 
     internal interface IDeserializerState<ObjectHolderType> : IDeserializerState
     {
+        object IDeserializerState.ObjectHolder => ObjectHolder;
+
         new ObjectHolderType ObjectHolder { get; }
     }
 }

@@ -5,20 +5,22 @@ using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
-    internal class DynamicDeserializerState : BaseDeserializerState<IDictionary<string, object>>
+    internal class DynamicDeserializerState : IDeserializerState<IDictionary<string, object>>
     {
-        public DynamicDeserializerState(JsonTypeInfo objectTypeInfo) : this(CreateObjectInstance(), objectTypeInfo) { }
-
-        public DynamicDeserializerState(IDictionary<string, object> objectHolder, JsonTypeInfo objectTypeInfo) : base(objectHolder, objectTypeInfo) { }
-
-        public override void SetValue(object value)
+        public DynamicDeserializerState() 
         {
-            ObjectHolder[PropertyName] = value;
+            ObjectHolder = new ExpandoObject();
         }
 
-        private static IDictionary<string, object> CreateObjectInstance()
+        public IDictionary<string, object> ObjectHolder { get; }
+
+        public string PropertyName { private get; set; }
+
+        public JsonTypeInfo CurrentElementTypeInfo => JsonTypeInfoCache.DefaultTypeInfo;
+
+        public void SetValue(object value)
         {
-            return new ExpandoObject();
+            ObjectHolder[PropertyName] = value;
         }
     }
 }
