@@ -8,10 +8,6 @@
     </PropertyGroup>
     
     <PropertyGroup>
-        <LangVersion>latest</LangVersion>
-    </PropertyGroup>
-    
-    <PropertyGroup>
         <PackageOutputPath>$(MSBuildProjectDirectory)\..\Nuget\output</PackageOutputPath>
         <Version>106.5249.2</Version>
         <Authors>XiliumHQ,OutSystems</Authors>
