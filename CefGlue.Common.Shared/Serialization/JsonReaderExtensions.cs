@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Reflection;
 using System.Text.Json;
+using Xilium.CefGlue.Common.Shared.Serialization.State;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization
 {
     internal static class JsonReaderExtensions
     {
-        public static object GetNumber(this Utf8JsonReader reader, Type typeToConvert)
+        public static object GetNumber(this Utf8JsonReader reader, JsonTypeInfo targetTypeInfo)
         {
             reader.AssertToken(JsonTokenType.Number);
 
-            var typeCode = TypeInfo.GetTypeCode(typeToConvert);
-            switch (typeCode)
+            switch (targetTypeInfo.TypeCode)
             {
                 case TypeCode.Byte:
                     return reader.GetByte();
@@ -37,7 +37,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                     return reader.GetDecimal();
                 default:
                     // e.g. convert to the object type used in ExpandoObjects
-                    return Convert.ChangeType(reader.GetDouble(), typeToConvert);
+                    return Convert.ChangeType(reader.GetDouble(), targetTypeInfo.ObjectType);
             }
         }
 
@@ -51,7 +51,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
         /// A DateTime if DateTimeMarker is found.
         /// A byte[] if BinaryMarker is found.
         /// </returns>
-        public static object Deserialize(this Utf8JsonReader reader, Type typeToConvert)
+        public static object Deserialize(this Utf8JsonReader reader, JsonTypeInfo targetTypeInfo)
         {
             var stringValue = reader.GetString();
             if (stringValue.Length >= DataMarkers.MarkerLength)
@@ -71,9 +71,9 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             }
 
             return
-                typeToConvert == typeof(string) ?
+                targetTypeInfo.TypeCode == TypeCode.String ?
                 stringValue :
-                Convert.ChangeType(stringValue, typeToConvert);
+                Convert.ChangeType(stringValue, targetTypeInfo.ObjectType);
         }
 
         private static void AssertToken(this Utf8JsonReader reader, JsonTokenType token)

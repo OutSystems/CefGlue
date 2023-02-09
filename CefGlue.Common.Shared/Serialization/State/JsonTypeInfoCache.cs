@@ -7,11 +7,12 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
     {
         private static readonly ConcurrentDictionary<Type, JsonTypeInfo> TypesInfoCache = new ConcurrentDictionary<Type, JsonTypeInfo>();
 
-        public static readonly JsonTypeInfo DefaultTypeInfo = new JsonTypeInfo(typeof(object));
+        public static readonly JsonTypeInfo DefaultTypeInfo = new JsonTypeInfo(typeof(object), TypeCode.Object);
 
         public static JsonTypeInfo GetOrAddTypeInfo(Type type)
         {
-            switch (Type.GetTypeCode(type))
+            var typeCode = Type.GetTypeCode(type);
+            switch (typeCode)
             {
                 case TypeCode.Byte:
                 case TypeCode.Decimal:
@@ -25,19 +26,19 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
                 case TypeCode.UInt32:
                 case TypeCode.UInt64:
                 case TypeCode.Char:
-                    return new JsonTypeInfo(type);
-
                 case TypeCode.Boolean:
                 case TypeCode.DateTime:
+                case TypeCode.String:
+                    return new JsonTypeInfo(type, typeCode);
+
                 case TypeCode.DBNull:
                 case TypeCode.Empty:
-                case TypeCode.String:
                     return DefaultTypeInfo;
                 default:
                     return 
                         type == null ? 
                         null :
-                        TypesInfoCache.GetOrAdd(type, (_) => new JsonTypeInfo(type));
+                        TypesInfoCache.GetOrAdd(type, (_) => new JsonTypeInfo(type, typeCode));
             }
         }
 

@@ -4,65 +4,61 @@ using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
-    internal class ArrayDeserializerState : BaseDeserializerState<Array>
+    internal class ArrayDeserializerState : IDeserializerState<Array>
     {
         private readonly JsonTypeInfo[] _arrayElementsTypeInfo;
 
         private long _arrayIndex;
 
+        public ArrayDeserializerState(Utf8JsonReader reader, JsonTypeInfo arrayTypeInfo) :
+            this(
+                CreateArray(reader, arrayTypeInfo, out var arrayElementTypeInfo),
+                new[] { arrayElementTypeInfo }
+                ) { }
+
         public ArrayDeserializerState(Utf8JsonReader reader, JsonTypeInfo[] arrayElementsTypeInfo) :
             this(
-                CreateArray(reader, arrayElementsTypeInfo.Length > 1 ? typeof(object) : arrayElementsTypeInfo[0].ObjectType),
+                CreateArray(reader, arrayElementsTypeInfo.Length > 1 ? JsonTypeInfoCache.DefaultTypeInfo : arrayElementsTypeInfo[0]),
                 arrayElementsTypeInfo
                 ) { }
 
-        public ArrayDeserializerState(Utf8JsonReader reader, JsonTypeInfo objectTypeInfo, string propertyName) :
-            this(
-                CreateArray(reader, objectTypeInfo, propertyName, out var arrayElementType),
-                arrayElementType
-                ) { }
-
-        public ArrayDeserializerState(Array objectHolder, Type arrayElementType) : 
-            this(objectHolder, new[] { JsonTypeInfoCache.GetOrAddTypeInfo(arrayElementType) }) { }
-
-        public ArrayDeserializerState(Array objectHolder, Type[] targetTypes) : 
-            base(objectHolder, type: typeof(Type[])) { 
-            _arrayElementsTypeInfo = targetTypes.Select(t => JsonTypeInfoCache.GetOrAddTypeInfo(t)).ToArray();
-        }
-
-        public ArrayDeserializerState(Array objectHolder, JsonTypeInfo[] arrayElementsTypeInfo) : 
-            base(objectHolder)
+        private ArrayDeserializerState(Array objectHolder, JsonTypeInfo[] arrayElementsTypeInfo)
         {
+            ObjectHolder = objectHolder;
             _arrayElementsTypeInfo = arrayElementsTypeInfo;
         }
 
-        public override JsonTypeInfo ObjectTypeInfo =>
-            _arrayElementsTypeInfo[_arrayIndex < _arrayElementsTypeInfo.Length ? _arrayIndex : _arrayElementsTypeInfo.Length - 1];
+        public Array ObjectHolder { get; }
 
-        /// <summary>
-        /// If the ArrayDeserializerState was instantiated with an array of TargetTypes, 
-        /// this property returns the array of TypeInfo of its elements, otherwise returns null
-        /// </summary>
-        public override JsonTypeInfo[] ObjectTypesInfo => 
-            base.ObjectTypeInfo?.ObjectType == typeof(Type[]) ? _arrayElementsTypeInfo : null;
-        
-        public override void SetValue(object value)
+        public string PropertyName { set => throw new NotImplementedException(); }
+
+        public JsonTypeInfo CurrentElementTypeInfo => 
+            _arrayIndex < _arrayElementsTypeInfo.Length ? _arrayElementsTypeInfo[_arrayIndex] : _arrayElementsTypeInfo.Last();
+
+        public void SetValue(object value)
         {
             ObjectHolder.SetValue(value, _arrayIndex);
             _arrayIndex++;
         }
 
-        private static Array CreateArray(Utf8JsonReader reader, JsonTypeInfo objectTypeInfo, string propertyName, out Type arrayElementType)
+        private static Array CreateArray(Utf8JsonReader reader, JsonTypeInfo arrayTypeInfo, out JsonTypeInfo arrayElementTypeInfo)
         {
-            // is it an args array? (it is when the root object is an array and the parametersTypes argument was passed to the Deserializer function)
-            arrayElementType = objectTypeInfo.GetArrayElementType(propertyName);
-            return CreateArray(reader, arrayElementType);
+            arrayElementTypeInfo = 
+                arrayTypeInfo.ArrayElementTypeInfo ?? 
+                (arrayTypeInfo.ObjectKind == JsonTypeInfo.Kind.GenericObject ? JsonTypeInfoCache.DefaultTypeInfo : null);
+
+            if (arrayElementTypeInfo == null)
+            {
+                throw new InvalidCastException($"Cannot deserialize an array to a non array type: '{arrayTypeInfo.ObjectType.Name}'.");
+            }
+            
+            return CreateArray(reader, arrayElementTypeInfo);
         }
 
-        private static Array CreateArray(Utf8JsonReader reader, Type arrayElementType)
+        private static Array CreateArray(Utf8JsonReader reader, JsonTypeInfo arrayElementTypeInfo)
         {
             var arraySize = reader.PeekAndCalculateArraySize();
-            return Array.CreateInstance(arrayElementType, arraySize);
+            return Array.CreateInstance(arrayElementTypeInfo.ObjectType, arraySize);
         }
     }
 }
