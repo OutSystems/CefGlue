@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
-    internal record TypeMemberInfo
+    internal class TypeMemberInfo
     {
         private readonly Action<object, object> _setter;
 
@@ -16,7 +12,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             _setter = setter;
         }
 
-        public Type Type { get; private set; }
+        public Type Type { get; }
 
         public void SetValue(object obj, object value)
         {

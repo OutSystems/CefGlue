@@ -33,12 +33,5 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
         public Type GetPropertyType() => ObjectTypeInfo.GetPropertyType(PropertyName);
 
         public abstract void SetValue(object value);
-
-        public abstract ObjectHolderType CreateObjectInstance(Utf8JsonReader reader);
-
-        object IDeserializerState.CreateObjectInstance(Utf8JsonReader reader)
-        {
-            return CreateObjectInstance(reader);
-        }
     }
 }

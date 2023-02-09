@@ -14,7 +14,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
         {
             if (ObjectHolder == null)
             {
-                throw new InvalidOperationException($"Cannot value for a null ObjectHolder!");
+                throw new InvalidOperationException($"Cannot set value for a null ObjectHolder!");
             }
 
             if (ObjectTypeInfo.TypeMembers.TryGetValue(PropertyName, out var typeMemberInfo))
@@ -25,11 +25,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             {
                 throw new InvalidOperationException($"Property or Field '{PropertyName}' does not exist in collectionType '{ObjectTypeInfo.ObjectType.Name}'");
             }
-        }
-
-        public override object CreateObjectInstance(Utf8JsonReader reader)
-        {
-            return CreateObjectInstance(ObjectTypeInfo.ObjectType);
         }
 
         internal static object CreateObjectInstance(Type type)
