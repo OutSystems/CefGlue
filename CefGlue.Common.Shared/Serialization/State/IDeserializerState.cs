@@ -15,15 +15,11 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
         Type GetPropertyType();
 
-        object CreateObjectInstance(Utf8JsonReader reader);
-
         void SetValue(object value);
     }
 
     internal interface IDeserializerState<ObjectHolderType> : IDeserializerState
     {
         new ObjectHolderType ObjectHolder { get; }
-
-        new ObjectHolderType CreateObjectInstance(Utf8JsonReader reader);
     }
 }

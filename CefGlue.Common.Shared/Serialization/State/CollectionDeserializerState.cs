@@ -31,11 +31,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             _collectionTypeInfo.CollectionAddMethod.Invoke(ObjectHolder, parameters);
         }
 
-        public override object CreateObjectInstance(Utf8JsonReader reader)
-        {
-            return CreateCollection(ObjectTypeInfo, PropertyName, out var _);
-        }
-
         private static object CreateCollection(JsonTypeInfo objectTypeInfo, string propertyName, out Type collectionElementType)
         {
             collectionElementType = objectTypeInfo.GetCollectionElementType(propertyName);

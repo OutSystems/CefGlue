@@ -16,11 +16,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             ObjectHolder[PropertyName] = value;
         }
 
-        public override IDictionary<string, object> CreateObjectInstance(Utf8JsonReader reader)
-        {
-            return CreateObjectInstance();
-        }
-
         private static IDictionary<string, object> CreateObjectInstance()
         {
             return new ExpandoObject();

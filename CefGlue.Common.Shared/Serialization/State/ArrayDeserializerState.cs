@@ -52,11 +52,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             _arrayIndex++;
         }
 
-        public override Array CreateObjectInstance(Utf8JsonReader reader)
-        {
-            return CreateArray(reader, ObjectTypeInfo, PropertyName, out var _);
-        }
-
         private static Array CreateArray(Utf8JsonReader reader, JsonTypeInfo objectTypeInfo, string propertyName, out Type arrayElementType)
         {
             // is it an args array? (it is when the root object is an array and the parametersTypes argument was passed to the Deserializer function)

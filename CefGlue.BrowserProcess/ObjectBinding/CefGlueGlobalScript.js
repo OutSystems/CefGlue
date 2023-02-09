@@ -75,34 +75,40 @@ if (!$GlobalObjectName$) {
                 if (value === null || value === undefined) {
                     return value;
                 }
-                const valueType = typeof value;
-                // strings, with the exception of $id and $ref, must be returned prefixed with a Marker
-                // so it can be properly deserialized
-                if (valueType === "string") {
-                    if (key === idPropertyName || key === refPropertyName) {
-                        return value;
-                    }
-                    // case the property is of type Date, the argument 'value' is of type 'string',
-                    // in this case, we need to return the date as a string, but prefixed with the DateTimeMarker
-                    if (Reflect.get(this, key) instanceof Date) {
-                        return "$DateTimeMarker$" + value;
-                    }
-                    return "$StringMarker$" + value;
-                }
-                if (value instanceof Uint8Array) {
-                    return "$BinaryMarker$" + convertBinaryToBase64(value);
-                }
-                if (valueType !== "object" || Reflect.has(value, marker) || (key === valuesPropertyName && Reflect.has(this, marker))) {
+
+                if (key === idPropertyName || key === refPropertyName || (key === valuesPropertyName && Reflect.has(this, marker))) {
+                    // its the id, ref or special values property
                     return value;
+                }
+                switch (typeof value) {
+                    case "string":
+                        // case the property is of type Date, the argument 'value' is of type 'string',
+                        // in this case, we need to return the date as a string, but prefixed with the DateTimeMarker
+                        // (there can be a remote problem that the property is accessed two times, which can cause undesirable side effects)
+                        if (Reflect.get(this, key) instanceof Date) {
+                            return "$DateTimeMarker$" + value;
+                        }
+                        return "$StringMarker$" + value;
+                    case "object":
+                        if (value instanceof Uint8Array) {
+                            return "$BinaryMarker$" + convertBinaryToBase64(value);
+                        }
+                        if (Reflect.has(value, marker)) {
+                            return value;
+                        }
+                        break;
+                    default:
+                        return value;
                 }
                 const ref = refs.get(value);
                 if (ref) {
+                    // value has been seen, return that seen value
                     return ref;
                 }
                 const id = refs.size.toString();
                 refs.set(value, { [refPropertyName]: id, [marker]: undefined });
                 if (Array.isArray(value)) {
-                    // If it is an array, replicate the array.
+                    // If it is an array, wrap the array and add an id and a marker
                     return { [idPropertyName]: id, [valuesPropertyName]: value, [marker]: undefined };
                 }
                 const tmpObj = { [idPropertyName]: id, [marker]: undefined };
