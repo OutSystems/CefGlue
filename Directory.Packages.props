@@ -16,9 +16,9 @@
     </ItemDefinitionGroup>
 
     <ItemGroup>
-        <PackageVersion Include="Avalonia" Version="0.10.15" />
-        <PackageVersion Include="Avalonia.Desktop" Version="0.10.15" />
-        <PackageVersion Include="Avalonia.Diagnostics" Version="0.10.15" />
+        <PackageVersion Include="Avalonia" Version="0.10.17" />
+        <PackageVersion Include="Avalonia.Desktop" Version="0.10.17" />
+        <PackageVersion Include="Avalonia.Diagnostics" Version="0.10.17" />
         
         <PackageVersion Include="Dotnet.Bundle" Version="0.9.13" />
         <PackageVersion Include="System.Text.Json" Version="6.0.1" />
@@ -34,5 +34,7 @@
         <PackageVersion Include="Moq" Version="4.10.1" />
 
         <PackageVersion Include="System.Data.DataSetExtensions" Version="4.5.0" />
+
+        <PackageVersion Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
     </ItemGroup>
 </Project>

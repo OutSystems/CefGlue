@@ -400,10 +400,13 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public async Task NativeObjectMethodDateTimeResultIsReturned()
         {
+            //Setup
+            // Act
             Execute($"{ObjName}.methodWithDateTimeReturn().then(r => {ObjName}.setResult(r));");
 
             var result = await nativeObject.ResultTask;
 
+            // Assert
             Assert.AreEqual(nativeObject.MethodWithDateTimeReturn(), result);
         }
 

@@ -173,7 +173,15 @@ namespace Xilium.CefGlue
         /// </summary>
         Bitstream = 32,
 
+        /// <summary>
+        /// Front L, Front R, Front C, LFE, Side L, Side R,
+        /// Front Height L, Front Height R, Rear Height L, Rear Height R
+        /// Will be represented as six channels (5.1) due to eight channel limit
+        /// kMaxConcurrentChannels
+        /// </summary>
+        Layout_5_1_4_Downmix = 33,
+
         // Max value, must always equal the largest entry ever logged.
-        //CEF_CHANNEL_LAYOUT_MAX = CEF_CHANNEL_LAYOUT_BITSTREAM
+        //CEF_CHANNEL_LAYOUT_MAX = CEF_CHANNEL_LAYOUT_5_1_4_DOWNMIX
     }
 }

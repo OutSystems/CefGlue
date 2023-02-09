@@ -38,31 +38,33 @@
 #pragma once
 
 #include "include/base/cef_lock.h"
-#include "include/base/cef_macros.h"
 #include "include/cef_base.h"
 #include "include/cef_stream.h"
 
 ///
-// Thread safe implementation of the CefReadHandler class for reading an
-// in-memory array of bytes.
+/// Thread safe implementation of the CefReadHandler class for reading an
+/// in-memory array of bytes.
 ///
 class CefByteReadHandler : public CefReadHandler {
  public:
   ///
-  // Create a new object for reading an array of bytes. An optional |source|
-  // reference can be kept to keep the underlying data source from being
-  // released while the reader exists.
+  /// Create a new object for reading an array of bytes. An optional |source|
+  /// reference can be kept to keep the underlying data source from being
+  /// released while the reader exists.
   ///
   CefByteReadHandler(const unsigned char* bytes,
                      size_t size,
                      CefRefPtr<CefBaseRefCounted> source);
 
+  CefByteReadHandler(const CefByteReadHandler&) = delete;
+  CefByteReadHandler& operator=(const CefByteReadHandler&) = delete;
+
   // CefReadHandler methods.
-  virtual size_t Read(void* ptr, size_t size, size_t n) OVERRIDE;
-  virtual int Seek(int64 offset, int whence) OVERRIDE;
-  virtual int64 Tell() OVERRIDE;
-  virtual int Eof() OVERRIDE;
-  virtual bool MayBlock() OVERRIDE { return false; }
+  virtual size_t Read(void* ptr, size_t size, size_t n) override;
+  virtual int Seek(int64 offset, int whence) override;
+  virtual int64 Tell() override;
+  virtual int Eof() override;
+  virtual bool MayBlock() override { return false; }
 
  private:
   const unsigned char* bytes_;
@@ -73,7 +75,6 @@ class CefByteReadHandler : public CefReadHandler {
   base::Lock lock_;
 
   IMPLEMENT_REFCOUNTING(CefByteReadHandler);
-  DISALLOW_COPY_AND_ASSIGN(CefByteReadHandler);
 };
 
 #endif  // CEF_INCLUDE_WRAPPER_CEF_BYTE_READ_HANDLER_H_

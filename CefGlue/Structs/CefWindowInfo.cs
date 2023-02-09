@@ -108,10 +108,7 @@
 
         // Common properties for windows & macosx
         public abstract string Name { get; set; }
-        public abstract int X { get; set; }
-        public abstract int Y { get; set; }
-        public abstract int Width { get; set; }
-        public abstract int Height { get; set; }
+        public abstract CefRectangle Bounds { get; set; }
 
         // Windows-specific
         public abstract WindowStyle Style { get; set; }
@@ -123,15 +120,15 @@
 
         /// <summary>
         /// Set to true (1) to create the browser using windowless (off-screen)
-        /// rendering. No window will be created for the browser and all rendering will
-        /// occur via the CefRenderHandler interface. The |parent_window| value will be
-        /// used to identify monitor info and to act as the parent window for dialogs,
-        /// context menus, etc. If |parent_window| is not provided then the main screen
+        /// rendering. No window will be created for the browser and all rendering
+        /// will occur via the CefRenderHandler interface. The |parent_window| value will be
+        /// used to identify monitor info and to act as the parent window for
+        /// dialogs, context menus, etc. If |parent_window| is not provided then the main screen
         /// monitor will be used and some functionality that requires a parent window
         /// may not function correctly. In order to create windowless browsers the
-        /// CefSettings.windowless_rendering_enabled value must be set to true.
-        /// Transparent painting is enabled by default but can be disabled by setting
-        /// CefBrowserSettings.background_color to an opaque value.
+        /// CefSettings.windowless_rendering_enabled value must be set to
+        /// true. Transparent painting is enabled by default but can be disabled by
+        /// setting CefBrowserSettings.background_color to an opaque value.
         /// </summary>
         public abstract bool WindowlessRenderingEnabled { get; set; }
 
@@ -143,12 +140,12 @@
         public abstract bool SharedTextureEnabled { get; set; }
 
         /// <summary>
-        /// Set to <c>true</c> to enable the ability to issue BeginFrame requests from the
-        /// client application by calling CefBrowserHost::SendExternalBeginFrame.
+        /// Set to <c>true</c> to enable the ability to issue BeginFrame requests from
+        /// the client application by calling CefBrowserHost::SendExternalBeginFrame.
         /// </summary>
         public abstract bool ExternalBeginFrameEnabled { get; set; }
 
-        public void SetAsChild(IntPtr parentHandle, CefRectangle rect)
+        public void SetAsChild(IntPtr parentHandle, CefRectangle bounds)
         {
             ThrowIfDisposed();
 
@@ -160,10 +157,7 @@
 
             ParentHandle = parentHandle;
 
-            X = rect.X;
-            Y = rect.Y;
-            Width = rect.Width;
-            Height = rect.Height;
+            Bounds = bounds;
         }
 
         public void SetAsPopup(IntPtr parentHandle, string name)
@@ -177,11 +171,12 @@
 
             ParentHandle = parentHandle;
 
-            // CW_USEDEFAULT
-            X = int.MinValue;
-            Y = int.MinValue;
-            Width = int.MinValue;
-            Height = int.MinValue;
+            Bounds = new CefRectangle(
+                int.MinValue, // CW_USEDEFAULT,
+                int.MinValue,
+                int.MinValue,
+                int.MinValue
+                );
 
             Name = name;
         }

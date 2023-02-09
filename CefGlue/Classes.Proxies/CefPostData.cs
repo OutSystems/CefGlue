@@ -32,9 +32,9 @@
 
         /// <summary>
         /// Returns true if the underlying POST data includes elements that are not
-        /// represented by this CefPostData object (for example, multi-part file upload
-        /// data). Modifying CefPostData objects with excluded elements may result in
-        /// the request failing.
+        /// represented by this CefPostData object (for example, multi-part file
+        /// upload data). Modifying CefPostData objects with excluded elements may
+        /// result in the request failing.
         /// </summary>
         public bool HasExcludedElements
         {

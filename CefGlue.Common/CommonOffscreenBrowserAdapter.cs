@@ -40,19 +40,11 @@ namespace Xilium.CefGlue.Common
             BrowserHost?.SendMouseClickEvent(mouseEvent, mouseButton, isMouseUp, clickCount);
         }
 
-        protected override void HandleGotFocus()
-        {
-            WithErrorHandling(nameof(HandleGotFocus), () =>
-            {
-                BrowserHost?.SendFocusEvent(true);
-            });
-        }
-
         private void HandleLostFocus()
         {
             WithErrorHandling(nameof(HandleLostFocus), () =>
             { 
-                BrowserHost?.SendFocusEvent(false);
+                BrowserHost?.SetFocus(false);
             });
         }
 

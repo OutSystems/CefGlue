@@ -205,8 +205,9 @@
             }
         }
 
+        // The following methods are valid only for element nodes.
+
         /// <summary>
-        /// The following methods are valid only for element nodes.
         /// Returns the tag name of this element.
         /// </summary>
         public string ElementTagName
@@ -291,7 +292,8 @@
         }
 
         /// <summary>
-        /// Returns the bounds of the element.
+        /// Returns the bounds of the element in device pixels. Use
+        /// "window.devicePixelRatio" to convert to/from CSS pixels.
         /// </summary>
         public CefRectangle GetElementBounds()
         {

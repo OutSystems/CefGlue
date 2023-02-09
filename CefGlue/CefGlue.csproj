@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+    <TargetFramework>$(DotnetVersion)</TargetFramework>
     <AssemblyName>Xilium.CefGlue</AssemblyName>
     <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -17,13 +17,12 @@
     <Compile Remove="Interop\Base\cef_string_t.disabled.cs" />
   </ItemGroup>
 
+  <!-- Disabled Sources -->
   <ItemGroup>
     <None Include="Interop\Base\cef_string_t.disabled.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Classes.g\Interop\" />
     <Folder Include="Properties\" />
   </ItemGroup>
-
 </Project>

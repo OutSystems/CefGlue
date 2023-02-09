@@ -19,14 +19,15 @@
         /// Create a new URL request that is not associated with a specific browser or
         /// frame. Use CefFrame::CreateURLRequest instead if you want the request to
         /// have this association, in which case it may be handled differently (see
-        /// documentation on that method).  A request created with this method may only
+        /// documentation on that method). A request created with this method may only
         /// originate from the browser process, and will behave as follows:
         /// - It may be intercepted by the client via CefResourceRequestHandler or
         /// CefSchemeHandlerFactory.
         /// - POST data may only contain only a single element of type PDE_TYPE_FILE
         /// or PDE_TYPE_BYTES.
         /// - If |request_context| is empty the global request context will be used.
-        /// The |request| object will be marked as read-only after calling this method.
+        /// The |request| object will be marked as read-only after calling this
+        /// method.
         /// </summary>
         public static CefUrlRequest Create(CefRequest request, CefUrlRequestClient client, CefRequestContext requestContext)
         {
@@ -81,8 +82,8 @@
 
         /// <summary>
         /// Returns the response, or NULL if no response information is available.
-        /// Response information will only be available after the upload has completed.
-        /// The returned object is read-only and should not be modified.
+        /// Response information will only be available after the upload has
+        /// completed. The returned object is read-only and should not be modified.
         /// </summary>
         public CefResponse GetResponse()
         {

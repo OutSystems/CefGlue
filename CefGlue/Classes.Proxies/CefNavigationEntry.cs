@@ -12,8 +12,8 @@
     public sealed unsafe partial class CefNavigationEntry
     {
         /// <summary>
-        /// Returns true if this object is valid. Do not call any other methods if this
-        /// function returns false.
+        /// Returns true if this object is valid. Do not call any other methods if
+        /// this function returns false.
         /// </summary>
         public bool IsValid
         {
@@ -21,8 +21,8 @@
         }
 
         /// <summary>
-        /// Returns the actual URL of the page. For some pages this may be data: URL or
-        /// similar. Use GetDisplayURL() to return a display-friendly version.
+        /// Returns the actual URL of the page. For some pages this may be data: URL
+        /// or similar. Use GetDisplayURL() to return a display-friendly version.
         /// </summary>
         public string Url
         {
@@ -46,7 +46,8 @@
         }
 
         /// <summary>
-        /// Returns the original URL that was entered by the user before any redirects.
+        /// Returns the original URL that was entered by the user before any
+        /// redirects.
         /// </summary>
         public string OriginalUrl
         {
@@ -91,12 +92,11 @@
         /// navigation may be completed more than once if the page is reloaded. May be
         /// 0 if the navigation has not yet completed.
         /// </summary>
-        public DateTime CompletionTime
+        public CefBaseTime CompletionTime
         {
             get
             {
-                var n_value = cef_navigation_entry_t.get_completion_time(_self);
-                return n_value.ToDateTime();
+                return cef_navigation_entry_t.get_completion_time(_self);
             }
         }
 

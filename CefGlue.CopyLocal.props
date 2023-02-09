@@ -4,19 +4,19 @@
         <PackageReference Include="cef.redist.x64" />
         <PackageReference Include="cef.redist.osx64" />
     </ItemGroup>
-    
+
     <PropertyGroup>
-        <BrowserProcessDir>$(MSBuildThisFileDirectory)CefGlue.BrowserProcess\bin\$(Configuration)\$(TargetFramework)</BrowserProcessDir>
+        <BrowserProcessDir>$(MSBuildThisFileDirectory)CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)</BrowserProcessDir>
         <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
     </PropertyGroup>
-    
+
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
         <CefGlueTargetPlatform>win</CefGlueTargetPlatform>
     </PropertyGroup>
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
         <CefGlueTargetPlatform>osx</CefGlueTargetPlatform>
     </PropertyGroup>
-    
+
     <ItemGroup Condition="'$(RuntimeIdentifier)' == ''">
         <CefGlueBrowserProcessFiles Include="$(BrowserProcessDir)\$(CefGlueTargetPlatform)-x64\publish\*" />
     </ItemGroup>

@@ -69,9 +69,10 @@
             }
         }
 
+        // The below methods retrieve data for the node at the current cursor
+        // position.
+
         /// <summary>
-        /// The below methods retrieve data for the node at the current cursor
-        /// position.
         /// Returns the node type.
         /// </summary>
         public CefXmlNodeType NodeType
@@ -166,8 +167,8 @@
         }
 
         /// <summary>
-        /// Returns true if the node represents an empty element. <a/> is considered
-        /// empty but <a></a> is not.
+        /// Returns true if the node represents an empty element. "<a/>" is considered
+        /// empty but "<a></a>" is not.
         /// </summary>
         public bool IsEmptyElement
         {
@@ -275,11 +276,12 @@
             get { return cef_xml_reader_t.get_line_number(_self); }
         }
 
+        // Attribute nodes are not traversed by default. The below methods can be
+        // used to move the cursor to an attribute node. MoveToCarryingElement() can
+        // be called afterwards to return the cursor to the carrying element. The
+        // depth of an attribute node will be 1 + the depth of the carrying element.
+
         /// <summary>
-        /// Attribute nodes are not traversed by default. The below methods can be
-        /// used to move the cursor to an attribute node. MoveToCarryingElement() can
-        /// be called afterwards to return the cursor to the carrying element. The
-        /// depth of an attribute node will be 1 + the depth of the carrying element.
         /// Moves the cursor to the attribute at the specified 0-based index. Returns
         /// true if the cursor position was set successfully.
         /// </summary>

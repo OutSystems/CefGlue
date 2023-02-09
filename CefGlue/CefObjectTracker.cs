@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -74,7 +74,7 @@ namespace Xilium.CefGlue
                 _disposables.Add(obj);
             }
         }
-        
+
         /// <summary>
         /// Removes the specified object from the tracking list.
         /// </summary>

@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Avalonia.Controls;
+using NUnit.Framework;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 
@@ -105,29 +106,147 @@ namespace CefGlue.Tests.Events
         }
 
         [Test]
-        public async Task JavascriptContextCreatedAndReleasedAreFired()
+        public async Task JavascriptContextCreatedIsFired()
         {
-            var contextCreatedCompletionSource = new TaskCompletionSource<bool>();
-            var contextReleasedCompletionSource = new TaskCompletionSource<bool>();
+            var contextCreatedEventsCompletionSource = new TaskCompletionSource<bool>();
 
             void OnJavascriptContextCreated(object sender, JavascriptContextLifetimeEventArgs e)
             {
-                contextCreatedCompletionSource.SetResult(true);
+                contextCreatedEventsCompletionSource.SetResult(true);
             }
+            try
+            {
+                Browser.JavascriptContextCreated += OnJavascriptContextCreated;
+
+                await Browser.LoadContent($"<script>1+1</script>");
+                await contextCreatedEventsCompletionSource.Task;
+            }
+            finally
+            {
+                Browser.JavascriptContextCreated -= OnJavascriptContextCreated;
+            }
+        }
+
+        [Test]
+        public async Task JavascriptContextCreatedAreFiredWhenMultipleContextsCreated()
+        {
+            var mainFrameContextCreatedEventsCompletionSource = new TaskCompletionSource<bool>();
+            var innerFrameContextCreatedEventsCompletionSource = new TaskCompletionSource<bool>();
+
+            void OnJavascriptContextCreated(object sender, JavascriptContextLifetimeEventArgs e)
+            {
+                if (e.Frame.IsMain)
+                {
+                    mainFrameContextCreatedEventsCompletionSource.SetResult(true);
+                } else
+                {
+                    innerFrameContextCreatedEventsCompletionSource.SetResult(true);
+                }
+            }
+
+            try
+            {
+                Browser.JavascriptContextCreated += OnJavascriptContextCreated;
+
+                await Browser.LoadContent($"<html><body><iframe /></body></html>");
+                await mainFrameContextCreatedEventsCompletionSource.Task;
+                await innerFrameContextCreatedEventsCompletionSource.Task;
+            }
+            finally
+            {
+                Browser.JavascriptContextCreated -= OnJavascriptContextCreated;
+            }
+        }
+
+        [Test]
+        public async Task JavascriptContextCreatedAreFiredWhenLoadingNewContent()
+        {
+            var contextCreatedCalls = 0;
+            var contextCreatedEventsCompletionSource = new TaskCompletionSource<bool>();
+
+            void OnJavascriptContextCreated(object sender, JavascriptContextLifetimeEventArgs e)
+            {
+                if (e.Frame.IsMain)
+                {
+                    contextCreatedCalls++;
+                }
+
+                if (contextCreatedCalls == 2)
+                {
+                    contextCreatedEventsCompletionSource.SetResult(true);
+                }
+            }
+
+            try
+            {
+                Browser.JavascriptContextCreated += OnJavascriptContextCreated;
+
+                await Browser.LoadContent($"<script>1+1</script>");
+                await Browser.LoadContent($"<html/>");
+                await contextCreatedEventsCompletionSource.Task;
+            }
+            finally
+            {
+                Browser.JavascriptContextCreated -= OnJavascriptContextCreated;
+            }
+
+        }
+
+        [Test]
+        public async Task JavascriptContextReleasedIsFiredWhenLoadingNewContent()
+        {
+            var contextReleasedEventsCompletionSource = new TaskCompletionSource<bool>();
 
             void OnJavascriptContextReleased(object sender, JavascriptContextLifetimeEventArgs e)
             {
-                contextReleasedCompletionSource.SetResult(true);
+                contextReleasedEventsCompletionSource.SetResult(true);
             }
 
-            Browser.JavascriptContextCreated += OnJavascriptContextCreated;
-            Browser.JavascriptContextReleased += OnJavascriptContextReleased;
+            try
+            {
+                Browser.JavascriptContextReleased += OnJavascriptContextReleased;
 
-            await Browser.LoadContent($"<script>1+1</script>");
-            await contextCreatedCompletionSource.Task;
+                await Browser.LoadContent($"<script>1+1</script>");
+                await Browser.LoadContent($"<html/>");
+                await contextReleasedEventsCompletionSource.Task;
+            }
+            finally
+            {
+                Browser.JavascriptContextReleased -= OnJavascriptContextReleased;
+            }
+        }
 
-            await Browser.LoadContent($"<html/>");
-            await contextReleasedCompletionSource.Task;
+        [Test]
+        public async Task JavascriptContextReleasedAreFiredWhenMultipleContextsReleased()
+        {
+            var mainFrameContextReleasedEventsCompletionSource = new TaskCompletionSource<bool>();
+            var innerFrameContextReleasedEventsCompletionSource = new TaskCompletionSource<bool>();
+
+            void OnJavascriptContextReleased(object sender, JavascriptContextLifetimeEventArgs e)
+            {
+                if (e.Frame.IsMain)
+                {
+                    mainFrameContextReleasedEventsCompletionSource.SetResult(true);
+                }
+                else
+                {
+                    innerFrameContextReleasedEventsCompletionSource.SetResult(true);
+                }
+            }
+
+            try
+            {
+                Browser.JavascriptContextReleased += OnJavascriptContextReleased;
+
+                await Browser.LoadContent($"<html><body><iframe /></body></html>");
+                await Browser.LoadContent($"<html/>");
+                await mainFrameContextReleasedEventsCompletionSource.Task;
+                await innerFrameContextReleasedEventsCompletionSource.Task;
+            }
+            finally
+            {
+                Browser.JavascriptContextReleased -= OnJavascriptContextReleased;
+            }
         }
 
         [Test]

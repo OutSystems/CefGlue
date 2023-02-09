@@ -19,7 +19,7 @@ namespace Xilium.CefGlue.Common.Helpers
         internal static MenuEntry[] FromCefModel(CefMenuModel model)
         {
             var menuItems = new List<MenuEntry>();
-            for (var i = 0; i < model.Count; i++)
+            for (nuint i = 0; i < model.Count; i++)
             {
                 var entry = new MenuEntry()
                 {

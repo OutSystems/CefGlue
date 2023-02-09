@@ -20,25 +20,25 @@ namespace Xilium.CefGlue
         /// <summary>
         /// If set the cache will be skipped when handling the request. Setting this
         /// value is equivalent to specifying the "Cache-Control: no-cache" request
-        /// header. Setting this value in combination with UR_FLAG_ONLY_FROM_CACHE will
-        /// cause the request to fail.
+        /// header. Setting this value in combination with UR_FLAG_ONLY_FROM_CACHE
+        /// will cause the request to fail.
         /// </summary>
         SkipCache = 1 << 0,
 
         /// <summary>
-        /// If set the request will fail if it cannot be served from the cache (or some
-        /// equivalent local store). Setting this value is equivalent to specifying the
-        /// "Cache-Control: only-if-cached" request header. Setting this value in
-        /// combination with UR_FLAG_SKIP_CACHE or UR_FLAG_DISABLE_CACHE will cause the
-        /// request to fail.
+        /// If set the request will fail if it cannot be served from the cache (or
+        /// some equivalent local store). Setting this value is equivalent to
+        /// specifying the "Cache-Control: only-if-cached" request header. Setting
+        /// this value in combination with UR_FLAG_SKIP_CACHE or UR_FLAG_DISABLE_CACHE
+        /// will cause the request to fail.
         /// </summary>
         OnlyFromCache = 1 << 1,
 
         /// <summary>
         /// If set the cache will not be used at all. Setting this value is equivalent
         /// to specifying the "Cache-Control: no-store" request header. Setting this
-        /// value in combination with UR_FLAG_ONLY_FROM_CACHE will cause the request to
-        /// fail.
+        /// value in combination with UR_FLAG_ONLY_FROM_CACHE will cause the request
+        /// to fail.
         /// </summary>
         DisableCache = 1 << 2,
 

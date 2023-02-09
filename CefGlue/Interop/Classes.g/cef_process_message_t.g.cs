@@ -18,6 +18,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _copy;
         internal IntPtr _get_name;
         internal IntPtr _get_argument_list;
+        internal IntPtr _get_shared_memory_region;
         
         // Create
         [DllImport(libcef.DllName, EntryPoint = "cef_process_message_create", CallingConvention = libcef.CEF_CALL)]
@@ -76,6 +77,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate cef_list_value_t* get_argument_list_delegate(cef_process_message_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate cef_shared_memory_region_t* get_shared_memory_region_delegate(cef_process_message_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -226,6 +233,23 @@ namespace Xilium.CefGlue.Interop
             {
                 d = (get_argument_list_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_argument_list_delegate));
                 if (_p8 == IntPtr.Zero) { _d8 = d; _p8 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetSharedMemoryRegion
+        private static IntPtr _p9;
+        private static get_shared_memory_region_delegate _d9;
+        
+        public static cef_shared_memory_region_t* get_shared_memory_region(cef_process_message_t* self)
+        {
+            get_shared_memory_region_delegate d;
+            var p = self->_get_shared_memory_region;
+            if (p == _p9) { d = _d9; }
+            else
+            {
+                d = (get_shared_memory_region_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_shared_memory_region_delegate));
+                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
             }
             return d(self);
         }
