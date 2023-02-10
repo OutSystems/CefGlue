@@ -6,7 +6,7 @@
         <CefRedistVersion>106.0.26</CefRedistVersion>
         <CefRedistOSXVersion>106.0.26</CefRedistOSXVersion>
     </PropertyGroup>
-    
+
     <PropertyGroup>
         <PackageOutputPath>$(MSBuildProjectDirectory)\..\Nuget\output</PackageOutputPath>
         <Version>106.5249.2</Version>
