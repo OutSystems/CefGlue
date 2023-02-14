@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using System.Text.Json;
 using System.Threading.Tasks;
-using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
@@ -13,16 +10,25 @@ namespace Xilium.CefGlue.Common.ObjectBinding
     internal class NativeMethod
     {
         private readonly MethodInfo _methodInfo;
-        private readonly ParameterInfo[] _mandatoryParameters;
-        private readonly ParameterInfo _optionalParameter;
-
+        private readonly Type[] _parameterTypes;
+        private readonly int _mandatoryParametersLength;
+        private readonly bool _hasOptionalParameters;
+        
         public NativeMethod(MethodInfo methodInfo)
         {
             _methodInfo = methodInfo;
 
             var parameters = methodInfo.GetParameters();
-            _mandatoryParameters = parameters.TakeWhile(p => !IsParamArray(p)).ToArray();
-            _optionalParameter = parameters.Skip(_mandatoryParameters.Length).FirstOrDefault();
+            _hasOptionalParameters = IsParamArray(parameters.LastOrDefault());
+            _mandatoryParametersLength = parameters.Length - (_hasOptionalParameters ? 1 : 0);
+            var parameterTypes = parameters
+                .Take(_mandatoryParametersLength)
+                .Select(p => p.ParameterType);
+            if (_hasOptionalParameters)
+            {
+                parameterTypes = parameterTypes.Append(parameters.Last().ParameterType.GetElementType());
+            }
+            _parameterTypes = parameterTypes.ToArray();
         }
         
         public Func<object> MakeDelegate<T>(object targetObj, T args)
@@ -64,7 +70,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 return;
             }
 
-            // result/exception is available
+            // convertedArgumentsWithOptionals/exception is available
             handleResult(result, exception);
         }
 
@@ -96,20 +102,16 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             
             ValidateMandatoryArguments(originalArgs);
 
-            var argIndex = 0;
-            var convertedArgsLength = _optionalParameter == null ? _mandatoryParameters.Length : _mandatoryParameters.Length + 1;
-            var convertedArgs = new object[convertedArgsLength];
-
-            for (; argIndex < _mandatoryParameters.Length; argIndex++)
-            {
-                convertedArgs[argIndex] = originalArgs[argIndex];
-            }
-
-            if (_optionalParameter != null)
+            var convertedArgs = new object[_parameterTypes.Length];
+            
+            Array.Copy(originalArgs, convertedArgs, _mandatoryParametersLength);
+            
+            if (_hasOptionalParameters)
             {
                 // the optionalParameterType is always a ParamArray of some type (eg int[]), so we need the ElementType
-                var optionalArgsArray = ExtractArray(originalArgs, argIndex, _optionalParameter.ParameterType.GetElementType());
-                convertedArgs[convertedArgsLength - 1] = optionalArgsArray;
+                var optionalArgsArray = Array.CreateInstance(_parameterTypes.Last(), originalArgs.Length - _mandatoryParametersLength);
+                Array.Copy(originalArgs, _mandatoryParametersLength, optionalArgsArray, 0, optionalArgsArray.Length);
+                convertedArgs[_parameterTypes.Length - 1] = optionalArgsArray;
             }
 
             return convertedArgs;
@@ -122,62 +124,35 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 return Array.Empty<object>();
             }
 
-            var targetTypes = _mandatoryParameters.Select(p => p.ParameterType);
-            Type optionalParameterElementType = null;
+            var convertedArguments = Deserializer.Deserialize(args, _parameterTypes);
             
-            if (_optionalParameter != null)
+            if (!_hasOptionalParameters)
             {
-                // the optionalParameterType is always a ParamArray of some type (eg int[]), so we need the ElementType
-                optionalParameterElementType = _optionalParameter.ParameterType.GetElementType();
-                targetTypes = targetTypes.Append(optionalParameterElementType);
-            }
-
-            if (targetTypes.Count() == 1)
-            {
-                // To force the deserializer to return an object array containing elements of the desired type,
-                // more than 1 type must be passed as an argument,
-                // hence, we're adding a dummy extra argument to the targetTypes
-                targetTypes = targetTypes.Append(typeof(object));
-            }
-
-            var tempResult = (object[])Deserializer.Deserialize(args, targetTypes.ToArray());
-
-            if (_optionalParameter == null)
-            {
-                return tempResult;
+                return convertedArguments;
             }
 
             // reaching here, it means we have to convert the tempArray to a new array like
             // [arg1, ..., <optionalParameterType>[opt1, ...]]
-            return 
-                tempResult
-                .Take(_mandatoryParameters.Length)
-                .Append(ExtractArray(tempResult, _mandatoryParameters.Length, optionalParameterElementType))
-                .ToArray();
-        }
+            var convertedArgumentsWithOptionals = new object[_parameterTypes.Length];
+            Array.Copy(convertedArguments, convertedArgumentsWithOptionals, _mandatoryParametersLength);
+            var optionalsArray = Array.CreateInstance(_parameterTypes.Last(), convertedArguments.Length - _mandatoryParametersLength);
+            Array.Copy(convertedArguments, _mandatoryParametersLength, optionalsArray, 0, optionalsArray.Length);
+            convertedArgumentsWithOptionals[_parameterTypes.Length - 1] = optionalsArray;
 
-        private static Array ExtractArray(object[] args, int elementsToSkip, Type arrayElementType)
-        {
-            var result = Array.CreateInstance(arrayElementType, args.Length - elementsToSkip);
-            var arrayIndex = 0;
-            foreach (var arg in args.Skip(elementsToSkip))
-            {
-                result.SetValue(arg, arrayIndex++);
-            }
-            return result;
+            return convertedArgumentsWithOptionals;
         }
 
         private void ValidateMandatoryArguments(object[] args)
         {
-            if (args.Length < _mandatoryParameters.Length)
+            if (args.Length < _mandatoryParametersLength)
             {
-                throw new ArgumentException($"Number of arguments provided does not match the number of {_methodInfo.Name} method required parameters.");
+                throw new ArgumentException($"Number of convertedArguments provided does not match the number of {_methodInfo.Name} method required parameters.");
             }
         }
 
         private static bool IsParamArray(ParameterInfo paramInfo)
         {
-            return paramInfo.GetCustomAttribute(typeof(ParamArrayAttribute), false) != null;
+            return paramInfo?.GetCustomAttribute(typeof(ParamArrayAttribute), false) != null;
         }
     }
 }

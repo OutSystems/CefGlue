@@ -8,6 +8,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
         private static readonly ConcurrentDictionary<Type, JsonTypeInfo> TypesInfoCache = new ConcurrentDictionary<Type, JsonTypeInfo>();
 
         public static readonly JsonTypeInfo DefaultTypeInfo = new JsonTypeInfo(typeof(object), TypeCode.Object);
+        public static readonly JsonTypeInfo ObjectArrayTypeInfo = new JsonTypeInfo(typeof(object[]), TypeCode.Object);
 
         public static JsonTypeInfo GetOrAddTypeInfo(Type type)
         {
@@ -40,21 +41,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
                         null :
                         TypesInfoCache.GetOrAdd(type, (_) => new JsonTypeInfo(type, typeCode));
             }
-        }
-
-        public static JsonTypeInfo GetOrAddTypeInfo(JsonTypeInfo ownerTypeInfo, string propertyName)
-        {
-            if (string.IsNullOrEmpty(propertyName))
-            {
-                return ownerTypeInfo;
-            }
-
-            if (!ownerTypeInfo.TypeMembers.TryGetValue(propertyName, out var propertyType))
-            {
-                return DefaultTypeInfo;
-            }
-
-            return GetOrAddTypeInfo(propertyType.Type);
         }
     }
 }

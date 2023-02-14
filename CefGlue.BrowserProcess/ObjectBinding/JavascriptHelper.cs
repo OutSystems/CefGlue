@@ -26,7 +26,6 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                 var cefGlueGlobalScript = FillScriptPlaceholders(stream.ReadToEnd());
                 CefRuntime.RegisterExtension("cefglue", cefGlueGlobalScript, new V8BuiltinFunctionHandler(nativeObjectRegistry));
             }
-                
         }
 
         public static PromiseHolder CreatePromise(this CefV8Context context)

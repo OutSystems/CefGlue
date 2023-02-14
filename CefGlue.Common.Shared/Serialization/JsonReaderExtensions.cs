@@ -76,7 +76,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                 Convert.ChangeType(stringValue, targetTypeInfo.ObjectType);
         }
 
-        private static void AssertToken(this Utf8JsonReader reader, JsonTokenType token)
+        public static void AssertToken(this Utf8JsonReader reader, JsonTokenType token)
         {
             if (reader.TokenType != token)
             {

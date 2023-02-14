@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
@@ -10,55 +8,35 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
         private long _arrayIndex;
 
-        public ArrayDeserializerState(Utf8JsonReader reader, JsonTypeInfo arrayTypeInfo) :
-            this(
-                CreateArray(reader, arrayTypeInfo, out var arrayElementTypeInfo),
+        public ArrayDeserializerState(JsonTypeInfo arrayElementTypeInfo, int arraySize) :
+        this(
+                Array.CreateInstance(arrayElementTypeInfo.ObjectType, arraySize),
                 new[] { arrayElementTypeInfo }
                 ) { }
 
-        public ArrayDeserializerState(Utf8JsonReader reader, JsonTypeInfo[] arrayElementsTypeInfo) :
+        public ArrayDeserializerState(JsonTypeInfo[] arrayElementsTypeInfo, int arraySize) :
             this(
-                CreateArray(reader, arrayElementsTypeInfo.Length > 1 ? JsonTypeInfoCache.DefaultTypeInfo : arrayElementsTypeInfo[0]),
+                Array.CreateInstance(JsonTypeInfoCache.DefaultTypeInfo.ObjectType, arraySize),
                 arrayElementsTypeInfo
                 ) { }
 
-        private ArrayDeserializerState(Array objectHolder, JsonTypeInfo[] arrayElementsTypeInfo)
+        private ArrayDeserializerState(Array value, JsonTypeInfo[] arrayElementsTypeInfo)
         {
-            ObjectHolder = objectHolder;
+            Value = value;
             _arrayElementsTypeInfo = arrayElementsTypeInfo;
         }
 
-        public Array ObjectHolder { get; }
+        public Array Value { get; }
 
-        public string PropertyName { set => throw new NotImplementedException(); }
+        public void SetCurrentPropertyName(string value) => throw new InvalidOperationException();
 
         public JsonTypeInfo CurrentElementTypeInfo => 
-            _arrayIndex < _arrayElementsTypeInfo.Length ? _arrayElementsTypeInfo[_arrayIndex] : _arrayElementsTypeInfo.Last();
+            _arrayElementsTypeInfo[Math.Min(_arrayElementsTypeInfo.Length - 1, _arrayIndex)];
 
-        public void SetValue(object value)
+        public void SetCurrentElementValue(object value)
         {
-            ObjectHolder.SetValue(value, _arrayIndex);
+            Value.SetValue(value, _arrayIndex);
             _arrayIndex++;
-        }
-
-        private static Array CreateArray(Utf8JsonReader reader, JsonTypeInfo arrayTypeInfo, out JsonTypeInfo arrayElementTypeInfo)
-        {
-            arrayElementTypeInfo = 
-                arrayTypeInfo.ArrayElementTypeInfo ?? 
-                (arrayTypeInfo.ObjectKind == JsonTypeInfo.Kind.GenericObject ? JsonTypeInfoCache.DefaultTypeInfo : null);
-
-            if (arrayElementTypeInfo == null)
-            {
-                throw new InvalidCastException($"Cannot deserialize an array to a non array type: '{arrayTypeInfo.ObjectType.Name}'.");
-            }
-            
-            return CreateArray(reader, arrayElementTypeInfo);
-        }
-
-        private static Array CreateArray(Utf8JsonReader reader, JsonTypeInfo arrayElementTypeInfo)
-        {
-            var arraySize = reader.PeekAndCalculateArraySize();
-            return Array.CreateInstance(arrayElementTypeInfo.ObjectType, arraySize);
         }
     }
 }

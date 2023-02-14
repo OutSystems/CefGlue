@@ -6,40 +6,43 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
     internal class ObjectDeserializerState : IDeserializerState<object>
     {
-        private readonly JsonTypeInfo _objectTypeInfo;
+        private readonly JsonTypeInfo _valueTypeInfo;
 
-        public ObjectDeserializerState(JsonTypeInfo objectTypeInfo) : this(CreateObjectInstance(objectTypeInfo.ObjectType), objectTypeInfo) { }
+        private string _propertyName;
 
-        public ObjectDeserializerState(object objectHolder, JsonTypeInfo objectTypeInfo)
+        public ObjectDeserializerState(JsonTypeInfo valueTypeInfo) : this(CreateObjectInstance(valueTypeInfo.ObjectType), valueTypeInfo) { }
+
+        public ObjectDeserializerState(object value, JsonTypeInfo valueTypeInfo)
         {
-            ObjectHolder = objectHolder;
-            _objectTypeInfo = objectTypeInfo;
+            Value = value;
+            _valueTypeInfo = valueTypeInfo;
         }
 
-        public object ObjectHolder { get; }
+        public object Value { get; }
 
-        public string PropertyName { private get; set; }
+        public void SetCurrentPropertyName(string value) => _propertyName = value;
 
-        public JsonTypeInfo CurrentElementTypeInfo => _objectTypeInfo.GetPropertyTypeInfo(PropertyName);
+        public JsonTypeInfo CurrentElementTypeInfo => _valueTypeInfo.GetPropertyTypeInfo(_propertyName);
 
-        public void SetValue(object value)
+        public void SetCurrentElementValue(object value)
         {
-            if (ObjectHolder == null)
+            if (Value == null)
             {
-                throw new InvalidOperationException($"Cannot set value for a null {nameof(ObjectHolder)}.");
+                throw new InvalidOperationException($"Cannot set value for a null {nameof(Value)}.");
             }
 
-            if (_objectTypeInfo.TypeMembers.TryGetValue(PropertyName, out var typeMemberInfo))
+            var typeMemberInfo = _valueTypeInfo.GetTypeMemberInfo(_propertyName);
+            if (typeMemberInfo != null)
             {
-                typeMemberInfo.SetValue(ObjectHolder, value);
+                typeMemberInfo.SetValue(Value, value);
             }
             else
             {
-                throw new InvalidOperationException($"Property or Field '{PropertyName}' does not exist in objectType '{_objectTypeInfo.ObjectType.Name}'.");
+                throw new InvalidOperationException($"Property or Field '{_propertyName}' does not exist in objectType '{_valueTypeInfo.ObjectType.Name}'.");
             }
         }
 
-        internal static object CreateObjectInstance(Type type)
+        private static object CreateObjectInstance(Type type)
         {
             if (type == typeof(object))
             {

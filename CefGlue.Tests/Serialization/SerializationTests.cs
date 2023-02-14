@@ -268,7 +268,7 @@ namespace CefGlue.Tests.Serialization
             var types = new[] { typeof(string), typeof(decimal), typeof(string[]), typeof(bool), typeof(StructObject), typeof(int) };
             var obtained = Deserializer.Deserialize(json, types);
             Assert.AreEqual(list, obtained);
-            
+
             // validate that an empty array is returned if the jsonString is null
             var emptyObtained = Deserializer.Deserialize(null, types);
             Assert.AreEqual(Array.Empty<object>(), emptyObtained);

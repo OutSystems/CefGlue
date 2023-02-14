@@ -68,7 +68,7 @@ if (!$GlobalObjectName$) {
             const pendingRefs = new Map();
             return isString(result) ? JSON.parse(result, (name, value) => revive(name, value, refs, pendingRefs)) : result;
         }
-        function argumentsStringifier() {
+        function objectsStringifier(skipReferenceForInitialArrayObject) {
             const refs = new Map();
             const marker = Symbol("marker");
             return function (key, value) {
@@ -108,6 +108,12 @@ if (!$GlobalObjectName$) {
                 const id = refs.size.toString();
                 refs.set(value, { [refPropertyName]: id, [marker]: undefined });
                 if (Array.isArray(value)) {
+                    if (skipReferenceForInitialArrayObject && key === "") {
+                        // For arrays, when the flag is on, the resulting string is not wrapped in "{$id:"",$values:[..]}"
+                        // instead, it returns the plain array "[...]"
+                        return value;
+                    }
+
                     // If it is an array, wrap the array and add an id and a marker
                     return { [idPropertyName]: id, [valuesPropertyName]: value, [marker]: undefined };
                 }
@@ -146,7 +152,7 @@ if (!$GlobalObjectName$) {
                             return targetValue;
                         }
                         const interceptor = function (...args) {
-                            const convertedArgs = args.length === 0 ? args : [JSON.stringify(args, argumentsStringifier())];
+                            const convertedArgs = args.length === 0 ? args : [JSON.stringify(args, objectsStringifier(/*skipReferenceForInitialArrayObject*/true))];
                             return targetValue.apply(target, convertedArgs);
                         };
                         functionsMap.set(propKey, interceptor);
@@ -168,7 +174,7 @@ if (!$GlobalObjectName$) {
                 $UnbindNativeFunctionName$(objName);
             },
             $EvaluateScriptFunctionName$: function (fn) {
-                return JSON.stringify(fn(), argumentsStringifier());
+                return JSON.stringify(fn(), objectsStringifier());
             }
         };
     })();

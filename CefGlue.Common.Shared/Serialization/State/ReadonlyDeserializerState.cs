@@ -6,20 +6,21 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
     internal class ReadonlyDeserializerState : IDeserializerState<object>
     {
-        public ReadonlyDeserializerState(object objectHolder) 
+        public ReadonlyDeserializerState(object value) 
         {
-            ObjectHolder = objectHolder;
+            Value = value;
         }
 
-        public object ObjectHolder { get; }
+        public object Value { get; }
 
-        public string PropertyName { private get; set; }
+        public void SetCurrentPropertyName(string value) => throw new InvalidOperationException();
+        
 
         public JsonTypeInfo CurrentElementTypeInfo => null;
 
-        public void SetValue(object value)
+        public void SetCurrentElementValue(object value)
         {
-            throw new InvalidOperationException($"Cannot set value for a null {nameof(ReadonlyDeserializerState)}.");
+           throw new InvalidOperationException($"Cannot set value on a {nameof(ReadonlyDeserializerState)}.");
         }
     }
 }
