@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
@@ -7,6 +6,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
     {
         private readonly JsonTypeInfo _collectionTypeInfo;
         private readonly JsonTypeInfo _collectionElementTypeInfo;
+        
+        private string _propertyName;
 
         public CollectionDeserializerState(JsonTypeInfo collectionTypeInfo)
         {
@@ -15,28 +16,23 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
                 throw new ArgumentException("Argument must contain an Add method.", nameof(collectionTypeInfo));
             }
 
-            ObjectHolder = CreateCollection(collectionTypeInfo);
+            Value = Activator.CreateInstance(collectionTypeInfo.ObjectType, nonPublic: true);
             _collectionTypeInfo = collectionTypeInfo;
-            _collectionElementTypeInfo = collectionTypeInfo.CollectionElementTypeInfo;
+            _collectionElementTypeInfo = collectionTypeInfo.EnumerableElementTypeInfo;
         }
 
-        public object ObjectHolder { get; }
+        public object Value { get; }
 
-        public string PropertyName { private get; set; }
-
+        public void SetCurrentPropertyName(string value) => _propertyName = value;
+        
         public JsonTypeInfo CurrentElementTypeInfo => _collectionElementTypeInfo;
 
-        public void SetValue(object value)
+        public void SetCurrentElementValue(object value)
         {
-            var parameters = string.IsNullOrEmpty(PropertyName) ?
+            var parameters = string.IsNullOrEmpty(_propertyName) ?
                 new[] { value } :
-                new[] { PropertyName, value };
-            _collectionTypeInfo.CollectionAddMethod.Invoke(ObjectHolder, parameters);
-        }
-
-        private static object CreateCollection(JsonTypeInfo objectTypeInfo)
-        {
-            return Activator.CreateInstance(objectTypeInfo.ObjectType, nonPublic: true);
+                new[] { _propertyName, value };
+            _collectionTypeInfo.CollectionAddMethod.Invoke(Value, parameters);
         }
     }
 }

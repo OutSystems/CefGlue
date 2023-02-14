@@ -3,33 +3,29 @@ using System.Linq;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
-    internal class RootObjectDeserializerState : IDeserializerState<object>, IMultiTypeDeserializerState
+    internal class RootObjectDeserializerState : IDeserializerState<object>
     {
-        private readonly JsonTypeInfo[] _objectTypesInfo;
-        private readonly JsonTypeInfo _objectTypeInfo;
+        private readonly JsonTypeInfo _valueTypeInfo;
 
-        public RootObjectDeserializerState(Type[] targetTypes)
+        public RootObjectDeserializerState(Type targetType)
         {
-            _objectTypesInfo = targetTypes.Select(t => JsonTypeInfoCache.GetOrAddTypeInfo(t)).ToArray();
-            _objectTypeInfo = _objectTypesInfo.Length > 1 ? JsonTypeInfoCache.GetOrAddTypeInfo(typeof(Type[])) : _objectTypesInfo.First();
+            _valueTypeInfo = JsonTypeInfoCache.GetOrAddTypeInfo(targetType);
         }
 
-        public object ObjectHolder { get; private set; }
+        public object Value { get; private set; }
 
-        public string PropertyName { private get; set; }
+        public void SetCurrentPropertyName(string value) => throw new InvalidOperationException();
 
-        public JsonTypeInfo CurrentElementTypeInfo => _objectTypeInfo;
+        public JsonTypeInfo CurrentElementTypeInfo => _valueTypeInfo;
 
-        public JsonTypeInfo[] ObjectTypesInfo => _objectTypesInfo;
-
-        public void SetValue(object value)
+        public void SetCurrentElementValue(object value)
         {
-            if (ObjectHolder != null)
+            if (Value != null)
             {
                 throw new InvalidOperationException("The root cannot be set multiple times.");
             }
 
-            ObjectHolder = value;
+            Value = value;
         }
     }
 }

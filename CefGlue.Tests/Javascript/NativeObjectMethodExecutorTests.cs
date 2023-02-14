@@ -58,11 +58,6 @@ namespace CefGlue.Tests.Javascript
             nativeObject = new NativeObject("test", nativeTestObject);
         }
 
-        private string GetStringifiedArgs(object[] args)
-        {
-            return Serializer.Serialize(args);
-        }
-
         private object ExecuteMethod(string name, object[] args)
         {
             object result = null;

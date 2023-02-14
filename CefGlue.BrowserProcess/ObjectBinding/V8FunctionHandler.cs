@@ -20,7 +20,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         {
             if (arguments.Length > 1)
             {
-                throw new ArgumentException($"The '{nameof(arguments)}' array must be either empty or contain only one argument, a json string. The array has {arguments.Length} elements.");
+                throw new ArgumentException($"The array must be either empty or contain only one argument, a json string. The array has {arguments.Length} elements.", nameof(arguments));
             }
 
             var message = new Messages.NativeObjectCallRequest()

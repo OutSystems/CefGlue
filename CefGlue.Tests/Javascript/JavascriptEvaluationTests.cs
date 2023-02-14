@@ -92,6 +92,14 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
+        public async Task ArrayListReturn()
+        {
+            var result = await EvaluateJavascript<ArrayList>("return ['first','second','third'];");
+            var expected = new string[] {"first", "second", "third"};
+            CollectionAssert.AreEqual(expected, result);
+        }
+
+        [Test]
         public async Task DynamicObjectReturn()
         {
             var result = await EvaluateJavascript<dynamic>("return { 'foo': 'foo-value', 'bar': 10, 'baz': [1, 2] }");

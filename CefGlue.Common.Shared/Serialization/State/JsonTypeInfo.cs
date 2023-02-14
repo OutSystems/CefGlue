@@ -22,14 +22,11 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             Kind ObjectKind,
             TypeMemberInfoMap TypeMembers,
             TypeMethodInfo CollectionAddMethod,
-            JsonTypeInfo CollectionElementTypeInfo,
-            JsonTypeInfo ArrayElementTypeInfo);
+            JsonTypeInfo EnumerableElementTypeInfo);
 
         private const BindingFlags EligibleMembers = BindingFlags.Public | BindingFlags.Instance;
 
         private readonly Lazy<InternalTypeInfo> _internalTypeInfo;
-        
-        private Dictionary<string, JsonTypeInfo> _propertiesTypeInfo;
 
         public JsonTypeInfo(Type type, TypeCode typeCode)
         {
@@ -37,56 +34,44 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             ObjectType = type;
             TypeCode = typeCode;
         }
-        
+
         public Type ObjectType { get; }
 
         public TypeCode TypeCode { get; }
 
         public Kind ObjectKind => _internalTypeInfo.Value.ObjectKind;
 
-        public TypeMemberInfoMap TypeMembers => _internalTypeInfo.Value.TypeMembers;
-        
         public TypeMethodInfo CollectionAddMethod => _internalTypeInfo.Value.CollectionAddMethod;
 
-        public JsonTypeInfo CollectionElementTypeInfo => _internalTypeInfo.Value.CollectionElementTypeInfo;
+        /// <summary>
+        /// If the ObjectKind is Collection or Array, it returns the type of the its elements.
+        /// </summary>
+        public JsonTypeInfo EnumerableElementTypeInfo => _internalTypeInfo.Value.EnumerableElementTypeInfo;
 
-        public JsonTypeInfo ArrayElementTypeInfo => _internalTypeInfo.Value.ArrayElementTypeInfo;
+        public TypeMemberInfo GetTypeMemberInfo(string memberName)
+        {
+            if (string.IsNullOrEmpty(memberName))
+            {
+                throw new ArgumentNullException(nameof(memberName));
+            }
+            return _internalTypeInfo.Value.TypeMembers.GetValueOrDefault(memberName);
+        }
 
         public JsonTypeInfo GetPropertyTypeInfo(string propertyName)
         {
-            // Return the type itself when no propertyName was passed OR it's a primitive valuetype (e.g. int32, byte, etc).
-            // The IsPrimitive is to exclude Structs, which are also ValueTypes but that contain proerties and fields
-            if (string.IsNullOrEmpty(propertyName) || (ObjectType.IsPrimitive && ObjectType.IsValueType))
+            var memberInfo = GetTypeMemberInfo(propertyName);
+            if (memberInfo != null)
             {
-                return this;
+                return JsonTypeInfoCache.GetOrAddTypeInfo(memberInfo.Type);
             }
 
-            _propertiesTypeInfo ??= new();
-
-            if (!_propertiesTypeInfo.TryGetValue(propertyName, out var propertyTypeInfo))
-            {
-                if (TypeMembers.TryGetValue(propertyName, out var memberInfo))
-                {
-                    propertyTypeInfo = JsonTypeInfoCache.GetOrAddTypeInfo(memberInfo.Type);
-                }
-
-                propertyTypeInfo ??= JsonTypeInfoCache.DefaultTypeInfo;
-                _propertiesTypeInfo.Add(propertyName, propertyTypeInfo);
-            }
-
-            return propertyTypeInfo;
+            return JsonTypeInfoCache.DefaultTypeInfo;
         }
 
         private static InternalTypeInfo LoadTypeInfo(Type objectType)
         {
-            JsonTypeInfo arrayElementTypeInfo = null;
             TypeMethodInfo collectionAddMethod = null;
-            JsonTypeInfo collectionElementTypeInfo = null;
-            if (objectType.IsArray)
-            {
-                arrayElementTypeInfo = JsonTypeInfoCache.GetOrAddTypeInfo(objectType.GetElementType());
-            }
-            else
+            if (!objectType.IsArray)
             {
                 collectionAddMethod =
                     GetMethodFromType(typeof(ICollection<>), objectType, nameof(ICollection<object>.Add)) ??
@@ -94,18 +79,13 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
                     GetMethodFromType(typeof(IDictionary), objectType, nameof(IDictionary.Add));
             }
 
-            var objectKind = objectType switch
+            var (objectKind, enumerableElementTypeInfo) = objectType switch
             {
-                { IsArray: true } => Kind.Array,
-                _ when collectionAddMethod != null => Kind.Collection,
-                _ when objectType == typeof(object) => Kind.GenericObject,
-                _ => Kind.Object
+                { IsArray: true } => (Kind.Array, JsonTypeInfoCache.GetOrAddTypeInfo(objectType.GetElementType())),
+                _ when collectionAddMethod != null => (Kind.Collection, GetCollectionElementTypeInfo(objectType)),
+                _ when objectType == typeof(object) => (Kind.GenericObject, null),
+                _ => (Kind.Object, null)
             };
-
-            if (objectKind == Kind.Collection)
-            {
-                collectionElementTypeInfo = GetCollectionElementTypeInfo(objectType);
-            }
 
             var properties = objectType
                 .GetProperties(EligibleMembers)
@@ -127,7 +107,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
                 typeMembers.Add(field.Name, new TypeMemberInfo(field.FieldType, (obj, value) => field.SetValue(obj, value)));
             }
 
-            return new InternalTypeInfo(objectKind, typeMembers, collectionAddMethod, collectionElementTypeInfo, arrayElementTypeInfo);
+            return new InternalTypeInfo(objectKind, typeMembers, collectionAddMethod, enumerableElementTypeInfo);
         }
 
         private static JsonTypeInfo GetCollectionElementTypeInfo(Type collectionType)
@@ -136,13 +116,13 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             var collectionGenericInterface = interfaces.FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICollection<>));
             if (collectionGenericInterface != null)
             {
-                var tmpGenericInterfaceArgument = collectionGenericInterface.GetGenericArguments().Single();
-                if (tmpGenericInterfaceArgument.IsGenericType &&
-                    tmpGenericInterfaceArgument.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+                var collectionInterfaceGenericArgument = collectionGenericInterface.GetGenericArguments().Single();
+                if (collectionInterfaceGenericArgument.IsGenericType &&
+                    collectionInterfaceGenericArgument.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
                 {
-                    return JsonTypeInfoCache.GetOrAddTypeInfo(tmpGenericInterfaceArgument.GenericTypeArguments[1]);
+                    return JsonTypeInfoCache.GetOrAddTypeInfo(collectionInterfaceGenericArgument.GenericTypeArguments[1]);
                 }
-                return JsonTypeInfoCache.GetOrAddTypeInfo(tmpGenericInterfaceArgument);
+                return JsonTypeInfoCache.GetOrAddTypeInfo(collectionInterfaceGenericArgument);
             }
 
             var collectionInterface = interfaces.FirstOrDefault(i => i == typeof(ICollection));
@@ -151,7 +131,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
                 return JsonTypeInfoCache.DefaultTypeInfo;
             }
 
-            throw new InvalidOperationException($"{nameof(GetCollectionElementTypeInfo)} called for a non collection type: '{collectionType.Name}'!");
+            throw new InvalidOperationException($"{collectionType.Name} is not a collection type.");
         }
 
         private static TypeMethodInfo GetMethodFromType(Type baseType, Type targetType, string methodName)
