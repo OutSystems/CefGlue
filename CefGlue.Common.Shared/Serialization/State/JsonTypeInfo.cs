@@ -85,26 +85,31 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
                 _ => (Kind.Object, null)
             };
 
-            var properties = objectType
+            Dictionary<string, TypeMemberInfo> typeMembers = null;
+            if (objectKind == Kind.Object && !objectType.IsPrimitive)
+            {
+                typeMembers = new();
+
+                var properties = objectType
                 .GetProperties(EligibleMembers)
                 .Where(p => p.CanWrite)
                 .Where(p => !p.GetIndexParameters().Any());
 
-            var fields = objectType
-                .GetFields(EligibleMembers)
-                .Where(f => !f.IsInitOnly);
+                var fields = objectType
+                    .GetFields(EligibleMembers)
+                    .Where(f => !f.IsInitOnly);
 
-            var typeMembers = new Dictionary<string, TypeMemberInfo>();
-            foreach (var prop in properties)
-            {
-                typeMembers.Add(prop.Name, new TypeMemberInfo(prop.PropertyType, (obj, value) => prop.SetValue(obj, value)));
+                foreach (var prop in properties)
+                {
+                    typeMembers.Add(prop.Name, new TypeMemberInfo(prop.PropertyType, (obj, value) => prop.SetValue(obj, value)));
+                }
+
+                foreach (var field in fields)
+                {
+                    typeMembers.Add(field.Name, new TypeMemberInfo(field.FieldType, (obj, value) => field.SetValue(obj, value)));
+                }
             }
-
-            foreach (var field in fields)
-            {
-                typeMembers.Add(field.Name, new TypeMemberInfo(field.FieldType, (obj, value) => field.SetValue(obj, value)));
-            }
-
+            
             return new InternalTypeInfo(objectKind, typeMembers, collectionAddMethod, enumerableElementTypeInfo);
         }
 
