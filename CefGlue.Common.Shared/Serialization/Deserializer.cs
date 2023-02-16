@@ -7,11 +7,11 @@ using Xilium.CefGlue.Common.Shared.Serialization.State;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization
 {
-    internal class Deserializer
+    internal static class Deserializer
     {
         private const int DeserializerMaxDepth = int.MaxValue;
 
-        private static readonly IDeserializerState ListWrapperMarker = new ObjectDeserializerState(valueTypeInfo: default, value: null);
+        private static readonly IDeserializerState ListWrapperMarker = new ReadonlyDeserializerState(value: default);
 
         /// <summary>
         /// Deserializes the passed jsonString argument to an instance of the TargetType.
@@ -57,7 +57,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
             var reader = CreateJsonReader(jsonString);
             reader.AssertToken(JsonTokenType.StartArray);
-            var rootState = new ArrayDeserializerState(targetTypes.Select(t => JsonTypeInfoCache.GetOrAddTypeInfo(t)).ToArray(), reader.PeekAndCalculateArraySize());
+            var rootState = new ArrayDeserializerState(targetTypes.Select(t => JsonTypeInfoCache.GetOrAddTypeInfo(t)).ToList(), reader.PeekAndCalculateArraySize());
             reader.ReadToken(JsonTokenType.StartArray);
 
             // The Deserialize method expects a balanced state between the reader Position and number of state elements in the stack,
@@ -147,7 +147,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
 
             if (state.Count > 1 && state.Pop() != initialStates.First())
             {
-                throw new InvalidOperationException("Invalid json format - missing enclosing EndArray or EndObject token(s).");
+                throw new InvalidOperationException("Invalid json format: missing enclosing EndArray or EndObject token(s).");
             }
         }
 
@@ -161,7 +161,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             if (tempReader.TokenType == JsonTokenType.EndObject)
             {
                 // empty object (e.g. deserializing a new object() results in "{}")
-                newState = new ReadonlyDeserializerState(new object());
+                newState = ReadonlyDeserializerState.Default;
             }
             else
             {
@@ -180,7 +180,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
                         var refId = reader.GetString();
                         if (!referencesMap.TryGetValue(refId, out var refObj))
                         {
-                            throw new InvalidOperationException($"Invalid json format - can resolve $ref - '{refId}'.");
+                            throw new InvalidOperationException($"Invalid json format: can't resolve $ref '{refId}'.");
                         }
                         newState = new ReadonlyDeserializerState(refObj);
                         break;
@@ -214,18 +214,16 @@ namespace Xilium.CefGlue.Common.Shared.Serialization
             return newState.Value;
         }
 
-        private static IDeserializerState CreateNewDeserializerState(
-            Utf8JsonReader reader,
-            IDeserializerState currentState)
+        private static IDeserializerState CreateNewDeserializerState(Utf8JsonReader reader, IDeserializerState currentState)
         {
-            var newTypeInfo = currentState.CurrentElementTypeInfo;
+            var targetTypeInfo = currentState.CurrentElementTypeInfo;
 
-            return newTypeInfo.ObjectKind switch
+            return targetTypeInfo.ObjectKind switch
             {
-                JsonTypeInfo.Kind.Collection => new CollectionDeserializerState(newTypeInfo),
-                _ when reader.TokenType == JsonTokenType.StartArray => new ArrayDeserializerState(newTypeInfo.EnumerableElementTypeInfo ?? JsonTypeInfoCache.ObjectArrayTypeInfo.EnumerableElementTypeInfo, reader.PeekAndCalculateArraySize()),
-                JsonTypeInfo.Kind.GenericObject => new DynamicDeserializerState(),
-                _ => new ObjectDeserializerState(newTypeInfo)
+                JsonTypeInfo.Kind.Collection => new CollectionDeserializerState(targetTypeInfo),
+                _ when reader.TokenType == JsonTokenType.StartArray => new ArrayDeserializerState(targetTypeInfo.EnumerableElementTypeInfo ?? JsonTypeInfoCache.ObjectArrayTypeInfo.EnumerableElementTypeInfo, reader.PeekAndCalculateArraySize()),
+                JsonTypeInfo.Kind.Object when targetTypeInfo.ObjectType == typeof(object) => new CollectionDeserializerState(JsonTypeInfoCache.ObjectDictionaryTypeInfo),
+                _ => new ObjectDeserializerState(targetTypeInfo)
             };
         }
     }

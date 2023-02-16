@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Dynamic;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {

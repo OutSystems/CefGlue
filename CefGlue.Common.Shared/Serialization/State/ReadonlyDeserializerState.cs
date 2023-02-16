@@ -11,11 +11,12 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             Value = value;
         }
 
+        public static IDeserializerState Default => new ReadonlyDeserializerState(new object());
+
         public object Value { get; }
 
         public void SetCurrentPropertyName(string value) => throw new InvalidOperationException();
         
-
         public JsonTypeInfo CurrentElementTypeInfo => null;
 
         public void SetCurrentElementValue(object value)

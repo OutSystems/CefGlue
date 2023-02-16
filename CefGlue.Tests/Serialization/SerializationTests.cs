@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Newtonsoft.Json.Linq;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -404,6 +405,30 @@ namespace CefGlue.Tests.Serialization
             Assert.AreEqual(child.stringField, obtainedChild.stringField);
             Assert.AreSame(child.referenceField.GetType(), obtainedChild.referenceField.GetType());
             Assert.NotNull(obtainedChild.referenceField); // Assert.Equal fails when comparing two plain object instances, hence the Assert.NotNull 
+        }
+
+        [Test]
+        public void HandlesIntAsObject()
+        {
+            var obtained = Deserializer.Deserialize<object>("5");
+            Assert.IsInstanceOf<double>(obtained);
+            Assert.AreEqual(5, obtained);
+        }
+
+        [Test]
+        public void HandlesIntArrayAsObject()
+        {
+            var obtained = Deserializer.Deserialize<object>("[5]");
+            Assert.IsInstanceOf<object[]>(obtained);
+            CollectionAssert.AreEqual(new[] { 5 }, (object[])obtained);
+        }
+
+        [Test]
+        public void HandlesJsObjectAsObject()
+        {
+            var obtained = Deserializer.Deserialize<object>("{\"key\":5}");
+            Assert.IsInstanceOf<IDictionary<string, object>>(obtained);
+            CollectionAssert.AreEqual(new[] { KeyValuePair.Create("key", 5) }, (IDictionary<string, object>)obtained);
         }
     }
 }
