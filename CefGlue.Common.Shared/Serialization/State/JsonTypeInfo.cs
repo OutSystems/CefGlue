@@ -5,14 +5,12 @@ using System.Linq;
 using System.Reflection;
 using TypeMemberInfoMap = System.Collections.Generic.IReadOnlyDictionary<string, Xilium.CefGlue.Common.Shared.Serialization.State.TypeMemberInfo>;
 
-
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
     internal class JsonTypeInfo
     {
         public enum Kind
         {
-            GenericObject, // typeof(object)
             Object, // class & structs
             Array, // arrays
             Collection // Lists, Set, Stack, ...
@@ -65,7 +63,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
                 return JsonTypeInfoCache.GetOrAddTypeInfo(memberInfo.Type);
             }
 
-            return JsonTypeInfoCache.DefaultTypeInfo;
+            return JsonTypeInfoCache.ObjectTypeInfo;
         }
 
         private static InternalTypeInfo LoadTypeInfo(Type objectType)
@@ -76,14 +74,14 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
                 collectionAddMethod =
                     GetMethodFromType(typeof(ICollection<>), objectType, nameof(ICollection<object>.Add)) ??
                     GetMethodFromType(typeof(IList), objectType, nameof(IList.Add)) ??
-                    GetMethodFromType(typeof(IDictionary), objectType, nameof(IDictionary.Add));
+                    GetMethodFromType(typeof(IDictionary), objectType, nameof(IDictionary.Add)) ??
+                    GetMethodFromType(typeof(IDictionary<string, object>), objectType, nameof(IDictionary<string, object>.Add));
             }
 
             var (objectKind, enumerableElementTypeInfo) = objectType switch
             {
                 { IsArray: true } => (Kind.Array, JsonTypeInfoCache.GetOrAddTypeInfo(objectType.GetElementType())),
                 _ when collectionAddMethod != null => (Kind.Collection, GetCollectionElementTypeInfo(objectType)),
-                _ when objectType == typeof(object) => (Kind.GenericObject, null),
                 _ => (Kind.Object, null)
             };
 
@@ -128,7 +126,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             var collectionInterface = interfaces.FirstOrDefault(i => i == typeof(ICollection));
             if (collectionInterface != null)
             {
-                return JsonTypeInfoCache.DefaultTypeInfo;
+                return JsonTypeInfoCache.ObjectTypeInfo;
             }
 
             throw new InvalidOperationException($"{collectionType.Name} is not a collection type.");

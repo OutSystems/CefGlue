@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Xilium.CefGlue.Common.Shared.Serialization.State
 {
@@ -7,7 +8,8 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
     {
         private static readonly ConcurrentDictionary<Type, JsonTypeInfo> TypesInfoCache = new ConcurrentDictionary<Type, JsonTypeInfo>();
 
-        public static readonly JsonTypeInfo DefaultTypeInfo = new JsonTypeInfo(typeof(object), TypeCode.Object);
+        public static readonly JsonTypeInfo ObjectTypeInfo = new JsonTypeInfo(typeof(object), TypeCode.Object);
+        public static readonly JsonTypeInfo ObjectDictionaryTypeInfo = new JsonTypeInfo(typeof(Dictionary<string, object>), TypeCode.Object);
         public static readonly JsonTypeInfo ObjectArrayTypeInfo = new JsonTypeInfo(typeof(object[]), TypeCode.Object);
 
         public static JsonTypeInfo GetOrAddTypeInfo(Type type)
@@ -34,12 +36,12 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
                 case TypeCode.DBNull:
                 case TypeCode.Empty:
-                    return DefaultTypeInfo;
+                    return ObjectTypeInfo;
                 default:
                     return 
                         type == null ? 
                         null :
-                        TypesInfoCache.GetOrAdd(type, (_) => new JsonTypeInfo(type, typeCode));
+                        TypesInfoCache.GetOrAdd(type, _ => new JsonTypeInfo(type, typeCode));
             }
         }
     }

@@ -22,7 +22,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
         {
             if (Value != null)
             {
-                throw new InvalidOperationException("The root cannot be set multiple times.");
+                throw new InvalidOperationException("The root shouldn't be set multiple times.");
             }
 
             Value = value;

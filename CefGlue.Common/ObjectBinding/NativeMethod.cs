@@ -11,7 +11,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
     {
         private readonly MethodInfo _methodInfo;
         private readonly Type[] _parameterTypes;
-        private readonly int _mandatoryParametersLength;
+        private readonly int _mandatoryParametersCount;
         private readonly bool _hasOptionalParameters;
         
         public NativeMethod(MethodInfo methodInfo)
@@ -20,9 +20,9 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
             var parameters = methodInfo.GetParameters();
             _hasOptionalParameters = IsParamArray(parameters.LastOrDefault());
-            _mandatoryParametersLength = parameters.Length - (_hasOptionalParameters ? 1 : 0);
+            _mandatoryParametersCount = parameters.Length - (_hasOptionalParameters ? 1 : 0);
             var parameterTypes = parameters
-                .Take(_mandatoryParametersLength)
+                .Take(_mandatoryParametersCount)
                 .Select(p => p.ParameterType);
             if (_hasOptionalParameters)
             {
@@ -93,60 +93,55 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             var argsAsObject = (object)args;
             
             if (typeof(T) == typeof(string)) {
-                var nativeArgs = InnerConvertArguments((string)argsAsObject);
-                ValidateMandatoryArguments(nativeArgs);
-                return nativeArgs;
+                return InnerConvertArguments((string)argsAsObject);
             }
 
-            var originalArgs = (object[])argsAsObject;
-            
-            ValidateMandatoryArguments(originalArgs);
-
-            var convertedArgs = new object[_parameterTypes.Length];
-            
-            Array.Copy(originalArgs, convertedArgs, _mandatoryParametersLength);
-            
-            if (_hasOptionalParameters)
-            {
-                // the optionalParameterType is always a ParamArray of some type (eg int[]), so we need the ElementType
-                var optionalArgsArray = Array.CreateInstance(_parameterTypes.Last(), originalArgs.Length - _mandatoryParametersLength);
-                Array.Copy(originalArgs, _mandatoryParametersLength, optionalArgsArray, 0, optionalArgsArray.Length);
-                convertedArgs[_parameterTypes.Length - 1] = optionalArgsArray;
-            }
-
-            return convertedArgs;
+            return ConvertArgumentsWithOptionals((object[])argsAsObject);
         }
 
         private object[] InnerConvertArguments(string args)
         {
             if (string.IsNullOrEmpty(args))
             {
-                return Array.Empty<object>();
-            }
+                var convertedArguments = Array.Empty<object>();
 
-            var convertedArguments = Deserializer.Deserialize(args, _parameterTypes);
-            
-            if (!_hasOptionalParameters)
-            {
+                ValidateMandatoryArguments(convertedArguments);
                 return convertedArguments;
             }
 
-            // reaching here, it means we have to convert the tempArray to a new array like
-            // [arg1, ..., <optionalParameterType>[opt1, ...]]
+            var originalArguments = Deserializer.Deserialize(args, _parameterTypes);
+
+            return ConvertArgumentsWithOptionals(originalArguments);
+        }
+
+        private object[] ConvertArgumentsWithOptionals(object[] originalArguments)
+        {
+            ValidateMandatoryArguments(originalArguments);
+
+            if (!_hasOptionalParameters)
+            {
+                return originalArguments;
+            }
+
+            // the optionalParameterType is always a ParamArray of the last type in the ParameterTypes (eg int[])
             var convertedArgumentsWithOptionals = new object[_parameterTypes.Length];
-            Array.Copy(convertedArguments, convertedArgumentsWithOptionals, _mandatoryParametersLength);
-            var optionalsArray = Array.CreateInstance(_parameterTypes.Last(), convertedArguments.Length - _mandatoryParametersLength);
-            Array.Copy(convertedArguments, _mandatoryParametersLength, optionalsArray, 0, optionalsArray.Length);
-            convertedArgumentsWithOptionals[_parameterTypes.Length - 1] = optionalsArray;
+            Array.Copy(originalArguments, convertedArgumentsWithOptionals, _mandatoryParametersCount);
+            
+            var optionalArgsCount = originalArguments.Length - _mandatoryParametersCount;
+            var optionalParamType = _parameterTypes.Last();
+            var optionalArgsArray = Array.CreateInstance(optionalParamType, optionalArgsCount);
+
+            Array.Copy(originalArguments, _mandatoryParametersCount, optionalArgsArray, 0, optionalArgsCount);
+            convertedArgumentsWithOptionals[_parameterTypes.Length - 1] = optionalArgsArray;
 
             return convertedArgumentsWithOptionals;
         }
 
-        private void ValidateMandatoryArguments(object[] args)
+        private void ValidateMandatoryArguments(object[] originalArguments)
         {
-            if (args.Length < _mandatoryParametersLength)
+            if (originalArguments.Length < _mandatoryParametersCount)
             {
-                throw new ArgumentException($"Number of convertedArguments provided does not match the number of {_methodInfo.Name} method required parameters.");
+                throw new ArgumentException($"Number of original arguments provided does not match the number of {_methodInfo.Name} method required parameters.");
             }
         }
 

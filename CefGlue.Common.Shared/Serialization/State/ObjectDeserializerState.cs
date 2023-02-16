@@ -10,10 +10,24 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
         private string _propertyName;
 
-        public ObjectDeserializerState(JsonTypeInfo valueTypeInfo) : this(CreateObjectInstance(valueTypeInfo.ObjectType), valueTypeInfo) { }
-
-        public ObjectDeserializerState(object value, JsonTypeInfo valueTypeInfo)
+        public ObjectDeserializerState(JsonTypeInfo valueTypeInfo)
         {
+            if (valueTypeInfo.ObjectType == typeof(object))
+            {
+                throw new InvalidOperationException($"Use the {nameof(CollectionDeserializerState)} instead.");
+            }
+
+            Value = Activator.CreateInstance(valueTypeInfo.ObjectType, nonPublic: true);
+            _valueTypeInfo = valueTypeInfo;
+        }
+
+        public ObjectDeserializerState(JsonTypeInfo valueTypeInfo, object value)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             Value = value;
             _valueTypeInfo = valueTypeInfo;
         }
@@ -26,11 +40,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
         public void SetCurrentElementValue(object value)
         {
-            if (Value == null)
-            {
-                throw new InvalidOperationException($"Cannot set value for a null {nameof(Value)}.");
-            }
-
             var typeMemberInfo = _valueTypeInfo.GetTypeMemberInfo(_propertyName);
             if (typeMemberInfo != null)
             {
@@ -40,15 +49,6 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             {
                 throw new InvalidOperationException($"Property or Field '{_propertyName}' does not exist in objectType '{_valueTypeInfo.ObjectType.Name}'.");
             }
-        }
-
-        private static object CreateObjectInstance(Type type)
-        {
-            if (type == typeof(object))
-            {
-                throw new InvalidOperationException($"Use the {nameof(DynamicDeserializerState)} instead.");
-            }
-            return Activator.CreateInstance(type, nonPublic: true);
         }
     }
 }

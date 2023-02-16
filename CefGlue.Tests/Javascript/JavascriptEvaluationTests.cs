@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -51,12 +52,12 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public async Task BinaryReturn()
         {
-            var expected = new byte[byte.MaxValue+1];
+            var expected = new byte[byte.MaxValue + 1];
             for (int i = 0; i <= byte.MaxValue; i++)
             {
                 expected[i] = (byte)i;
             }
-            var result = await EvaluateJavascript<byte[]>($"return new Uint8Array([{string.Join(",",expected)}]);");
+            var result = await EvaluateJavascript<byte[]>($"return new Uint8Array([{string.Join(",", expected)}]);");
             Assert.AreEqual(expected, result);
         }
 
@@ -71,11 +72,12 @@ namespace CefGlue.Tests.Javascript
         public async Task DictionaryCollectionReturn()
         {
             var result = await EvaluateJavascript<Dictionary<string, int>>("return {\"first\":1,\"second\":2,\"third\":3};");
-            var expected = new Dictionary<string, int>() {
-                    { "first" , 1 },
-                    { "second" , 2 },
-                    { "third" , 3 }
-                };
+            var expected = new Dictionary<string, int>()
+            {
+                { "first" , 1 },
+                { "second" , 2 },
+                { "third" , 3 }
+            };
             CollectionAssert.AreEqual(expected, result);
         }
 
@@ -95,7 +97,7 @@ namespace CefGlue.Tests.Javascript
         public async Task ArrayListReturn()
         {
             var result = await EvaluateJavascript<ArrayList>("return ['first','second','third'];");
-            var expected = new string[] {"first", "second", "third"};
+            var expected = new string[] { "first", "second", "third" };
             CollectionAssert.AreEqual(expected, result);
         }
 
@@ -103,9 +105,21 @@ namespace CefGlue.Tests.Javascript
         public async Task DynamicObjectReturn()
         {
             var result = await EvaluateJavascript<dynamic>("return { 'foo': 'foo-value', 'bar': 10, 'baz': [1, 2] }");
+            Assert.IsInstanceOf<IDictionary<string, object>>(result);
+            var obtainedDictionary = (IDictionary<string, object>)result;
+            Assert.AreEqual("foo-value", obtainedDictionary["foo"]);
+            Assert.AreEqual(10, obtainedDictionary["bar"]);
+            Assert.IsInstanceOf<object[]>(obtainedDictionary["baz"]);
+            CollectionAssert.AreEqual(new[] { 1, 2 }, (object[])obtainedDictionary["baz"]);
+        }
+
+        [Test]
+        public async Task ExpandoObjectReturn()
+        {
+            var result = await (dynamic)EvaluateJavascript<ExpandoObject>("return { 'foo': 'foo-value', 'bar': 10, 'baz': [1, 2] }");
             Assert.AreEqual("foo-value", result.foo);
             Assert.AreEqual(10, result.bar);
-            CollectionAssert.AreEqual(new [] { 1, 2 }, result.baz);
+            CollectionAssert.AreEqual(new[] { 1, 2 }, result.baz);
         }
 
         [Test]
@@ -119,9 +133,10 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public async Task CyclicObjectReturn()
         {
-            var script = @"const list = [1,null];
-                           list[1] = list;
-                           return list;";
+            var script =
+                "const list = [1,null];" +
+                "list[1] = list;" +
+                "return list;";
             var result = await EvaluateJavascript<object[]>(script);
             Assert.AreEqual(2, result.Length);
             Assert.AreEqual(1, result[0]);
@@ -156,10 +171,10 @@ namespace CefGlue.Tests.Javascript
         {
             // Arrange
             var evalTask = EvaluateJavascript<int>("const finishTime = new Date().getTime() + 10000; while(new Date().getTime() < finishTime); return 10;");
-            
+
             // Act
             Browser.Dispose();
-            
+
             // Assert
             try
             {
