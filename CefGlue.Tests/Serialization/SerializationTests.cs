@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text.Json;
 using Xilium.CefGlue.Common.Shared.Serialization;
@@ -408,7 +409,7 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
-        public void HandlesIntAsObject()
+        public void HandlesNumberAsObject()
         {
             var obtained = Deserializer.Deserialize<object>("5");
             Assert.IsInstanceOf<double>(obtained);
@@ -416,7 +417,7 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
-        public void HandlesIntArrayAsObject()
+        public void HandlesNumberArrayAsObject()
         {
             var obtained = Deserializer.Deserialize<object>("[5]");
             Assert.IsInstanceOf<object[]>(obtained);
@@ -427,6 +428,14 @@ namespace CefGlue.Tests.Serialization
         public void HandlesJsObjectAsObject()
         {
             var obtained = Deserializer.Deserialize<object>("{\"key\":5}");
+            Assert.IsInstanceOf<IDictionary<string, object>>(obtained);
+            CollectionAssert.AreEqual(new[] { KeyValuePair.Create("key", 5) }, (IDictionary<string, object>)obtained);
+        }
+
+        [Test]
+        public void HandlesJsObjectAsExpandoObject()
+        {
+            var obtained = Deserializer.Deserialize<ExpandoObject>("{\"key\":5}");
             Assert.IsInstanceOf<IDictionary<string, object>>(obtained);
             CollectionAssert.AreEqual(new[] { KeyValuePair.Create("key", 5) }, (IDictionary<string, object>)obtained);
         }

@@ -52,7 +52,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
             {
                 throw new ArgumentNullException(nameof(memberName));
             }
-            return _internalTypeInfo.Value.TypeMembers.GetValueOrDefault(memberName);
+            return _internalTypeInfo.Value.TypeMembers?.GetValueOrDefault(memberName);
         }
 
         public JsonTypeInfo GetPropertyTypeInfo(string propertyName)
@@ -92,8 +92,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
 
                 var properties = objectType
                 .GetProperties(EligibleMembers)
-                .Where(p => p.CanWrite)
-                .Where(p => !p.GetIndexParameters().Any());
+                .Where(p => p.CanWrite && !p.GetIndexParameters().Any());
 
                 var fields = objectType
                     .GetFields(EligibleMembers)
