@@ -186,5 +186,26 @@ namespace CefGlue.Tests.Javascript
                 Assert.Fail(e.Message);
             }
         }
+
+        [Test]
+        public async Task TryCatchScriptSucceeds()
+        {
+            var result = await EvaluateJavascript<int>("try { return 1 } catch (e) { return 'error' }");
+            Assert.AreEqual(1, result);
+        }
+
+        [Test]
+        public async Task ScriptSumSucceeds()
+        {
+            var result = await EvaluateJavascript<int>("return 2+1");
+            Assert.AreEqual(3, result);
+        }
+
+        [Test]
+        public async Task ScriptWithTrailingCommentSucceeds()
+        {
+            var result = await EvaluateJavascript<int>("return 1 //trailing comment");
+            Assert.AreEqual(1, result);
+        }
     }
 }
