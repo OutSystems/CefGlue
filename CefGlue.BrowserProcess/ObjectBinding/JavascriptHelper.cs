@@ -61,7 +61,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         public static string WrapScriptForEvaluation(string script)
         {
-            return $"{GlobalObjectName}.{EvaluateScriptFunctionName}(() => ({script}))";
+            return $"{GlobalObjectName}.{EvaluateScriptFunctionName}(function() {{{script}\n}})";
         }
 
         private static string FillScriptPlaceholders(string script)
