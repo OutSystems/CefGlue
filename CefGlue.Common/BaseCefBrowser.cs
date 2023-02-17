@@ -239,6 +239,22 @@ namespace Xilium.CefGlue.Common
         public double ZoomLevel { get => _adapter.ZoomLevel; set => _adapter.ZoomLevel = value; }
 
         /// <summary>
+        /// Get or set <see cref="CefRequestContext"/>
+        /// </summary>
+        public CefRequestContext RequestContext 
+        {
+            get
+            {
+                return _adapter.RequestContext;
+            }
+
+            set
+            {
+                _adapter.RequestContext = value;
+            }
+        }
+
+        /// <summary>
         /// The undelying cef browser instance. Can be used for advanced functionality.
         /// </summary>
         protected CefBrowser UnderlyingBrowser => _adapter.Browser;

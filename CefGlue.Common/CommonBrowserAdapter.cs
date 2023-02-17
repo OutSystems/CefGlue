@@ -118,6 +118,8 @@ namespace Xilium.CefGlue.Common
 
         public event AsyncUnhandledExceptionEventHandler UnhandledException;
 
+        public CefRequestContext RequestContext { get; set; }
+
         public string Address { get => _browser?.GetMainFrame().Url ?? _initialUrl; set => NavigateTo(value); }
 
         #region Cef Handlers
@@ -305,7 +307,7 @@ namespace Xilium.CefGlue.Common
                 extraInfo.SetString(Constants.CrashPipeNameKey, _crashServerPipeName);
 
                 // This is the first time the window is being rendered, so create it.
-                CefBrowserHost.CreateBrowser(windowInfo, cefClient, Settings, "", extraInfo);
+                CefBrowserHost.CreateBrowser(windowInfo, cefClient, Settings, "", extraInfo, RequestContext);
             }
 
             return true;
