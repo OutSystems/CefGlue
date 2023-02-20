@@ -195,7 +195,7 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        public async Task ScriptSumSucceeds()
+        public async Task SimpleExpressionScriptSucceeds()
         {
             var result = await EvaluateJavascript<int>("return 2+1");
             Assert.AreEqual(3, result);
