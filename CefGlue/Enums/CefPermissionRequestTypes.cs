@@ -34,6 +34,6 @@ namespace Xilium.CefGlue
         StorageAccess = 1 << 16,
         U2fApiRequest = 1 << 17,
         VrSession = 1 << 18,
-        WindowPlacement = 1 << 19,
+        WindowManagement = 1 << 19,
     }
 }

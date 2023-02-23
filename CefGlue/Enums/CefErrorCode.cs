@@ -166,7 +166,7 @@ namespace Xilium.CefGlue
         /// <summary>
         /// The request failed because the response was delivered along with requirements
         /// which are not met ('X-Frame-Options' and 'Content-Security-Policy' ancestor
-        /// checks and 'Cross-Origin-Resource-Policy', for instance).
+        /// checks and 'Cross-Origin-Resource-Policy' for instance).
         /// </summary>
         BLOCKED_BY_RESPONSE = -27,
 
@@ -187,6 +187,11 @@ namespace Xilium.CefGlue
         /// The request was blocked because of no H/2 or QUIC session.
         /// </summary>
         H2_OR_QUIC_REQUIRED = -31,
+
+        /// <summary>
+        /// The request was blocked by CORB or ORB.
+        /// </summary>
+        BLOCKED_BY_ORB = -32,
 
         /// <summary>
         /// A connection was closed (corresponding to a TCP FIN).

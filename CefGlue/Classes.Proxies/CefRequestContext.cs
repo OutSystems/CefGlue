@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
     using Xilium.CefGlue.Interop;
 
@@ -24,6 +25,10 @@
     /// </summary>
     public sealed unsafe partial class CefRequestContext
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private cef_request_context_t* GetSelf()
+            => (cef_request_context_t*)_self;
+
         /// <summary>
         /// Returns the global context object.
         /// </summary>
@@ -77,7 +82,7 @@
         {
             if (other == null) return false;
 
-            return cef_request_context_t.is_same(_self, other.ToNative()) != 0;
+            return cef_request_context_t.is_same(GetSelf(), other.ToNative()) != 0;
         }
 
         /// <summary>
@@ -85,7 +90,7 @@
         /// </summary>
         public bool IsSharingWith(CefRequestContext other)
         {
-            return cef_request_context_t.is_sharing_with(_self, other.ToNative()) != 0;
+            return cef_request_context_t.is_sharing_with(GetSelf(), other.ToNative()) != 0;
         }
 
         /// <summary>
@@ -97,7 +102,7 @@
         {
             get
             {
-                return cef_request_context_t.is_global(_self) != 0;
+                return cef_request_context_t.is_global(GetSelf()) != 0;
             }
         }
 
@@ -107,7 +112,7 @@
         public CefRequestContextHandler GetHandler()
         {
             return CefRequestContextHandler.FromNativeOrNull(
-                cef_request_context_t.get_handler(_self)
+                cef_request_context_t.get_handler(GetSelf())
                 );
         }
 
@@ -119,7 +124,7 @@
         {
             get
             {
-                var n_result = cef_request_context_t.get_cache_path(_self);
+                var n_result = cef_request_context_t.get_cache_path(GetSelf());
                 return cef_string_userfree.ToString(n_result);
             }
         }
@@ -134,7 +139,7 @@
             var n_callback = callback != null ? callback.ToNative() : null;
 
             return CefCookieManager.FromNativeOrNull(
-                cef_request_context_t.get_cookie_manager(_self, n_callback)
+                cef_request_context_t.get_cookie_manager(GetSelf(), n_callback)
                 );
         }
 
@@ -162,7 +167,7 @@
                 var n_schemeName = new cef_string_t(schemeName_str, schemeName.Length);
                 var n_domainName = new cef_string_t(domainName_str, domainName != null ? domainName.Length : 0);
 
-                return cef_request_context_t.register_scheme_handler_factory(_self, &n_schemeName, &n_domainName, factory.ToNative()) != 0;
+                return cef_request_context_t.register_scheme_handler_factory(GetSelf(), &n_schemeName, &n_domainName, factory.ToNative()) != 0;
             }
         }
 
@@ -172,89 +177,7 @@
         /// </summary>
         public bool ClearSchemeHandlerFactories()
         {
-            return cef_request_context_t.clear_scheme_handler_factories(_self) != 0;
-        }
-
-        /// <summary>
-        /// Returns true if a preference with the specified |name| exists. This method
-        /// must be called on the browser process UI thread.
-        /// </summary>
-        public bool HasPreference(string name)
-        {
-            fixed (char* name_str = name)
-            {
-                var n_name = new cef_string_t(name_str, name != null ? name.Length : 0);
-                return cef_request_context_t.has_preference(_self, &n_name) != 0;
-            }
-        }
-
-        /// <summary>
-        /// Returns the value for the preference with the specified |name|. Returns
-        /// NULL if the preference does not exist. The returned object contains a copy
-        /// of the underlying preference value and modifications to the returned
-        /// object will not modify the underlying preference value. This method must
-        /// be called on the browser process UI thread.
-        /// </summary>
-        public CefValue? GetPreference(string name)
-        {
-            fixed (char* name_str = name)
-            {
-                var n_name = new cef_string_t(name_str, name != null ? name.Length : 0);
-                var n_value = cef_request_context_t.get_preference(_self, &n_name);
-                return CefValue.FromNativeOrNull(n_value);
-            }
-        }
-
-        /// <summary>
-        /// Returns all preferences as a dictionary. If |include_defaults| is true
-        /// then preferences currently at their default value will be included. The
-        /// returned object contains a copy of the underlying preference values and
-        /// modifications to the returned object will not modify the underlying
-        /// preference values. This method must be called on the browser process UI
-        /// thread.
-        /// </summary>
-        public CefDictionaryValue GetAllPreferences(bool includeDefaults)
-        {
-            var n_result = cef_request_context_t.get_all_preferences(_self, includeDefaults ? 1 : 0);
-            return CefDictionaryValue.FromNative(n_result);
-        }
-
-        /// <summary>
-        /// Returns true if the preference with the specified |name| can be modified
-        /// using SetPreference. As one example preferences set via the command-line
-        /// usually cannot be modified. This method must be called on the browser
-        /// process UI thread.
-        /// </summary>
-        public bool CanSetPreference(string name)
-        {
-            fixed (char* name_str = name)
-            {
-                var n_name = new cef_string_t(name_str, name != null ? name.Length : 0);
-                return cef_request_context_t.can_set_preference(_self, &n_name) != 0;
-            }
-        }
-
-        /// <summary>
-        /// Set the |value| associated with preference |name|. Returns true if the
-        /// value is set successfully and false otherwise. If |value| is NULL the
-        /// preference will be restored to its default value. If setting the
-        /// preference fails then |error| will be populated with a detailed
-        /// description of the problem. This method must be called on the browser
-        /// process UI thread.
-        /// </summary>
-        public bool SetPreference(string name, CefValue? value, out string error)
-        {
-            fixed (char* name_str = name)
-            {
-                var n_name = new cef_string_t(name_str, name != null ? name.Length : 0);
-                var n_value = value != null ? value.ToNative() : null;
-                cef_string_t n_error;
-
-                var n_result = cef_request_context_t.set_preference(_self, &n_name, n_value, &n_error);
-
-                error = cef_string_t.ToString(&n_error);
-                return n_result != 0;
-            }
+            return cef_request_context_t.clear_scheme_handler_factories(GetSelf()) != 0;
         }
 
         /// <summary>
@@ -268,7 +191,7 @@
         public void ClearCertificateExceptions(CefCompletionCallback callback)
         {
             var n_callback = callback != null ? callback.ToNative() : null;
-            cef_request_context_t.clear_certificate_exceptions(_self, n_callback);
+            cef_request_context_t.clear_certificate_exceptions(GetSelf(), n_callback);
         }
 
         /// <summary>
@@ -279,7 +202,7 @@
         public void ClearHttpAuthCredentials(CefCompletionCallback callback)
         {
             var n_callback = callback != null ? callback.ToNative() : null;
-            cef_request_context_t.clear_http_auth_credentials(_self, n_callback);
+            cef_request_context_t.clear_http_auth_credentials(GetSelf(), n_callback);
         }
 
         /// <summary>
@@ -291,7 +214,7 @@
         public void CloseAllConnections(CefCompletionCallback callback)
         {
             var n_callback = callback != null ? callback.ToNative() : null;
-            cef_request_context_t.close_all_connections(_self, n_callback);
+            cef_request_context_t.close_all_connections(GetSelf(), n_callback);
         }
 
         /// <summary>
@@ -307,7 +230,7 @@
             {
                 var n_origin = new cef_string_t(origin_str, origin != null ? origin.Length : 0);
                 var n_callback = callback.ToNative();
-                cef_request_context_t.resolve_host(_self, &n_origin, n_callback);
+                cef_request_context_t.resolve_host(GetSelf(), &n_origin, n_callback);
             }
         }
 
@@ -358,7 +281,7 @@
                 var n_rootDirectory = new cef_string_t(rootDirectory_str, rootDirectory != null ? rootDirectory.Length : 0);
                 var n_manifest = manifest != null ? manifest.ToNative() : null;
                 var n_handler = handler != null ? handler.ToNative() : null;
-                cef_request_context_t.load_extension(_self, &n_rootDirectory, n_manifest, n_handler);
+                cef_request_context_t.load_extension(GetSelf(), &n_rootDirectory, n_manifest, n_handler);
             }
         }
 
@@ -373,7 +296,7 @@
             fixed(char* extensionId_str = extensionId)
             {
                 var n_extensionId = new cef_string_t(extensionId_str, extensionId != null ? extensionId.Length : 0);
-                return cef_request_context_t.did_load_extension(_self, &n_extensionId) != 0;
+                return cef_request_context_t.did_load_extension(GetSelf(), &n_extensionId) != 0;
             }
         }
 
@@ -388,7 +311,7 @@
             fixed (char* extensionId_str = extensionId)
             {
                 var n_extensionId = new cef_string_t(extensionId_str, extensionId != null ? extensionId.Length : 0);
-                return cef_request_context_t.has_extension(_self, &n_extensionId) != 0;
+                return cef_request_context_t.has_extension(GetSelf(), &n_extensionId) != 0;
             }
         }
 
@@ -402,7 +325,7 @@
         {
             var n_extensionIds = libcef.string_list_alloc();
 
-            var result = cef_request_context_t.get_extensions(_self, n_extensionIds) != 0;
+            var result = cef_request_context_t.get_extensions(GetSelf(), n_extensionIds) != 0;
             if (result)
             {
                 extensionIds = cef_string_list.ToArray(n_extensionIds);
@@ -426,7 +349,7 @@
             fixed (char* extensionId_str = extensionId)
             {
                 var n_extensionId = new cef_string_t(extensionId_str, extensionId != null ? extensionId.Length : 0);
-                var n_result = cef_request_context_t.get_extension(_self, &n_extensionId);
+                var n_result = cef_request_context_t.get_extension(GetSelf(), &n_extensionId);
                 return CefExtension.FromNativeOrNull(n_result);
             }
         }
@@ -439,7 +362,7 @@
         public CefMediaRouter GetMediaRouter(CefCompletionCallback? callback)
         {
             var nCallback = callback != null ? callback.ToNative() : null;
-            var nResult = cef_request_context_t.get_media_router(_self, nCallback);
+            var nResult = cef_request_context_t.get_media_router(GetSelf(), nCallback);
             return CefMediaRouter.FromNative(nResult);
         }
     }
