@@ -175,6 +175,7 @@ c2cs_enumtypes = {
     'cef_media_access_permission_types_t': 'CefMediaAccessPermissionTypes',
     'cef_permission_request_types_t': 'CefPermissionRequestTypes',
     'cef_permission_request_result_t': 'CefPermissionRequestResult',
+    'cef_preferences_type_t': 'CefPreferencesType',
     }
 
 c2cs_structtypes = { }
@@ -211,6 +212,12 @@ def is_proxy(cls):
     cls_name = cls.get_name()
     if cls_name in classdef:
         return classdef[cls_name]['role'] & ROLE_PROXY == ROLE_PROXY
+    return False
+
+def is_abstract(cls):
+    cls_name = cls.get_name()
+    if cls_name in classdef:
+        return classdef[cls_name].get('abstract', False)
     return False
 
 def is_reversible(cls):

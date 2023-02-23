@@ -9,7 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 
-    <Version>107.1.12</Version>
+    <Version>108.4.13</Version>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
@@ -106,6 +106,8 @@
     <Compile Include="Classes.Proxies\CefPermissionPromptCallback.cs" />
     <Compile Include="Classes.Proxies\CefPostData.cs" />
     <Compile Include="Classes.Proxies\CefPostDataElement.cs" />
+    <Compile Include="Classes.Proxies\CefPreferenceManager.cs" />
+    <Compile Include="Classes.Proxies\CefPreferenceRegistrar.cs" />
     <Compile Include="Classes.Proxies\CefPrintDialogCallback.cs" />
     <Compile Include="Classes.Proxies\CefPrintJobCallback.cs" />
     <Compile Include="Classes.Proxies\CefPrintSettings.cs" />
@@ -161,6 +163,7 @@
     <Compile Include="Enums\CefDomEventPhase.cs" />
     <Compile Include="Enums\CefDomNodeType.cs" />
     <Compile Include="Enums\CefDragOperationsMask.cs" />
+    <Compile Include="Enums\CefPreferencesType.cs" />
     <Compile Include="Enums\CefDuplexMode.cs" />
     <Compile Include="Enums\CefErrorCode.cs" />
     <Compile Include="Enums\CefEventFlags.cs" />
@@ -221,6 +224,7 @@
     <Compile Include="Exceptions\CefRuntimeException.cs" />
     <Compile Include="Exceptions\CefVersionMismatchException.cs" />
     <Compile Include="Extensions\CefBrowserHostExtensions.cs" />
+    <Compile Include="Interop\libcef.win.cs" />
     <Compile Include="Interop\Structs\cef_insets_t.cs" />
     <Compile Include="Interop\Structs\cef_touch_handle_state_t.cs" />
     <Compile Include="Interop\_Platform\NativeMethods.cs" />

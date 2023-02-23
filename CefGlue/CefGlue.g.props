@@ -66,6 +66,8 @@
         <Compile Include="Classes.g\CefPermissionPromptCallback.g.cs"/>
         <Compile Include="Classes.g\CefPostData.g.cs"/>
         <Compile Include="Classes.g\CefPostDataElement.g.cs"/>
+        <Compile Include="Classes.g\CefPreferenceManager.g.cs"/>
+        <Compile Include="Classes.g\CefPreferenceRegistrar.g.cs"/>
         <Compile Include="Classes.g\CefPrintDialogCallback.g.cs"/>
         <Compile Include="Classes.g\CefPrintHandler.g.cs"/>
         <Compile Include="Classes.g\CefPrintJobCallback.g.cs"/>
@@ -190,6 +192,8 @@
         <Compile Include="Interop\Classes.g\cef_permission_prompt_callback_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_post_data_element_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_post_data_t.g.cs"/>
+        <Compile Include="Interop\Classes.g\cef_preference_manager_t.g.cs"/>
+        <Compile Include="Interop\Classes.g\cef_preference_registrar_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_print_dialog_callback_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_print_handler_t.g.cs"/>
         <Compile Include="Interop\Classes.g\cef_print_job_callback_t.g.cs"/>
