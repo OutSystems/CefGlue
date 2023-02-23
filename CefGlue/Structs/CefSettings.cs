@@ -279,11 +279,11 @@
         /// Comma delimited list of schemes supported by the associated
         /// CefCookieManager. If |cookieable_schemes_exclude_defaults| is false (0)
         /// the default schemes ("http", "https", "ws" and "wss") will also be
-        /// supported. Specifying a |cookieable_schemes_list| value and setting
+        /// supported. Not specifying a |cookieable_schemes_list| value and setting
         /// |cookieable_schemes_exclude_defaults| to true (1) will disable all loading
-        /// and saving of cookies for this manager. Can be overridden
-        /// for individual CefRequestContext instances via the
-        /// CefRequestContextSettings.cookieable_schemes_list and
+        /// and saving of cookies. These settings will only impact the global
+        /// CefRequestContext. Individual CefRequestContext instances can be
+        /// configured via the CefRequestContextSettings.cookieable_schemes_list and
         /// CefRequestContextSettings.cookieable_schemes_exclude_defaults values.
         /// </summary>
         public string CookieableSchemesList { get; set; }

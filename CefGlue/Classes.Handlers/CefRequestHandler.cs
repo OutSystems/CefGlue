@@ -152,33 +152,6 @@
         }
 
 
-        private int on_quota_request(cef_request_handler_t* self, cef_browser_t* browser, cef_string_t* origin_url, long new_size, cef_callback_t* callback)
-        {
-            CheckSelf(self);
-
-            var m_browser = CefBrowser.FromNative(browser);
-            var m_origin_url = cef_string_t.ToString(origin_url);
-            var m_callback = CefCallback.FromNative(callback);
-
-            var result = OnQuotaRequest(m_browser, m_origin_url, new_size, m_callback);
-
-            return result ? 1 : 0;
-        }
-
-        /// <summary>
-        /// Called on the IO thread when JavaScript requests a specific storage quota
-        /// size via the webkitStorageInfo.requestQuota function. |origin_url| is the
-        /// origin of the page making the request. |new_size| is the requested quota
-        /// size in bytes. Return true to continue the request and call CefCallback
-        /// methods either in this method or at a later time to grant or deny the
-        /// request. Return false to cancel the request immediately.
-        /// </summary>
-        protected virtual bool OnQuotaRequest(CefBrowser browser, string originUrl, long newSize, CefCallback callback)
-        {
-            return false;
-        }
-
-
         private int on_certificate_error(cef_request_handler_t* self, cef_browser_t* browser, CefErrorCode cert_error, cef_string_t* request_url, cef_sslinfo_t* ssl_info, cef_callback_t* callback)
         {
             CheckSelf(self);

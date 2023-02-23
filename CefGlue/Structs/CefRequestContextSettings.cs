@@ -56,10 +56,10 @@
         /// Comma delimited list of schemes supported by the associated
         /// CefCookieManager. If |cookieable_schemes_exclude_defaults| is false (0)
         /// the default schemes ("http", "https", "ws" and "wss") will also be
-        /// supported. Specifying a |cookieable_schemes_list| value and setting
+        /// supported. Not specifying a |cookieable_schemes_list| value and setting
         /// |cookieable_schemes_exclude_defaults| to true (1) will disable all loading
-        /// and saving of cookies for this manager. These values will be ignored if
-        /// |cache_path| matches the CefSettings.cache_path value.
+        /// and saving of cookies. These values will be ignored if |cache_path|
+        /// matches the CefSettings.cache_path value.
         /// </summary>
         public string CookieableSchemesList { get; set; }
 
