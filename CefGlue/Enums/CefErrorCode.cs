@@ -144,12 +144,7 @@ namespace Xilium.CefGlue
         /// </summary>
         SOCKET_IS_CONNECTED = -23,
 
-        /// <summary>
-        /// The request was blocked because the forced reenrollment check is still
-        /// pending. This error can only occur on ChromeOS.
-        /// The error can be emitted by code in chrome/browser/policy/policy_helpers.cc.
-        /// </summary>
-        BLOCKED_ENROLLMENT_CHECK_PENDING = -24,
+        // Error -24 was removed (BLOCKED_ENROLLMENT_CHECK_PENDING)
 
         /// <summary>
         /// The upload failed because the upload stream needed to be re-read, due to a
