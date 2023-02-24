@@ -60,6 +60,27 @@ namespace CefGlue.Tests.Javascript
                 MethodWithParamsCalled?.Invoke(new object[] { param1, param2, param3, param4 });
             }
 
+            public event Action<object[]> MethodWithFixedAndOptionalParamsCalled;
+
+            public void MethodWithFixedAndOptionalParams(int p1, params string[] args)
+            {
+                MethodWithFixedAndOptionalParamsCalled?.Invoke(new object[] { p1, args });
+            }
+
+            public event Action<string[]> MethodWithOptionalParamsCalled;
+
+            public void MethodWithOptionalParams(params string[] args)
+            {
+                MethodWithOptionalParamsCalled?.Invoke(args);
+            }
+
+            public event Action<object[]> MethodWithStringAndObjectsParamsCalled;
+
+            public void MethodWithStringAndObjectsParams(string param1, Person person1, Person person2, Person person3)
+            {
+                MethodWithStringAndObjectsParamsCalled?.Invoke(new object[] { param1, person1, person2, person3 });
+            }
+
             public event Action<object[]> MethodWithStringParamCalled;
 
             public void MethodWithStringParam(string param1)
@@ -79,6 +100,13 @@ namespace CefGlue.Tests.Javascript
             public void MethodWithCyclicObjectParam(CyclicObject param)
             {
                 MethodWithCyclicObjectParamCalled?.Invoke(new object[] { param });
+            }
+
+            public event Action<object[]> MethodWithObjectsArrayParamCalled;
+
+            public void MethodWithObjectsArrayParam(object[] param)
+            {
+                MethodWithObjectsArrayParamCalled?.Invoke(param);
             }
 
             public object MethodWithNullReturn()
@@ -185,6 +213,46 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
+        public async Task MethodFixedAndOptionalParamsArePassed()
+        {
+            const int P1 = 7;
+            const string Arg1 = "test";
+            const string Arg2 = "s2";
+
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithFixedAndOptionalParamsCalled += (args) => taskCompletionSource.SetResult(args);
+
+            Execute($"{ObjName}.methodWithFixedAndOptionalParams({P1}, '{Arg1}', '{Arg2}')");
+
+            var result = await taskCompletionSource.Task;
+
+            Assert.AreEqual(2, result.Length);
+            Assert.AreEqual(P1, result[0]);
+            Assert.IsInstanceOf<string[]>(result[1]);
+            var optionalParams = (string[])result[1];
+            Assert.AreEqual(Arg1, optionalParams[0]);
+            Assert.AreEqual(Arg2, optionalParams[1]);
+        }
+
+        [Test]
+        public async Task MethodOptionalParamsArePassed()
+        {
+            const string Arg1 = "test";
+            const string Arg2 = "s2";
+
+            var taskCompletionSource = new TaskCompletionSource<string[]>();
+            nativeObject.MethodWithOptionalParamsCalled += (args) => taskCompletionSource.SetResult(args);
+
+            Execute($"{ObjName}.methodWithOptionalParams('{Arg1}', '{Arg2}')");
+
+            var result = await taskCompletionSource.Task;
+
+            Assert.AreEqual(2, result.Length);
+            Assert.AreEqual(Arg1, result[0]);
+            Assert.AreEqual(Arg2, result[1]);
+        }
+
+        [Test]
         public async Task MethodEmptyStringParamIsPassed()
         {
             const string Arg1 = "";
@@ -238,7 +306,11 @@ namespace CefGlue.Tests.Javascript
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithCyclicObjectParamCalled += (args) => taskCompletionSource.SetResult(args);
 
-            Execute($"{ObjName}.methodWithCyclicObjectParam({{'$id':'1','Name': 'parent1','Parent':null,'Child':{{'$id':'2','Name': 'child1','Parent':{{'$ref':'1'}},'Child':null}}}})");
+            var script = @$"const parent={{Name:'parent1', Parent:null,Child:null}};
+                            const child={{Name:'child1',Parent:parent,Child:null}};
+                            parent.Child=child;
+                            {ObjName}.methodWithCyclicObjectParam(parent);";
+            Execute(script);
 
             var result = await taskCompletionSource.Task;
             Assert.AreEqual(1, result.Length);
@@ -249,6 +321,60 @@ namespace CefGlue.Tests.Javascript
             Assert.NotNull(arg.Child);
             Assert.AreEqual("child1", arg.Child.Name);
             Assert.NotNull(arg.Child.Parent);
+            Assert.AreSame(arg, arg.Child.Parent);
+        }
+
+        [Test]
+        public async Task MethodWithStringAndObjectsParamsIsPassed()
+        {
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithStringAndObjectsParamsCalled += (args) => taskCompletionSource.SetResult(args);
+
+            var script = @$"const person1 = {{'Name': 'person1', 'Age': 10, 'BirthDate': new Date('{Date}') }};
+                            const person2 = {{'Name': 'person2', 'Age': 15, 'BirthDate': new Date('{Date}') }};
+                            {ObjName}.methodWithStringAndObjectsParams('stringParam', person1, person2, person1);";
+            Execute(script);
+
+            var result = await taskCompletionSource.Task;
+            Assert.AreEqual(4, result.Length);
+            Assert.IsInstanceOf<string>(result[0]);
+            Assert.IsInstanceOf<Person>(result[1]);
+            Assert.IsInstanceOf<Person>(result[2]);
+            Assert.IsInstanceOf<Person>(result[3]);
+
+            Assert.AreEqual("stringParam", result[0]);
+            Assert.AreEqual("person1", ((Person)result[1]).Name);
+            Assert.AreEqual("person2", ((Person)result[2]).Name);
+            Assert.AreSame(result[1], result[3]);
+        }
+
+        [Test]
+        public async Task MethodWithObjectsArrayParamIsPassed()
+        {
+            var taskCompletionSource = new TaskCompletionSource<object[]>();
+            nativeObject.MethodWithObjectsArrayParamCalled += (args) => taskCompletionSource.SetResult(args);
+
+            var script = @$"const intsArray=[1,2,3];
+                            const objs=[null, 'text', 5, {{Name: 'plainObjName'}}, intsArray, intsArray];
+                            {ObjName}.methodWithObjectsArrayParam(objs);";
+            Execute(script);
+
+            var result = await taskCompletionSource.Task;
+            Assert.IsInstanceOf<object[]>(result);
+            Assert.AreEqual(6, result.Length);
+            Assert.IsNull(result[0]);
+            Assert.AreEqual("text", result[1]);
+            Assert.AreEqual(5, result[2]);
+            Assert.IsInstanceOf<IDictionary<string, object>>(result[3]);
+            var dict = (IDictionary<string, object>)result[3];
+            Assert.AreEqual(1, dict.Count);
+            Assert.AreEqual("Name", dict.Keys.Single());
+            Assert.AreEqual("plainObjName", dict.Values.Single());
+            Assert.IsInstanceOf<object[]>(result[4]);
+            var arr = (object[])result[4];
+            Assert.AreEqual(3, arr.Length);
+            Assert.AreEqual(2, arr[1]);
+            Assert.AreSame(result[4], result[5]);
         }
 
         [Test]
@@ -275,20 +401,13 @@ namespace CefGlue.Tests.Javascript
         public async Task NativeObjectMethodDateTimeResultIsReturned()
         {
             //Setup
-            var windowsEpoch = new DateTime(1601, 1, 1);
-
             // Act
             Execute($"{ObjName}.methodWithDateTimeReturn().then(r => {ObjName}.setResult(r));");
 
             var result = await nativeObject.ResultTask;
 
             // Assert
-            var nativeObjectDateTime = nativeObject.MethodWithDateTimeReturn();
-            var elapsedMicrosecondsFromWindowsEpoch =
-                (nativeObjectDateTime - windowsEpoch).TotalMilliseconds * 1000;
-
-            Assert.IsInstanceOf<IDictionary<string, object>>(result);
-            Assert.AreEqual(elapsedMicrosecondsFromWindowsEpoch, ((IDictionary<string, object>)result)["Ticks"]);
+            Assert.AreEqual(nativeObject.MethodWithDateTimeReturn(), result);
         }
 
         [Test]
