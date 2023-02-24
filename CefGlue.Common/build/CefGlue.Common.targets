@@ -20,21 +20,21 @@
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>
         </None>
-        <None Include="$(OutDir)/libEGL.dylib">
+        <None Include="$(OutputDirectory)\libEGL.dylib">
             <Visible>false</Visible>
             <Link>$(OutputDirectory)\$(CefGlueBrowserProcessDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>
         </None>
-        <None Include="$(OutDir)/libGLESv2.dylib">
+        <None Include="$(OutputDirectory)\libGLESv2.dylib">
             <Visible>false</Visible>
             <Link>$(OutputDirectory)\$(CefGlueBrowserProcessDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>
         </None>
-        <None Include="$(OutDir)/libvk_swiftshader.dylib">
+        <None Include="$(OutputDirectory)\libvk_swiftshader.dylib">
             <Visible>false</Visible>
             <Link>$(OutputDirectory)\$(CefGlueBrowserProcessDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
