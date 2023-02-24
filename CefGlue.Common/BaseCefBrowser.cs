@@ -30,10 +30,6 @@ namespace Xilium.CefGlue.Common
             : this(CefRequestContext.CreateContext(cefRequestContextSettings, cefRequestContextHandler))
         { }
 
-        public BaseCefBrowser(CefRequestContext cefRequestContext, CefRequestContextHandler cefRequestContextHandler = null)
-            : this(CefRequestContext.CreateContext(cefRequestContext, cefRequestContextHandler))
-        { }
-
         public BaseCefBrowser(CefRequestContext cefRequestContext = null)
         {
 #if HAS_NLOG
