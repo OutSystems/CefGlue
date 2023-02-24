@@ -9,7 +9,7 @@
 
     <PropertyGroup>
         <PackageOutputPath>$(MSBuildProjectDirectory)\..\Nuget\output</PackageOutputPath>
-        <Version>106.5249.6-preview2</Version>
+        <Version>106.5249.6-preview3</Version>
         <Authors>XiliumHQ,OutSystems</Authors>
         <Product>CefGlue</Product>
         <AssemblyTitle>CefGlue</AssemblyTitle>
@@ -26,6 +26,7 @@
         <RepositoryType>git</RepositoryType>
         <NoWarn>$(NoWarn);NU5100;NU5118;CS1591</NoWarn>
         <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
+        <PlatformTarget>anycpu</PlatformTarget>
     </PropertyGroup>
 
     <!-- Generate documentation in Release builds. -->
