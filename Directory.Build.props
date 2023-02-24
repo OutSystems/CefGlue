@@ -26,7 +26,6 @@
         <RepositoryType>git</RepositoryType>
         <NoWarn>$(NoWarn);NU5100;NU5118;CS1591</NoWarn>
         <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
-        <PlatformTarget>anycpu</PlatformTarget>
     </PropertyGroup>
 
     <!-- Generate documentation in Release builds. -->
