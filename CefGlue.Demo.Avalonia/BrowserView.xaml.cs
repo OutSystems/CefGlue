@@ -27,7 +27,6 @@ namespace Xilium.CefGlue.Demo.Avalonia
             browser.RegisterJavascriptObject(new BindingTestClass(), "boundBeforeLoadObject");
             browser.LoadStart += OnBrowserLoadStart;
             browser.TitleChanged += OnBrowserTitleChanged;
-            browser.RequestContext = CefRequestContext.CreateContext(new CefRequestContextSettings(), null);
             browserWrapper.Child = browser;
         }
 

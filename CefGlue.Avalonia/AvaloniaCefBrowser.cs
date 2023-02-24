@@ -17,6 +17,18 @@ namespace Xilium.CefGlue.Avalonia
             }
         }
 
+        public AvaloniaCefBrowser()
+            : base(null)
+        { }
+
+        public AvaloniaCefBrowser(CefRequestContextSettings cefRequestContextSettings, CefRequestContextHandler cefRequestContextHandler = null)
+            : base(cefRequestContextSettings, cefRequestContextHandler)
+        { }
+
+        public AvaloniaCefBrowser(CefRequestContext cefRequestContext, CefRequestContextHandler cefRequestContextHandler = null)
+            : base(cefRequestContext, cefRequestContextHandler)
+        { }
+
         internal override Common.Platform.IControl CreateControl()
         {
             return new AvaloniaControl(this, VisualChildren);

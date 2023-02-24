@@ -18,13 +18,24 @@ namespace Xilium.CefGlue.Common
 
         #region Disposable
 
-        public BaseCefBrowser()
+        static BaseCefBrowser()
         {
             if (!CefRuntimeLoader.IsLoaded)
             {
                 CefRuntimeLoader.Load();
             }
+        }
 
+        public BaseCefBrowser(CefRequestContextSettings cefRequestContextSettings, CefRequestContextHandler cefRequestContextHandler = null)
+            : this(CefRequestContext.CreateContext(cefRequestContextSettings, cefRequestContextHandler))
+        { }
+
+        public BaseCefBrowser(CefRequestContext cefRequestContext, CefRequestContextHandler cefRequestContextHandler = null)
+            : this(CefRequestContext.CreateContext(cefRequestContext, cefRequestContextHandler))
+        { }
+
+        public BaseCefBrowser(CefRequestContext cefRequestContext = null)
+        {
 #if HAS_NLOG
             _logger = new Logger(nameof(BaseCefBrowser));
 #else
@@ -33,11 +44,11 @@ namespace Xilium.CefGlue.Common
 
             if (CefRuntimeLoader.IsOSREnabled)
             {
-                _adapter = new CommonOffscreenBrowserAdapter(this, nameof(BaseCefBrowser), CreateOffScreenControlHost(), CreatePopupHost(), _logger);
+                _adapter = new CommonOffscreenBrowserAdapter(this, nameof(BaseCefBrowser), CreateOffScreenControlHost(), CreatePopupHost(), _logger, cefRequestContext);
             } 
             else
             {
-                _adapter = new CommonBrowserAdapter(this, nameof(BaseCefBrowser), CreateControl(), _logger);
+                _adapter = new CommonBrowserAdapter(this, nameof(BaseCefBrowser), CreateControl(), _logger, cefRequestContext);
             }
         }
 
@@ -239,20 +250,9 @@ namespace Xilium.CefGlue.Common
         public double ZoomLevel { get => _adapter.ZoomLevel; set => _adapter.ZoomLevel = value; }
 
         /// <summary>
-        /// Get or set <see cref="CefRequestContext"/>
+        /// Get <see cref="CefRequestContext"/>
         /// </summary>
-        public CefRequestContext RequestContext 
-        {
-            get
-            {
-                return _adapter.RequestContext;
-            }
-
-            set
-            {
-                _adapter.RequestContext = value;
-            }
-        }
+        public CefRequestContext RequestContext { get => _adapter.RequestContext; }
 
         /// <summary>
         /// The undelying cef browser instance. Can be used for advanced functionality.

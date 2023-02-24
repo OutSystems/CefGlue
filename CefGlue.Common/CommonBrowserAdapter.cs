@@ -33,13 +33,14 @@ namespace Xilium.CefGlue.Common
 
         private object _disposeLock = new object();
 
-        public CommonBrowserAdapter(object eventsEmitter, string name, IControl control, ILogger logger)
+        public CommonBrowserAdapter(object eventsEmitter, string name, IControl control, ILogger logger, CefRequestContext cefRequestContext = null)
         {
             _eventsEmitter = eventsEmitter;
             _name = name;
             _logger = logger;
 
             Control = control;
+            RequestContext = cefRequestContext;
 
             control.GotFocus += HandleGotFocus;
             control.SizeChanged += HandleControlSizeChanged;
@@ -118,7 +119,7 @@ namespace Xilium.CefGlue.Common
 
         public event AsyncUnhandledExceptionEventHandler UnhandledException;
 
-        public CefRequestContext RequestContext { get; set; }
+        public CefRequestContext RequestContext { get; init; }
 
         public string Address { get => _browser?.GetMainFrame().Url ?? _initialUrl; set => NavigateTo(value); }
 
@@ -195,7 +196,7 @@ namespace Xilium.CefGlue.Common
 
         public bool CanGoForward()
         {
-            return _browser?.CanGoForward ?? false;    
+            return _browser?.CanGoForward ?? false;
         }
 
         public void GoForward()
@@ -443,7 +444,7 @@ namespace Xilium.CefGlue.Common
                     _browser?.GetMainFrame()?.LoadUrl(_initialUrl);
                     _initialUrl = "";
                 }
-                
+
                 Initialized?.Invoke();
             });
         }
@@ -458,7 +459,7 @@ namespace Xilium.CefGlue.Common
             if (browser.IsPopup)
             {
                 // popup such as devtools, let it close its window
-                return false; 
+                return false;
             }
 
             Control.DestroyRender();
@@ -593,7 +594,7 @@ namespace Xilium.CefGlue.Common
         {
             Control.CloseContextMenu();
         }
-       
+
         void ICefBrowserHost.HandleException(Exception exception)
         {
             HandleException("Unknown", exception);
