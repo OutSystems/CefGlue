@@ -14,9 +14,17 @@ using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Shared;
 
 namespace CefGlue.Tests.RequestContext
-{
+{ 
     public class CustomRequestContext: TestBase
     {
+        class CustomCefRequestContextHandler : CefRequestContextHandler
+        {
+            protected override CefResourceRequestHandler GetResourceRequestHandler(CefBrowser browser, CefFrame frame, CefRequest request, bool isNavigation, bool isDownload, string requestInitiator, ref bool disableDefaultHandling)
+            {
+                return null;
+            }
+        }
+
         // skip base setup
         protected override Task Setup()
             => Task.CompletedTask;
@@ -24,7 +32,7 @@ namespace CefGlue.Tests.RequestContext
         [Test]
         public async Task NotGlobalCefReqestContext()
         {
-            var browser = () => new AvaloniaCefBrowser(new CefRequestContextSettings(), null);
+            var browser = () => new AvaloniaCefBrowser(new CefRequestContextSettings());
 
             await InternalSetup(browser);
 
@@ -39,13 +47,26 @@ namespace CefGlue.Tests.RequestContext
             var browser = () => new AvaloniaCefBrowser(new CefRequestContextSettings()
             {
                 CachePath = cachePath,
-            }, null);
+            });
 
             await InternalSetup(browser);
 
             var result = Browser.RequestContext.CachePath;
 
             Assert.AreEqual(cachePath, result);
+        }
+
+        [Test]
+        public async Task CustomCefReqestContextHandlerApplied()
+        {
+            var customRequestContextHandler = new CustomCefRequestContextHandler();
+            var browser = () => new AvaloniaCefBrowser(new CefRequestContextSettings(), customRequestContextHandler);
+
+            await InternalSetup(browser);
+
+            var result = Browser.RequestContext.GetHandler();
+
+            Assert.AreEqual(customRequestContextHandler, result);
         }
     }
 }
