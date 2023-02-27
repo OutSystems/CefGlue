@@ -119,7 +119,7 @@ namespace Xilium.CefGlue.Common
 
         public event AsyncUnhandledExceptionEventHandler UnhandledException;
 
-        public CefRequestContext RequestContext { get; init; }
+        public CefRequestContext RequestContext { get; }
 
         public string Address { get => _browser?.GetMainFrame().Url ?? _initialUrl; set => NavigateTo(value); }
 

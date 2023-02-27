@@ -17,7 +17,7 @@ namespace CefGlue.Tests.RequestContext
 { 
     public class CustomRequestContext: TestBase
     {
-        class CustomCefRequestContextHandler : CefRequestContextHandler
+        private class CustomCefRequestContextHandler : CefRequestContextHandler
         {
             protected override CefResourceRequestHandler GetResourceRequestHandler(CefBrowser browser, CefFrame frame, CefRequest request, bool isNavigation, bool isDownload, string requestInitiator, ref bool disableDefaultHandling)
             {
@@ -32,9 +32,9 @@ namespace CefGlue.Tests.RequestContext
         [Test]
         public async Task NotGlobalCefReqestContext()
         {
-            var browser = () => new AvaloniaCefBrowser(new CefRequestContextSettings());
+            var browserFactory = () => new AvaloniaCefBrowser(new CefRequestContextSettings());
 
-            await InternalSetup(browser);
+            await InternalSetup(browserFactory);
 
             Assert.False(Browser.RequestContext.IsGlobal);
         }
@@ -42,14 +42,13 @@ namespace CefGlue.Tests.RequestContext
         [Test]
         public async Task CefReqestContextApplied()
         {
-            var cachePath = @"C:/path/to/cache";
-
-            var browser = () => new AvaloniaCefBrowser(new CefRequestContextSettings()
+            const string cachePath = @"C:/path/to/cache";
+            var browserFactory = () => new AvaloniaCefBrowser(new CefRequestContextSettings()
             {
                 CachePath = cachePath,
             });
 
-            await InternalSetup(browser);
+            await InternalSetup(browserFactory);
 
             var result = Browser.RequestContext.CachePath;
 
@@ -60,9 +59,9 @@ namespace CefGlue.Tests.RequestContext
         public async Task CustomCefReqestContextHandlerApplied()
         {
             var customRequestContextHandler = new CustomCefRequestContextHandler();
-            var browser = () => new AvaloniaCefBrowser(new CefRequestContextSettings(), customRequestContextHandler);
+            var browserFactory = () => new AvaloniaCefBrowser(new CefRequestContextSettings(), customRequestContextHandler);
 
-            await InternalSetup(browser);
+            await InternalSetup(browserFactory);
 
             var result = Browser.RequestContext.GetHandler();
 

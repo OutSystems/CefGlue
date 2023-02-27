@@ -17,9 +17,7 @@ namespace Xilium.CefGlue.Avalonia
             }
         }
 
-        public AvaloniaCefBrowser()
-            : base(null)
-        { }
+        public AvaloniaCefBrowser() : base(null) { }
 
         public AvaloniaCefBrowser(CefRequestContextSettings cefRequestContextSettings, CefRequestContextHandler cefRequestContextHandler = null)
             : base(cefRequestContextSettings, cefRequestContextHandler)
