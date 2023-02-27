@@ -18,20 +18,13 @@ namespace Xilium.CefGlue.Common
 
         #region Disposable
 
-        static BaseCefBrowser()
+        public BaseCefBrowser(Func<CefRequestContext> cefRequestContextFactory = null)
         {
             if (!CefRuntimeLoader.IsLoaded)
             {
                 CefRuntimeLoader.Load();
             }
-        }
 
-        public BaseCefBrowser(CefRequestContextSettings cefRequestContextSettings, CefRequestContextHandler cefRequestContextHandler = null)
-            : this(CefRequestContext.CreateContext(cefRequestContextSettings, cefRequestContextHandler))
-        { }
-
-        public BaseCefBrowser(CefRequestContext cefRequestContext = null)
-        {
 #if HAS_NLOG
             _logger = new Logger(nameof(BaseCefBrowser));
 #else
@@ -40,11 +33,11 @@ namespace Xilium.CefGlue.Common
 
             if (CefRuntimeLoader.IsOSREnabled)
             {
-                _adapter = new CommonOffscreenBrowserAdapter(this, nameof(BaseCefBrowser), CreateOffScreenControlHost(), CreatePopupHost(), _logger, cefRequestContext);
+                _adapter = new CommonOffscreenBrowserAdapter(this, nameof(BaseCefBrowser), CreateOffScreenControlHost(), CreatePopupHost(), _logger, cefRequestContextFactory());
             } 
             else
             {
-                _adapter = new CommonBrowserAdapter(this, nameof(BaseCefBrowser), CreateControl(), _logger, cefRequestContext);
+                _adapter = new CommonBrowserAdapter(this, nameof(BaseCefBrowser), CreateControl(), _logger, cefRequestContextFactory());
             }
         }
 
