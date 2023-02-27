@@ -30,7 +30,7 @@ namespace CefGlue.Tests.RequestContext
             => Task.CompletedTask;
 
         [Test]
-        public async Task NotGlobalCefReqestContext()
+        public async Task NonGlobalCefRequestContext()
         {
             var browserFactory = () => new AvaloniaCefBrowser(new CefRequestContextSettings());
 
@@ -40,7 +40,7 @@ namespace CefGlue.Tests.RequestContext
         }
 
         [Test]
-        public async Task CefReqestContextApplied()
+        public async Task CefRequestContextApplied()
         {
             const string cachePath = @"C:/path/to/cache";
             var browserFactory = () => new AvaloniaCefBrowser(new CefRequestContextSettings()
