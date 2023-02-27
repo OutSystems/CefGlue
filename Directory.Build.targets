@@ -10,7 +10,7 @@
     <Message Text="Publishing BrowserProcess... [$(ProjectPath)]" Importance="High" />
     <MSBuild Projects="$(ProjectDir)../CefGlue.BrowserProcess/CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);PublishTrimmed=True;RuntimeIdentifier=win-x64" />
     <MSBuild Projects="$(ProjectDir)../CefGlue.BrowserProcess/CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);PublishTrimmed=True;RuntimeIdentifier=osx-x64" />
-    <Touch Files="$(SolutionDir).publishbpapp.stamp" AlwaysCreate="true"/>
+    <Touch Files="$(ProjectDir)../.publishbpapp.stamp" AlwaysCreate="true"/>
   </Target>
 
 </Project>
