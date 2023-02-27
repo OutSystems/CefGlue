@@ -56,7 +56,7 @@ namespace CefGlue.Tests.RequestContext
         }
 
         [Test]
-        public async Task CustomCefReqestContextHandlerApplied()
+        public async Task CustomCefRequestContextHandlerApplied()
         {
             var customRequestContextHandler = new CustomCefRequestContextHandler();
             var browserFactory = () => new AvaloniaCefBrowser(new CefRequestContextSettings(), customRequestContextHandler);
