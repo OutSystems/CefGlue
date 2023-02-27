@@ -44,9 +44,9 @@
         <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="build" />
     </ItemGroup>
 
-    <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
+    <Target DependsOnTargets="ResolveReferences;PublishBrowserProcessApp" Name="CopyProjectReferencesToPackage">
         <ItemGroup>
-            <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+            <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 
             <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\win-x64\publish\**\*">
                 <PackagePath>bin\win</PackagePath>

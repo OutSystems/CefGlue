@@ -5,4 +5,12 @@
     <DocumentationFile />
   </PropertyGroup>
 
+  <Target Name="PublishBrowserProcessApp" Inputs="$(SolutionDir).publishbpapp.stamp" Outputs="$(SolutionDir).publishbpapp.stamp">
+    <!-- Publish both platforms on Windows for packaging -->
+    <Message Text="Publishing BrowserProcess... [$(ProjectPath)]" Importance="High" />
+    <MSBuild Projects="$(SolutionDir)CefGlue.BrowserProcess/CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);PublishTrimmed=True;RuntimeIdentifier=win-x64" />
+    <MSBuild Projects="$(SolutionDir)CefGlue.BrowserProcess/CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);PublishTrimmed=True;RuntimeIdentifier=osx-x64" />
+    <Touch Files="$(SolutionDir).publishbpapp.stamp" AlwaysCreate="true"/>
+  </Target>
+
 </Project>

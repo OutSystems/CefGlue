@@ -9,7 +9,6 @@
     <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <IsWindows Condition="$([MSBuild]::IsOSPlatform('Windows'))">True</IsWindows>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
@@ -29,11 +28,4 @@
   <ItemGroup>
     <PackageReference Include="System.Runtime.Loader" />
   </ItemGroup>
-
-  <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
-    <!-- Publish both platforms on Windows for packaging -->
-    <Message Text="Publishing..." Importance="High" />
-    <MSBuild Condition="$(IsWindows) == 'True'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=win-x64" />
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=osx-x64" />
-  </Target>
 </Project>
