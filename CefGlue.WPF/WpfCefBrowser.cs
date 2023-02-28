@@ -1,3 +1,4 @@
+﻿using System;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Xilium.CefGlue.Common;
@@ -12,9 +13,14 @@ namespace Xilium.CefGlue.WPF
     public class WpfCefBrowser : BaseCefBrowser
     {
         public WpfCefBrowser()
+            : base(null)
         {
             KeyboardNavigation.SetAcceptsReturn(this, true);
         }
+
+        public WpfCefBrowser(Func<CefRequestContext> cefRequestContextFactory = null)
+            : base(cefRequestContextFactory)
+        { }
 
         internal override IControl CreateControl()
         {
