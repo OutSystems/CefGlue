@@ -441,22 +441,25 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
-        public void HandlesNullAsStructure()
+        public void HandlesValueTypes()
         {
             var obtained = Deserializer.Deserialize<StructObject>("null");
             Assert.IsInstanceOf<StructObject>(obtained);
             Assert.AreEqual(default(StructObject), obtained);
 
-            // when null appears inside an object
-            var obtainedParentObj = Deserializer.Deserialize<ParentObj>($"{{\"stringField\":\"{DataMarkers.StringMarker}texto\",\"childObj\":null}}");
-            Assert.IsInstanceOf<ParentObj>(obtainedParentObj);
-            Assert.AreEqual("texto", obtainedParentObj.stringField);
-            Assert.AreEqual(default(ChildObj), obtainedParentObj.childObj);
+            // when null is deserialized to a Structs array
+            var obtainedNullArray = Deserializer.Deserialize<StructObject[]>("null");
+            Assert.IsNull(obtainedNullArray);
 
-            // when null appears in an array
+            // when null appears as an element of a Structs array
             var obtainedArray = Deserializer.Deserialize<StructObject[]>("[null]");
             Assert.IsInstanceOf<StructObject[]>(obtainedArray);
             CollectionAssert.AreEqual(new[] { default(StructObject) }, obtainedArray);
+
+            // when null appears inside an object
+            var obtainedParentObj = Deserializer.Deserialize<ParentObj>("{ \"childObj\":null }");
+            Assert.IsInstanceOf<ParentObj>(obtainedParentObj);
+            Assert.AreEqual(default(ChildObj), obtainedParentObj.childObj);
         }
     }
 }
