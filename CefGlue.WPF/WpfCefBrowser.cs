@@ -18,9 +18,7 @@ namespace Xilium.CefGlue.WPF
             KeyboardNavigation.SetAcceptsReturn(this, true);
         }
 
-        public WpfCefBrowser(Func<CefRequestContext> cefRequestContextFactory = null)
-            : base(cefRequestContextFactory)
-        { }
+        public WpfCefBrowser(Func<CefRequestContext> cefRequestContextFactory = null) : base(cefRequestContextFactory) { }
 
         internal override IControl CreateControl()
         {
