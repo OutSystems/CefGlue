@@ -437,7 +437,26 @@ namespace CefGlue.Tests.Serialization
         {
             var obtained = Deserializer.Deserialize<ExpandoObject>("{\"key\":5}");
             Assert.IsInstanceOf<IDictionary<string, object>>(obtained);
-            CollectionAssert.AreEqual(new[] { KeyValuePair.Create("key", 5) }, (IDictionary<string, object>)obtained);
+            CollectionAssert.AreEqual(new[] { KeyValuePair.Create("key", 5) }, obtained);
+        }
+
+        [Test]
+        public void HandlesNullAsStructure()
+        {
+            var obtained = Deserializer.Deserialize<StructObject>("null");
+            Assert.IsInstanceOf<StructObject>(obtained);
+            Assert.AreEqual(default(StructObject), obtained);
+
+            // when null appears inside an object
+            var obtainedParentObj = Deserializer.Deserialize<ParentObj>($"{{\"stringField\":\"{DataMarkers.StringMarker}texto\",\"childObj\":null}}");
+            Assert.IsInstanceOf<ParentObj>(obtainedParentObj);
+            Assert.AreEqual("texto", obtainedParentObj.stringField);
+            Assert.AreEqual(default(ChildObj), obtainedParentObj.childObj);
+
+            // when null appears in an array
+            var obtainedArray = Deserializer.Deserialize<StructObject[]>("[null]");
+            Assert.IsInstanceOf<StructObject[]>(obtainedArray);
+            CollectionAssert.AreEqual(new[] { default(StructObject) }, obtainedArray);
         }
     }
 }

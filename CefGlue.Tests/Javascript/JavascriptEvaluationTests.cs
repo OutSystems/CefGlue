@@ -85,11 +85,12 @@ namespace CefGlue.Tests.Javascript
         public async Task NonGenericCollectionReturn()
         {
             var result = await EvaluateJavascript<Hashtable>("return {\"first\":1,\"second\":'second',\"third\":null};");
-            var expected = new Hashtable() {
-                    { "first" , 1 },
-                    { "second" , "second" },
-                    { "third" , null }
-                };
+            var expected = new Hashtable()
+            {
+                { "first" , 1 },
+                { "second" , "second" },
+                { "third" , null }
+            };
             CollectionAssert.AreEqual(expected, result);
         }
 
