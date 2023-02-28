@@ -16,8 +16,8 @@ namespace Xilium.CefGlue.Common
 
         private Func<CefRectangle> _getViewRectOverride;
 
-        public CommonOffscreenBrowserAdapter(object eventsEmitter, string name, IOffScreenControlHost control, IOffScreenPopupHost popup, ILogger logger) 
-            : base(eventsEmitter, name, control, logger) {
+        public CommonOffscreenBrowserAdapter(object eventsEmitter, string name, IOffScreenControlHost control, IOffScreenPopupHost popup, ILogger logger, CefRequestContext cefRequestContext = null) 
+            : base(eventsEmitter, name, control, logger, cefRequestContext) {
 
             Popup = popup;
         }

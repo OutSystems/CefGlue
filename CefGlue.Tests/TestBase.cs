@@ -67,7 +67,14 @@ namespace CefGlue.Tests
         }
 
         [SetUp]
-        protected async Task Setup()
+        protected virtual async Task Setup()
+        {
+            await InternalSetup(() => new AvaloniaCefBrowser());
+
+            await ExtraSetup();
+        }
+
+        protected async Task InternalSetup(Func<AvaloniaCefBrowser> avaloniaCefBrowserFactory)
         {
             var testName = TestContext.CurrentContext.Test.FullName; // capture test name outside the async part (otherwise wont work properly)
             await Run(async () =>
@@ -84,15 +91,13 @@ namespace CefGlue.Tests
                 window.Title = testName;
 
                 var browserInitTaskCompletionSource = new TaskCompletionSource<bool>();
-                browser = new AvaloniaCefBrowser();
+                browser = avaloniaCefBrowserFactory();
                 browser.BrowserInitialized += delegate () { browserInitTaskCompletionSource.SetResult(true); };
 
                 window.Content = browser;
 
                 await browserInitTaskCompletionSource.Task;
             });
-
-            await ExtraSetup();
         }
 
         protected virtual Task ExtraSetup()
@@ -103,14 +108,14 @@ namespace CefGlue.Tests
         [TearDown] 
         protected void TearDown()
         {
-            browser.Dispose();
+            browser?.Dispose();
         }
 
         [OneTimeTearDown]
         protected async Task OneTimeTearDown()
         {
             await Run(() => {
-                window.Close();
+                window?.Close();
                 window = null;
             });
         }

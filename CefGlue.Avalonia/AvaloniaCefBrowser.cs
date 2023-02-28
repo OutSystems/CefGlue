@@ -1,4 +1,5 @@
-﻿using Xilium.CefGlue.Avalonia.Platform;
+﻿using System;
+using Xilium.CefGlue.Avalonia.Platform;
 using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Platform;
 
@@ -16,6 +17,10 @@ namespace Xilium.CefGlue.Avalonia
                 CefRuntimeLoader.Load(new AvaloniaBrowserProcessHandler());
             }
         }
+
+        public AvaloniaCefBrowser(Func<CefRequestContext> cefRequestContextFactory = null)
+            : base(cefRequestContextFactory)
+        { }
 
         internal override Common.Platform.IControl CreateControl()
         {
