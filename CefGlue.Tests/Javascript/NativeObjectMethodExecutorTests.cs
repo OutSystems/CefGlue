@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using Xilium.CefGlue.Common.ObjectBinding;
+using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace CefGlue.Tests.Javascript
 {
@@ -145,7 +147,7 @@ namespace CefGlue.Tests.Javascript
         {
             const string Arg1 = "arg1";
             var arg2 = new int[] { 1, 2 , 3 };
-            var result = (object[])ExecuteMethod("methodWithFixedAndOptionalParams", new object[] { Arg1, 1, 2, 3 });
+            var result = (object[])ExecuteMethod("methodWithFixedAndOptionalParams", new object[] { Arg1, (int)1, (int)2, (int)3 });
 
             Assert.AreEqual(2, result.Length);
             Assert.AreEqual(Arg1, result[0]);

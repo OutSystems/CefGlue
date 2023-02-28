@@ -9,11 +9,11 @@ namespace Xilium.CefGlue.Common.ObjectBinding
     internal class NativeObjectMethodDispatcher
     {
         private readonly NativeObjectRegistry _objectRegistry;
-        
+
         public NativeObjectMethodDispatcher(MessageDispatcher dispatcher, NativeObjectRegistry objectRegistry)
         {
             _objectRegistry = objectRegistry;
-                
+
             dispatcher.RegisterMessageHandler(Messages.NativeObjectCallRequest.Name, HandleNativeObjectCall);
         }
 
@@ -23,7 +23,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             var message = Messages.NativeObjectCallRequest.FromCefMessage(args.Message);
             var frame = args.Frame;
             var callId = message.CallId;
-            
+
             var nativeObject = _objectRegistry.Get(message.ObjectName ?? "");
             if (nativeObject == null)
             {
@@ -31,7 +31,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 return;
             }
 
-            nativeObject.ExecuteMethod(message.MemberName, message.ArgumentsOut, (result, exception) =>
+            nativeObject.ExecuteMethod(message.MemberName, message.ArgumentsAsJson, (result, exception) =>
             {
                 using (CefObjectTracker.StartTracking())
                 {
@@ -40,18 +40,17 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             });
         }
 
-        private static void SendResult(int callId, object result, string exceptionMessage, CefFrame frame) 
+        private static void SendResult(int callId, object result, string exceptionMessage, CefFrame frame)
         {
             var resultMessage = new Messages.NativeObjectCallResult()
             {
                 CallId = callId,
-                Result = new CefValueHolder(),
             };
 
             if (exceptionMessage != null)
             {
                 resultMessage.Exception = exceptionMessage;
-            } 
+            }
             else if (result is Task)
             {
                 resultMessage.Exception = "Unexpected Task type result";
@@ -60,7 +59,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 try
                 {
-                    CefValueSerialization.Serialize(result, resultMessage.Result);
+                    resultMessage.ResultAsJson = Serializer.Serialize(result);
                 }
                 catch (Exception e)
                 {
@@ -69,7 +68,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             }
 
             resultMessage.Success = resultMessage.Exception == null;
-            
+
             var cefMessage = resultMessage.ToCefProcessMessage();
             if (frame.IsValid)
             {
