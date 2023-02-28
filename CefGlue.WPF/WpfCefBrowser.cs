@@ -12,11 +12,7 @@ namespace Xilium.CefGlue.WPF
     /// </summary>
     public class WpfCefBrowser : BaseCefBrowser
     {
-        public WpfCefBrowser()
-            : base(null)
-        {
-            KeyboardNavigation.SetAcceptsReturn(this, true);
-        }
+        public WpfCefBrowser() : this(null) { }
 
         public WpfCefBrowser(Func<CefRequestContext> cefRequestContextFactory)
             : base(cefRequestContextFactory)
