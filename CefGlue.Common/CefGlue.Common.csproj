@@ -39,6 +39,12 @@
             <IncludeAssets>CefGlue.dll</IncludeAssets>
         </ProjectReference>
 
+        <!-- Forces BrowserProcess build before CopyProjectReferencesToPackage target run -->
+        <ProjectReference Include="..\CefGlue.BrowserProcess\CefGlue.BrowserProcess.csproj">
+            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+            <PrivateAssets>all</PrivateAssets>
+        </ProjectReference>
+
         <None Include="build\CefGlue.Common.props" Pack="True" PackagePath="build" />
         <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="build" />
     </ItemGroup>
