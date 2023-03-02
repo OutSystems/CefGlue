@@ -39,13 +39,18 @@
             <IncludeAssets>CefGlue.dll</IncludeAssets>
         </ProjectReference>
 
+        <ProjectReference Include="..\CefGlue.BrowserProcess\CefGlue.BrowserProcess.csproj">
+            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+            <PrivateAssets>all</PrivateAssets>
+        </ProjectReference>
+
         <None Include="build\CefGlue.Common.props" Pack="True" PackagePath="build" />
         <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="build" />
     </ItemGroup>
 
-    <Target DependsOnTargets="ResolveReferences;PublishBrowserProcessApp" Name="CopyProjectReferencesToPackage">
+    <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
         <ItemGroup>
-            <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+            <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 
             <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\win-x64\publish\**\*">
                 <PackagePath>bin\win</PackagePath>
