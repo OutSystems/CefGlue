@@ -405,7 +405,7 @@ namespace CefGlue.Tests.Serialization
             Assert.AreEqual(child.intField, obtainedChild.intField);
             Assert.AreEqual(child.stringField, obtainedChild.stringField);
             Assert.AreSame(child.referenceField.GetType(), obtainedChild.referenceField.GetType());
-            Assert.NotNull(obtainedChild.referenceField); // Assert.Equal fails when comparing two plain object instances, hence the Assert.NotNull 
+            Assert.NotNull(obtainedChild.referenceField); // Assert.Equal fails when comparing two plain object instances, hence the Assert.NotNull
         }
 
         [Test]
@@ -460,6 +460,12 @@ namespace CefGlue.Tests.Serialization
             var obtainedParentObj = Deserializer.Deserialize<ParentObj>("{ \"childObj\":null }");
             Assert.IsInstanceOf<ParentObj>(obtainedParentObj);
             Assert.AreEqual(default(ChildObj), obtainedParentObj.childObj);
+        }
+
+        [Test]
+        public void HandlesExtendedObjects()
+        {
+            Assert.DoesNotThrow(() => Deserializer.Deserialize<Person>($"{{\"Name\":\"{DataMarkers.StringMarker}student\",\"Course\":\"{DataMarkers.StringMarker}Medicine\"}}"));
         }
     }
 }

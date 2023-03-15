@@ -41,13 +41,9 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.State
         public void SetCurrentElementValue(object value)
         {
             var typeMemberInfo = _valueTypeInfo.GetTypeMemberInfo(_propertyName);
-            
-            if (typeMemberInfo == null)
-            {
-                throw new InvalidOperationException($"Property or Field '{_propertyName}' does not exist in objectType '{_valueTypeInfo.ObjectType.Name}'.");
-            }
 
-            typeMemberInfo.SetValue(Value, value);
+            // If the member does not exist in the target type, ignore it
+            typeMemberInfo?.SetValue(Value, value);
         }
     }
 }
