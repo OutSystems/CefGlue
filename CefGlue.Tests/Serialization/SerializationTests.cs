@@ -463,9 +463,9 @@ namespace CefGlue.Tests.Serialization
         }
 
         [Test]
-        public void HandlesExtendedObjects()
+        public void HandlesMissingObjectFields()
         {
-            Assert.DoesNotThrow(() => Deserializer.Deserialize<Person>($"{{\"Name\":\"{DataMarkers.StringMarker}student\",\"Course\":\"{DataMarkers.StringMarker}Medicine\"}}"));
+            Assert.DoesNotThrow(() => Deserializer.Deserialize<Person>($"{{\"Name\":\"{DataMarkers.StringMarker}student\",\"MissingField\":0}}"));
         }
     }
 }
