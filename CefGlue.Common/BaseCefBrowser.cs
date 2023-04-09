@@ -18,7 +18,7 @@ namespace Xilium.CefGlue.Common
 
         #region Disposable
 
-        public BaseCefBrowser()
+        public BaseCefBrowser(Func<CefRequestContext> cefRequestContextFactory = null)
         {
             if (!CefRuntimeLoader.IsLoaded)
             {
@@ -33,11 +33,11 @@ namespace Xilium.CefGlue.Common
 
             if (CefRuntimeLoader.IsOSREnabled)
             {
-                _adapter = new CommonOffscreenBrowserAdapter(this, nameof(BaseCefBrowser), CreateOffScreenControlHost(), CreatePopupHost(), _logger);
+                _adapter = new CommonOffscreenBrowserAdapter(this, nameof(BaseCefBrowser), CreateOffScreenControlHost(), CreatePopupHost(), _logger, cefRequestContextFactory?.Invoke());
             } 
             else
             {
-                _adapter = new CommonBrowserAdapter(this, nameof(BaseCefBrowser), CreateControl(), _logger);
+                _adapter = new CommonBrowserAdapter(this, nameof(BaseCefBrowser), CreateControl(), _logger, cefRequestContextFactory?.Invoke());
             }
         }
 
@@ -237,6 +237,11 @@ namespace Xilium.CefGlue.Common
         /// Get or set the current zoom level. The default zoom level is 0.0.
         /// </summary>
         public double ZoomLevel { get => _adapter.ZoomLevel; set => _adapter.ZoomLevel = value; }
+
+        /// <summary>
+        /// Get <see cref="CefRequestContext"/>
+        /// </summary>
+        public CefRequestContext RequestContext { get => _adapter.RequestContext; }
 
         /// <summary>
         /// The undelying cef browser instance. Can be used for advanced functionality.

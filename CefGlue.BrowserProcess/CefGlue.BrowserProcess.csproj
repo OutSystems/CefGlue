@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>$(DotnetVersion)</TargetFrameworks>
+    <TargetFramework>$(DotnetVersion)</TargetFramework>
     <AssemblyName>Xilium.CefGlue.BrowserProcess</AssemblyName>
     <RootNamespace>Xilium.CefGlue.BrowserProcess</RootNamespace>
     <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
@@ -13,6 +13,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ObjectBinding\CefGlueGlobalScript.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ObjectBinding\CefGlueGlobalScript.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CefGlue.Common.Shared\CefGlue.Common.Shared.csproj" />
     <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
   </ItemGroup>
@@ -20,7 +28,7 @@
   <ItemGroup>
     <PackageReference Include="System.Runtime.Loader" />
   </ItemGroup>
-
+  
   <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
     <!-- Publish both platforms on Windows for packaging -->
     <Message Text="Publishing..." Importance="High" />
