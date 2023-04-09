@@ -44,7 +44,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
         public event Action<float> ScreenInfoChanged;
         public event Action<bool> VisibilityChanged;
 
-        public AvaloniaOffScreenControlHost(Control control, IAvaloniaList<IVisual> visualChildren) : 
+        public AvaloniaOffScreenControlHost(Control control, IAvaloniaList<Visual> visualChildren) : 
             base(control, visualChildren)
         {
             DragDrop.SetAllowDrop(control, true);
@@ -55,7 +55,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             control.LostFocus += OnLostFocus;
 
             control.PointerMoved += OnPointerMoved;
-            control.PointerLeave += OnPointerLeave;
+            control.PointerExited += OnPointerExited;
 
             control.PointerPressed += OnPointerPressed;
             control.PointerReleased += OnPointerReleased;
@@ -158,7 +158,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             }
         }
 
-        private void OnPointerLeave(object sender, PointerEventArgs e)
+        private void OnPointerExited(object sender, PointerEventArgs e)
         {
             MouseLeave?.Invoke(e.AsCefMouseEvent(MousePositionReferential));
         }
@@ -206,7 +206,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             }
         }
 
-        protected virtual IVisual MousePositionReferential => _control;
+        protected virtual Visual MousePositionReferential => _control;
 
         public CefPoint PointToScreen(CefPoint point, float deviceScaleFactor)
         {

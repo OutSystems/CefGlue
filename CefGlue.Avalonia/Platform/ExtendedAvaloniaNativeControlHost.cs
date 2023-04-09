@@ -66,7 +66,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
         
         private void FixNativeNativeControlBounds()
         {
-            if (!Bounds.IsEmpty && _isAttached)
+            if ((Bounds.Height != 0 || Bounds.Width != 0) && _isAttached)
             {
                 // try delay native host position update, because running right away seems to have no effect sometimes
                 DispatcherTimer.RunOnce(() =>
