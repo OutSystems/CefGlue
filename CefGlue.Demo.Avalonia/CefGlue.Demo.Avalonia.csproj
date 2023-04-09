@@ -34,11 +34,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="App.xaml" />
-    <EmbeddedResource Include="BrowserView.xaml">
+    <AvaloniaResource Include="App.xaml" />
+    <AvaloniaResource Include="BrowserView.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MainWindow.xaml" />
+    </AvaloniaResource>
+    <AvaloniaResource Include="MainWindow.xaml" />
   </ItemGroup>
 
   <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />

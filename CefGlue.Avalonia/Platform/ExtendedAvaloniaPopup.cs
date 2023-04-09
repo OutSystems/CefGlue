@@ -1,4 +1,5 @@
-﻿using Avalonia.Collections;
+﻿using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 
@@ -26,6 +27,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
         /// </summary>
         public Control PlacementTarget { get; set; }
 
-        public new IAvaloniaList<IVisual> VisualChildren => base.VisualChildren;
+        public new IAvaloniaList<Visual> VisualChildren => base.VisualChildren;
     }
 }

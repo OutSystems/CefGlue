@@ -25,14 +25,14 @@ namespace Xilium.CefGlue.Avalonia.Platform
         private static IPlatformHandle _hostWindowPlatformHandle;
 
         private IHandleHolder _browserView;
-        private readonly IAvaloniaList<IVisual> _controlVisualChildren;
+        private readonly IAvaloniaList<Visual> _controlVisualChildren;
 
         protected readonly Control _control;
 
         public event Action GotFocus;
         public event Action<CefSize> SizeChanged;
 
-        public AvaloniaControl(Control control, IAvaloniaList<IVisual> visualChildren)
+        public AvaloniaControl(Control control, IAvaloniaList<Visual> visualChildren)
         {
             _control = control;
             _controlVisualChildren = visualChildren;

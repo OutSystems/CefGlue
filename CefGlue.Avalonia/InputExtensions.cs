@@ -1,6 +1,7 @@
 using Avalonia.Input;
 using Avalonia.VisualTree;
 using System.IO;
+using Avalonia;
 
 namespace Xilium.CefGlue.Avalonia
 {
@@ -12,9 +13,9 @@ namespace Xilium.CefGlue.Avalonia
         /// <param name="eventArgs">The mouse event args</param>
         /// <param name="mouseCoordinatesReferencial">The element used as the positioning referential</param>
         /// <returns></returns>
-        public static CefMouseEvent AsCefMouseEvent(this PointerEventArgs eventArgs, IVisual mousePositionReferential)
+        public static CefMouseEvent AsCefMouseEvent(this PointerEventArgs eventArgs, Visual mousePositionReferential)
         {
-            var cursorPos = mousePositionReferential.IsAttachedToVisualTree ? eventArgs.GetPosition(mousePositionReferential) : new global::Avalonia.Point(0,0);
+            var cursorPos = mousePositionReferential.IsAttachedToVisualTree() ? eventArgs.GetPosition(mousePositionReferential) : new global::Avalonia.Point(0,0);
 
             return new CefMouseEvent((int) cursorPos.X, (int) cursorPos.Y, eventArgs.AsCefEventFlags());
         }
@@ -112,43 +113,16 @@ namespace Xilium.CefGlue.Avalonia
         }
 
         /// <summary>
-        /// Convert keyboard modifiers into cef flags.
-        /// </summary>
-        /// <param name="keyboardModifiers"></param>
-        /// <returns></returns>
-        public static CefEventFlags AsCefKeyboardModifiers(this InputModifiers keyboardModifiers)
-        {
-            var modifiers = new CefEventFlags();
-
-            if (keyboardModifiers.HasFlag(InputModifiers.Alt))
-            {
-                modifiers |= CefEventFlags.AltDown;
-            }
-
-            if (keyboardModifiers.HasFlag(InputModifiers.Control))
-            {
-                modifiers |= CefEventFlags.ControlDown;
-            }
-
-            if (keyboardModifiers.HasFlag(InputModifiers.Shift))
-            {
-                modifiers |= CefEventFlags.ShiftDown;
-            }
-
-            return modifiers;
-        }
-
-        /// <summary>
         /// Convert a drag event args into a cef mouse event.
         /// </summary>
         /// <param name="eventArgs">The drag event args</param>
         /// <param name="mouseCoordinatesReferencial">The element used as the positioning referential</param>
         /// <returns></returns>
-        public static CefMouseEvent AsCefMouseEvent(this DragEventArgs eventArgs, IVisual mouseCoordinatesReferencial)
+        public static CefMouseEvent AsCefMouseEvent(this DragEventArgs eventArgs, Visual mouseCoordinatesReferencial)
         {
             var cursorPos = eventArgs.GetPosition(mouseCoordinatesReferencial);
 
-            return new CefMouseEvent((int)cursorPos.X, (int)cursorPos.Y, eventArgs.Modifiers.AsCefKeyboardModifiers());
+            return new CefMouseEvent((int)cursorPos.X, (int)cursorPos.Y, eventArgs.KeyModifiers.AsCefKeyboardModifiers());
         }
 
         /// <summary>
