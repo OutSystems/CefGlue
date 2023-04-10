@@ -19,9 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Helpers\App.xaml">
+    <AvaloniaResource Include="Helpers\App.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
+    </AvaloniaResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +30,7 @@
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
+    <PackageReference Include="Avalonia.Themes.Simple" />
   </ItemGroup>
 
   <ItemGroup>
