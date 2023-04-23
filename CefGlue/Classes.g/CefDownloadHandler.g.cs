@@ -18,8 +18,6 @@ namespace Xilium.CefGlue
         private int _refct;
         private cef_download_handler_t* _self;
         
-        protected object SyncRoot { get { return this; } }
-        
         private cef_download_handler_t.add_ref_delegate _ds0;
         private cef_download_handler_t.release_delegate _ds1;
         private cef_download_handler_t.has_one_ref_delegate _ds2;
@@ -64,38 +62,30 @@ namespace Xilium.CefGlue
         
         private void add_ref(cef_download_handler_t* self)
         {
-            lock (SyncRoot)
+            if (Interlocked.Increment(ref _refct) == 1)
             {
-                var result = ++_refct;
-                if (result == 1)
-                {
-                    lock (_roots) { _roots.Add((IntPtr)_self, this); }
-                }
+                lock (_roots) { _roots.Add((IntPtr)_self, this); }
             }
         }
         
         private int release(cef_download_handler_t* self)
         {
-            lock (SyncRoot)
+            if (Interlocked.Decrement(ref _refct) == 0)
             {
-                var result = --_refct;
-                if (result == 0)
-                {
-                    lock (_roots) { _roots.Remove((IntPtr)_self); }
-                    return 1;
-                }
-                return 0;
+                lock (_roots) { _roots.Remove((IntPtr)_self); }
+                return 1;
             }
+            return 0;
         }
         
         private int has_one_ref(cef_download_handler_t* self)
         {
-            lock (SyncRoot) { return _refct == 1 ? 1 : 0; }
+            return _refct == 1 ? 1 : 0;
         }
         
         private int has_at_least_one_ref(cef_download_handler_t* self)
         {
-            lock (SyncRoot) { return _refct != 0 ? 1 : 0; }
+            return _refct != 0 ? 1 : 0;
         }
         
         internal cef_download_handler_t* ToNative()

@@ -163,9 +163,7 @@
             using (var m_stream = new UnmanagedMemoryStream((byte*)data_out, bytes_to_read, bytes_to_read, FileAccess.Write))
             {
                 var m_result = Read(m_stream, bytes_to_read, out var m_bytesRead, m_callback);
-
                 *bytes_read = m_bytesRead;
-
                 return m_result ? 1 : 0;
             }
         }
