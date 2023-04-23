@@ -19,9 +19,14 @@
 
             var mRegistrar = CefPreferenceRegistrar.FromNative(registrar);
 
-            OnRegisterCustomPreferences(type, mRegistrar);
-
-            mRegistrar.ReleaseObject();
+            try
+            {
+                OnRegisterCustomPreferences(type, mRegistrar);
+            }
+            finally
+            {
+                mRegistrar.ReleaseObject();
+            }
         }
 
         /// <summary>
@@ -66,9 +71,10 @@
         {
             CheckSelf(self);
 
-            var m_commandLine = CefCommandLine.FromNative(command_line);
-            OnBeforeChildProcessLaunch(m_commandLine);
-            m_commandLine.Dispose();
+            using (var m_commandLine = CefCommandLine.FromNative(command_line)) 
+            {
+                OnBeforeChildProcessLaunch(m_commandLine);
+            }
         }
 
         /// <summary>

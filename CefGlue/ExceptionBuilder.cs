@@ -51,9 +51,9 @@
             return new InvalidOperationException("Invalid self reference.");
         }
 
-        public static Exception FailedToCreateBrowser()
+        public static Exception FailedToCreateBrowser(int errorCode)
         {
-            return new InvalidOperationException("Failed to create browser.");
+            return new InvalidOperationException($"Failed to create browser with error code ({errorCode})");
         }
 
         public static Exception ObjectDisposed()

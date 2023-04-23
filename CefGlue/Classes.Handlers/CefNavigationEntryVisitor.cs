@@ -15,10 +15,11 @@
         private int visit(cef_navigation_entry_visitor_t* self, cef_navigation_entry_t* entry, int current, int index, int total)
         {
             CheckSelf(self);
-            var m_entry = CefNavigationEntry.FromNative(entry);
-            var m_result = Visit(m_entry, current != 0, index, total);
-            m_entry.Dispose();
-            return m_result ? 1 : 0;
+            using (var m_entry = CefNavigationEntry.FromNative(entry))
+            {
+                var m_result = Visit(m_entry, current != 0, index, total);
+                return m_result ? 1 : 0;
+            }
         }
 
         /// <summary>

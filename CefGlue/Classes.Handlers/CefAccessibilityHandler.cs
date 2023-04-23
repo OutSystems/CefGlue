@@ -17,8 +17,10 @@
         {
             CheckSelf(self);
 
-            var mValue = CefValue.FromNativeOrNull(value);
-            OnAccessibilityTreeChange(mValue);
+            using (var mValue = CefValue.FromNativeOrNull(value))
+            {
+                OnAccessibilityTreeChange(mValue);
+            }
         }
         
         /// <summary>
@@ -31,8 +33,10 @@
         {
             CheckSelf(self);
 
-            var mValue = CefValue.FromNativeOrNull(value);
-            OnAccessibilityLocationChange(mValue);
+            using (var mValue = CefValue.FromNativeOrNull(value))
+            {
+                OnAccessibilityLocationChange(mValue);
+            }
         }
         
         /// <summary>

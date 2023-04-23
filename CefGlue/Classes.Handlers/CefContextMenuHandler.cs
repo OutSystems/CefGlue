@@ -18,13 +18,11 @@
 
             var mBrowser = CefBrowser.FromNative(browser);
             var mFrame = CefFrame.FromNative(frame);
-            var mState = CefContextMenuParams.FromNative(@params);
-            var mModel = CefMenuModel.FromNative(model);
-
-            OnBeforeContextMenu(mBrowser, mFrame, mState, mModel);
-
-            mState.Dispose();
-            mModel.Dispose();
+            using (var mState = CefContextMenuParams.FromNative(@params))
+            using (var mModel = CefMenuModel.FromNative(model))
+            {
+                OnBeforeContextMenu(mBrowser, mFrame, mState, mModel);
+            }
         }
 
         /// <summary>
@@ -45,14 +43,14 @@
 
             var mBrowser = CefBrowser.FromNative(browser);
             var mFrame = CefFrame.FromNative(frame);
-            var mParameters = CefContextMenuParams.FromNative(@params);
-            var mModel = CefMenuModel.FromNative(model);
-            var mCallback = CefRunContextMenuCallback.FromNative(callback);
-            var result = RunContextMenu(mBrowser, mFrame, mParameters, mModel, mCallback);
-            mParameters.Dispose();
-            mModel.Dispose();
+            using (var mParameters = CefContextMenuParams.FromNative(@params))
+            using (var mModel = CefMenuModel.FromNative(model))
+            {
+                var mCallback = CefRunContextMenuCallback.FromNative(callback);
+                var result = RunContextMenu(mBrowser, mFrame, mParameters, mModel, mCallback);
 
-            return result ? 1 : 0;
+                return result ? 1 : 0;
+            }
         }
 
         /// <summary>
@@ -75,13 +73,11 @@
 
             var mBrowser = CefBrowser.FromNative(browser);
             var mFrame = CefFrame.FromNative(frame);
-            var mState = CefContextMenuParams.FromNative(@params);
-
-            var result = OnContextMenuCommand(mBrowser, mFrame, mState, command_id, event_flags);
-
-            mState.Dispose();
-
-            return result ? 1 : 0;
+            using (var mState = CefContextMenuParams.FromNative(@params))
+            {
+                var result = OnContextMenuCommand(mBrowser, mFrame, mState, command_id, event_flags);
+                return result ? 1 : 0;
+            }
         }
 
         /// <summary>

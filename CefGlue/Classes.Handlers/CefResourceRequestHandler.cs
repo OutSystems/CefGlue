@@ -81,13 +81,11 @@
 
             var m_browser = CefBrowser.FromNativeOrNull(browser);
             var m_frame = CefFrame.FromNativeOrNull(frame);
-            var m_request = CefRequest.FromNative(request);
-
-            var handler = GetResourceHandler(m_browser, m_frame, m_request);
-
-            m_request.Dispose();
-
-            return handler != null ? handler.ToNative() : null;
+            using (var m_request = CefRequest.FromNative(request))
+            {
+                var handler = GetResourceHandler(m_browser, m_frame, m_request);
+                return handler != null ? handler.ToNative() : null;
+            }
         }
 
         /// <summary>

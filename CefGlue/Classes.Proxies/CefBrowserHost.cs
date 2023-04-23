@@ -31,7 +31,7 @@
             if (settings == null) throw new ArgumentNullException("settings");
             // TODO: [ApiUsage] if windowInfo.WindowRenderingDisabled && client doesn't provide RenderHandler implementation -> throw exception
 
-            var n_windowInfo = windowInfo.ToNative();
+            var n_windowInfo = windowInfo.GetNativePointer();
             var n_client = client.ToNative();
             var n_settings = settings.ToNative();
             var n_extraInfo = extraInfo != null ? extraInfo.ToNative() : null;
@@ -41,10 +41,8 @@
             {
                 cef_string_t n_url = new cef_string_t(url_ptr, url != null ? url.Length : 0);
                 var n_success = cef_browser_host_t.create_browser(n_windowInfo, n_client, &n_url, n_settings, n_extraInfo, n_requestContext);
-                if (n_success != 1) throw ExceptionBuilder.FailedToCreateBrowser();
+                if (n_success != 1) throw ExceptionBuilder.FailedToCreateBrowser(n_success);
             }
-
-            // TODO: free n_ structs ?
         }
 
 
@@ -64,7 +62,7 @@
             if (settings == null) throw new ArgumentNullException("settings");
             // TODO: [ApiUsage] if windowInfo.WindowRenderingDisabled && client doesn't provide RenderHandler implementation -> throw exception
 
-            var n_windowInfo = windowInfo.ToNative();
+            var n_windowInfo = windowInfo.GetNativePointer();
             var n_client = client.ToNative();
             var n_settings = settings.ToNative();
             var n_extraInfo = extraInfo != null ? extraInfo.ToNative() : null;
@@ -76,8 +74,6 @@
                 var n_browser = cef_browser_host_t.create_browser_sync(n_windowInfo, n_client, &n_url, n_settings, n_extraInfo, n_requestContext);
                 return CefBrowser.FromNative(n_browser);
             }
-
-            // TODO: free n_ structs ?
         }
 
 
