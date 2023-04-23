@@ -14,6 +14,10 @@ namespace Xilium.CefGlue.Interop
     {
         internal cef_base_ref_counted_t _base;
         internal IntPtr _on_chrome_command;
+        internal IntPtr _is_chrome_app_menu_item_visible;
+        internal IntPtr _is_chrome_app_menu_item_enabled;
+        internal IntPtr _is_chrome_page_action_icon_visible;
+        internal IntPtr _is_chrome_toolbar_button_visible;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -44,6 +48,30 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate int on_chrome_command_delegate(cef_command_handler_t* self, cef_browser_t* browser, int command_id, CefWindowOpenDisposition disposition);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int is_chrome_app_menu_item_visible_delegate(cef_command_handler_t* self, cef_browser_t* browser, int command_id);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int is_chrome_app_menu_item_enabled_delegate(cef_command_handler_t* self, cef_browser_t* browser, int command_id);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int is_chrome_page_action_icon_visible_delegate(cef_command_handler_t* self, CefChromePageActionIconType icon_type);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int is_chrome_toolbar_button_visible_delegate(cef_command_handler_t* self, CefChromeToolbarButtonType button_type);
         
         private static int _sizeof;
         
