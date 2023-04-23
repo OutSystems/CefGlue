@@ -38,18 +38,6 @@
         }
 
         /// <summary>
-        /// Returns the description of this sink.
-        /// </summary>
-        public string Description
-        {
-            get
-            {
-                var n_result = cef_media_sink_t.get_description(_self);
-                return cef_string_userfree.ToString(n_result);
-            }
-        }
-
-        /// <summary>
         /// Returns the icon type for this sink.
         /// </summary>
         public CefMediaSinkIconType IconType =>
