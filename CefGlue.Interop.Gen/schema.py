@@ -176,6 +176,8 @@ c2cs_enumtypes = {
     'cef_permission_request_types_t': 'CefPermissionRequestTypes',
     'cef_permission_request_result_t': 'CefPermissionRequestResult',
     'cef_preferences_type_t': 'CefPreferencesType',
+    'cef_chrome_page_action_icon_type_t': 'CefChromePageActionIconType',
+    'cef_chrome_toolbar_button_type_t': 'CefChromeToolbarButtonType',
     }
 
 c2cs_structtypes = { }

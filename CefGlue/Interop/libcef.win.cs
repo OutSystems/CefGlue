@@ -18,9 +18,5 @@ namespace Xilium.CefGlue.Interop
         // CefSetOSModalLoop
         [DllImport(DllName, EntryPoint = "cef_set_osmodal_loop", CallingConvention = libcef.CEF_CALL)]
         public static extern void set_osmodal_loop(int osModalLoop);
-
-        // CefEnableHighDPISupport
-        [DllImport(DllName, EntryPoint = "cef_enable_highdpi_support", CallingConvention = libcef.CEF_CALL)]
-        public static extern void enable_highdpi_support();
     }
 }

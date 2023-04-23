@@ -9,7 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 
-    <Version>111.2.7</Version>
+    <Version>112.3.0</Version>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
@@ -146,6 +146,7 @@
     <Compile Include="Enums\CefAlphaType.cs" />
     <Compile Include="Enums\CefCertStatus.cs" />
     <Compile Include="Enums\CefChannelLayout.cs" />
+    <Compile Include="Enums\CefChromeToolbarButtonType.cs" />
     <Compile Include="Enums\CefChromeToolbarType.cs" />
     <Compile Include="Enums\CefColorModel.cs" />
     <Compile Include="Enums\CefColorType.cs" />
@@ -164,6 +165,7 @@
     <Compile Include="Enums\CefDomEventPhase.cs" />
     <Compile Include="Enums\CefDomNodeType.cs" />
     <Compile Include="Enums\CefDragOperationsMask.cs" />
+    <Compile Include="Enums\CefChromePageActionIconType.cs" />
     <Compile Include="Enums\CefPreferencesType.cs" />
     <Compile Include="Enums\CefDuplexMode.cs" />
     <Compile Include="Enums\CefErrorCode.cs" />
