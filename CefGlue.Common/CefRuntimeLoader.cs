@@ -78,7 +78,6 @@ namespace Xilium.CefGlue.Common
         {
             yield return Path.Combine(baseDirectory, DefaultBrowserProcessDirectory, BrowserProcessFileName);
             yield return Path.Combine(baseDirectory, BrowserProcessFileName);
-            
 
             // The executing DLL might not be in the current domain directory (plugins scenario)
             baseDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
