@@ -29,7 +29,7 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
 
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {
-            try
+            using (message)
             {
                 WithErrorHandling(() =>
                 {
@@ -40,10 +40,6 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
                 }, frame);
                 
                 return base.OnProcessMessageReceived(browser, frame, sourceProcess, message);
-            }
-            finally
-            {
-                message.Dispose();
             }
         }
 
