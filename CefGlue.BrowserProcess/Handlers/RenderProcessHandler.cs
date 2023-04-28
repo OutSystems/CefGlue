@@ -29,14 +29,22 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
 
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {
-            WithErrorHandling(() =>
+            try
             {
-                using (CefObjectTracker.StartTracking())
+                WithErrorHandling(() =>
                 {
-                    _messageDispatcher.DispatchMessage(browser, frame, sourceProcess, message);
-                }
-            }, frame);
-            return base.OnProcessMessageReceived(browser, frame, sourceProcess, message);
+                    using (CefObjectTracker.StartTracking())
+                    {
+                        _messageDispatcher.DispatchMessage(browser, frame, sourceProcess, message);
+                    }
+                }, frame);
+                
+                return base.OnProcessMessageReceived(browser, frame, sourceProcess, message);
+            }
+            finally
+            {
+                message.Dispose();
+            }
         }
 
         protected override void OnContextCreated(CefBrowser browser, CefFrame frame, CefV8Context context)

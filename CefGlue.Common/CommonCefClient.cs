@@ -117,6 +117,10 @@ namespace Xilium.CefGlue.Common
                 _owner.HandleException(e);
                 return false;
             }
+            finally
+            {
+                message.Dispose();
+            }
         }
 
         public MessageDispatcher Dispatcher => _messageDispatcher;
