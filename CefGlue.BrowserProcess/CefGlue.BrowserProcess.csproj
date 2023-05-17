@@ -6,10 +6,11 @@
     <AssemblyName>Xilium.CefGlue.BrowserProcess</AssemblyName>
     <RootNamespace>Xilium.CefGlue.BrowserProcess</RootNamespace>
     <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
-    <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>osx-arm64</RuntimeIdentifiers>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <IsWindows Condition="$([MSBuild]::IsOSPlatform('Windows'))">True</IsWindows>
+    <Platforms>AnyCPU;ARM64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,6 +34,6 @@
     <!-- Publish both platforms on Windows for packaging -->
     <Message Text="Publishing..." Importance="High" />
     <MSBuild Condition="$(IsWindows) == 'True'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=win-x64" />
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=osx-x64" />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=osx-arm64" />
   </Target>
 </Project>

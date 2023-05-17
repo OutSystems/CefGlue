@@ -10,6 +10,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <Platforms>AnyCPU;ARM64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
@@ -57,7 +58,7 @@
                 <PackagePath>bin\win</PackagePath>
             </TfmSpecificPackageFile>
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\osx-x64\publish\**\*">
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\ARM64\$(Configuration)\$(DotnetVersion)\osx-arm64\publish\**\*">
                 <PackagePath>bin\osx</PackagePath>
             </TfmSpecificPackageFile>
         </ItemGroup>

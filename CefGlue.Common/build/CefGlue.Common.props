@@ -1,12 +1,12 @@
 <Project>
     <PropertyGroup>
         <!-- adding the supported indentifiers to make bundle work properly -->
-        <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
+        <RuntimeIdentifiers>osx-arm64;win-x64</RuntimeIdentifiers>
     </PropertyGroup>
     <PropertyGroup Condition="($([MSBuild]::IsOSPlatform('Windows')) and '$(RuntimeIdentifier)' == '') or '$(RuntimeIdentifier)' == 'win-x64'">
         <CefGlueTargetPlatform>win</CefGlueTargetPlatform>
     </PropertyGroup>
-    <PropertyGroup Condition="($([MSBuild]::IsOSPlatform('OSX')) and '$(RuntimeIdentifier)' == '') or '$(RuntimeIdentifier)' == 'osx-x64'">
+    <PropertyGroup Condition="($([MSBuild]::IsOSPlatform('OSX')) and '$(RuntimeIdentifier)' == '') or '$(RuntimeIdentifier)' == 'osx-arm64'">
         <CefGlueTargetPlatform>osx</CefGlueTargetPlatform>
     </PropertyGroup>
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' != ''">
