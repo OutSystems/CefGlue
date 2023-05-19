@@ -270,10 +270,10 @@
 
             var m_browser = CefBrowser.FromNative(browser);
             var m_frame = CefFrame.FromNative(frame);
-            
+
             // Client is responsible to call `Dispose()` on message when it no more needed.
             var m_message = CefProcessMessage.FromNative(message);
-            
+
             var result = OnProcessMessageReceived(m_browser, m_frame, source_process, m_message);
             return result ? 1 : 0;
         }

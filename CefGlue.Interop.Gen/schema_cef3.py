@@ -1,5 +1,5 @@
 #
-# TODO: 
+# TODO:
 # Copyright (C) CefGlue Project
 #
 
@@ -182,4 +182,7 @@ classdef = {
     'CefPermissionHandler': { 'role': ROLE_HANDLER },
     'CefSharedMemoryRegion': { 'role': ROLE_PROXY },
     'CefSharedProcessMessageBuilder': { 'role': ROLE_PROXY },
+    # 108
+    'CefPreferenceRegistrar': { 'role': ROLE_PROXY },
+    'CefPreferenceManager': { 'role': ROLE_PROXY, 'abstract': True },
     }

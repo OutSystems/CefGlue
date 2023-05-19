@@ -1,4 +1,4 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright 2012 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -97,10 +97,7 @@ NET_ERROR(BLOCKED_BY_ADMINISTRATOR, -22)
 // The socket is already connected.
 NET_ERROR(SOCKET_IS_CONNECTED, -23)
 
-// The request was blocked because the forced reenrollment check is still
-// pending. This error can only occur on ChromeOS.
-// The error can be emitted by code in chrome/browser/policy/policy_helpers.cc.
-NET_ERROR(BLOCKED_ENROLLMENT_CHECK_PENDING, -24)
+// Error -24 was removed (BLOCKED_ENROLLMENT_CHECK_PENDING)
 
 // The upload failed because the upload stream needed to be re-read, due to a
 // retry or a redirect, but the upload stream doesn't support that operation.
@@ -112,7 +109,7 @@ NET_ERROR(CONTEXT_SHUT_DOWN, -26)
 
 // The request failed because the response was delivered along with requirements
 // which are not met ('X-Frame-Options' and 'Content-Security-Policy' ancestor
-// checks and 'Cross-Origin-Resource-Policy', for instance).
+// checks and 'Cross-Origin-Resource-Policy' for instance).
 NET_ERROR(BLOCKED_BY_RESPONSE, -27)
 
 // Error -28 was removed (BLOCKED_BY_XSS_AUDITOR).
@@ -126,6 +123,9 @@ NET_ERROR(BLOCKED_BY_CSP, -30)
 
 // The request was blocked because of no H/2 or QUIC session.
 NET_ERROR(H2_OR_QUIC_REQUIRED, -31)
+
+// The request was blocked by CORB or ORB.
+NET_ERROR(BLOCKED_BY_ORB, -32)
 
 // A connection was closed (corresponding to a TCP FIN).
 NET_ERROR(CONNECTION_CLOSED, -100)
@@ -1026,4 +1026,4 @@ NET_ERROR(DNS_REQUEST_CANCELLED, -810)
 
 // The hostname resolution of HTTPS record was expected to be resolved with
 // alpn values of supported protocols, but did not.
-NET_ERROR(DNS_NO_MACHING_SUPPORTED_ALPN, -811)
+NET_ERROR(DNS_NO_MATCHING_SUPPORTED_ALPN, -811)

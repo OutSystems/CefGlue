@@ -13,6 +13,44 @@
     /// </summary>
     public abstract unsafe partial class CefBrowserProcessHandler
     {
+        private void on_register_custom_preferences(cef_browser_process_handler_t* self, CefPreferencesType type, cef_preference_registrar_t* registrar)
+        {
+            CheckSelf(self);
+
+            var mRegistrar = CefPreferenceRegistrar.FromNative(registrar);
+
+            try
+            {
+                OnRegisterCustomPreferences(type, mRegistrar);
+            }
+            finally
+            {
+                mRegistrar.ReleaseObject();
+            }
+        }
+
+        /// <summary>
+        /// Provides an opportunity to register custom preferences prior to
+        /// global and request context initialization.
+        /// If |type| is CEF_PREFERENCES_TYPE_GLOBAL the registered preferences can be
+        /// accessed via CefPreferenceManager::GetGlobalPreferences after
+        /// OnContextInitialized is called. Global preferences are registered a single
+        /// time at application startup. See related cef_settings_t.cache_path and
+        /// cef_settings_t.persist_user_preferences configuration.
+        /// If |type| is CEF_PREFERENCES_TYPE_REQUEST_CONTEXT the preferences can be
+        /// accessed via the CefRequestContext after
+        /// CefRequestContextHandler::OnRequestContextInitialized is called. Request
+        /// context preferences are registered each time a new CefRequestContext is
+        /// created. It is intended but not required that all request contexts have
+        /// the same registered preferences. See related
+        /// cef_request_context_settings_t.cache_path and
+        /// cef_request_context_settings_t.persist_user_preferences configuration.
+        /// Do not keep a reference to the |registrar| object. This method is called
+        /// on the browser process UI thread.
+        /// </summary>
+        protected virtual void OnRegisterCustomPreferences(CefPreferencesType type, CefPreferenceRegistrar registrar)
+        { }
+
         private void on_context_initialized(cef_browser_process_handler_t* self)
         {
             CheckSelf(self);

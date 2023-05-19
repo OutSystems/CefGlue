@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Runtime.InteropServices;
+    using System.Xml.Linq;
+
     using Xilium.CefGlue.Interop;
 
     /// <summary>
@@ -175,6 +177,19 @@
         }
 
         /// <summary>
+        /// Create a new CefV8Value object of type Promise. This method should only be
+        /// called from within the scope of a CefRenderProcessHandler, CefV8Handler or
+        /// CefV8Accessor callback, or in combination with calling Enter() and Exit()
+        /// on a stored CefV8Context reference.
+        /// </summary>
+        public static CefV8Value CreatePromise()
+        {
+            return CefV8Value.FromNative(
+                cef_v8value_t.create_promise()
+                );
+        }
+
+        /// <summary>
         /// Returns true if the underlying handle is valid and it can be accessed on
         /// the current thread. Do not call any other methods if this method returns
         /// false.
@@ -279,6 +294,12 @@
         {
             get { return cef_v8value_t.is_function(_self) != 0; }
         }
+
+        /// <summary>
+        /// True if the value type is a Promise.
+        /// </summary>
+        public bool IsPromise
+            => cef_v8value_t.is_promise(_self) != 0;
 
         /// <summary>
         /// Returns true if this object is pointing to the same handle as |that|
@@ -708,6 +729,36 @@
             }
 
             return result;
+        }
+
+
+        /// <summary>
+        /// Resolve the Promise using the current V8 context. This method should only
+        /// be called from within the scope of a CefV8Handler or CefV8Accessor
+        /// callback, or in combination with calling Enter() and Exit() on a stored
+        /// CefV8Context reference. |arg| is the argument passed to the resolved
+        /// promise. Returns true on success. Returns false if this method is called
+        /// incorrectly or an exception is thrown.
+        /// </summary>
+        public bool ResolvePromise(CefV8Value value)
+        {
+            return cef_v8value_t.resolve_promise(_self, value.ToNative()) != 0;
+        }
+
+        /// <summary>
+        /// Reject the Promise using the current V8 context. This method should only
+        /// be called from within the scope of a CefV8Handler or CefV8Accessor
+        /// callback, or in combination with calling Enter() and Exit() on a stored
+        /// CefV8Context reference. Returns true on success. Returns false if this
+        /// method is called incorrectly or an exception is thrown.
+        /// </summary>
+        public bool RejectPromise(string errorMessage)
+        {
+            fixed (char* errorMessage_str = errorMessage)
+            {
+                var n_errorMessage = new cef_string_t(errorMessage_str, errorMessage != null ? errorMessage.Length : 0);
+                return cef_v8value_t.reject_promise(_self, &n_errorMessage) != 0;
+            }
         }
     }
 }

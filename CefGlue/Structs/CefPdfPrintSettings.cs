@@ -3,43 +3,43 @@
     using System;
     using Xilium.CefGlue.Interop;
 
-    [Serializable]
+    /// <summary>
+    /// Structure representing PDF print settings. These values match the parameters
+    /// supported by the DevTools Page.printToPDF function. See
+    /// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
+    /// </summary>
     public sealed class CefPdfPrintSettings
     {
         /// <summary>
-        /// Page title to display in the header. Only used if |header_footer_enabled|
-        /// is set to true (1).
+        /// Set to true (1) for landscape mode or false (0) for portrait mode.
         /// </summary>
-        public string HeaderFooterTitle { get; set; }
+        public bool Landscape { get; set; }
 
         /// <summary>
-        /// URL to display in the footer. Only used if |header_footer_enabled| is set
-        /// to true (1).
+        /// Set to true (1) to print background graphics.
         /// </summary>
-        public string HeaderFooterUrl { get; set; }
+        public bool PrintBackground { get; set; }
 
         /// <summary>
-        /// Output page size in microns. If either of these values is less than or
-        /// equal to zero then the default paper size (A4) will be used.
-        /// </summary>
-        public int PageWidth { get; set; }
-        public int PageHeight { get; set; }
-
-        /// <summary>
-        /// The percentage to scale the PDF by before printing (e.g. 50 is 50%).
-        /// If this value is less than or equal to zero the default value of 100
+        /// The percentage to scale the PDF by before printing (e.g. .5 is 50%).
+        /// If this value is less than or equal to zero the default value of 1.0
         /// will be used.
         /// </summary>
-        public int ScaleFactor { get; set; }
+        public double Scale { get; set; }
 
         /// <summary>
-        /// Margins in points. Only used if |margin_type| is set to PDF_PRINT_MARGIN_CUSTOM.
-        /// PDF_PRINT_MARGIN_CUSTOM.
+        /// Output paper size in inches. If either of these values is less than or
+        /// equal to zero then the default paper size (letter, 8.5 x 11 inches) will
+        /// be used.
         /// </summary>
-        public int MarginTop { get; set; }
-        public int MarginRight { get; set; }
-        public int MarginBottom { get; set; }
-        public int MarginLeft { get; set; }
+        public double PaperWidth { get; set; }
+        public double PaperHeight { get; set; }
+
+        /// <summary>
+        /// Set to true (1) to prefer page size as defined by css. Defaults to false
+        /// (0), in which case the content will be scaled to fit the paper size.
+        /// </summary>
+        public bool PreferCssPageSize { get; set; }
 
         /// <summary>
         /// Margin type.
@@ -47,45 +47,73 @@
         public CefPdfPrintMarginType MarginType { get; set; }
 
         /// <summary>
-        /// Set to true (1) to print headers and footers or false (0) to not print
-        /// headers and footers.
+        /// Margins in inches. Only used if |margin_type| is set to
+        /// PDF_PRINT_MARGIN_CUSTOM.
         /// </summary>
-        public bool HeaderFooterEnabled { get; set; }
+        public double MarginTop { get; set; }
+        public double MarginRight { get; set; }
+        public double MarginBottom { get; set; }
+        public double MarginLeft { get; set; }
 
         /// <summary>
-        /// Set to true (1) to print the selection only or false (0) to print all.
+        /// Paper ranges to print, one based, e.g., '1-5, 8, 11-13'. Pages are printed
+        /// in the document order, not in the order specified, and no more than once.
+        /// Defaults to empty string, which implies the entire document is printed.
+        /// The page numbers are quietly capped to actual page count of the document,
+        /// and ranges beyond the end of the document are ignored. If this results in
+        /// no pages to print, an error is reported. It is an error to specify a range
+        /// with start greater than end.
         /// </summary>
-        public bool SelectionOnly { get; set; }
+        public string PageRanges { get; set; }
 
         /// <summary>
-        /// Set to true (1) for landscape mode or false (0) for portrait mode.
+        /// Set to true (1) to display the header and/or footer. Modify
+        /// |header_template| and/or |footer_template| to customize the display.
         /// </summary>
-        public bool Landscape { get; set; }
+        public bool DisplayHeaderFooter { get; set; }
 
         /// <summary>
-        /// Set to true (1) to print background graphics or false (0) to not print
-        /// background graphics.
+        /// HTML template for the print header. Only displayed if
+        /// |display_header_footer| is true (1). Should be valid HTML markup with
+        /// the following classes used to inject printing values into them:
+        ///
+        /// - date: formatted print date
+        /// - title: document title
+        /// - url: document location
+        /// - pageNumber: current page number
+        /// - totalPages: total pages in the document
+        ///
+        /// For example, "<span class=title></span>" would generate a span containing
+        /// the title.
         /// </summary>
-        public bool BackgroundsEnabled { get; set; }
+        public string HeaderTemplate { get; set; }
+
+        /// <summary>
+        /// HTML template for the print footer. Only displayed if
+        /// |display_header_footer| is true (1). Uses the same format as
+        /// |header_template|.
+        /// </summary>
+        public string FooterTemplate { get; set; }
 
         internal unsafe cef_pdf_print_settings_t* ToNative()
         {
             var ptr = cef_pdf_print_settings_t.Alloc();
 
-            cef_string_t.Copy(HeaderFooterTitle, &ptr->header_footer_title);
-            cef_string_t.Copy(HeaderFooterUrl, &ptr->header_footer_url);
-            ptr->page_width = PageWidth;
-            ptr->page_height = PageHeight;
-            ptr->scale_factor = ScaleFactor;
+            ptr->landscape = Landscape ? 1 : 0;
+            ptr->print_background = PrintBackground ? 1 : 0;
+            ptr->scale = Scale;
+            ptr->paper_width = PaperWidth;
+            ptr->paper_height = PaperHeight;
+            ptr->prefer_css_page_size = PreferCssPageSize ? 1 : 0;
+            ptr->margin_type = MarginType;
             ptr->margin_top = MarginTop;
             ptr->margin_right = MarginRight;
             ptr->margin_bottom = MarginBottom;
             ptr->margin_left = MarginLeft;
-            ptr->margin_type = MarginType;
-            ptr->header_footer_enabled = HeaderFooterEnabled ? 1 : 0;
-            ptr->selection_only = SelectionOnly ? 1 : 0;
-            ptr->landscape = Landscape ? 1 : 0;
-            ptr->backgrounds_enabled = BackgroundsEnabled ? 1 : 0;
+            cef_string_t.Copy(PageRanges, &ptr->page_ranges);
+            ptr->display_header_footer = DisplayHeaderFooter ? 1 : 0;
+            cef_string_t.Copy(HeaderTemplate, &ptr->header_template);
+            cef_string_t.Copy(FooterTemplate, &ptr->footer_template);
 
             return ptr;
         }

@@ -84,7 +84,6 @@
             using (var m_request = CefRequest.FromNative(request))
             {
                 var handler = GetResourceHandler(m_browser, m_frame, m_request);
-
                 return handler != null ? handler.ToNative() : null;
             }
         }
