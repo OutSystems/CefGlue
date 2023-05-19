@@ -25,6 +25,7 @@ namespace Xilium.CefGlue.BrowserProcess.Helpers
                 case CefRuntimePlatform.Windows:
                     extension = "dll";
                     break;
+
                 case CefRuntimePlatform.Linux:
                     extension = "so";
                     break;
