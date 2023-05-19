@@ -29,7 +29,6 @@ namespace Xilium.CefGlue
         
         internal new cef_request_context_t* ToNative()
         {
-            AddRef();
             return (cef_request_context_t*)_self;
         }
     }

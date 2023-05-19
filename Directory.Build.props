@@ -3,8 +3,8 @@
     <PropertyGroup>
         <DotnetVersion>net6.0</DotnetVersion>
         <LangVersion>latest</LangVersion>
-        <CefRedistVersion>106.0.26</CefRedistVersion>
-        <CefRedistOSXVersion>106.0.26</CefRedistOSXVersion>
+        <CefRedistVersion>112.3.0</CefRedistVersion>
+        <CefRedistOSXVersion>112.3.0</CefRedistOSXVersion>
     </PropertyGroup>
 
     <PropertyGroup>
