@@ -61,7 +61,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
                     var cefMessage = message.ToCefProcessMessage();
                     // TODO target main frame?
-                    _browser.GetMainFrame().SendProcessMessage(CefProcessId.Browser, cefMessage);
+                    _browser.GetMainFrame().SendProcessMessage(CefProcessId.Renderer, cefMessage);
                 }
             }
         }
@@ -94,7 +94,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
             var cefMessage = message.ToCefProcessMessage();
             // TODO target main frame?
-            _browser.GetMainFrame().SendProcessMessage(CefProcessId.Browser, cefMessage);
+            _browser.GetMainFrame().SendProcessMessage(CefProcessId.Renderer, cefMessage);
         }
 
         public void Dispose()
