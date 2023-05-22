@@ -61,6 +61,10 @@
             <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\osx-x64\publish\**\*">
                 <PackagePath>bin\osx</PackagePath>
             </TfmSpecificPackageFile>
+            
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\linux-x64\publish\**\*">
+                <PackagePath>bin\linux</PackagePath>
+            </TfmSpecificPackageFile>
         </ItemGroup>
     </Target>
 
