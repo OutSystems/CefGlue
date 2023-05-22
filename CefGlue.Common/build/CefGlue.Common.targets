@@ -12,8 +12,9 @@
             <PublishState>Included</PublishState>
         </None>
     </ItemGroup>
-        <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'linux'">
-        <None Include="@(CefRedistOSX64)">
+
+    <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'linux'">
+        <None Include="@(CefRedistLinux64)">
             <Visible>false</Visible>
             <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -42,6 +43,7 @@
             <PublishState>Included</PublishState>
         </None>
     </ItemGroup>
+    
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'osx'">
         <None Include="@(CefRedistOSX64)">
             <Visible>false</Visible>
