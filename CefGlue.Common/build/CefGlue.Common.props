@@ -1,13 +1,16 @@
 <Project>
     <PropertyGroup>
         <!-- adding the supported indentifiers to make bundle work properly -->
-        <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
+        <RuntimeIdentifiers>osx-x64;win-x64;linux-x64</RuntimeIdentifiers>
     </PropertyGroup>
     <PropertyGroup Condition="($([MSBuild]::IsOSPlatform('Windows')) and '$(RuntimeIdentifier)' == '') or '$(RuntimeIdentifier)' == 'win-x64'">
         <CefGlueTargetPlatform>win</CefGlueTargetPlatform>
     </PropertyGroup>
     <PropertyGroup Condition="($([MSBuild]::IsOSPlatform('OSX')) and '$(RuntimeIdentifier)' == '') or '$(RuntimeIdentifier)' == 'osx-x64'">
         <CefGlueTargetPlatform>osx</CefGlueTargetPlatform>
+    </PropertyGroup>
+        <PropertyGroup Condition="($([MSBuild]::IsOSPlatform('Linux')) and '$(RuntimeIdentifier)' == '') or '$(RuntimeIdentifier)' == 'linux-x64'">
+        <CefGlueTargetPlatform>linux</CefGlueTargetPlatform>
     </PropertyGroup>
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' != ''">
         <CefGlueBrowserProcessFiles Include="$(MSBuildThisFileDirectory)..\bin\$(CefGlueTargetPlatform)\*" />
