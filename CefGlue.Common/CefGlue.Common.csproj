@@ -25,6 +25,7 @@
         <PackageReference Include="NLog" />
         <PackageReference PrivateAssets="None" Include="cef.redist.x64" />
         <PackageReference PrivateAssets="None" Include="cef.redist.osx64" />
+        <PackageReference PrivateAssets="None" Include="cef.redist.linux64" />
         <PackageReference Include="System.Text.Json" />
     </ItemGroup>
 
@@ -59,6 +60,10 @@
 
             <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\osx-x64\publish\**\*">
                 <PackagePath>bin\osx</PackagePath>
+            </TfmSpecificPackageFile>
+            
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\linux-x64\publish\**\*">
+                <PackagePath>bin\linux</PackagePath>
             </TfmSpecificPackageFile>
         </ItemGroup>
     </Target>
