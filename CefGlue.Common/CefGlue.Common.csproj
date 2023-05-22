@@ -25,6 +25,7 @@
         <PackageReference Include="NLog" />
         <PackageReference PrivateAssets="None" Include="cef.redist.x64" />
         <PackageReference PrivateAssets="None" Include="cef.redist.osx64" />
+        <PackageReference PrivateAssets="None" Include="cef.redist.linux64" />
         <PackageReference Include="System.Text.Json" />
     </ItemGroup>
 
