@@ -28,7 +28,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         public static PromiseHolder CreatePromise(this CefV8Context context)
         {
-            var promiseData = CefV8Value.CreatePromise(); // create a promise and return the resolve and reject callbacks
+            var promiseData = CefV8Value.CreatePromise().ExecuteFunctionWithContext(context, null, new CefV8Value[0]); // create a promise and return the resolve and reject callbacks
 
             var promise = promiseData.GetValue("promise");
             var resolve = promiseData.GetValue("resolve");
