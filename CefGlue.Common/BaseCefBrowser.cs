@@ -4,7 +4,6 @@ using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Handlers;
 using Xilium.CefGlue.Common.Helpers.Logger;
 using Xilium.CefGlue.Common.Platform;
-using Xilium.CefGlue.Helpers.Log;
 
 namespace Xilium.CefGlue.Common
 {
@@ -35,7 +34,7 @@ namespace Xilium.CefGlue.Common
             if (CefRuntimeLoader.IsOSREnabled)
             {
                 _adapter = new CommonOffscreenBrowserAdapter(this, nameof(BaseCefBrowser), CreateOffScreenControlHost(), CreatePopupHost(), _logger, cefRequestContextFactory?.Invoke());
-            }
+            } 
             else
             {
                 _adapter = new CommonBrowserAdapter(this, nameof(BaseCefBrowser), CreateControl(), _logger, cefRequestContextFactory?.Invoke());
@@ -82,7 +81,7 @@ namespace Xilium.CefGlue.Common
         /// Event fired when the browser is initialized.
         /// </summary>
         public event Action BrowserInitialized { add => _adapter.Initialized += value; remove => _adapter.Initialized -= value; }
-
+        
         /// <summary>
         /// Event fired when the browser starts loading a frame.
         /// </summary>
@@ -142,7 +141,7 @@ namespace Xilium.CefGlue.Common
         /// Event fired when an internal browser exception is unhandled.
         /// </summary>
         public event AsyncUnhandledExceptionEventHandler UnhandledException { add => _adapter.UnhandledException += value; remove => _adapter.UnhandledException -= value; }
-
+        
         /// <summary>
         /// Return the handler for context menus. If no handler is provided the default implementation will be used.
         /// </summary>
