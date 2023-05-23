@@ -73,16 +73,6 @@ namespace Xilium.CefGlue.Common.InternalHandlers
             _owner.HandleViewPaint(buffer, width, height, dirtyRects, type == CefPaintElementType.Popup);
         }
 
-        // Moved to CefDisplayHandler.
-        //protected override void OnCursorChange(CefBrowser browser, IntPtr cursorHandle, CefCursorType type, CefCursorInfo customCursorInfo)
-        //{
-        //    _uiHelper.PerformInUiThread(() =>
-        //        {
-        //            Cursor cursor = CursorInteropHelper.Create(new SafeFileHandle(cursorHandle, false));
-        //            _owner.Cursor = cursor;
-        //        });
-        //}
-
         protected override void OnScrollOffsetChanged(CefBrowser browser, double x, double y)
         {
             _owner.RenderHandler?.HandleScrollOffsetChanged(browser, x, y);
