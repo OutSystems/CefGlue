@@ -1,7 +1,5 @@
 ﻿using System.IO;
 using System.Text;
-using Xilium.CefGlue.Common.Shared.Helpers;
-using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
@@ -30,8 +28,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         public static PromiseHolder CreatePromise(this CefV8Context context)
         {
-            var promiseFactory = GetGlobalInnerValue(context, PromiseFactoryFunctionName);
-            var promiseData = promiseFactory.ExecuteFunctionWithContext(context, null, new CefV8Value[0]); // create a promise and return the resolve and reject callbacks
+            var promiseData = CefV8Value.CreatePromise(); // create a promise and return the resolve and reject callbacks
 
             var promise = promiseData.GetValue("promise");
             var resolve = promiseData.GetValue("resolve");
@@ -47,7 +44,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         public static CefV8Value CreateInterceptorObject(this CefV8Context context, CefV8Value targetObj)
         {
             var interceptorFactory = GetGlobalInnerValue(context, InterceptorFactoryFunctionName);
-            
+
             return interceptorFactory.ExecuteFunctionWithContext(context, null, new[] { targetObj });
         }
 
@@ -55,7 +52,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         {
             var global = context.GetGlobal();
             var cefGlueGlobal = global.GetValue(GlobalObjectName); // TODO what if cefGlueGlobal == null?
-            
+
             return cefGlueGlobal.GetValue(innerValueKey);
         }
 
