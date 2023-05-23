@@ -19,7 +19,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 returnValue = null;
                 exception = null;
-                
+
                 switch (name)
                 {
                     case BindNativeFunctionName:
@@ -40,7 +40,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                                     boundQueryTask = _nativeObjectRegistry.Bind(objectName);
                                 }
 
-                                
+
                                 boundQueryTask.ContinueWith(t =>
                                 {
                                     var context = resultingPromise.Context;
@@ -53,8 +53,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                                             {
                                                 if (t.IsFaulted)
                                                 {
-                                                    var exceptionMsg = CefV8Value.CreateString(t.Exception.Message);
-                                                    reject(exceptionMsg);
+                                                    reject(t.Exception?.Message ?? string.Empty);
                                                 }
                                                 else
                                                 {
@@ -91,7 +90,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                         exception = $"Unknown function '{name}'";
                         break;
                 }
-                
+
                 return true;
             }
 

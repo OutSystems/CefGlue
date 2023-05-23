@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using System.Text;
+using Xilium.CefGlue.Common.Shared.Helpers;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
@@ -8,7 +10,6 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
     {
         private const string CefGlueGlobalScriptFileName = "CefGlueGlobalScript.js";
         private const string GlobalObjectName = "cefglue";
-        private const string PromiseFactoryFunctionName = "createPromise";
         private const string InterceptorFactoryFunctionName = "createInterceptor";
         private const string EvaluateScriptFunctionName = "evaluateScript";
         private const string BindNativeFunctionName = "Bind";
@@ -28,17 +29,11 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         public static PromiseHolder CreatePromise(this CefV8Context context)
         {
-            var promiseData = CefV8Value.CreatePromise().ExecuteFunctionWithContext(context, null, new CefV8Value[0]); // create a promise and return the resolve and reject callbacks
-
-            var promise = promiseData.GetValue("promise");
-            var resolve = promiseData.GetValue("resolve");
-            var reject = promiseData.GetValue("reject");
+            var promise = CefV8Value.CreatePromise();
 
             CefObjectTracker.Untrack(promise);
-            CefObjectTracker.Untrack(resolve);
-            CefObjectTracker.Untrack(reject);
 
-            return new PromiseHolder(promise, resolve, reject, context);
+            return new PromiseHolder(promise, context);
         }
 
         public static CefV8Value CreateInterceptorObject(this CefV8Context context, CefV8Value targetObj)
@@ -73,7 +68,6 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                 .Replace("$StringMarker$", DataMarkers.StringMarker)
                 .Replace("$DateTimeMarker$", DataMarkers.DateTimeMarker)
                 .Replace("$BinaryMarker$", DataMarkers.BinaryMarker)
-                .Replace("$PromiseFactoryFunctionName$", PromiseFactoryFunctionName)
                 .Replace("$InterceptorFactoryFunctionName$", InterceptorFactoryFunctionName)
                 .Replace("$BindNativeFunctionName$", BindNativeFunctionName)
                 .Replace("$UnbindNativeFunctionName$", UnbindNativeFunctionName)
