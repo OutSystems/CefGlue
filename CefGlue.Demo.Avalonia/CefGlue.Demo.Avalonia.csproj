@@ -9,7 +9,7 @@
     <Platforms>AnyCPU;ARM64</Platforms>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_WindowlessRender|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug_WindowlessRender'">
     <DebugType></DebugType>
     <DefineConstants>$(DefineConstants);WINDOWLESS</DefineConstants>
   </PropertyGroup>
