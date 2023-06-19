@@ -6,19 +6,21 @@
     </ItemGroup>
 
     <PropertyGroup>
-        <BrowserProcessDir>$(MSBuildThisFileDirectory)CefGlue.BrowserProcess\bin\ARM64\$(Configuration)\$(DotnetVersion)</BrowserProcessDir>
+        <BrowserProcessDir>$(MSBuildThisFileDirectory)CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)</BrowserProcessDir>
         <RuntimeIdentifiers>osx-x64;win-x64;osx-arm64;win-arm64</RuntimeIdentifiers>
     </PropertyGroup>
 
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-        <CefGlueTargetPlatform>win</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'AnyCPU'">win-x64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">win-arm64</CefGlueTargetPlatform>
     </PropertyGroup>
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-        <CefGlueTargetPlatform>osx</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'AnyCPU'">osx-x64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">osx-arm64</CefGlueTargetPlatform>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(RuntimeIdentifier)' == ''">
-        <CefGlueBrowserProcessFiles Include="$(BrowserProcessDir)\$(CefGlueTargetPlatform)-arm64\publish\*" />
+        <CefGlueBrowserProcessFiles Include="$(BrowserProcessDir)\$(CefGlueTargetPlatform)\publish\*" />
     </ItemGroup>
     <ItemGroup Condition="'$(RuntimeIdentifier)' != ''">
         <CefGlueBrowserProcessFiles Include="$(BrowserProcessDir)\$(RuntimeIdentifier)\publish\*" />
