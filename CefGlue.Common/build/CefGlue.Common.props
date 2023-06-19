@@ -16,6 +16,6 @@
         <CefGlueTargetPlatform>osx-arm64</CefGlueTargetPlatform>
     </PropertyGroup>
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' != ''">
-        <CefGlueBrowserProcessFiles Include="$(MSBuildThisFileDirectory)..\bin\$(Platform)\$(CefGlueTargetPlatform)\*" />
+        <CefGlueBrowserProcessFiles Include="$(MSBuildThisFileDirectory)..\bin\$(CefGlueTargetPlatform)\*" />
     </ItemGroup>
 </Project>
