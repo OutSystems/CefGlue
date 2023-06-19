@@ -4,7 +4,7 @@
     </PropertyGroup>
 
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'win-x64' OR '$(CefGlueTargetPlatform)' == 'win-arm64'">
-        <None Include="@(CefRedist64)">
+        <None Include="@(CefRuntimeFiles)">
             <Visible>false</Visible>
             <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
