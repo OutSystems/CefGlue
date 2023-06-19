@@ -19,6 +19,6 @@
         <CefGlueBrowserProcessFiles Include="$(MSBuildThisFileDirectory)..\bin\$(CefGlueTargetPlatform)\*" />
     </ItemGroup>
     <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows')) and '$(CefGlueTargetPlatform)' != ''">
-        <CefRuntimeFiles Include="$(MSBuildThisFileDirectory)..\..\..\chromiumembeddedframework.runtime.$(CefGlueTargetPlatform)\106.0.26\runtimes\$(CefGlueTargetPlatform)\native\**\*" />
+        <CefRuntimeFiles Include="@(PackageReference->WithMetadataValue('Identity', 'chromiumembeddedframework.runtime.$(CefGlueTargetPlatform)'))" />
     </ItemGroup>
 </Project>
