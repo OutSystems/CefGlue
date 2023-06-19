@@ -54,11 +54,11 @@
         <ItemGroup>
             <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\win-x64\publish\**\*">
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\win-x64\publish\**\*">
                 <PackagePath>bin\win</PackagePath>
             </TfmSpecificPackageFile>
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\ARM64\$(Configuration)\$(DotnetVersion)\osx-arm64\publish\**\*">
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\osx-arm64\publish\**\*">
                 <PackagePath>bin\osx</PackagePath>
             </TfmSpecificPackageFile>
         </ItemGroup>

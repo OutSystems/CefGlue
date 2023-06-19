@@ -8,10 +8,11 @@
         <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
         <UseWPF>true</UseWPF>
         <StartupObject>Xilium.CefGlue.Demo.WPF.Program</StartupObject>
+        <Platforms>AnyCPU;ARM64</Platforms>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_WindowlessRender|AnyCPU'">
-        <DebugType></DebugType>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_WindowlessRender|AnyCPU' OR '$(Configuration)|$(Platform)'=='Debug_WindowlessRender|ARM64'">
+        <DebugType />
         <DefineConstants>$(DefineConstants);WINDOWLESS</DefineConstants>
     </PropertyGroup>
 

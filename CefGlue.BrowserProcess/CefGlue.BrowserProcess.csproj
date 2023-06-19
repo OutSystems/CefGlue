@@ -34,28 +34,12 @@
     <!-- Publish both platforms on Windows for packaging -->
     <Message Text="Publishing..." Importance="High" />
     
-    <MSBuild 
-            Condition="$(IsWindows) == 'True' AND $(Platform) == 'AnyCPU'" 
-            Projects="CefGlue.BrowserProcess.csproj" 
-            Targets="Publish" 
-            Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=win-x64" />
+    <MSBuild Condition="$(IsWindows) == 'True'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=win-x64" />
 
-    <MSBuild
-            Condition="$(IsWindows) == 'True' AND $(Platform) == 'ARM64'"
-            Projects="CefGlue.BrowserProcess.csproj"
-            Targets="Publish"
-            Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=win-arm64" />
+    <MSBuild Condition="$(IsWindows) == 'True'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=win-arm64" />
 
-    <MSBuild
-            Condition="$(Platform) == 'AnyCPU'"
-            Projects="CefGlue.BrowserProcess.csproj" 
-            Targets="Publish" 
-            Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=osx-x64" />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=osx-x64" />
     
-    <MSBuild
-            Condition="$(Platform) == 'ARM64'"
-            Projects="CefGlue.BrowserProcess.csproj"
-            Targets="Publish"
-            Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=osx-arm64" />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=osx-arm64" />
   </Target>
 </Project>
