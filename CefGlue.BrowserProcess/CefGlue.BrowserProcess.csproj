@@ -32,13 +32,33 @@
   <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
     <!-- Publish both platforms on Windows for packaging -->
     <Message Text="Publishing..." Importance="High" />
-    
-    <MSBuild Condition="$(IsWindows) == 'True'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=win-x64" />
 
-    <MSBuild Condition="$(IsWindows) == 'True'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=win-arm64" />
+    <!-- WINDOWS X64 -->
+    <PropertyGroup>
+      <RuntimeIdentifierToDeploy>win-x64</RuntimeIdentifierToDeploy>
+    </PropertyGroup>
+    <CallTarget Condition="$(IsWindows) == 'True'" Targets="BrowserProcessDeploy" />
 
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=osx-x64" />
-    
+    <!-- WINDOWS ARM64 -->
+    <PropertyGroup>
+      <RuntimeIdentifierToDeploy>win-arm64</RuntimeIdentifierToDeploy>
+    </PropertyGroup>
+    <CallTarget Condition="$(IsWindows) == 'True'" Targets="BrowserProcessDeploy" />
+
+    <!-- OSX X64 -->
+    <PropertyGroup>
+      <RuntimeIdentifierToDeploy>osx-x64</RuntimeIdentifierToDeploy>
+    </PropertyGroup>
+    <CallTarget Targets="BrowserProcessDeploy" />
+
+    <!-- OSX ARM64 -->
+    <PropertyGroup>
+      <RuntimeIdentifierToDeploy>osx-arm64</RuntimeIdentifierToDeploy>
+    </PropertyGroup>
+    <CallTarget Targets="BrowserProcessDeploy" />
+  </Target>
+  
+  <Target Name="BrowserProcessDeploy">
     <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=osx-arm64" />
   </Target>
 </Project>
