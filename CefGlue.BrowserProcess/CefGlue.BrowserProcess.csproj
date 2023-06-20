@@ -59,6 +59,6 @@
   </Target>
   
   <Target Name="BrowserProcessDeploy">
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=osx-arm64" />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=$(RuntimeIdentifierToDeploy)" />
   </Target>
 </Project>
