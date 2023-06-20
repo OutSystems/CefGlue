@@ -10,7 +10,6 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-        <Platforms>AnyCPU;ARM64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
@@ -54,11 +53,11 @@
         <ItemGroup>
             <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\AnyCPU\$(Configuration)\$(DotnetVersion)\win-x64\publish\**\*">
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\x64\$(Configuration)\$(DotnetVersion)\win-x64\publish\**\*">
                 <PackagePath>bin\win-x64</PackagePath>
             </TfmSpecificPackageFile>
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\AnyCPU\$(Configuration)\$(DotnetVersion)\osx-x64\publish\**\*">
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\x64\$(Configuration)\$(DotnetVersion)\osx-x64\publish\**\*">
                 <PackagePath>bin\osx-x64</PackagePath>
             </TfmSpecificPackageFile>
 

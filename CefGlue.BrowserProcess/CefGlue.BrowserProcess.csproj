@@ -10,7 +10,6 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <IsWindows Condition="$([MSBuild]::IsOSPlatform('Windows'))">True</IsWindows>
-    <Platforms>AnyCPU;ARM64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

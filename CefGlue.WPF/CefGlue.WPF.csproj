@@ -12,14 +12,13 @@
     <PackageId>CefGlue.WPF</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <Platforms>AnyCPU;ARM64</Platforms>
   </PropertyGroup>
     
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU' OR '$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64' OR '$(Configuration)|$(Platform)' == 'Debug|ARM64'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
     
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU' OR '$(Configuration)|$(Platform)' == 'Release|ARM64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64' OR '$(Configuration)|$(Platform)' == 'Release|ARM64'">
     <DocumentationFile>bin\Release\Xilium.CefGlue.WPF.xml</DocumentationFile>
   </PropertyGroup>
     
@@ -33,7 +32,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
     
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_WindowlessRender|AnyCPU' OR '$(Configuration)|$(Platform)' == 'Debug_WindowlessRender|ARM64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_WindowlessRender|x64' OR '$(Configuration)|$(Platform)' == 'Debug_WindowlessRender|ARM64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug_WindowlessRender\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
