@@ -12,6 +12,7 @@
     <PackageId>CefGlue.WPF</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
     
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64' OR '$(Configuration)|$(Platform)' == 'Debug|ARM64'">
