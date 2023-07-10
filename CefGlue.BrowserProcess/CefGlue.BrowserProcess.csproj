@@ -10,6 +10,7 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <IsWindows Condition="$([MSBuild]::IsOSPlatform('Windows'))">True</IsWindows>
+    <PublishCommonConfig>Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=</PublishCommonConfig>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,36 +30,20 @@
     <PackageReference Include="System.Runtime.Loader" />
   </ItemGroup>
   
-  <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(Configuration)' != 'Debug' and '$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
+  <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
     <!-- Publish both platforms on Windows for packaging -->
     <Message Text="Publishing..." Importance="High" />
 
     <!-- WINDOWS X64 -->
-    <PropertyGroup>
-      <RuntimeIdentifierToDeploy>win-x64</RuntimeIdentifierToDeploy>
-    </PropertyGroup>
-    <CallTarget Condition="$(IsWindows) == 'True'" Targets="BrowserProcessDeploy" />
+    <MSBuild Condition="$(IsWindows) == 'True' and '$(Platform)' == 'x64'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-x64" />
 
     <!-- WINDOWS ARM64 -->
-    <PropertyGroup>
-      <RuntimeIdentifierToDeploy>win-arm64</RuntimeIdentifierToDeploy>
-    </PropertyGroup>
-    <CallTarget Condition="$(IsWindows) == 'True'" Targets="BrowserProcessDeploy" />
+    <MSBuild Condition="$(IsWindows) == 'True' and '$(Platform)' == 'ARM64'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-arm64" />
 
     <!-- OSX X64 -->
-    <PropertyGroup>
-      <RuntimeIdentifierToDeploy>osx-x64</RuntimeIdentifierToDeploy>
-    </PropertyGroup>
-    <CallTarget Targets="BrowserProcessDeploy" />
-
+    <MSBuild Condition="'$(Platform)' == 'x64'"  Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)osx-x64" />
+    
     <!-- OSX ARM64 -->
-    <PropertyGroup>
-      <RuntimeIdentifierToDeploy>osx-arm64</RuntimeIdentifierToDeploy>
-    </PropertyGroup>
-    <CallTarget Targets="BrowserProcessDeploy" />
-  </Target>
-  
-  <Target Name="BrowserProcessDeploy">
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=$(RuntimeIdentifierToDeploy)" />
+    <MSBuild Condition="'$(Platform)' == 'ARM64'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)osx-arm64" />
   </Target>
 </Project>
