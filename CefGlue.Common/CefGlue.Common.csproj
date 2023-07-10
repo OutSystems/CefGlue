@@ -23,11 +23,17 @@
 
     <ItemGroup>
         <PackageReference Include="NLog" />
-        <PackageReference PrivateAssets="None" Condition="'$(Platform)' == 'x64'" Include="chromiumembeddedframework.runtime.win-x64" />
-        <PackageReference PrivateAssets="None" Condition="'$(Platform)' == 'ARM64'" Include="chromiumembeddedframework.runtime.win-arm64" />
-        <PackageReference PrivateAssets="None" Condition="'$(Platform)' == 'x64'" Include="cef.redist.osx64" />
-        <PackageReference PrivateAssets="None" Condition="'$(Platform)' == 'ARM64'" Include="cef.redist.osx.arm64" />
         <PackageReference Include="System.Text.Json" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Platform)' == 'x64'">
+        <PackageReference PrivateAssets="None" Include="chromiumembeddedframework.runtime.win-x64" />
+        <PackageReference PrivateAssets="None" Include="cef.redist.osx64" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Platform)' == 'ARM64'">
+        <PackageReference PrivateAssets="None" Include="chromiumembeddedframework.runtime.win-arm64" />
+        <PackageReference PrivateAssets="None" Include="cef.redist.osx.arm64" />
     </ItemGroup>
 
     <ItemGroup>
