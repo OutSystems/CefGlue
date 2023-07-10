@@ -5,16 +5,13 @@
     </PropertyGroup>
     <PropertyGroup Condition="($([MSBuild]::IsOSPlatform('Windows'))">
         <CefGlueTargetPlatform Condition="'$(RuntimeIdentifier)' == '' or '$(RuntimeIdentifier)' == 'win-x64'">win-x64</CefGlueTargetPlatform>
-        <CefGlueTargetPlatform Condition="'$(RuntimeIdentifier)' == 'win-arm64'">>win-arm64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(RuntimeIdentifier)' == 'win-arm64'">win-arm64</CefGlueTargetPlatform>
     </PropertyGroup>
     <PropertyGroup Condition="($([MSBuild]::IsOSPlatform('OSX'))">
-        <CefGlueTargetPlatform Condition="'$(RuntimeIdentifier)' == '' or '$(RuntimeIdentifier)' == 'osx-x64'">>osx-x64</CefGlueTargetPlatform>
-        <CefGlueTargetPlatform Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">>osx-arm64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(RuntimeIdentifier)' == '' or '$(RuntimeIdentifier)' == 'osx-x64'">osx-x64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">osx-arm64</CefGlueTargetPlatform>
     </PropertyGroup>
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' != ''">
         <CefGlueBrowserProcessFiles Include="$(MSBuildThisFileDirectory)..\bin\$(CefGlueTargetPlatform)\*" />
-    </ItemGroup>
-    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows')) and '$(CefGlueTargetPlatform)' != ''">
-        <CefRuntimeFiles Include="@(PackageReference->WithMetadataValue('Identity', 'chromiumembeddedframework.runtime.$(CefGlueTargetPlatform)'))" />
     </ItemGroup>
 </Project>
