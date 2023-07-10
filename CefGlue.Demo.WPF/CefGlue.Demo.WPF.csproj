@@ -11,7 +11,7 @@
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_WindowlessRender|x64' or  '$(Configuration)|$(Platform)' == 'Debug_WindowlessRender|ARM64' ">
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug_WindowlessRender'">
       <DebugType />
       <DefineConstants>$(DefineConstants);WINDOWLESS</DefineConstants>
     </PropertyGroup>
