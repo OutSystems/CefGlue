@@ -37,7 +37,7 @@
 	</PropertyGroup>
 
 	<!-- Publish both platforms on Windows for packaging -->
-	<Message Text="Publishing on $(ArchitectureConfig)..." Importance="High" />
+	<Message Text="Publishing on $(Platform)..." Importance="High" />
 
     <!-- WINDOWS -->
     <MSBuild Condition="$(IsWindows) == 'True'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-$(ArchitectureConfig)" />
