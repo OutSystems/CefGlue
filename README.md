@@ -10,7 +10,7 @@ Currently only x64 and ARM64 architectures are supported.
 ## Releases
 Stable binaries are released on NuGet, and contain everything you need to embed Chromium in your .NET/CLR application. 
 - [![CefGlue.Avalonia](https://img.shields.io/nuget/v/CefGlue.Avalonia.svg?style=flat&label=CefGlue-Avalonia)](https://www.nuget.org/packages/CefGlue.Avalonia/)
-- [![CefGlue.Avalonia.ARM64](https://img.shields.io/nuget/v/CefGlue.Avalonia.svg?style=flat&label=CefGlue-Avalonia-ARM64)](https://www.nuget.org/packages/CefGlue.Avalonia.ARM64/)
+- [![CefGlue.Avalonia.ARM64](https://img.shields.io/nuget/v/CefGlue.Avalonia.ARM64.svg?style=flat&label=CefGlue-Avalonia-ARM64)](https://www.nuget.org/packages/CefGlue.Avalonia.ARM64/)
 - [![CefGlue.Common](https://img.shields.io/nuget/v/CefGlue.Common.svg?style=flat&label=CefGlue-Common)](https://www.nuget.org/packages/CefGlue.Common/)
 - [![CefGlue.Common.ARM64](https://img.shields.io/nuget/v/CefGlue.Common.ARM64.svg?style=flat&label=CefGlue-Common-ARM64)](https://www.nuget.org/packages/CefGlue.Common.ARM64/)
 - [![CefGlue.WPF](https://img.shields.io/nuget/v/CefGlue.WPF.svg?style=flat&label=CefGlue-WPF)](https://www.nuget.org/packages/CefGlue.WPF/)
