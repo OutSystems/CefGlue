@@ -31,11 +31,6 @@
   </ItemGroup>
   
   <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
-	<PropertyGroup>
-	  <ArchitectureConfig Condition="'$(Platform)' == '' or '$(Platform)' == 'x64'">x64</ArchitectureConfig>
-	  <ArchitectureConfig Condition="'$(Platform)' == 'ARM64'">arm64</ArchitectureConfig>
-	</PropertyGroup>
-
 	<!-- Publish both platforms on Windows for packaging -->
 	<Message Text="Publishing on $(Platform)..." Importance="High" />
 

@@ -6,23 +6,10 @@
         <RootNamespace>Xilium.CefGlue.Common</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
+        <PackageId>CefGlue.Common$(PackageSuffix)</PackageId>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Platform)' == '' or '$(Platform)' == 'x64'">
-        <PackageSuffix/>
-        <ArchitectureConfig>x64</ArchitectureConfig>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Platform)' == 'ARM64'">
-        <PackageSuffix>.ARM64</PackageSuffix>
-        <ArchitectureConfig>arm64</ArchitectureConfig>
-    </PropertyGroup>
-    
-    <PropertyGroup>
-        <PackageId>CefGlue.Common$(PackageSuffix)</PackageId>
     </PropertyGroup>
 
     <ItemGroup>

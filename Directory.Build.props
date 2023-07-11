@@ -29,6 +29,16 @@
         <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Platform)' == '' or '$(Platform)' == 'x64'">
+        <ArchitectureConfig>x64</ArchitectureConfig>
+        <PackageSuffix />
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Platform)' == 'ARM64'">
+        <ArchitectureConfig>arm64</ArchitectureConfig>
+        <PackageSuffix>.ARM64</PackageSuffix>
+    </PropertyGroup>
+
     <!-- Generate documentation in Release builds. -->
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
