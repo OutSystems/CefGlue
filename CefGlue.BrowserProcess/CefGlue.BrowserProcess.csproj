@@ -12,11 +12,6 @@
     <IsWindows Condition="$([MSBuild]::IsOSPlatform('Windows'))">True</IsWindows>
     <PublishCommonConfig>Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=</PublishCommonConfig>
   </PropertyGroup>
-  
-  <PropertyGroup>
-    <ArchitectureConfig Condition="'$(Platform)' == '' or '$(Platform)' == 'x64'">x64</ArchitectureConfig>
-    <ArchitectureConfig Condition="'$(Platform)' == 'ARM64'">arm64</ArchitectureConfig>
-  </PropertyGroup>
 
   <ItemGroup>
     <None Remove="ObjectBinding\CefGlueGlobalScript.js" />
@@ -36,8 +31,13 @@
   </ItemGroup>
   
   <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
-    <!-- Publish both platforms on Windows for packaging -->
-    <Message Text="Publishing..." Importance="High" />
+	<PropertyGroup>
+	  <ArchitectureConfig Condition="'$(Platform)' == '' or '$(Platform)' == 'x64'">x64</ArchitectureConfig>
+	  <ArchitectureConfig Condition="'$(Platform)' == 'ARM64'">arm64</ArchitectureConfig>
+	</PropertyGroup>
+
+	<!-- Publish both platforms on Windows for packaging -->
+	<Message Text="Publishing on $(ArchitectureConfig)..." Importance="High" />
 
     <!-- WINDOWS -->
     <MSBuild Condition="$(IsWindows) == 'True'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-$(ArchitectureConfig)" />
