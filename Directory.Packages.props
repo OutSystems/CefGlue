@@ -25,8 +25,11 @@
         <PackageVersion Include="System.Runtime.Loader" Version="4.3.0" />
         <PackageVersion Include="NLog" Version="4.6.2" />
 
-        <PackageVersion Include="cef.redist.x64" Version="$(CefRedistVersion)" />
+        <PackageVersion Include="chromiumembeddedframework.runtime.win-x64" Version="$(CefRedistVersion)" />
+        <PackageVersion Include="chromiumembeddedframework.runtime.win-arm64" Version="$(CefRedistVersion)" />
+        
         <PackageVersion Include="cef.redist.osx64" Version="$(CefRedistOSXVersion)" />
+        <PackageVersion Include="cef.redist.osx.arm64" Version="$(CefRedistOSXVersion)" />
 
         <PackageVersion Include="nunit" Version="3.12.0" />
         <PackageVersion Include="NUnit3TestAdapter" Version="3.17.0" />
