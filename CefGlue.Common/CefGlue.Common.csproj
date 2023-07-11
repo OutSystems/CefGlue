@@ -6,10 +6,23 @@
         <RootNamespace>Xilium.CefGlue.Common</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
-        <PackageId>CefGlue.Common</PackageId>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Platform)' == '' or '$(Platform)' == 'x64'">
+        <PackageSuffix/>
+        <ArchitectureConfig>x64</ArchitectureConfig>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Platform)' == 'ARM64'">
+        <PackageSuffix>.ARM64</PackageSuffix>
+        <ArchitectureConfig>arm64</ArchitectureConfig>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <PackageId>CefGlue.Common$(PackageSuffix)</PackageId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -53,28 +66,20 @@
             <PrivateAssets>all</PrivateAssets>
         </ProjectReference>
 
-        <None Include="build\CefGlue.Common.props" Pack="True" PackagePath="build" />
-        <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="build" />
+        <None Include="build\CefGlue.Common.props" Pack="True" PackagePath="build\CefGlue.Common$(PackageSuffix).props" />
+        <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="build\CefGlue.Common$(PackageSuffix).targets" />
     </ItemGroup>
 
     <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
         <ItemGroup>
             <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\x64\$(Configuration)\$(DotnetVersion)\win-x64\publish\**\*">
-                <PackagePath>bin\win-x64</PackagePath>
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\win-$(ArchitectureConfig)\publish\**\*">
+                <PackagePath>bin\win-$(ArchitectureConfig)</PackagePath>
             </TfmSpecificPackageFile>
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\x64\$(Configuration)\$(DotnetVersion)\osx-x64\publish\**\*">
-                <PackagePath>bin\osx-x64</PackagePath>
-            </TfmSpecificPackageFile>
-
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\ARM64\$(Configuration)\$(DotnetVersion)\win-arm64\publish\**\*">
-                <PackagePath>bin\win-arm64</PackagePath>
-            </TfmSpecificPackageFile>
-
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\ARM64\$(Configuration)\$(DotnetVersion)\osx-arm64\publish\**\*">
-                <PackagePath>bin\osx-arm64</PackagePath>
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\osx-$(ArchitectureConfig)\publish\**\*">
+                <PackagePath>bin\osx-$(ArchitectureConfig)</PackagePath>
             </TfmSpecificPackageFile>
         </ItemGroup>
     </Target>

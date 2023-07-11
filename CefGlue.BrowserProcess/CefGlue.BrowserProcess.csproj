@@ -11,7 +11,11 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <IsWindows Condition="$([MSBuild]::IsOSPlatform('Windows'))">True</IsWindows>
     <PublishCommonConfig>Configuration=$(Configuration);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=</PublishCommonConfig>
-    <PlatformTarget /> <!-- Needed so that we can publish both CPU architectures -->
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <ArchitectureConfig Condition="'$(Platform)' == '' or '$(Platform)' == 'x64'">x64</ArchitectureConfig>
+    <ArchitectureConfig Condition="'$(Platform)' == 'ARM64'">arm64</ArchitectureConfig>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,19 +36,13 @@
   </ItemGroup>
   
   <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
-    <!-- Publish both platforms/architectures on Windows for packaging -->
+    <!-- Publish both platforms on Windows for packaging -->
     <Message Text="Publishing..." Importance="High" />
 
-    <!-- WINDOWS X64 -->
-    <MSBuild Condition="$(IsWindows) == 'True'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-x64" />
+    <!-- WINDOWS -->
+    <MSBuild Condition="$(IsWindows) == 'True'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-$(ArchitectureConfig)" />
 
-    <!-- WINDOWS ARM64 -->
-    <MSBuild Condition="$(IsWindows) == 'True'" Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-arm64" />
-
-    <!-- OSX X64 -->
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)osx-x64" />
-    
-    <!-- OSX ARM64 -->
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)osx-arm64" />
+    <!-- OSX -->
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)osx-$(ArchitectureConfig)" />
   </Target>
 </Project>

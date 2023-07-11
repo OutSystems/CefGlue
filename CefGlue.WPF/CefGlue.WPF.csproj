@@ -9,10 +9,14 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <PackageId>CefGlue.WPF</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId Condition="'$(Platform)' == '' or '$(Platform)' == 'x64'">CefGlue.WPF</PackageId>
+    <PackageId Condition="'$(Platform)' == 'ARM64'">CefGlue.WPF.ARM64</PackageId>
   </PropertyGroup>
     
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -25,7 +29,7 @@
     
   <PropertyGroup Condition="'$(Configuration)' == 'Debug_WindowlessRender'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug_WindowlessRender\</OutputPath>
+    <OutputPath>bin\$(Platform)\Debug_WindowlessRender\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
