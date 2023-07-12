@@ -5,7 +5,7 @@
         <PackageReference Include="cef.redist.osx64" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(Platform)' == 'ARM64'">
+    <ItemGroup Condition="'$(Platform)' == 'ARM64' or '$(Platform)' == 'arm64'">
         <PackageReference Include="chromiumembeddedframework.runtime.win-arm64" />
         <PackageReference Include="cef.redist.osx.arm64" />
     </ItemGroup>
@@ -17,11 +17,11 @@
 
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">win-x64</CefGlueTargetPlatform>
-        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">win-arm64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64' or '$(Platform)' == 'arm64'">win-arm64</CefGlueTargetPlatform>
     </PropertyGroup>
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">osx-x64</CefGlueTargetPlatform>
-        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">osx-arm64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64' or '$(Platform)' == 'arm64'">osx-arm64</CefGlueTargetPlatform>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(RuntimeIdentifier)' == ''">

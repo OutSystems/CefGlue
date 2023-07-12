@@ -5,12 +5,12 @@
     </PropertyGroup>
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64' or '$(RuntimeIdentifier)' == 'win-x64'">win-x64</CefGlueTargetPlatform>
-        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64' or '$(RuntimeIdentifier)' == 'win-arm64'">win-arm64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'  or '$(Platform)' == 'arm64' or '$(RuntimeIdentifier)' == 'win-arm64'">win-arm64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == '' and '$(RuntimeIdentifier)' == ''">win-x64</CefGlueTargetPlatform> <!-- fallback -->
     </PropertyGroup>
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64' or '$(RuntimeIdentifier)' == 'osx-x64'">osx-x64</CefGlueTargetPlatform>
-        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64' or '$(RuntimeIdentifier)' == 'osx-arm64'">osx-arm64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'  or '$(Platform)' == 'arm64' or '$(RuntimeIdentifier)' == 'osx-arm64'">osx-arm64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == '' and '$(RuntimeIdentifier)' == ''">osx-x64</CefGlueTargetPlatform> <!-- fallback -->
     </PropertyGroup>
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' != ''">
