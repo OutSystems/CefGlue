@@ -10,7 +10,7 @@
 
     <PropertyGroup>
         <PackageOutputPath>$(MSBuildProjectDirectory)\..\Nuget\output</PackageOutputPath>
-        <Version>106.5249.17</Version>
+        <Version>106.5249.18</Version>
         <Authors>XiliumHQ,OutSystems</Authors>
         <Product>CefGlue</Product>
         <AssemblyTitle>CefGlue</AssemblyTitle>
@@ -34,7 +34,7 @@
         <PackageSuffix />
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Platform)' == 'ARM64' or '$(Platform)' == 'arm64'">
+    <PropertyGroup Condition="'$(Platform)' == 'ARM64'">
         <ArchitectureConfig>arm64</ArchitectureConfig>
         <PackageSuffix>.ARM64</PackageSuffix>
     </PropertyGroup>
