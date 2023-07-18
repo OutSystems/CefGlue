@@ -3,16 +3,23 @@
         <!-- adding the supported indentifiers to make bundle work properly -->
         <RuntimeIdentifiers>osx-x64;win-x64;osx-arm64;win-arm64</RuntimeIdentifiers>
     </PropertyGroup>
-    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-        <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64' or '$(RuntimeIdentifier)' == 'win-x64'">win-x64</CefGlueTargetPlatform>
-        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64' or '$(RuntimeIdentifier)' == 'win-arm64'">win-arm64</CefGlueTargetPlatform>
-        <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == '' and '$(RuntimeIdentifier)' == ''">win-x64</CefGlueTargetPlatform> <!-- fallback -->
+    
+    <PropertyGroup Condition="'$(RuntimeIdentifier)' == '' and $([MSBuild]::IsOSPlatform('Windows'))">
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">win-x64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">win-arm64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == ''">win-x64</CefGlueTargetPlatform> <!-- fallback -->
     </PropertyGroup>
-    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-        <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64' or '$(RuntimeIdentifier)' == 'osx-x64'">osx-x64</CefGlueTargetPlatform>
-        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64' or '$(RuntimeIdentifier)' == 'osx-arm64'">osx-arm64</CefGlueTargetPlatform>
-        <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == '' and '$(RuntimeIdentifier)' == ''">osx-x64</CefGlueTargetPlatform> <!-- fallback -->
+    
+    <PropertyGroup Condition="'$(RuntimeIdentifier)' == '' and $([MSBuild]::IsOSPlatform('OSX'))">
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">osx-x64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">osx-arm64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == ''">osx-x64</CefGlueTargetPlatform> <!-- fallback -->
     </PropertyGroup>
+    
+    <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+        <CefGlueTargetPlatform>$(RuntimeIdentifier)</CefGlueTargetPlatform>
+    </PropertyGroup>
+    
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' != ''">
         <CefGlueBrowserProcessFiles Include="$(MSBuildThisFileDirectory)..\bin\$(CefGlueTargetPlatform)\*" />
     </ItemGroup>
