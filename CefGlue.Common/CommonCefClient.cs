@@ -109,6 +109,7 @@ namespace Xilium.CefGlue.Common
         {
             try
             {
+                using (message)
                 _messageDispatcher.DispatchMessage(browser, frame, sourceProcess, message);
                 return base.OnProcessMessageReceived(browser, frame, sourceProcess, message);
             }

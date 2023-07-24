@@ -6,7 +6,7 @@
         <RootNamespace>Xilium.CefGlue.Common</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
-        <PackageId>CefGlue.Common</PackageId>
+        <PackageId>CefGlue.Common$(PackageSuffix)</PackageId>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -23,9 +23,17 @@
 
     <ItemGroup>
         <PackageReference Include="NLog" />
-        <PackageReference PrivateAssets="None" Include="cef.redist.x64" />
-        <PackageReference PrivateAssets="None" Include="cef.redist.osx64" />
         <PackageReference Include="System.Text.Json" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Platform)' == 'x64'">
+        <PackageReference PrivateAssets="None" Include="chromiumembeddedframework.runtime.win-x64" />
+        <PackageReference PrivateAssets="None" Include="cef.redist.osx64" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Platform)' == 'ARM64'">
+        <PackageReference PrivateAssets="None" Include="chromiumembeddedframework.runtime.win-arm64" />
+        <PackageReference PrivateAssets="None" Include="cef.redist.osx.arm64" />
     </ItemGroup>
 
     <ItemGroup>
@@ -45,20 +53,20 @@
             <PrivateAssets>all</PrivateAssets>
         </ProjectReference>
 
-        <None Include="build\CefGlue.Common.props" Pack="True" PackagePath="build" />
-        <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="build" />
+        <None Include="build\CefGlue.Common.props" Pack="True" PackagePath="build\CefGlue.Common$(PackageSuffix).props" />
+        <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="build\CefGlue.Common$(PackageSuffix).targets" />
     </ItemGroup>
 
     <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
         <ItemGroup>
             <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\win-x64\publish\**\*">
-                <PackagePath>bin\win</PackagePath>
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\win-$(ArchitectureConfig)\publish\**\*">
+                <PackagePath>bin\win-$(ArchitectureConfig)</PackagePath>
             </TfmSpecificPackageFile>
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\osx-x64\publish\**\*">
-                <PackagePath>bin\osx</PackagePath>
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\osx-$(ArchitectureConfig)\publish\**\*">
+                <PackagePath>bin\osx-$(ArchitectureConfig)</PackagePath>
             </TfmSpecificPackageFile>
         </ItemGroup>
     </Target>

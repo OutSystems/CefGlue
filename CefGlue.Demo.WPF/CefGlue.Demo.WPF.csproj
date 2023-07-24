@@ -8,11 +8,12 @@
         <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
         <UseWPF>true</UseWPF>
         <StartupObject>Xilium.CefGlue.Demo.WPF.Program</StartupObject>
+        <EnableWindowsTargeting>true</EnableWindowsTargeting>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_WindowlessRender|AnyCPU'">
-        <DebugType></DebugType>
-        <DefineConstants>$(DefineConstants);WINDOWLESS</DefineConstants>
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug_WindowlessRender'">
+      <DebugType />
+      <DefineConstants>$(DefineConstants);WINDOWLESS</DefineConstants>
     </PropertyGroup>
 
 

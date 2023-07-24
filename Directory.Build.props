@@ -4,12 +4,13 @@
         <DotnetVersion>net6.0</DotnetVersion>
         <LangVersion>latest</LangVersion>
         <CefRedistVersion>106.0.26</CefRedistVersion>
-        <CefRedistOSXVersion>106.0.26</CefRedistOSXVersion>
+        <CefRedistOSXVersion>106.0.26-patch1</CefRedistOSXVersion>
+        <Platforms>x64;ARM64</Platforms>
     </PropertyGroup>
 
     <PropertyGroup>
         <PackageOutputPath>$(MSBuildProjectDirectory)\..\Nuget\output</PackageOutputPath>
-        <Version>106.5249.7-avalonia11</Version>
+        <Version>106.5249.19-avalonia11</Version>
         <Authors>XiliumHQ,OutSystems</Authors>
         <Product>CefGlue</Product>
         <AssemblyTitle>CefGlue</AssemblyTitle>
@@ -26,6 +27,16 @@
         <RepositoryType>git</RepositoryType>
         <NoWarn>$(NoWarn);NU5100;NU5118;CS1591</NoWarn>
         <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Platform)' == '' or '$(Platform)' == 'x64'">
+        <ArchitectureConfig>x64</ArchitectureConfig>
+        <PackageSuffix />
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Platform)' == 'ARM64'">
+        <ArchitectureConfig>arm64</ArchitectureConfig>
+        <PackageSuffix>.ARM64</PackageSuffix>
     </PropertyGroup>
 
     <!-- Generate documentation in Release builds. -->

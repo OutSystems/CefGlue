@@ -3,17 +3,15 @@
         <CefGlueBrowserProcessDir>CefGlueBrowserProcess</CefGlueBrowserProcessDir>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'win'">
-        <None Include="@(CefRedist64)">
+    <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'osx-x64' OR '$(CefGlueTargetPlatform)' == 'osx-arm64'">
+        <None Condition="'$(CefGlueTargetPlatform)' == 'osx-x64'" Include="@(CefRedistOSX64)">
             <Visible>false</Visible>
             <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>
         </None>
-    </ItemGroup>
-    <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'osx'">
-        <None Include="@(CefRedistOSX64)">
+        <None Condition="'$(CefGlueTargetPlatform)' == 'osx-arm64'" Include="@(CefRedistOSXARM64)">
             <Visible>false</Visible>
             <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -42,6 +40,7 @@
             <PublishState>Included</PublishState>
         </None>
     </ItemGroup>
+
     <ItemGroup>
         <None Include="@(CefGlueBrowserProcessFiles)">
             <Visible>false</Visible>
@@ -51,4 +50,20 @@
             <PublishState>Included</PublishState>
         </None>
     </ItemGroup>
+
+    <!-- Copy CEF resources from 'chromiumembeddedframework.runtime.<architecture>' dependency package
+     to the root folder of the build output directory. It is only applicable when compiling in Windows OS. 
+     Relies on ResolvePackageAssets MSBuild target to identify resources deployed from that specific package. -->
+    <Target Name="ResolveCEFAssets" Condition="$([MSBuild]::IsOSPlatform('Windows')) and '$(CefGlueTargetPlatform)' != ''" AfterTargets="ResolvePackageAssets">
+        <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'win-x64' OR '$(CefGlueTargetPlatform)' == 'win-arm64'">
+            <CefRuntimeFiles Include="@(RuntimeTargetsCopyLocalItems->WithMetadataValue('NuGetPackageId', 'chromiumembeddedframework.runtime.$(CefGlueTargetPlatform)'))" />
+            <None Include="@(CefRuntimeFiles)">
+                <Visible>false</Visible>
+                <Link>$(OutputDirectory)%(FileName)%(Extension)</Link>
+                <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+                <PublishState>Included</PublishState>
+            </None>
+        </ItemGroup>
+    </Target>
 </Project>
