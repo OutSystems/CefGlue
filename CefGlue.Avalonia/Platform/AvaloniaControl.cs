@@ -56,7 +56,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             Dispatcher.UIThread.VerifyAccess();
             if (_hostWindowPlatformHandle == null)
             {
-                _hostWindowPlatformHandle = new Window().PlatformImpl.Handle;
+                _hostWindowPlatformHandle = new Window().TryGetPlatformHandle();
             }
             return _hostWindowPlatformHandle;
         }
@@ -83,13 +83,14 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 () =>
                 {
                     var menu = new ContextMenu();
-                    var menuItems = new List<TemplatedControl>();
 
+                    menu.Items.Clear();
+                    
                     foreach (var menuEntry in menuEntries)
                     {
                         if (menuEntry.IsSeparator)
                         {
-                            menuItems.Add(new Separator());
+                            menu.Items.Add(new Separator());
                         }
                         else
                         {
@@ -103,17 +104,15 @@ namespace Xilium.CefGlue.Avalonia.Platform
                             };
                             var commandId = menuEntry.CommandId;
                             menuItem.Click += delegate { callback.Continue(commandId, CefEventFlags.None); };
-                            menuItems.Add(menuItem);
+                            menu.Items.Add(menuItem);
                         }
                     }
 
-                    menu.MenuClosed += delegate
+                    menu.Closed += delegate
                     {
                         callback.Cancel();
                         _control.ContextMenu = null;
                     };
-
-                    menu.Items = menuItems;
 
                     _control.ContextMenu = menu;
 

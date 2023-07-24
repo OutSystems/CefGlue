@@ -6,6 +6,7 @@
     <TargetFrameworks>$(TargetDotnetVersions)</TargetFrameworks>
     <AssemblyName>Xilium.CefGlue.Demo.Avalonia</AssemblyName>
     <RootNamespace>Xilium.CefGlue.Demo.Avalonia</RootNamespace>
+    <RollForward>Major</RollForward>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug_WindowlessRender'">
