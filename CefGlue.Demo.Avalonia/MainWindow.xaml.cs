@@ -42,7 +42,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
         private void CreateNewTab()
         {
-            var tabItems = ((IList)this.FindControl<TabControl>("tabControl").Items);
+            var tabControl = this.FindControl<TabControl>("tabControl");
 
             var view = new BrowserView();
             var tab = new TabItem();
@@ -59,7 +59,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             closeButton.Click += delegate
             {
                 view.Dispose();
-                tabItems.Remove(tab);
+                tabControl.Items.Remove(tab);
             };
             DockPanel.SetDock(closeButton, Dock.Right);
 
@@ -81,7 +81,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
             tab.Content = view;
 
-            tabItems.Add(tab);
+            tabControl.Items.Add(tab);
         }
 
         private void OnNewTabNativeMenuItemClick(object sender, EventArgs e)

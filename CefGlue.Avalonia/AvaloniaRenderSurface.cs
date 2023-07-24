@@ -41,7 +41,7 @@ namespace Xilium.CefGlue.Avalonia
 
         protected override Task ExecuteInUIThread(Action action)
         {
-            return Dispatcher.UIThread.InvokeAsync(action);
+            return Dispatcher.UIThread.InvokeAsync(action).GetTask();
         }
 
         protected override void CreateBitmap(int width, int height)
