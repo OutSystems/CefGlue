@@ -6,6 +6,7 @@
         <CefRedistVersion>106.0.26</CefRedistVersion>
         <CefRedistOSXVersion>106.0.26-patch1</CefRedistOSXVersion>
         <Platforms>x64;ARM64</Platforms>
+        <Configurations>Debug;DebugWindowlessRender;Release;ReleaseWPFAvalonia</Configurations>
     </PropertyGroup>
 
     <PropertyGroup>

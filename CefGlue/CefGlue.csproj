@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>$(DotnetVersion)</TargetFramework>
     <AssemblyName>Xilium.CefGlue</AssemblyName>
-    <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
