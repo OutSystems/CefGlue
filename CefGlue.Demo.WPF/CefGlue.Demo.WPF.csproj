@@ -5,7 +5,6 @@
         <TargetFramework>$(DotnetVersion)-windows</TargetFramework>
         <AssemblyName>Xilium.CefGlue.Demo.WPF</AssemblyName>
         <RootNamespace>Xilium.CefGlue.Demo.WPF</RootNamespace>
-        <Configurations>Debug;Release;Debug_WindowlessRender</Configurations>
         <UseWPF>true</UseWPF>
         <StartupObject>Xilium.CefGlue.Demo.WPF.Program</StartupObject>
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
