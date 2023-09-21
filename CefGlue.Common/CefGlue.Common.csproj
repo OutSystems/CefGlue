@@ -20,8 +20,11 @@
         <None Include="BaseCefBrowser.cs" />
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch($(DefineConstants), '(^|;)HAS_NLOG($|;)'))">
         <PackageReference Include="NLog" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="System.Text.Json" />
     </ItemGroup>
 
