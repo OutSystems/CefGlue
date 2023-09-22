@@ -18,6 +18,8 @@ namespace Xilium.CefGlue
         private int _refct;
         private cef_client_t* _self;
         
+        protected object SyncRoot { get { return this; } }
+        
         internal static CefClient FromNativeOrNull(cef_client_t* ptr)
         {
             CefClient value = null;
@@ -130,30 +132,38 @@ namespace Xilium.CefGlue
         
         private void add_ref(cef_client_t* self)
         {
-            if (Interlocked.Increment(ref _refct) == 1)
+            lock (SyncRoot)
             {
-                lock (_roots) { _roots.Add((IntPtr)_self, this); }
+                var result = ++_refct;
+                if (result == 1)
+                {
+                    lock (_roots) { _roots.Add((IntPtr)_self, this); }
+                }
             }
         }
         
         private int release(cef_client_t* self)
         {
-            if (Interlocked.Decrement(ref _refct) == 0)
+            lock (SyncRoot)
             {
-                lock (_roots) { _roots.Remove((IntPtr)_self); }
-                return 1;
+                var result = --_refct;
+                if (result == 0)
+                {
+                    lock (_roots) { _roots.Remove((IntPtr)_self); }
+                    return 1;
+                }
+                return 0;
             }
-            return 0;
         }
         
         private int has_one_ref(cef_client_t* self)
         {
-            return _refct == 1 ? 1 : 0;
+            lock (SyncRoot) { return _refct == 1 ? 1 : 0; }
         }
         
         private int has_at_least_one_ref(cef_client_t* self)
         {
-            return _refct != 0 ? 1 : 0;
+            lock (SyncRoot) { return _refct != 0 ? 1 : 0; }
         }
         
         internal cef_client_t* ToNative()

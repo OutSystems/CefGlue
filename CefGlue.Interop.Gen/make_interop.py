@@ -489,6 +489,8 @@ def make_handler_g_body(cls):
     # result.append('private bool _disposed;')
     result.append('')
 
+    result.append('protected object SyncRoot { get { return this; } }')
+    result.append('')
 
     if schema.is_reversible(cls):
         result.append('internal static %s FromNativeOrNull(%s* ptr)' % (csname, iname))
@@ -521,7 +523,7 @@ def make_handler_g_body(cls):
     result.append('protected %s()' % csname)
     result.append('{')
     result.append(indent + '_self = %s.Alloc();' % iname)
-    result.append('');
+    result.append('')
     for func in funcs:
         result.append(indent + '%(delegate_slot)s = new %(iname)s.%(delegate_type)s(%(csn_name)s);' % func)
         result.append(indent + '_self->%(field_name)s = Marshal.GetFunctionPointerForDelegate(%(delegate_slot)s);' % func)
@@ -558,35 +560,43 @@ def make_handler_g_body(cls):
     # todo: verify self pointer in debug
     result.append('private void add_ref(%s* self)' % iname)
     result.append('{')
-    result.append(indent + 'if (Interlocked.Increment(ref _refct) == 1)')
+    result.append(indent + 'lock (SyncRoot)')
     result.append(indent + '{')
-    result.append(indent + indent + 'lock (_roots) { _roots.Add((IntPtr)_self, this); }')
+    result.append(indent + indent + 'var result = ++_refct;')
+    result.append(indent + indent + 'if (result == 1)')
+    result.append(indent + indent + '{')
+    result.append(indent + indent + indent + 'lock (_roots) { _roots.Add((IntPtr)_self, this); }')
+    result.append(indent + indent + '}')
     result.append(indent + '}')
     result.append('}')
     result.append('')
 
     result.append('private int release(%s* self)' % iname)
     result.append('{')
-    result.append(indent + 'if (Interlocked.Decrement(ref _refct) == 0)')
+    result.append(indent + 'lock (SyncRoot)')
     result.append(indent + '{')
-    result.append(indent + indent + 'lock (_roots) { _roots.Remove((IntPtr)_self); }')
+    result.append(indent + indent + 'var result = --_refct;')
+    result.append(indent + indent + 'if (result == 0)')
+    result.append(indent + indent + '{')
+    result.append(indent + indent + indent + 'lock (_roots) { _roots.Remove((IntPtr)_self); }')
     if schema.is_autodispose(cls):
-        result.append(indent + indent + 'Dispose();')
-    result.append(indent + indent + 'return 1;')
+        result.append(indent + indent + indent + 'Dispose();')
+    result.append(indent + indent + indent + 'return 1;')
+    result.append(indent + indent + '}')
+    result.append(indent + indent + 'return 0;')
     result.append(indent + '}')
-    result.append(indent + 'return 0;')
     result.append('}')
     result.append('')
 
     result.append('private int has_one_ref(%s* self)' % iname)
     result.append('{')
-    result.append(indent + 'return _refct == 1 ? 1 : 0;')
+    result.append(indent + 'lock (SyncRoot) { return _refct == 1 ? 1 : 0; }')
     result.append('}')
     result.append('')
 
     result.append('private int has_at_least_one_ref(%s* self)' % iname)
     result.append('{')
-    result.append(indent + 'return _refct != 0 ? 1 : 0;')
+    result.append(indent + 'lock (SyncRoot) { return _refct != 0 ? 1 : 0; }')
     result.append('}')
     result.append('')
 
