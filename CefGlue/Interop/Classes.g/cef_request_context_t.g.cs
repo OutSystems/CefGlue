@@ -36,6 +36,10 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_extensions;
         internal IntPtr _get_extension;
         internal IntPtr _get_media_router;
+        internal IntPtr _get_website_setting;
+        internal IntPtr _set_website_setting;
+        internal IntPtr _get_content_setting;
+        internal IntPtr _set_content_setting;
         
         // GetGlobalContext
         [DllImport(libcef.DllName, EntryPoint = "cef_request_context_get_global_context", CallingConvention = libcef.CEF_CALL)]
@@ -210,6 +214,30 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate cef_media_router_t* get_media_router_delegate(cef_request_context_t* self, cef_completion_callback_t* callback);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate cef_value_t* get_website_setting_delegate(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void set_website_setting_delegate(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type, cef_value_t* value);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate CefContentSettingValue get_content_setting_delegate(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void set_content_setting_delegate(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type, CefContentSettingValue value);
         
         // AddRef
         private static IntPtr _p0;
@@ -668,6 +696,74 @@ namespace Xilium.CefGlue.Interop
                 if (_p1a == IntPtr.Zero) { _d1a = d; _p1a = p; }
             }
             return d(self, callback);
+        }
+        
+        // GetWebsiteSetting
+        private static IntPtr _p1b;
+        private static get_website_setting_delegate _d1b;
+        
+        public static cef_value_t* get_website_setting(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type)
+        {
+            get_website_setting_delegate d;
+            var p = self->_get_website_setting;
+            if (p == _p1b) { d = _d1b; }
+            else
+            {
+                d = (get_website_setting_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_website_setting_delegate));
+                if (_p1b == IntPtr.Zero) { _d1b = d; _p1b = p; }
+            }
+            return d(self, requesting_url, top_level_url, content_type);
+        }
+        
+        // SetWebsiteSetting
+        private static IntPtr _p1c;
+        private static set_website_setting_delegate _d1c;
+        
+        public static void set_website_setting(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type, cef_value_t* value)
+        {
+            set_website_setting_delegate d;
+            var p = self->_set_website_setting;
+            if (p == _p1c) { d = _d1c; }
+            else
+            {
+                d = (set_website_setting_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_website_setting_delegate));
+                if (_p1c == IntPtr.Zero) { _d1c = d; _p1c = p; }
+            }
+            d(self, requesting_url, top_level_url, content_type, value);
+        }
+        
+        // GetContentSetting
+        private static IntPtr _p1d;
+        private static get_content_setting_delegate _d1d;
+        
+        public static CefContentSettingValue get_content_setting(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type)
+        {
+            get_content_setting_delegate d;
+            var p = self->_get_content_setting;
+            if (p == _p1d) { d = _d1d; }
+            else
+            {
+                d = (get_content_setting_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_content_setting_delegate));
+                if (_p1d == IntPtr.Zero) { _d1d = d; _p1d = p; }
+            }
+            return d(self, requesting_url, top_level_url, content_type);
+        }
+        
+        // SetContentSetting
+        private static IntPtr _p1e;
+        private static set_content_setting_delegate _d1e;
+        
+        public static void set_content_setting(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type, CefContentSettingValue value)
+        {
+            set_content_setting_delegate d;
+            var p = self->_set_content_setting;
+            if (p == _p1e) { d = _d1e; }
+            else
+            {
+                d = (set_content_setting_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_content_setting_delegate));
+                if (_p1e == IntPtr.Zero) { _d1e = d; _p1e = p; }
+            }
+            d(self, requesting_url, top_level_url, content_type, value);
         }
         
     }

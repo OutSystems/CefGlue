@@ -18,10 +18,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_locality_name;
         internal IntPtr _get_state_or_province_name;
         internal IntPtr _get_country_name;
-        internal IntPtr _get_street_addresses;
         internal IntPtr _get_organization_names;
         internal IntPtr _get_organization_unit_names;
-        internal IntPtr _get_domain_components;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -81,12 +79,6 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void get_street_addresses_delegate(cef_x509cert_principal_t* self, cef_string_list* addresses);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
         private delegate void get_organization_names_delegate(cef_x509cert_principal_t* self, cef_string_list* names);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
@@ -94,12 +86,6 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate void get_organization_unit_names_delegate(cef_x509cert_principal_t* self, cef_string_list* names);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        private delegate void get_domain_components_delegate(cef_x509cert_principal_t* self, cef_string_list* components);
         
         // AddRef
         private static IntPtr _p0;
@@ -254,72 +240,38 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetStreetAddresses
-        private static IntPtr _p9;
-        private static get_street_addresses_delegate _d9;
-        
-        public static void get_street_addresses(cef_x509cert_principal_t* self, cef_string_list* addresses)
-        {
-            get_street_addresses_delegate d;
-            var p = self->_get_street_addresses;
-            if (p == _p9) { d = _d9; }
-            else
-            {
-                d = (get_street_addresses_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_street_addresses_delegate));
-                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
-            }
-            d(self, addresses);
-        }
-        
         // GetOrganizationNames
-        private static IntPtr _pa;
-        private static get_organization_names_delegate _da;
+        private static IntPtr _p9;
+        private static get_organization_names_delegate _d9;
         
         public static void get_organization_names(cef_x509cert_principal_t* self, cef_string_list* names)
         {
             get_organization_names_delegate d;
             var p = self->_get_organization_names;
-            if (p == _pa) { d = _da; }
+            if (p == _p9) { d = _d9; }
             else
             {
                 d = (get_organization_names_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_organization_names_delegate));
-                if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
+                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
             }
             d(self, names);
         }
         
         // GetOrganizationUnitNames
-        private static IntPtr _pb;
-        private static get_organization_unit_names_delegate _db;
+        private static IntPtr _pa;
+        private static get_organization_unit_names_delegate _da;
         
         public static void get_organization_unit_names(cef_x509cert_principal_t* self, cef_string_list* names)
         {
             get_organization_unit_names_delegate d;
             var p = self->_get_organization_unit_names;
-            if (p == _pb) { d = _db; }
+            if (p == _pa) { d = _da; }
             else
             {
                 d = (get_organization_unit_names_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_organization_unit_names_delegate));
-                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
+                if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
             }
             d(self, names);
-        }
-        
-        // GetDomainComponents
-        private static IntPtr _pc;
-        private static get_domain_components_delegate _dc;
-        
-        public static void get_domain_components(cef_x509cert_principal_t* self, cef_string_list* components)
-        {
-            get_domain_components_delegate d;
-            var p = self->_get_domain_components;
-            if (p == _pc) { d = _dc; }
-            else
-            {
-                d = (get_domain_components_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_domain_components_delegate));
-                if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
-            }
-            d(self, components);
         }
         
     }

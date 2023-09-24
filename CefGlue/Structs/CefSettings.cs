@@ -121,17 +121,17 @@
         /// </summary>
         public string RootCachePath { get; set; }
 
-        /// <summary>
-        /// The location where user data such as the Widevine CDM module and spell
-        /// checking dictionary files will be stored on disk. If this value is empty
-        /// then the default platform-specific user data directory will be used
-        /// ("~/.config/cef_user_data" directory on Linux, "~/Library/Application
-        /// Support/CEF/User Data" directory on MacOS, "AppData\Local\CEF\User Data"
-        /// directory under the user profile directory on Windows). If this value is
-        /// non-empty then it must be an absolute path. When using the Chrome runtime
-        /// this value will be ignored in favor of the |root_cache_path| value.
-        /// </summary>
-        public string UserDataPath { get; set; }
+        ///// <summary>
+        ///// The location where user data such as the Widevine CDM module and spell
+        ///// checking dictionary files will be stored on disk. If this value is empty
+        ///// then the default platform-specific user data directory will be used
+        ///// ("~/.config/cef_user_data" directory on Linux, "~/Library/Application
+        ///// Support/CEF/User Data" directory on MacOS, "AppData\Local\CEF\User Data"
+        ///// directory under the user profile directory on Windows). If this value is
+        ///// non-empty then it must be an absolute path. When using the Chrome runtime
+        ///// this value will be ignored in favor of the |root_cache_path| value.
+        ///// </summary>
+        //public string UserDataPath { get; set; }
 
         /// <summary>
         /// To persist session cookies (cookies without an expiry date or validity
@@ -304,7 +304,6 @@
             ptr->command_line_args_disabled = CommandLineArgsDisabled ? 1 : 0;
             cef_string_t.Copy(CachePath, &ptr->cache_path);
             cef_string_t.Copy(RootCachePath, &ptr->root_cache_path);
-            cef_string_t.Copy(UserDataPath, &ptr->user_data_path);
             ptr->persist_session_cookies = PersistSessionCookies ? 1 : 0;
             ptr->persist_user_preferences = PersistUserPreferences ? 1 : 0;
             cef_string_t.Copy(UserAgent, &ptr->user_agent);
@@ -332,7 +331,6 @@
             libcef.string_clear(&ptr->main_bundle_path);
             libcef.string_clear(&ptr->cache_path);
             libcef.string_clear(&ptr->root_cache_path);
-            libcef.string_clear(&ptr->user_data_path);
             libcef.string_clear(&ptr->user_agent);
             libcef.string_clear(&ptr->user_agent_product);
             libcef.string_clear(&ptr->locale);

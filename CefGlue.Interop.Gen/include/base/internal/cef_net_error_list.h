@@ -768,10 +768,12 @@ NET_ERROR(CONTENT_DECODING_INIT_FAILED, -371)
 NET_ERROR(HTTP2_RST_STREAM_NO_ERROR_RECEIVED, -372)
 
 // The pushed stream claimed by the request is no longer available.
+// TODO(https://crbug.com/1426477): Remove.
 NET_ERROR(HTTP2_PUSHED_STREAM_NOT_AVAILABLE, -373)
 
 // A pushed stream was claimed and later reset by the server. When this happens,
 // the request should be retried.
+// TODO(https://crbug.com/1426477): Remove.
 NET_ERROR(HTTP2_CLAIMED_PUSHED_STREAM_RESET_BY_SERVER, -374)
 
 // An HTTP transaction was retried too many times due for authentication or
@@ -788,6 +790,7 @@ NET_ERROR(HTTP2_CLIENT_REFUSED_STREAM, -377)
 
 // A pushed HTTP/2 stream was claimed by a request based on matching URL and
 // request headers, but the pushed response headers do not match the request.
+// TODO(https://crbug.com/1426477): Remove.
 NET_ERROR(HTTP2_PUSHED_RESPONSE_DOES_NOT_MATCH, -378)
 
 // The server returned a non-2xx HTTP response code.
@@ -814,10 +817,9 @@ NET_ERROR(TOO_MANY_ACCEPT_CH_RESTARTS, -382)
 // request should be invalidated.
 NET_ERROR(INCONSISTENT_IP_ADDRESS_SPACE, -383)
 
-// The IP address space of the cached remote endpoint is blocked by private
+// The IP address space of the cached remote endpoint is blocked by local
 // network access check.
-NET_ERROR(CACHED_IP_ADDRESS_SPACE_BLOCKED_BY_PRIVATE_NETWORK_ACCESS_POLICY,
-          -384)
+NET_ERROR(CACHED_IP_ADDRESS_SPACE_BLOCKED_BY_LOCAL_NETWORK_ACCESS_POLICY, -384)
 
 // The cache does not have the requested entry.
 NET_ERROR(CACHE_MISS, -400)
@@ -976,6 +978,9 @@ NET_ERROR(SELF_SIGNED_CERT_GENERATION_FAILED, -713)
 NET_ERROR(CERT_DATABASE_CHANGED, -714)
 
 // Error -715 was removed (CHANNEL_ID_IMPORT_FAILED)
+
+// The certificate verifier configuration changed in some way.
+NET_ERROR(CERT_VERIFIER_CHANGED, -716)
 
 // DNS error codes.
 

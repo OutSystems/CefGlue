@@ -41,7 +41,7 @@ extern "C" {
 ///
 /// CEF string maps are a set of key/value string pairs.
 ///
-typedef void* cef_string_map_t;
+typedef struct _cef_string_map_t* cef_string_map_t;
 
 ///
 /// Allocate a new string map.
@@ -75,7 +75,8 @@ CEF_EXPORT int cef_string_map_value(cef_string_map_t map,
                                     cef_string_t* value);
 
 ///
-/// Append a new key/value pair at the end of the string map.
+/// Append a new key/value pair at the end of the string map. If the key exists,
+/// overwrite the existing value with a new value w/o changing the pair order.
 ///
 CEF_EXPORT int cef_string_map_append(cef_string_map_t map,
                                      const cef_string_t* key,

@@ -17,6 +17,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _is_in_progress;
         internal IntPtr _is_complete;
         internal IntPtr _is_canceled;
+        internal IntPtr _is_interrupted;
+        internal IntPtr _get_interrupt_reason;
         internal IntPtr _get_current_speed;
         internal IntPtr _get_percent_complete;
         internal IntPtr _get_total_bytes;
@@ -78,6 +80,18 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int is_canceled_delegate(cef_download_item_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate int is_interrupted_delegate(cef_download_item_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate CefDownloadInterruptReason get_interrupt_reason_delegate(cef_download_item_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -293,223 +307,257 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetCurrentSpeed
+        // IsInterrupted
         private static IntPtr _p8;
-        private static get_current_speed_delegate _d8;
+        private static is_interrupted_delegate _d8;
         
-        public static long get_current_speed(cef_download_item_t* self)
+        public static int is_interrupted(cef_download_item_t* self)
         {
-            get_current_speed_delegate d;
-            var p = self->_get_current_speed;
+            is_interrupted_delegate d;
+            var p = self->_is_interrupted;
             if (p == _p8) { d = _d8; }
             else
             {
-                d = (get_current_speed_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_current_speed_delegate));
+                d = (is_interrupted_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_interrupted_delegate));
                 if (_p8 == IntPtr.Zero) { _d8 = d; _p8 = p; }
             }
             return d(self);
         }
         
-        // GetPercentComplete
+        // GetInterruptReason
         private static IntPtr _p9;
-        private static get_percent_complete_delegate _d9;
+        private static get_interrupt_reason_delegate _d9;
         
-        public static int get_percent_complete(cef_download_item_t* self)
+        public static CefDownloadInterruptReason get_interrupt_reason(cef_download_item_t* self)
         {
-            get_percent_complete_delegate d;
-            var p = self->_get_percent_complete;
+            get_interrupt_reason_delegate d;
+            var p = self->_get_interrupt_reason;
             if (p == _p9) { d = _d9; }
             else
             {
-                d = (get_percent_complete_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_percent_complete_delegate));
+                d = (get_interrupt_reason_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_interrupt_reason_delegate));
                 if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
             }
             return d(self);
         }
         
-        // GetTotalBytes
+        // GetCurrentSpeed
         private static IntPtr _pa;
-        private static get_total_bytes_delegate _da;
+        private static get_current_speed_delegate _da;
         
-        public static long get_total_bytes(cef_download_item_t* self)
+        public static long get_current_speed(cef_download_item_t* self)
         {
-            get_total_bytes_delegate d;
-            var p = self->_get_total_bytes;
+            get_current_speed_delegate d;
+            var p = self->_get_current_speed;
             if (p == _pa) { d = _da; }
             else
             {
-                d = (get_total_bytes_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_total_bytes_delegate));
+                d = (get_current_speed_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_current_speed_delegate));
                 if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
             }
             return d(self);
         }
         
-        // GetReceivedBytes
+        // GetPercentComplete
         private static IntPtr _pb;
-        private static get_received_bytes_delegate _db;
+        private static get_percent_complete_delegate _db;
         
-        public static long get_received_bytes(cef_download_item_t* self)
+        public static int get_percent_complete(cef_download_item_t* self)
         {
-            get_received_bytes_delegate d;
-            var p = self->_get_received_bytes;
+            get_percent_complete_delegate d;
+            var p = self->_get_percent_complete;
             if (p == _pb) { d = _db; }
             else
             {
-                d = (get_received_bytes_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_received_bytes_delegate));
+                d = (get_percent_complete_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_percent_complete_delegate));
                 if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
             }
             return d(self);
         }
         
-        // GetStartTime
+        // GetTotalBytes
         private static IntPtr _pc;
-        private static get_start_time_delegate _dc;
+        private static get_total_bytes_delegate _dc;
         
-        public static CefBaseTime get_start_time(cef_download_item_t* self)
+        public static long get_total_bytes(cef_download_item_t* self)
         {
-            get_start_time_delegate d;
-            var p = self->_get_start_time;
+            get_total_bytes_delegate d;
+            var p = self->_get_total_bytes;
             if (p == _pc) { d = _dc; }
             else
             {
-                d = (get_start_time_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_start_time_delegate));
+                d = (get_total_bytes_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_total_bytes_delegate));
                 if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
             }
             return d(self);
         }
         
-        // GetEndTime
+        // GetReceivedBytes
         private static IntPtr _pd;
-        private static get_end_time_delegate _dd;
+        private static get_received_bytes_delegate _dd;
         
-        public static CefBaseTime get_end_time(cef_download_item_t* self)
+        public static long get_received_bytes(cef_download_item_t* self)
         {
-            get_end_time_delegate d;
-            var p = self->_get_end_time;
+            get_received_bytes_delegate d;
+            var p = self->_get_received_bytes;
             if (p == _pd) { d = _dd; }
             else
             {
-                d = (get_end_time_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_end_time_delegate));
+                d = (get_received_bytes_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_received_bytes_delegate));
                 if (_pd == IntPtr.Zero) { _dd = d; _pd = p; }
             }
             return d(self);
         }
         
-        // GetFullPath
+        // GetStartTime
         private static IntPtr _pe;
-        private static get_full_path_delegate _de;
+        private static get_start_time_delegate _de;
         
-        public static cef_string_userfree* get_full_path(cef_download_item_t* self)
+        public static CefBaseTime get_start_time(cef_download_item_t* self)
         {
-            get_full_path_delegate d;
-            var p = self->_get_full_path;
+            get_start_time_delegate d;
+            var p = self->_get_start_time;
             if (p == _pe) { d = _de; }
             else
             {
-                d = (get_full_path_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_full_path_delegate));
+                d = (get_start_time_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_start_time_delegate));
                 if (_pe == IntPtr.Zero) { _de = d; _pe = p; }
             }
             return d(self);
         }
         
-        // GetId
+        // GetEndTime
         private static IntPtr _pf;
-        private static get_id_delegate _df;
+        private static get_end_time_delegate _df;
         
-        public static uint get_id(cef_download_item_t* self)
+        public static CefBaseTime get_end_time(cef_download_item_t* self)
         {
-            get_id_delegate d;
-            var p = self->_get_id;
+            get_end_time_delegate d;
+            var p = self->_get_end_time;
             if (p == _pf) { d = _df; }
             else
             {
-                d = (get_id_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_id_delegate));
+                d = (get_end_time_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_end_time_delegate));
                 if (_pf == IntPtr.Zero) { _df = d; _pf = p; }
             }
             return d(self);
         }
         
-        // GetURL
+        // GetFullPath
         private static IntPtr _p10;
-        private static get_url_delegate _d10;
+        private static get_full_path_delegate _d10;
         
-        public static cef_string_userfree* get_url(cef_download_item_t* self)
+        public static cef_string_userfree* get_full_path(cef_download_item_t* self)
         {
-            get_url_delegate d;
-            var p = self->_get_url;
+            get_full_path_delegate d;
+            var p = self->_get_full_path;
             if (p == _p10) { d = _d10; }
             else
             {
-                d = (get_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_url_delegate));
+                d = (get_full_path_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_full_path_delegate));
                 if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
             }
             return d(self);
         }
         
-        // GetOriginalUrl
+        // GetId
         private static IntPtr _p11;
-        private static get_original_url_delegate _d11;
+        private static get_id_delegate _d11;
         
-        public static cef_string_userfree* get_original_url(cef_download_item_t* self)
+        public static uint get_id(cef_download_item_t* self)
         {
-            get_original_url_delegate d;
-            var p = self->_get_original_url;
+            get_id_delegate d;
+            var p = self->_get_id;
             if (p == _p11) { d = _d11; }
             else
             {
-                d = (get_original_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_original_url_delegate));
+                d = (get_id_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_id_delegate));
                 if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
             }
             return d(self);
         }
         
-        // GetSuggestedFileName
+        // GetURL
         private static IntPtr _p12;
-        private static get_suggested_file_name_delegate _d12;
+        private static get_url_delegate _d12;
         
-        public static cef_string_userfree* get_suggested_file_name(cef_download_item_t* self)
+        public static cef_string_userfree* get_url(cef_download_item_t* self)
         {
-            get_suggested_file_name_delegate d;
-            var p = self->_get_suggested_file_name;
+            get_url_delegate d;
+            var p = self->_get_url;
             if (p == _p12) { d = _d12; }
             else
             {
-                d = (get_suggested_file_name_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_suggested_file_name_delegate));
+                d = (get_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_url_delegate));
                 if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
             }
             return d(self);
         }
         
-        // GetContentDisposition
+        // GetOriginalUrl
         private static IntPtr _p13;
-        private static get_content_disposition_delegate _d13;
+        private static get_original_url_delegate _d13;
         
-        public static cef_string_userfree* get_content_disposition(cef_download_item_t* self)
+        public static cef_string_userfree* get_original_url(cef_download_item_t* self)
         {
-            get_content_disposition_delegate d;
-            var p = self->_get_content_disposition;
+            get_original_url_delegate d;
+            var p = self->_get_original_url;
             if (p == _p13) { d = _d13; }
             else
             {
-                d = (get_content_disposition_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_content_disposition_delegate));
+                d = (get_original_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_original_url_delegate));
                 if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
             }
             return d(self);
         }
         
-        // GetMimeType
+        // GetSuggestedFileName
         private static IntPtr _p14;
-        private static get_mime_type_delegate _d14;
+        private static get_suggested_file_name_delegate _d14;
+        
+        public static cef_string_userfree* get_suggested_file_name(cef_download_item_t* self)
+        {
+            get_suggested_file_name_delegate d;
+            var p = self->_get_suggested_file_name;
+            if (p == _p14) { d = _d14; }
+            else
+            {
+                d = (get_suggested_file_name_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_suggested_file_name_delegate));
+                if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetContentDisposition
+        private static IntPtr _p15;
+        private static get_content_disposition_delegate _d15;
+        
+        public static cef_string_userfree* get_content_disposition(cef_download_item_t* self)
+        {
+            get_content_disposition_delegate d;
+            var p = self->_get_content_disposition;
+            if (p == _p15) { d = _d15; }
+            else
+            {
+                d = (get_content_disposition_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_content_disposition_delegate));
+                if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetMimeType
+        private static IntPtr _p16;
+        private static get_mime_type_delegate _d16;
         
         public static cef_string_userfree* get_mime_type(cef_download_item_t* self)
         {
             get_mime_type_delegate d;
             var p = self->_get_mime_type;
-            if (p == _p14) { d = _d14; }
+            if (p == _p16) { d = _d16; }
             else
             {
                 d = (get_mime_type_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_mime_type_delegate));
-                if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
+                if (_p16 == IntPtr.Zero) { _d16 = d; _p16 = p; }
             }
             return d(self);
         }

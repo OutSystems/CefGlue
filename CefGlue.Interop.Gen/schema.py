@@ -178,6 +178,9 @@ c2cs_enumtypes = {
     'cef_preferences_type_t': 'CefPreferencesType',
     'cef_chrome_page_action_icon_type_t': 'CefChromePageActionIconType',
     'cef_chrome_toolbar_button_type_t': 'CefChromeToolbarButtonType',
+    'cef_download_interrupt_reason_t': 'CefDownloadInterruptReason',
+    'cef_content_setting_types_t': 'CefContentSettingType',
+    'cef_content_setting_values_t': 'CefContentSettingValue'
     }
 
 c2cs_structtypes = { }
