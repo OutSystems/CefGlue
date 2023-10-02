@@ -19,15 +19,15 @@
         <PackageVersion Include="Avalonia" Version="0.10.17" />
         <PackageVersion Include="Avalonia.Desktop" Version="0.10.17" />
         <PackageVersion Include="Avalonia.Diagnostics" Version="0.10.17" />
-        
+
         <PackageVersion Include="Dotnet.Bundle" Version="0.9.13" />
         <PackageVersion Include="System.Text.Json" Version="6.0.1" />
         <PackageVersion Include="System.Runtime.Loader" Version="4.3.0" />
         <PackageVersion Include="NLog" Version="4.6.2" />
 
-        <PackageVersion Include="chromiumembeddedframework.runtime.win-x64" Version="$(CefRedistVersion)" />
-        <PackageVersion Include="chromiumembeddedframework.runtime.win-arm64" Version="$(CefRedistVersion)" />
-        
+        <PackageVersion Include="cef.redist.win64-x64" Version="$(CefRedistVersion)" />
+        <PackageVersion Include="cef.redist.win64-arm64" Version="$(CefRedistVersion)" />
+
         <PackageVersion Include="cef.redist.osx64" Version="$(CefRedistOSXVersion)" />
         <PackageVersion Include="cef.redist.osx.arm64" Version="$(CefRedistOSXVersion)" />
 
