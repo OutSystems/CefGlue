@@ -3,7 +3,7 @@
     <PropertyGroup>
         <DotnetVersion>net6.0</DotnetVersion>
         <LangVersion>latest</LangVersion>
-        <CefRedistVersion>116.0.27</CefRedistVersion>
+        <CefRedistVersion>116.0.27.1</CefRedistVersion>
         <CefRedistOSXVersion>116.0.27</CefRedistOSXVersion>
         <Platforms>x64;ARM64</Platforms>
         <Configurations>Debug;DebugWindowlessRender;Release;ReleaseWPFAvalonia</Configurations>

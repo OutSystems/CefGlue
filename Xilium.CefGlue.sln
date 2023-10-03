@@ -38,14 +38,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefGlue.Common.Shared", "Ce
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug_WindowlessRender|ARM64 = Debug_WindowlessRender|ARM64
 		Debug_WindowlessRender|x64 = Debug_WindowlessRender|x64
-		Debug|ARM64 = Debug|ARM64
+		Debug_WindowlessRender|ARM64 = Debug_WindowlessRender|ARM64
 		Debug|x64 = Debug|x64
-		Release|ARM64 = Release|ARM64
+		Debug|ARM64 = Debug|ARM64
 		Release|x64 = Release|x64
-		ReleaseWPFAvalonia|ARM64 = ReleaseWPFAvalonia|ARM64
+		Release|ARM64 = Release|ARM64
 		ReleaseWPFAvalonia|x64 = ReleaseWPFAvalonia|x64
+		ReleaseWPFAvalonia|ARM64 = ReleaseWPFAvalonia|ARM64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{703FF300-34B9-48D4-A5D6-E741F48D5F95}.Debug|ARM64.ActiveCfg = Debug|ARM64

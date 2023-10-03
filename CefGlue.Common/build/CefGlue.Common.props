@@ -5,13 +5,13 @@
     </PropertyGroup>
     
     <PropertyGroup Condition="'$(RuntimeIdentifier)' == '' and $([MSBuild]::IsOSPlatform('Windows'))">
-        <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">win-x64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(Platform)' == '' or '$(Platform)' == 'x64'">win-x64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">win-arm64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == ''">win-x64</CefGlueTargetPlatform> <!-- fallback -->
     </PropertyGroup>
     
     <PropertyGroup Condition="'$(RuntimeIdentifier)' == '' and $([MSBuild]::IsOSPlatform('OSX'))">
-        <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">osx-x64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(Platform)' == '' or '$(Platform)' == 'x64'">osx-x64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">osx-arm64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == ''">osx-x64</CefGlueTargetPlatform> <!-- fallback -->
     </PropertyGroup>
