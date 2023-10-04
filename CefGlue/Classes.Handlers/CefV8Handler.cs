@@ -17,8 +17,6 @@
 
         private int execute(cef_v8handler_t* self, cef_string_t* name, cef_v8value_t* @object, UIntPtr argumentsCount, cef_v8value_t** arguments, cef_v8value_t** retval, cef_string_t* exception)
         {
-            CheckSelf(self);
-
             using (CefObjectTracker.StartTracking())
             {
                 CheckSelf(self);
@@ -36,7 +34,6 @@
                         m_arguments[i] = CefV8Value.FromNative(arguments[i]);
                     }
                 }
-
 
                 CefV8Value m_returnValue;
                 string m_exception;
