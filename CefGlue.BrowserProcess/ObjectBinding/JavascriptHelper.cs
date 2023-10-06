@@ -10,6 +10,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
     {
         private const string CefGlueGlobalScriptFileName = "CefGlueGlobalScript.js";
         private const string GlobalObjectName = "cefglue";
+        private const string PromiseFactoryFunctionName = "createPromise";
         private const string InterceptorFactoryFunctionName = "createInterceptor";
         private const string EvaluateScriptFunctionName = "evaluateScript";
         private const string BindNativeFunctionName = "Bind";
@@ -29,17 +30,24 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
         public static PromiseHolder CreatePromise(this CefV8Context context)
         {
-            var promise = CefV8Value.CreatePromise();
+            var promiseFactory = GetGlobalInnerValue(context, PromiseFactoryFunctionName);
+            var promiseData = promiseFactory.ExecuteFunctionWithContext(context, null, new CefV8Value[0]); // create a promise and return the resolve and reject callbacks
+
+            var promise = promiseData.GetValue("promise");
+            var resolve = promiseData.GetValue("resolve");
+            var reject = promiseData.GetValue("reject");
 
             CefObjectTracker.Untrack(promise);
+            CefObjectTracker.Untrack(resolve);
+            CefObjectTracker.Untrack(reject);
 
-            return new PromiseHolder(promise, context);
+            return new PromiseHolder(promise, resolve, reject, context);
         }
 
         public static CefV8Value CreateInterceptorObject(this CefV8Context context, CefV8Value targetObj)
         {
             var interceptorFactory = GetGlobalInnerValue(context, InterceptorFactoryFunctionName);
-
+            
             return interceptorFactory.ExecuteFunctionWithContext(context, null, new[] { targetObj });
         }
 
@@ -47,7 +55,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         {
             var global = context.GetGlobal();
             var cefGlueGlobal = global.GetValue(GlobalObjectName); // TODO what if cefGlueGlobal == null?
-
+            
             return cefGlueGlobal.GetValue(innerValueKey);
         }
 
@@ -68,6 +76,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                 .Replace("$StringMarker$", DataMarkers.StringMarker)
                 .Replace("$DateTimeMarker$", DataMarkers.DateTimeMarker)
                 .Replace("$BinaryMarker$", DataMarkers.BinaryMarker)
+                .Replace("$PromiseFactoryFunctionName$", PromiseFactoryFunctionName)
                 .Replace("$InterceptorFactoryFunctionName$", InterceptorFactoryFunctionName)
                 .Replace("$BindNativeFunctionName$", BindNativeFunctionName)
                 .Replace("$UnbindNativeFunctionName$", UnbindNativeFunctionName)

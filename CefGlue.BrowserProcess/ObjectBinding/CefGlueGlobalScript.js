@@ -127,6 +127,17 @@ if (!$GlobalObjectName$) {
             }
         }
         return {
+            $PromiseFactoryFunctionName$: function () {
+                const result = {};
+                const promise = new Promise(function (resolve, reject) {
+                    result.resolve = function (result) {
+                        resolve(parseResult(result));
+                    };
+                    result.reject = reject;
+                });
+                result.promise = promise;
+                return result;
+            },
             $InterceptorFactoryFunctionName$: function (targetObj) {
                 const functionsMap = new Map();
                 const handler = {
