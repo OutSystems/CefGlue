@@ -847,12 +847,12 @@ def make_version_cs(content, api_hash_content):
 
 def __get_version_constant(content, name, platform = None):
     if platform is None:
-        m = re.search('^#define\s+' + name + '\s+(.*?)\n', content, re.MULTILINE)
+        m = re.search(r'^#define\s+' + name + r'\s+(.*?)\n', content, re.MULTILINE)
         if m is None:
             raise Exception('Could not find ' + name + ' constant.');
         value = m.group(1)
     else:
-        m = re.search('\n#e?l?if defined\(OS_' + platform + '\)\n+#define\s+' + name + '\s+(.*?)\n', content, re.DOTALL)
+        m = re.search(r'\n#e?l?if defined\(OS_' + platform + r'\)\n+#define\s+' + name + r'\s+(.*?)\n', content, re.DOTALL)
         if m is None:
             raise Exception('Could not find ' + name + ' constant.');
         value = m.group(1)
