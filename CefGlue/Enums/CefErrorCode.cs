@@ -144,12 +144,7 @@ namespace Xilium.CefGlue
         /// </summary>
         SOCKET_IS_CONNECTED = -23,
 
-        /// <summary>
-        /// The request was blocked because the forced reenrollment check is still
-        /// pending. This error can only occur on ChromeOS.
-        /// The error can be emitted by code in chrome/browser/policy/policy_helpers.cc.
-        /// </summary>
-        BLOCKED_ENROLLMENT_CHECK_PENDING = -24,
+        // Error -24 was removed (BLOCKED_ENROLLMENT_CHECK_PENDING)
 
         /// <summary>
         /// The upload failed because the upload stream needed to be re-read, due to a
@@ -166,7 +161,7 @@ namespace Xilium.CefGlue
         /// <summary>
         /// The request failed because the response was delivered along with requirements
         /// which are not met ('X-Frame-Options' and 'Content-Security-Policy' ancestor
-        /// checks and 'Cross-Origin-Resource-Policy', for instance).
+        /// checks and 'Cross-Origin-Resource-Policy' for instance).
         /// </summary>
         BLOCKED_BY_RESPONSE = -27,
 
@@ -187,6 +182,11 @@ namespace Xilium.CefGlue
         /// The request was blocked because of no H/2 or QUIC session.
         /// </summary>
         H2_OR_QUIC_REQUIRED = -31,
+
+        /// <summary>
+        /// The request was blocked by CORB or ORB.
+        /// </summary>
+        BLOCKED_BY_ORB = -32,
 
         /// <summary>
         /// A connection was closed (corresponding to a TCP FIN).
@@ -1491,7 +1491,7 @@ namespace Xilium.CefGlue
         /// The hostname resolution of HTTPS record was expected to be resolved with
         /// alpn values of supported protocols, but did not.
         /// </summary>
-        DNS_NO_MACHING_SUPPORTED_ALPN = -811,
+        DNS_NO_MATCHING_SUPPORTED_ALPN = -811,
 
         // CefGlue backward compatiblity.
         // Generally we prefer .NET naming rules, but will care about later.

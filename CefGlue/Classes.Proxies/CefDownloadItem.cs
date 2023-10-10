@@ -178,5 +178,24 @@
                 return cef_string_userfree.ToString(n_result);
             }
         }
+
+        /// <summary>
+        /// Returns the most recent interrupt reason.
+        /// </summary>
+        public CefDownloadInterruptReason InterruptReason
+        {
+            get
+            {
+                return cef_download_item_t.get_interrupt_reason(_self);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the download has been interrupted.
+        /// </summary>
+        public bool IsInterrupted
+        {
+            get { return cef_download_item_t.is_interrupted(_self) != 0; }
+        }
     }
 }

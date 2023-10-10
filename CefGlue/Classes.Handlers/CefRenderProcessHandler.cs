@@ -33,7 +33,7 @@
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
-            var m_extraInfo = CefDictionaryValue.FromNativeOrNull(extra_info); // TODO dispose?
+            var m_extraInfo = CefDictionaryValue.FromNativeOrNull(extra_info);
 
             OnBrowserCreated(m_browser, m_extraInfo);
         }
@@ -135,9 +135,9 @@
 
             var mBrowser = CefBrowser.FromNative(browser);
             var mFrame = CefFrame.FromNative(frame);
-            var mContext = CefV8Context.FromNative(context); // TODO dispose?
-            var mException = CefV8Exception.FromNative(exception); // TODO dispose?
-            var mStackTrace = CefV8StackTrace.FromNative(stackTrace); // TODO dispose?
+            var mContext = CefV8Context.FromNative(context);
+            var mException = CefV8Exception.FromNative(exception);
+            var mStackTrace = CefV8StackTrace.FromNative(stackTrace);
 
             OnUncaughtException(mBrowser, mFrame, mContext, mException, mStackTrace);
         }
@@ -184,7 +184,7 @@
 
             var m_browser = CefBrowser.FromNative(browser);
             var m_frame = CefFrame.FromNative(frame);
-            
+
             // Client is responsible to call `Dispose()` on message when it no more needed.
             var m_message = CefProcessMessage.FromNative(message);
 

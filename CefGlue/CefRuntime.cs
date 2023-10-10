@@ -251,12 +251,17 @@
         /// This function should be called on the main application thread to shut down
         /// the CEF browser process before the application exits.
         /// </summary>
-        public static void Shutdown()
+        /// <param name="skipGC">If set to <see langword="false"/> perform GC
+        /// and wait for pending finalizers.</param>
+        public static void Shutdown(bool skipGC = false)
         {
             if (!_initialized) return;
 
-            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
-            GC.WaitForPendingFinalizers();
+            if (!skipGC)
+            {
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+                GC.WaitForPendingFinalizers();
+            }
 
             libcef.shutdown();
         }
@@ -311,16 +316,6 @@
         public static void SetOSModalLoop(bool osModalLoop)
         {
             libcef.set_osmodal_loop(osModalLoop ? 1 : 0);
-        }
-
-        /// <summary>
-        /// Call during process startup to enable High-DPI support on Windows 7 or
-        /// newer. Older versions of Windows should be left DPI-unaware because they do
-        /// not support DirectWrite and GDI fonts are kerned very badly.
-        /// </summary>
-        public static void EnableHighDpiSupport()
-        {
-            libcef.enable_highdpi_support();
         }
 
         #endregion
@@ -756,6 +751,7 @@
                 var n_result = libcef.parse_jsonand_return_error(&n_value, options, &n_error_msg);
 
                 var result = CefValue.FromNativeOrNull(n_result);
+                // TODO: This probably error, see ResolveUrl case.
                 errorMessage = cef_string_userfree.ToString((cef_string_userfree*)&n_error_msg);
                 return result;
             }
@@ -771,6 +767,38 @@
             if (value == null) throw new ArgumentNullException("value");
             var n_result = libcef.write_json(value.ToNative(), options);
             return cef_string_userfree.ToString(n_result);
+        }
+
+        /// <summary>
+        /// Combines specified |base_url| and |relative_url| into |resolved_url|.
+        /// Returns false if one of the URLs is empty or invalid.
+        /// </summary>
+        public static bool ResolveUrl(string baseUrl,
+            string relativeUrl,
+            // [NotNullWhen(true)]
+            out string? resolvedUrl)
+        {
+            fixed (char* baseUrl_str = baseUrl)
+            fixed (char* relativeUrl_str = relativeUrl)
+            {
+                var n_baseUrl = new cef_string_t(baseUrl_str, baseUrl != null ? baseUrl.Length : 0);
+                var n_relativeUrl = new cef_string_t(relativeUrl_str, relativeUrl != null ? relativeUrl.Length : 0);
+
+                cef_string_t n_resolvedUrl = default;
+                var result = libcef.resolve_url(&n_baseUrl, &n_relativeUrl, &n_resolvedUrl) != 0;
+
+                if (result)
+                {
+                    resolvedUrl = cef_string_t.ToString(&n_resolvedUrl);
+                }
+                else
+                {
+                    resolvedUrl = null;
+                }
+
+                libcef.string_clear(&n_resolvedUrl);
+                return result;
+            }
         }
 
         #endregion

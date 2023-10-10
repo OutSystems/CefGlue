@@ -25,6 +25,10 @@ namespace Xilium.CefGlue
         private cef_command_handler_t.has_one_ref_delegate _ds2;
         private cef_command_handler_t.has_at_least_one_ref_delegate _ds3;
         private cef_command_handler_t.on_chrome_command_delegate _ds4;
+        private cef_command_handler_t.is_chrome_app_menu_item_visible_delegate _ds5;
+        private cef_command_handler_t.is_chrome_app_menu_item_enabled_delegate _ds6;
+        private cef_command_handler_t.is_chrome_page_action_icon_visible_delegate _ds7;
+        private cef_command_handler_t.is_chrome_toolbar_button_visible_delegate _ds8;
         
         protected CefCommandHandler()
         {
@@ -40,6 +44,14 @@ namespace Xilium.CefGlue
             _self->_base._has_at_least_one_ref = Marshal.GetFunctionPointerForDelegate(_ds3);
             _ds4 = new cef_command_handler_t.on_chrome_command_delegate(on_chrome_command);
             _self->_on_chrome_command = Marshal.GetFunctionPointerForDelegate(_ds4);
+            _ds5 = new cef_command_handler_t.is_chrome_app_menu_item_visible_delegate(is_chrome_app_menu_item_visible);
+            _self->_is_chrome_app_menu_item_visible = Marshal.GetFunctionPointerForDelegate(_ds5);
+            _ds6 = new cef_command_handler_t.is_chrome_app_menu_item_enabled_delegate(is_chrome_app_menu_item_enabled);
+            _self->_is_chrome_app_menu_item_enabled = Marshal.GetFunctionPointerForDelegate(_ds6);
+            _ds7 = new cef_command_handler_t.is_chrome_page_action_icon_visible_delegate(is_chrome_page_action_icon_visible);
+            _self->_is_chrome_page_action_icon_visible = Marshal.GetFunctionPointerForDelegate(_ds7);
+            _ds8 = new cef_command_handler_t.is_chrome_toolbar_button_visible_delegate(is_chrome_toolbar_button_visible);
+            _self->_is_chrome_toolbar_button_visible = Marshal.GetFunctionPointerForDelegate(_ds8);
         }
         
         ~CefCommandHandler()

@@ -17,7 +17,6 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _on_open_urlfrom_tab;
         internal IntPtr _get_resource_request_handler;
         internal IntPtr _get_auth_credentials;
-        internal IntPtr _on_quota_request;
         internal IntPtr _on_certificate_error;
         internal IntPtr _on_select_client_certificate;
         internal IntPtr _on_render_view_ready;
@@ -71,12 +70,6 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate int get_auth_credentials_delegate(cef_request_handler_t* self, cef_browser_t* browser, cef_string_t* origin_url, int isProxy, cef_string_t* host, int port, cef_string_t* realm, cef_string_t* scheme, cef_auth_callback_t* callback);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        internal delegate int on_quota_request_delegate(cef_request_handler_t* self, cef_browser_t* browser, cef_string_t* origin_url, long new_size, cef_callback_t* callback);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

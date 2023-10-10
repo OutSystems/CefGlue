@@ -7,7 +7,7 @@ namespace Xilium.CefGlue
     using System;
 
     /// <summary>
-    /// Supported Chrome toolbar types.
+    /// Chrome toolbar types.
     /// </summary>
     public enum CefChromeToolbarType
     {
