@@ -31,10 +31,14 @@
 #define CEF_INCLUDE_INTERNAL_CEF_TYPES_H_
 #pragma once
 
-#include "include/base/cef_basictypes.h"
+#include <limits.h>
+#include <stddef.h>
+#include <stdint.h>
+
 #include "include/internal/cef_string.h"
 #include "include/internal/cef_string_list.h"
 #include "include/internal/cef_time.h"
+#include "include/internal/cef_types_content_settings.h"
 #include "include/internal/cef_types_geometry.h"
 
 // Bring in platform-specific definitions.
@@ -48,7 +52,7 @@
 
 // 32-bit ARGB color value, not premultiplied. The color components are always
 // in a known order. Equivalent to the SkColor type.
-typedef uint32 cef_color_t;
+typedef uint32_t cef_color_t;
 
 // Return the alpha byte from a cef_color_t value.
 #define CefColorGetA(color) (((color) >> 24) & 0xFF)
@@ -65,17 +69,18 @@ typedef uint32 cef_color_t;
       (static_cast<unsigned>(a) << 24) | (static_cast<unsigned>(r) << 16) | \
       (static_cast<unsigned>(g) << 8) | (static_cast<unsigned>(b) << 0))
 
-// Return an int64 value with the specified low and high int32 component values.
-#define CefInt64Set(int32_low, int32_high)                                \
-  static_cast<int64>((static_cast<uint32>(int32_low)) |                   \
-                     (static_cast<int64>(static_cast<int32>(int32_high))) \
-                         << 32)
+// Return an int64_t value with the specified low and high int32_t component
+// values.
+#define CefInt64Set(int32_low, int32_high) \
+  static_cast<int64_t>(                    \
+      (static_cast<uint32_t>(int32_low)) | \
+      (static_cast<int64_t>(static_cast<int32_t>(int32_high))) << 32)
 
-// Return the low int32 value from an int64 value.
-#define CefInt64GetLow(int64_val) static_cast<int32>(int64_val)
-// Return the high int32 value from an int64 value.
+// Return the low int32_t value from an int64_t value.
+#define CefInt64GetLow(int64_val) static_cast<int32_t>(int64_val)
+// Return the high int32_t value from an int64_t value.
 #define CefInt64GetHigh(int64_val) \
-  static_cast<int32>((static_cast<int64>(int64_val) >> 32) & 0xFFFFFFFFL)
+  static_cast<int32_t>((static_cast<int64_t>(int64_val) >> 32) & 0xFFFFFFFFL)
 
 #ifdef __cplusplus
 extern "C" {
@@ -126,6 +131,42 @@ typedef enum {
   ///
   LOGSEVERITY_DISABLE = 99
 } cef_log_severity_t;
+
+///
+/// Log items prepended to each log line.
+///
+typedef enum {
+  ///
+  /// Prepend the default list of items.
+  ///
+  LOG_ITEMS_DEFAULT = 0,
+
+  ///
+  /// Prepend no items.
+  ///
+  LOG_ITEMS_NONE = 1,
+
+  ///
+  /// Prepend the process ID.
+  ///
+  LOG_ITEMS_FLAG_PROCESS_ID = 1 << 1,
+
+  ///
+  /// Prepend the thread ID.
+  ///
+  LOG_ITEMS_FLAG_THREAD_ID = 1 << 2,
+
+  ///
+  /// Prepend the timestamp.
+  ///
+  LOG_ITEMS_FLAG_TIME_STAMP = 1 << 3,
+
+  ///
+  /// Prepend the tickcount.
+  ///
+  LOG_ITEMS_FLAG_TICK_COUNT = 1 << 4,
+
+} cef_log_items_t;
 
 ///
 /// Represents the state of a setting.
@@ -255,24 +296,16 @@ typedef struct _cef_settings_t {
   /// The root directory that all CefSettings.cache_path and
   /// CefRequestContextSettings.cache_path values must have in common. If this
   /// value is empty and CefSettings.cache_path is non-empty then it will
-  /// default to the CefSettings.cache_path value. If this value is non-empty
-  /// then it must be an absolute path. Failure to set this value correctly may
-  /// result in the sandbox blocking read/write access to the cache_path
-  /// directory.
-  ///
-  cef_string_t root_cache_path;
-
-  ///
-  /// The location where user data such as the Widevine CDM module and spell
-  /// checking dictionary files will be stored on disk. If this value is empty
-  /// then the default platform-specific user data directory will be used
+  /// default to the CefSettings.cache_path value. If both values are empty
+  /// then the default platform-specific directory will be used
   /// ("~/.config/cef_user_data" directory on Linux, "~/Library/Application
   /// Support/CEF/User Data" directory on MacOS, "AppData\Local\CEF\User Data"
   /// directory under the user profile directory on Windows). If this value is
-  /// non-empty then it must be an absolute path. When using the Chrome runtime
-  /// this value will be ignored in favor of the |root_cache_path| value.
+  /// non-empty then it must be an absolute path. Failure to set this value
+  /// correctly may result in the sandbox blocking read/write access to certain
+  /// files.
   ///
-  cef_string_t user_data_path;
+  cef_string_t root_cache_path;
 
   ///
   /// To persist session cookies (cookies without an expiry date or validity
@@ -338,6 +371,14 @@ typedef struct _cef_settings_t {
   /// "warning", "error", "fatal" or "disable".
   ///
   cef_log_severity_t log_severity;
+
+  ///
+  /// The log items prepended to each log line. If not set the default log items
+  /// will be used. Also configurable using the "log-items" command-line switch
+  /// with a value of "none" for no log items, or a comma-delimited list of
+  /// values "pid", "tid", "timestamp" or "tickcount" for custom log items.
+  ///
+  cef_log_items_t log_items;
 
   ///
   /// Custom flags that will be used when initializing the V8 JavaScript engine.
@@ -420,11 +461,11 @@ typedef struct _cef_settings_t {
   /// Comma delimited list of schemes supported by the associated
   /// CefCookieManager. If |cookieable_schemes_exclude_defaults| is false (0)
   /// the default schemes ("http", "https", "ws" and "wss") will also be
-  /// supported. Specifying a |cookieable_schemes_list| value and setting
+  /// supported. Not specifying a |cookieable_schemes_list| value and setting
   /// |cookieable_schemes_exclude_defaults| to true (1) will disable all loading
-  /// and saving of cookies for this manager. Can be overridden
-  /// for individual CefRequestContext instances via the
-  /// CefRequestContextSettings.cookieable_schemes_list and
+  /// and saving of cookies. These settings will only impact the global
+  /// CefRequestContext. Individual CefRequestContext instances can be
+  /// configured via the CefRequestContextSettings.cookieable_schemes_list and
   /// CefRequestContextSettings.cookieable_schemes_exclude_defaults values.
   ///
   cef_string_t cookieable_schemes_list;
@@ -486,10 +527,10 @@ typedef struct _cef_request_context_settings_t {
   /// Comma delimited list of schemes supported by the associated
   /// CefCookieManager. If |cookieable_schemes_exclude_defaults| is false (0)
   /// the default schemes ("http", "https", "ws" and "wss") will also be
-  /// supported. Specifying a |cookieable_schemes_list| value and setting
+  /// supported. Not specifying a |cookieable_schemes_list| value and setting
   /// |cookieable_schemes_exclude_defaults| to true (1) will disable all loading
-  /// and saving of cookies for this manager. These values will be ignored if
-  /// |cache_path| matches the CefSettings.cache_path value.
+  /// and saving of cookies. These values will be ignored if |cache_path|
+  /// matches the CefSettings.cache_path value.
   ///
   cef_string_t cookieable_schemes_list;
   int cookieable_schemes_exclude_defaults;
@@ -1778,7 +1819,7 @@ typedef struct _cef_mouse_event_t {
   /// Bit flags describing any pressed modifier keys. See
   /// cef_event_flags_t for values.
   ///
-  uint32 modifiers;
+  uint32_t modifiers;
 } cef_mouse_event_t;
 
 ///
@@ -1856,7 +1897,7 @@ typedef struct _cef_touch_event_t {
   /// Bit flags describing any pressed modifier keys. See
   /// cef_event_flags_t for values.
   ///
-  uint32 modifiers;
+  uint32_t modifiers;
 
   ///
   /// The device type that caused the event.
@@ -2069,7 +2110,7 @@ typedef struct _cef_key_event_t {
   /// Bit flags describing any pressed modifier keys. See
   /// cef_event_flags_t for values.
   ///
-  uint32 modifiers;
+  uint32_t modifiers;
 
   ///
   /// The Windows key code for the key event. This value is used by the DOM
@@ -2094,13 +2135,13 @@ typedef struct _cef_key_event_t {
   ///
   /// The character generated by the keystroke.
   ///
-  char16 character;
+  char16_t character;
 
   ///
   /// Same as |character| but unmodified by any concurrently-held modifiers
   /// (except shift). This is useful for working out shortcut keys.
   ///
-  char16 unmodified_character;
+  char16_t unmodified_character;
 
   ///
   /// True if the focus is currently on an editable field on the page. This is
@@ -2179,10 +2220,8 @@ typedef struct _cef_popup_features_t {
   int height;
   int heightSet;
 
-  int menuBarVisible;
-  int statusBarVisible;
-  int toolBarVisible;
-  int scrollbarsVisible;
+  /// True (1) if browser interface elements should be hidden.
+  int isPopup;
 } cef_popup_features_t;
 
 ///
@@ -2480,7 +2519,7 @@ typedef enum {
 ///
 typedef enum {
   ///
-  /// Default margins.
+  /// Default margins of 1cm (~0.4 inches).
   ///
   PDF_PRINT_MARGIN_DEFAULT,
 
@@ -2490,54 +2529,47 @@ typedef enum {
   PDF_PRINT_MARGIN_NONE,
 
   ///
-  /// Minimum margins.
-  ///
-  PDF_PRINT_MARGIN_MINIMUM,
-
-  ///
   /// Custom margins using the |margin_*| values from cef_pdf_print_settings_t.
   ///
   PDF_PRINT_MARGIN_CUSTOM,
 } cef_pdf_print_margin_type_t;
 
 ///
-/// Structure representing PDF print settings.
+/// Structure representing PDF print settings. These values match the parameters
+/// supported by the DevTools Page.printToPDF function. See
+/// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
 ///
 typedef struct _cef_pdf_print_settings_t {
   ///
-  /// Page title to display in the header. Only used if |header_footer_enabled|
-  /// is set to true (1).
+  /// Set to true (1) for landscape mode or false (0) for portrait mode.
   ///
-  cef_string_t header_footer_title;
+  int landscape;
 
   ///
-  /// URL to display in the footer. Only used if |header_footer_enabled| is set
-  /// to true (1).
+  /// Set to true (1) to print background graphics.
   ///
-  cef_string_t header_footer_url;
+  int print_background;
 
   ///
-  /// Output page size in microns. If either of these values is less than or
-  /// equal to zero then the default paper size (A4) will be used.
-  ///
-  int page_width;
-  int page_height;
-
-  ///
-  /// The percentage to scale the PDF by before printing (e.g. 50 is 50%).
-  /// If this value is less than or equal to zero the default value of 100
+  /// The percentage to scale the PDF by before printing (e.g. .5 is 50%).
+  /// If this value is less than or equal to zero the default value of 1.0
   /// will be used.
   ///
-  int scale_factor;
+  double scale;
 
   ///
-  /// Margins in points. Only used if |margin_type| is set to
-  /// PDF_PRINT_MARGIN_CUSTOM.
+  /// Output paper size in inches. If either of these values is less than or
+  /// equal to zero then the default paper size (letter, 8.5 x 11 inches) will
+  /// be used.
   ///
-  int margin_top;
-  int margin_right;
-  int margin_bottom;
-  int margin_left;
+  double paper_width;
+  double paper_height;
+
+  ///
+  /// Set to true (1) to prefer page size as defined by css. Defaults to false
+  /// (0), in which case the content will be scaled to fit the paper size.
+  ///
+  int prefer_css_page_size;
 
   ///
   /// Margin type.
@@ -2545,27 +2577,58 @@ typedef struct _cef_pdf_print_settings_t {
   cef_pdf_print_margin_type_t margin_type;
 
   ///
-  /// Set to true (1) to print headers and footers or false (0) to not print
-  /// headers and footers.
+  /// Margins in inches. Only used if |margin_type| is set to
+  /// PDF_PRINT_MARGIN_CUSTOM.
   ///
-  int header_footer_enabled;
+  double margin_top;
+  double margin_right;
+  double margin_bottom;
+  double margin_left;
 
   ///
-  /// Set to true (1) to print the selection only or false (0) to print all.
+  /// Paper ranges to print, one based, e.g., '1-5, 8, 11-13'. Pages are printed
+  /// in the document order, not in the order specified, and no more than once.
+  /// Defaults to empty string, which implies the entire document is printed.
+  /// The page numbers are quietly capped to actual page count of the document,
+  /// and ranges beyond the end of the document are ignored. If this results in
+  /// no pages to print, an error is reported. It is an error to specify a range
+  /// with start greater than end.
   ///
-  int selection_only;
+  cef_string_t page_ranges;
 
   ///
-  /// Set to true (1) for landscape mode or false (0) for portrait mode.
+  /// Set to true (1) to display the header and/or footer. Modify
+  /// |header_template| and/or |footer_template| to customize the display.
   ///
-  int landscape;
+  int display_header_footer;
 
   ///
-  /// Set to true (1) to print background graphics or false (0) to not print
-  /// background graphics.
+  /// HTML template for the print header. Only displayed if
+  /// |display_header_footer| is true (1). Should be valid HTML markup with
+  /// the following classes used to inject printing values into them:
   ///
-  int backgrounds_enabled;
+  /// - date: formatted print date
+  /// - title: document title
+  /// - url: document location
+  /// - pageNumber: current page number
+  /// - totalPages: total pages in the document
+  ///
+  /// For example, "<span class=title></span>" would generate a span containing
+  /// the title.
+  ///
+  cef_string_t header_template;
 
+  ///
+  /// HTML template for the print footer. Only displayed if
+  /// |display_header_footer| is true (1). Uses the same format as
+  /// |header_template|.
+  ///
+  cef_string_t footer_template;
+
+  ///
+  /// Set to true (1) to generate tagged (accessible) PDF.
+  ///
+  int generate_tagged_pdf;
 } cef_pdf_print_settings_t;
 
 ///
@@ -2983,8 +3046,8 @@ typedef enum {
 /// Structure representing a range.
 ///
 typedef struct _cef_range_t {
-  int from;
-  int to;
+  uint32_t from;
+  uint32_t to;
 } cef_range_t;
 
 ///
@@ -3234,13 +3297,60 @@ typedef enum {
 } cef_text_field_commands_t;
 
 ///
-/// Supported Chrome toolbar types.
+/// Chrome toolbar types.
 ///
 typedef enum {
   CEF_CTT_NONE = 1,
   CEF_CTT_NORMAL,
   CEF_CTT_LOCATION,
 } cef_chrome_toolbar_type_t;
+
+///
+/// Chrome page action icon types. Should be kept in sync with Chromium's
+/// PageActionIconType type.
+///
+typedef enum {
+  CEF_CPAIT_BOOKMARK_STAR = 0,
+  CEF_CPAIT_CLICK_TO_CALL,
+  CEF_CPAIT_COOKIE_CONTROLS,
+  CEF_CPAIT_FILE_SYSTEM_ACCESS,
+  CEF_CPAIT_FIND,
+  CEF_CPAIT_HIGH_EFFICIENCY,
+  CEF_CPAIT_INTENT_PICKER,
+  CEF_CPAIT_LOCAL_CARD_MIGRATION,
+  CEF_CPAIT_MANAGE_PASSWORDS,
+  CEF_CPAIT_PAYMENTS_OFFER_NOTIFICATION,
+  CEF_CPAIT_PRICE_TRACKING,
+  CEF_CPAIT_PWA_INSTALL,
+  CEF_CPAIT_QR_CODE_GENERATOR,
+  CEF_CPAIT_READER_MODE,
+  CEF_CPAIT_SAVE_AUTOFILL_ADDRESS,
+  CEF_CPAIT_SAVE_CARD,
+  CEF_CPAIT_SEND_TAB_TO_SELF,
+  CEF_CPAIT_SHARING_HUB,
+  CEF_CPAIT_SIDE_SEARCH,
+  CEF_CPAIT_SMS_REMOTE_FETCHER,
+  CEF_CPAIT_TRANSLATE,
+  CEF_CPAIT_VIRTUAL_CARD_ENROLL,
+  CEF_CPAIT_VIRTUAL_CARD_MANUAL_FALLBACK,
+  CEF_CPAIT_ZOOM,
+  CEF_CPAIT_SAVE_IBAN,
+  CEF_CPAIT_MANDATORY_REAUTH,
+  CEF_CPAIT_PRICE_INSIGHTS,
+  CEF_CPAIT_MAX_VALUE = CEF_CPAIT_PRICE_INSIGHTS,
+} cef_chrome_page_action_icon_type_t;
+
+///
+/// Chrome toolbar button types. Should be kept in sync with CEF's internal
+/// ToolbarButtonType type.
+///
+typedef enum {
+  CEF_CTBT_CAST = 0,
+  CEF_CTBT_DOWNLOAD,
+  CEF_CTBT_SEND_TAB_TO_SELF,
+  CEF_CTBT_SIDE_PANEL,
+  CEF_CTBT_MAX_VALUE = CEF_CTBT_SIDE_PANEL,
+} cef_chrome_toolbar_button_type_t;
 
 ///
 /// Docking modes supported by CefWindow::AddOverlay.
@@ -3284,7 +3394,7 @@ typedef struct _cef_touch_handle_state_t {
   /// Combination of cef_touch_handle_state_flags_t values indicating what state
   /// is set.
   ///
-  uint32 flags;
+  uint32_t flags;
 
   ///
   /// Enabled state. Only set if |flags| contains CEF_THS_FLAG_ENABLED.
@@ -3351,21 +3461,21 @@ typedef enum {
   CEF_PERMISSION_TYPE_CAMERA_PAN_TILT_ZOOM = 1 << 2,
   CEF_PERMISSION_TYPE_CAMERA_STREAM = 1 << 3,
   CEF_PERMISSION_TYPE_CLIPBOARD = 1 << 4,
-  CEF_PERMISSION_TYPE_DISK_QUOTA = 1 << 5,
-  CEF_PERMISSION_TYPE_LOCAL_FONTS = 1 << 6,
-  CEF_PERMISSION_TYPE_GEOLOCATION = 1 << 7,
-  CEF_PERMISSION_TYPE_IDLE_DETECTION = 1 << 8,
-  CEF_PERMISSION_TYPE_MIC_STREAM = 1 << 9,
-  CEF_PERMISSION_TYPE_MIDI_SYSEX = 1 << 10,
-  CEF_PERMISSION_TYPE_MULTIPLE_DOWNLOADS = 1 << 11,
-  CEF_PERMISSION_TYPE_NOTIFICATIONS = 1 << 12,
-  CEF_PERMISSION_TYPE_PROTECTED_MEDIA_IDENTIFIER = 1 << 13,
-  CEF_PERMISSION_TYPE_REGISTER_PROTOCOL_HANDLER = 1 << 14,
-  CEF_PERMISSION_TYPE_SECURITY_ATTESTATION = 1 << 15,
-  CEF_PERMISSION_TYPE_STORAGE_ACCESS = 1 << 16,
-  CEF_PERMISSION_TYPE_U2F_API_REQUEST = 1 << 17,
+  CEF_PERMISSION_TYPE_TOP_LEVEL_STORAGE_ACCESS = 1 << 5,
+  CEF_PERMISSION_TYPE_DISK_QUOTA = 1 << 6,
+  CEF_PERMISSION_TYPE_LOCAL_FONTS = 1 << 7,
+  CEF_PERMISSION_TYPE_GEOLOCATION = 1 << 8,
+  CEF_PERMISSION_TYPE_IDLE_DETECTION = 1 << 9,
+  CEF_PERMISSION_TYPE_MIC_STREAM = 1 << 10,
+  CEF_PERMISSION_TYPE_MIDI = 1 << 11,
+  CEF_PERMISSION_TYPE_MIDI_SYSEX = 1 << 12,
+  CEF_PERMISSION_TYPE_MULTIPLE_DOWNLOADS = 1 << 13,
+  CEF_PERMISSION_TYPE_NOTIFICATIONS = 1 << 14,
+  CEF_PERMISSION_TYPE_PROTECTED_MEDIA_IDENTIFIER = 1 << 15,
+  CEF_PERMISSION_TYPE_REGISTER_PROTOCOL_HANDLER = 1 << 16,
+  CEF_PERMISSION_TYPE_STORAGE_ACCESS = 1 << 17,
   CEF_PERMISSION_TYPE_VR_SESSION = 1 << 18,
-  CEF_PERMISSION_TYPE_WINDOW_PLACEMENT = 1 << 19,
+  CEF_PERMISSION_TYPE_WINDOW_MANAGEMENT = 1 << 19,
 } cef_permission_request_types_t;
 
 ///
@@ -3411,6 +3521,144 @@ typedef enum {
   /// Expired certificate. Loads the "expired_cert.pem" file.
   CEF_TEST_CERT_EXPIRED,
 } cef_test_cert_type_t;
+
+///
+/// Preferences type passed to
+/// CefBrowserProcessHandler::OnRegisterCustomPreferences.
+///
+typedef enum {
+  /// Global preferences registered a single time at application startup.
+  CEF_PREFERENCES_TYPE_GLOBAL,
+
+  /// Request context preferences registered each time a new CefRequestContext
+  /// is created.
+  CEF_PREFERENCES_TYPE_REQUEST_CONTEXT,
+} cef_preferences_type_t;
+
+///
+/// Download interrupt reasons. Should be kept in sync with
+/// Chromium's download::DownloadInterruptReason type.
+///
+typedef enum {
+  CEF_DOWNLOAD_INTERRUPT_REASON_NONE = 0,
+
+  /// Generic file operation failure.
+  CEF_DOWNLOAD_INTERRUPT_REASON_FILE_FAILED = 1,
+
+  /// The file cannot be accessed due to security restrictions.
+  CEF_DOWNLOAD_INTERRUPT_REASON_FILE_ACCESS_DENIED = 2,
+
+  /// There is not enough room on the drive.
+  CEF_DOWNLOAD_INTERRUPT_REASON_FILE_NO_SPACE = 3,
+
+  /// The directory or file name is too long.
+  CEF_DOWNLOAD_INTERRUPT_REASON_FILE_NAME_TOO_LONG = 5,
+
+  /// The file is too large for the file system to handle.
+  CEF_DOWNLOAD_INTERRUPT_REASON_FILE_TOO_LARGE = 6,
+
+  /// The file contains a virus.
+  CEF_DOWNLOAD_INTERRUPT_REASON_FILE_VIRUS_INFECTED = 7,
+
+  /// The file was in use. Too many files are opened at once. We have run out of
+  /// memory.
+  CEF_DOWNLOAD_INTERRUPT_REASON_FILE_TRANSIENT_ERROR = 10,
+
+  /// The file was blocked due to local policy.
+  CEF_DOWNLOAD_INTERRUPT_REASON_FILE_BLOCKED = 11,
+
+  /// An attempt to check the safety of the download failed due to unexpected
+  /// reasons. See http://crbug.com/153212.
+  CEF_DOWNLOAD_INTERRUPT_REASON_FILE_SECURITY_CHECK_FAILED = 12,
+
+  /// An attempt was made to seek past the end of a file in opening
+  /// a file (as part of resuming a previously interrupted download).
+  CEF_DOWNLOAD_INTERRUPT_REASON_FILE_TOO_SHORT = 13,
+
+  /// The partial file didn't match the expected hash.
+  CEF_DOWNLOAD_INTERRUPT_REASON_FILE_HASH_MISMATCH = 14,
+
+  /// The source and the target of the download were the same.
+  CEF_DOWNLOAD_INTERRUPT_REASON_FILE_SAME_AS_SOURCE = 15,
+
+  // Network errors.
+
+  /// Generic network failure.
+  CEF_DOWNLOAD_INTERRUPT_REASON_NETWORK_FAILED = 20,
+
+  /// The network operation timed out.
+  CEF_DOWNLOAD_INTERRUPT_REASON_NETWORK_TIMEOUT = 21,
+
+  /// The network connection has been lost.
+  CEF_DOWNLOAD_INTERRUPT_REASON_NETWORK_DISCONNECTED = 22,
+
+  /// The server has gone down.
+  CEF_DOWNLOAD_INTERRUPT_REASON_NETWORK_SERVER_DOWN = 23,
+
+  /// The network request was invalid. This may be due to the original URL or a
+  /// redirected URL:
+  /// - Having an unsupported scheme.
+  /// - Being an invalid URL.
+  /// - Being disallowed by policy.
+  CEF_DOWNLOAD_INTERRUPT_REASON_NETWORK_INVALID_REQUEST = 24,
+
+  // Server responses.
+
+  /// The server indicates that the operation has failed (generic).
+  CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_FAILED = 30,
+
+  /// The server does not support range requests.
+  /// Internal use only:  must restart from the beginning.
+  CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_NO_RANGE = 31,
+
+  /// The server does not have the requested data.
+  CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_BAD_CONTENT = 33,
+
+  /// Server didn't authorize access to resource.
+  CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_UNAUTHORIZED = 34,
+
+  /// Server certificate problem.
+  CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_CERT_PROBLEM = 35,
+
+  /// Server access forbidden.
+  CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_FORBIDDEN = 36,
+
+  /// Unexpected server response. This might indicate that the responding server
+  /// may not be the intended server.
+  CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_UNREACHABLE = 37,
+
+  /// The server sent fewer bytes than the content-length header. It may
+  /// indicate that the connection was closed prematurely, or the Content-Length
+  /// header was invalid. The download is only interrupted if strong validators
+  /// are present. Otherwise, it is treated as finished.
+  CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_CONTENT_LENGTH_MISMATCH = 38,
+
+  /// An unexpected cross-origin redirect happened.
+  CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_CROSS_ORIGIN_REDIRECT = 39,
+
+  // User input.
+
+  /// The user canceled the download.
+  CEF_DOWNLOAD_INTERRUPT_REASON_USER_CANCELED = 40,
+
+  /// The user shut down the browser.
+  /// Internal use only:  resume pending downloads if possible.
+  CEF_DOWNLOAD_INTERRUPT_REASON_USER_SHUTDOWN = 41,
+
+  // Crash.
+
+  /// The browser crashed.
+  /// Internal use only:  resume pending downloads if possible.
+  CEF_DOWNLOAD_INTERRUPT_REASON_CRASH = 50,
+} cef_download_interrupt_reason_t;
+
+///
+/// Specifies the gesture commands.
+///
+typedef enum {
+  CEF_GESTURE_COMMAND_BACK,
+  CEF_GESTURE_COMMAND_FORWARD,
+} cef_gesture_command_t;
 
 #ifdef __cplusplus
 }

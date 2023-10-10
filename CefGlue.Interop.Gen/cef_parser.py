@@ -339,23 +339,23 @@ def dict_to_str(dict):
 
 
 # regex for matching comment-formatted attributes
-_cre_attrib = '/\*--cef\(([A-Za-z0-9_ ,=:\n]{0,})\)--\*/'
+_cre_attrib = r'/\*--cef\(([A-Za-z0-9_ ,=:\n]{0,})\)--\*/'
 # regex for matching class and function names
-_cre_cfname = '([A-Za-z0-9_]{1,})'
+_cre_cfname = r'([A-Za-z0-9_]{1,})'
 # regex for matching class and function names including path separators
-_cre_cfnameorpath = '([A-Za-z0-9_\/]{1,})'
+_cre_cfnameorpath = r'([A-Za-z0-9_\/]{1,})'
 # regex for matching function return values
-_cre_retval = '([A-Za-z0-9_<>:,\*\&]{1,})'
+_cre_retval = r'([A-Za-z0-9_<>:,\*\&]{1,})'
 # regex for matching typedef value and name combination
-_cre_typedef = '([A-Za-z0-9_<>:,\*\&\s]{1,})'
+_cre_typedef = r'([A-Za-z0-9_<>:,\*\&\s]{1,})'
 # regex for matching function return value and name combination
-_cre_func = '([A-Za-z][A-Za-z0-9_<>:,\*\&\s]{1,})'
+_cre_func = r'([A-Za-z][A-Za-z0-9_<>:,\*\&\s]{1,})'
 # regex for matching virtual function modifiers + arbitrary whitespace
-_cre_vfmod = '([\sA-Za-z0-9_]{0,})'
+_cre_vfmod = r'([\sA-Za-z0-9_]{0,})'
 # regex for matching arbitrary whitespace
-_cre_space = '[\s]{1,}'
+_cre_space = r'[\s]{1,}'
 # regex for matching optional virtual keyword
-_cre_virtual = '(?:[\s]{1,}virtual){0,1}'
+_cre_virtual = r'(?:[\s]{1,}virtual){0,1}'
 
 # Simple translation types. Format is:
 #   'cpp_type' : ['capi_type', 'capi_default_value']
@@ -364,11 +364,17 @@ _simpletypes = {
     'void*': ['void*', 'NULL'],
     'int': ['int', '0'],
     'int16': ['int16', '0'],
+    'int16_t': ['int16', '0'],
     'uint16': ['uint16', '0'],
+    'uint16_t': ['uint16', '0'],
     'int32': ['int32', '0'],
+    'int32_t': ['int32', '0'],
     'uint32': ['uint32', '0'],
+    'uint32_t': ['uint32', '0'],
     'int64': ['int64', '0'],
+    'int64_t': ['int64', '0'],
     'uint64': ['uint64', '0'],
+    'uint64_t': ['uint64', '0'],
     'double': ['double', '0'],
     'float': ['float', '0'],
     'float*': ['float*', 'NULL'],
@@ -419,11 +425,11 @@ def get_function_impls(content, ident, has_impl=True):
     the value.
     """
   # extract the functions
-  find_regex = '\n' + _cre_func + '\((.*?)\)([A-Za-z0-9_\s]{0,})'
+  find_regex = '\n' + _cre_func + r'\((.*?)\)([A-Za-z0-9_\s]{0,})'
   if has_impl:
-    find_regex += '\{(.*?)\n\}'
+    find_regex += r'\{(.*?)\n\}'
   else:
-    find_regex += '(;)'
+    find_regex += r'(;)'
   p = re.compile(find_regex, re.MULTILINE | re.DOTALL)
   list = p.findall(content)
 
@@ -595,7 +601,7 @@ class obj_header:
         self.typedefs.append(obj_typedef(self, filename, value, alias))
 
     # extract global functions
-    p = re.compile('\n' + _cre_attrib + '\n' + _cre_func + '\((.*?)\)',
+    p = re.compile('\n' + _cre_attrib + '\n' + _cre_func + r'\((.*?)\)',
                    re.MULTILINE | re.DOTALL)
     list = p.findall(data)
     if len(list) > 0:
@@ -846,7 +852,7 @@ class obj_class:
 
     # extract static functions
     p = re.compile('\n' + _cre_space + _cre_attrib + '\n' + _cre_space +
-                   'static' + _cre_space + _cre_func + '\((.*?)\)',
+                   'static' + _cre_space + _cre_func + r'\((.*?)\)',
                    re.MULTILINE | re.DOTALL)
     list = p.findall(body)
 
@@ -861,7 +867,7 @@ class obj_class:
     # extract virtual functions
     p = re.compile(
         '\n' + _cre_space + _cre_attrib + '\n' + _cre_space + 'virtual' +
-        _cre_space + _cre_func + '\((.*?)\)' + _cre_vfmod,
+        _cre_space + _cre_func + r'\((.*?)\)' + _cre_vfmod,
         re.MULTILINE | re.DOTALL)
     list = p.findall(body)
 

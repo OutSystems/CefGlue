@@ -45,6 +45,7 @@
 #include "include/cef_extension.h"
 #include "include/cef_extension_handler.h"
 #include "include/cef_media_router.h"
+#include "include/cef_preference.h"
 #include "include/cef_values.h"
 
 class CefRequestContextHandler;
@@ -84,7 +85,7 @@ class CefResolveCallback : public virtual CefBaseRefCounted {
 /// all other request context objects will be ignored.
 ///
 /*--cef(source=library,no_debugct_check)--*/
-class CefRequestContext : public virtual CefBaseRefCounted {
+class CefRequestContext : public CefPreferenceManager {
  public:
   ///
   /// Returns the global context object.
@@ -178,57 +179,6 @@ class CefRequestContext : public virtual CefBaseRefCounted {
   ///
   /*--cef()--*/
   virtual bool ClearSchemeHandlerFactories() = 0;
-
-  ///
-  /// Returns true if a preference with the specified |name| exists. This method
-  /// must be called on the browser process UI thread.
-  ///
-  /*--cef()--*/
-  virtual bool HasPreference(const CefString& name) = 0;
-
-  ///
-  /// Returns the value for the preference with the specified |name|. Returns
-  /// NULL if the preference does not exist. The returned object contains a copy
-  /// of the underlying preference value and modifications to the returned
-  /// object will not modify the underlying preference value. This method must
-  /// be called on the browser process UI thread.
-  ///
-  /*--cef()--*/
-  virtual CefRefPtr<CefValue> GetPreference(const CefString& name) = 0;
-
-  ///
-  /// Returns all preferences as a dictionary. If |include_defaults| is true
-  /// then preferences currently at their default value will be included. The
-  /// returned object contains a copy of the underlying preference values and
-  /// modifications to the returned object will not modify the underlying
-  /// preference values. This method must be called on the browser process UI
-  /// thread.
-  ///
-  /*--cef()--*/
-  virtual CefRefPtr<CefDictionaryValue> GetAllPreferences(
-      bool include_defaults) = 0;
-
-  ///
-  /// Returns true if the preference with the specified |name| can be modified
-  /// using SetPreference. As one example preferences set via the command-line
-  /// usually cannot be modified. This method must be called on the browser
-  /// process UI thread.
-  ///
-  /*--cef()--*/
-  virtual bool CanSetPreference(const CefString& name) = 0;
-
-  ///
-  /// Set the |value| associated with preference |name|. Returns true if the
-  /// value is set successfully and false otherwise. If |value| is NULL the
-  /// preference will be restored to its default value. If setting the
-  /// preference fails then |error| will be populated with a detailed
-  /// description of the problem. This method must be called on the browser
-  /// process UI thread.
-  ///
-  /*--cef(optional_param=value)--*/
-  virtual bool SetPreference(const CefString& name,
-                             CefRefPtr<CefValue> value,
-                             CefString& error) = 0;
 
   ///
   /// Clears all certificate exceptions that were added as part of handling
@@ -365,6 +315,72 @@ class CefRequestContext : public virtual CefBaseRefCounted {
   /*--cef(optional_param=callback)--*/
   virtual CefRefPtr<CefMediaRouter> GetMediaRouter(
       CefRefPtr<CefCompletionCallback> callback) = 0;
+
+  ///
+  /// Returns the current value for |content_type| that applies for the
+  /// specified URLs. If both URLs are empty the default value will be returned.
+  /// Returns nullptr if no value is configured. Must be called on the browser
+  /// process UI thread.
+  ///
+  /*--cef(optional_param=requesting_url,optional_param=top_level_url)--*/
+  virtual CefRefPtr<CefValue> GetWebsiteSetting(
+      const CefString& requesting_url,
+      const CefString& top_level_url,
+      cef_content_setting_types_t content_type) = 0;
+
+  ///
+  /// Sets the current value for |content_type| for the specified URLs in the
+  /// default scope. If both URLs are empty, and the context is not incognito,
+  /// the default value will be set. Pass nullptr for |value| to remove the
+  /// default value for this content type.
+  ///
+  /// WARNING: Incorrect usage of this method may cause instability or security
+  /// issues in Chromium. Make sure that you first understand the potential
+  /// impact of any changes to |content_type| by reviewing the related source
+  /// code in Chromium. For example, if you plan to modify
+  /// CEF_CONTENT_SETTING_TYPE_POPUPS, first review and understand the usage of
+  /// ContentSettingsType::POPUPS in Chromium:
+  /// https://source.chromium.org/search?q=ContentSettingsType::POPUPS
+  ///
+  /*--cef(optional_param=requesting_url,optional_param=top_level_url,
+          optional_param=value)--*/
+  virtual void SetWebsiteSetting(const CefString& requesting_url,
+                                 const CefString& top_level_url,
+                                 cef_content_setting_types_t content_type,
+                                 CefRefPtr<CefValue> value) = 0;
+
+  ///
+  /// Returns the current value for |content_type| that applies for the
+  /// specified URLs. If both URLs are empty the default value will be returned.
+  /// Returns CEF_CONTENT_SETTING_VALUE_DEFAULT if no value is configured. Must
+  /// be called on the browser process UI thread.
+  ///
+  /*--cef(optional_param=requesting_url,optional_param=top_level_url,
+          default_retval=CEF_CONTENT_SETTING_VALUE_DEFAULT)--*/
+  virtual cef_content_setting_values_t GetContentSetting(
+      const CefString& requesting_url,
+      const CefString& top_level_url,
+      cef_content_setting_types_t content_type) = 0;
+
+  ///
+  /// Sets the current value for |content_type| for the specified URLs in the
+  /// default scope. If both URLs are empty, and the context is not incognito,
+  /// the default value will be set. Pass CEF_CONTENT_SETTING_VALUE_DEFAULT for
+  /// |value| to use the default value for this content type.
+  ///
+  /// WARNING: Incorrect usage of this method may cause instability or security
+  /// issues in Chromium. Make sure that you first understand the potential
+  /// impact of any changes to |content_type| by reviewing the related source
+  /// code in Chromium. For example, if you plan to modify
+  /// CEF_CONTENT_SETTING_TYPE_POPUPS, first review and understand the usage of
+  /// ContentSettingsType::POPUPS in Chromium:
+  /// https://source.chromium.org/search?q=ContentSettingsType::POPUPS
+  ///
+  /*--cef(optional_param=requesting_url,optional_param=top_level_url)--*/
+  virtual void SetContentSetting(const CefString& requesting_url,
+                                 const CefString& top_level_url,
+                                 cef_content_setting_types_t content_type,
+                                 cef_content_setting_values_t value) = 0;
 };
 
 #endif  // CEF_INCLUDE_CEF_REQUEST_CONTEXT_H_

@@ -175,6 +175,12 @@ c2cs_enumtypes = {
     'cef_media_access_permission_types_t': 'CefMediaAccessPermissionTypes',
     'cef_permission_request_types_t': 'CefPermissionRequestTypes',
     'cef_permission_request_result_t': 'CefPermissionRequestResult',
+    'cef_preferences_type_t': 'CefPreferencesType',
+    'cef_chrome_page_action_icon_type_t': 'CefChromePageActionIconType',
+    'cef_chrome_toolbar_button_type_t': 'CefChromeToolbarButtonType',
+    'cef_download_interrupt_reason_t': 'CefDownloadInterruptReason',
+    'cef_content_setting_types_t': 'CefContentSettingType',
+    'cef_content_setting_values_t': 'CefContentSettingValue'
     }
 
 c2cs_structtypes = { }
@@ -211,6 +217,12 @@ def is_proxy(cls):
     cls_name = cls.get_name()
     if cls_name in classdef:
         return classdef[cls_name]['role'] & ROLE_PROXY == ROLE_PROXY
+    return False
+
+def is_abstract(cls):
+    cls_name = cls.get_name()
+    if cls_name in classdef:
+        return classdef[cls_name].get('abstract', False)
     return False
 
 def is_reversible(cls):

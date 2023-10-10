@@ -3,15 +3,15 @@
     <PropertyGroup>
         <DotnetVersion>net6.0</DotnetVersion>
         <LangVersion>latest</LangVersion>
-        <CefRedistVersion>106.0.26</CefRedistVersion>
-        <CefRedistOSXVersion>106.0.26-patch1</CefRedistOSXVersion>
+        <CefRedistVersion>117.2.4</CefRedistVersion>
+        <CefRedistOSXVersion>117.2.4</CefRedistOSXVersion>
         <Platforms>x64;ARM64</Platforms>
         <Configurations>Debug;DebugWindowlessRender;Release;ReleaseWPFAvalonia</Configurations>
     </PropertyGroup>
 
     <PropertyGroup>
         <PackageOutputPath>$(MSBuildProjectDirectory)\..\Nuget\output</PackageOutputPath>
-        <Version>106.5249.21-avalonia11</Version>
+        <Version>117.5938.1-avalonia11</Version>
         <Authors>XiliumHQ,OutSystems</Authors>
         <Product>CefGlue</Product>
         <AssemblyTitle>CefGlue</AssemblyTitle>

@@ -35,8 +35,9 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
 #include <time.h>
-#include "include/base/cef_basictypes.h"
+
 #include "include/internal/cef_export.h"
 
 ///
@@ -47,7 +48,7 @@ extern "C" {
 /// This is equivalent of Chromium `base::Time` (see base/time/time.h).
 ///
 typedef struct _cef_basetime_t {
-  int64 val;
+  int64_t val;
 } cef_basetime_t;
 
 ///
@@ -122,7 +123,7 @@ CEF_EXPORT int cef_time_now(cef_time_t* cef_time);
 ///
 /// Retrieve the current system time.
 ///
-CEF_EXPORT cef_basetime_t cef_basetime_now();
+CEF_EXPORT cef_basetime_t cef_basetime_now(void);
 
 ///
 /// Retrieve the delta in milliseconds between two time values. Returns true (1)

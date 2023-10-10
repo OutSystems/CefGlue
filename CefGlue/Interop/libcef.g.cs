@@ -33,14 +33,6 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_quit_message_loop", CallingConvention = libcef.CEF_CALL)]
         public static extern void quit_message_loop();
         
-        // CefSetOSModalLoop
-        [DllImport(libcef.DllName, EntryPoint = "cef_set_osmodal_loop", CallingConvention = libcef.CEF_CALL)]
-        public static extern void set_osmodal_loop(int osModalLoop);
-        
-        // CefEnableHighDPISupport
-        [DllImport(libcef.DllName, EntryPoint = "cef_enable_highdpi_support", CallingConvention = libcef.CEF_CALL)]
-        public static extern void enable_highdpi_support();
-        
         // CefCrashReportingEnabled
         [DllImport(libcef.DllName, EntryPoint = "cef_crash_reporting_enabled", CallingConvention = libcef.CEF_CALL)]
         public static extern int crash_reporting_enabled();
@@ -96,6 +88,10 @@ namespace Xilium.CefGlue.Interop
         // CefClearCrossOriginWhitelist
         [DllImport(libcef.DllName, EntryPoint = "cef_clear_cross_origin_whitelist", CallingConvention = libcef.CEF_CALL)]
         public static extern int clear_cross_origin_whitelist();
+        
+        // CefResolveURL
+        [DllImport(libcef.DllName, EntryPoint = "cef_resolve_url", CallingConvention = libcef.CEF_CALL)]
+        public static extern int resolve_url(cef_string_t* base_url, cef_string_t* relative_url, cef_string_t* resolved_url);
         
         // CefParseURL
         [DllImport(libcef.DllName, EntryPoint = "cef_parse_url", CallingConvention = libcef.CEF_CALL)]

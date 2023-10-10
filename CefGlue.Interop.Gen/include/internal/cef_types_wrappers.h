@@ -31,6 +31,8 @@
 #define CEF_INCLUDE_INTERNAL_CEF_TYPES_WRAPPERS_H_
 #pragma once
 
+#include <limits>
+
 #include "include/internal/cef_string.h"
 #include "include/internal/cef_string_list.h"
 #include "include/internal/cef_types.h"
@@ -49,8 +51,9 @@ class CefStructBase : public traits::struct_type {
   virtual ~CefStructBase() {
     // Only clear this object's data if it isn't currently attached to a
     // structure.
-    if (!attached_to_)
+    if (!attached_to_) {
       Clear(this);
+    }
   }
 
   CefStructBase(const CefStructBase& r) {
@@ -69,8 +72,9 @@ class CefStructBase : public traits::struct_type {
   void AttachTo(struct_type& source) {
     // Only clear this object's data if it isn't currently attached to a
     // structure.
-    if (!attached_to_)
+    if (!attached_to_) {
       Clear(this);
+    }
 
     // This object is now attached to the new structure.
     attached_to_ = &source;
@@ -213,7 +217,12 @@ class CefRange : public cef_range_t {
  public:
   CefRange() : cef_range_t{} {}
   CefRange(const cef_range_t& r) : cef_range_t(r) {}
-  CefRange(int from, int to) : cef_range_t{from, to} {}
+  CefRange(uint32_t from, uint32_t to) : cef_range_t{from, to} {}
+
+  static CefRange InvalidRange() {
+    return CefRange((std::numeric_limits<uint32_t>::max)(),
+                    (std::numeric_limits<uint32_t>::max)());
+  }
 
   void Set(int from_val, int to_val) { from = from_val, to = to_val; }
 };
@@ -355,7 +364,6 @@ struct CefSettingsTraits {
     cef_string_clear(&s->main_bundle_path);
     cef_string_clear(&s->cache_path);
     cef_string_clear(&s->root_cache_path);
-    cef_string_clear(&s->user_data_path);
     cef_string_clear(&s->user_agent);
     cef_string_clear(&s->user_agent_product);
     cef_string_clear(&s->locale);
@@ -388,8 +396,6 @@ struct CefSettingsTraits {
                    &target->cache_path, copy);
     cef_string_set(src->root_cache_path.str, src->root_cache_path.length,
                    &target->root_cache_path, copy);
-    cef_string_set(src->user_data_path.str, src->user_data_path.length,
-                   &target->user_data_path, copy);
     target->persist_session_cookies = src->persist_session_cookies;
     target->persist_user_preferences = src->persist_user_preferences;
 
@@ -402,6 +408,7 @@ struct CefSettingsTraits {
     cef_string_set(src->log_file.str, src->log_file.length, &target->log_file,
                    copy);
     target->log_severity = src->log_severity;
+    target->log_items = src->log_items;
     cef_string_set(src->javascript_flags.str, src->javascript_flags.length,
                    &target->javascript_flags, copy);
 
@@ -644,34 +651,37 @@ struct CefPdfPrintSettingsTraits {
   static inline void init(struct_type* s) {}
 
   static inline void clear(struct_type* s) {
-    cef_string_clear(&s->header_footer_title);
-    cef_string_clear(&s->header_footer_url);
+    cef_string_clear(&s->page_ranges);
+    cef_string_clear(&s->header_template);
+    cef_string_clear(&s->footer_template);
   }
 
   static inline void set(const struct_type* src,
                          struct_type* target,
                          bool copy) {
-    cef_string_set(src->header_footer_title.str,
-                   src->header_footer_title.length,
-                   &target->header_footer_title, copy);
-    cef_string_set(src->header_footer_url.str, src->header_footer_url.length,
-                   &target->header_footer_url, copy);
+    target->landscape = src->landscape;
+    target->print_background = src->print_background;
+    target->scale = src->scale;
+    target->paper_width = src->paper_width;
+    target->paper_height = src->paper_height;
+    target->prefer_css_page_size = src->prefer_css_page_size;
 
-    target->page_width = src->page_width;
-    target->page_height = src->page_height;
-
-    target->scale_factor = src->scale_factor;
-
+    target->margin_type = src->margin_type;
     target->margin_top = src->margin_top;
     target->margin_right = src->margin_right;
     target->margin_bottom = src->margin_bottom;
     target->margin_left = src->margin_left;
-    target->margin_type = src->margin_type;
 
-    target->header_footer_enabled = src->header_footer_enabled;
-    target->selection_only = src->selection_only;
-    target->landscape = src->landscape;
-    target->backgrounds_enabled = src->backgrounds_enabled;
+    cef_string_set(src->page_ranges.str, src->page_ranges.length,
+                   &target->page_ranges, copy);
+
+    target->display_header_footer = src->display_header_footer;
+    cef_string_set(src->header_template.str, src->header_template.length,
+                   &target->header_template, copy);
+    cef_string_set(src->footer_template.str, src->footer_template.length,
+                   &target->footer_template, copy);
+
+    target->generate_tagged_pdf = src->generate_tagged_pdf;
   }
 };
 
