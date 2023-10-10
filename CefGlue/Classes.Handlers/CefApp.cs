@@ -16,6 +16,7 @@
             CheckSelf(self);
 
             var processType = cef_string_t.ToString(process_type);
+
             using (var m_commandLine = CefCommandLine.FromNative(command_line))
             {
                 OnBeforeCommandLineProcessing(processType, m_commandLine);

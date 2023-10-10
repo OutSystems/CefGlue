@@ -121,7 +121,7 @@ def get_base_funcs(cls):
             get_base_func(cls, 0, 'Del', 'del'),
             ]
     else:
-        raise Exception("Unknown base class.")
+        raise Exception("Unknown base class: %s." % baseClassName)
 
 def make_file_header():
     return """//
@@ -163,19 +163,39 @@ def make_struct_file(cls):
         'body': indent + ('\n'+indent).join(body)
       }
 
-def get_funcs(cls, base = True):
+def get_funcs(cls, base = True, inherited = True):
     funcs = []
 
-    if base:
-        for func in get_base_funcs(cls):
-            funcs.append( func )
+    classes = []
+    current_cls = cls
+    while True:
+        classes.append(current_cls)
+        if base and is_base_class(current_cls.get_parent_name()):
+            for func in get_base_funcs(current_cls):
+                funcs.append( func )
+        if not inherited:
+            break
+        current_cls = current_cls.parent.get_class(current_cls.parent_name)
+        if current_cls is None:
+            break
 
     i = len(funcs)
-    for func in cls.get_virtual_funcs():
-        funcs.append( get_func_parts(func, i) )
-        i += 1
+    while len(classes) > 0:
+        current_cls = classes.pop()
+        if current_cls is None:
+            break
+        for func in current_cls.get_virtual_funcs():
+            funcs.append( get_func_parts(func, i) )
+            i += 1
 
     return funcs
+
+def get_top_base_class_name(cls):
+    while cls is not None:
+        if is_base_class(cls.parent_name):
+            return cls.get_parent_capi_name()
+        cls = cls.parent.get_class(cls.parent_name)
+    return None
 
 def make_struct_members(cls):
     result = []
@@ -190,7 +210,7 @@ def make_struct_members(cls):
     for func in cls.get_static_funcs():
         static_funcs.append( get_func_parts(func, 0) )
 
-    parentClassName = cls.get_parent_capi_name()
+    parentClassName = get_top_base_class_name(cls)
     if (parentClassName != "cef_base_ref_counted_t"
         and parentClassName != "cef_base_scoped_t"):
         message = "Error: Generation for base class \"" + cls.get_parent_name() + "\" is not supported."
@@ -318,18 +338,24 @@ def make_wrapper_g_file(cls):
     for line in schema.get_overview(cls):
         body.append('// %s' % line)
 
-    isRefCounted = cls.get_parent_capi_name() == "cef_base_ref_counted_t"
-    isScoped = cls.get_parent_capi_name() == "cef_base_scoped_t"
+    isRefCountedImpl = cls.get_parent_capi_name() == "cef_base_ref_counted_t"
+    isScopedImpl = cls.get_parent_capi_name() == "cef_base_scoped_t"
+    maybeSealedModifier = "sealed "
+
+    if schema.is_abstract(cls):
+        maybeSealedModifier = ""
 
     if schema.is_proxy(cls):
         proxyBase = None
-        if isRefCounted:
+        if isRefCountedImpl:
             proxyBase = " : IDisposable"
-        elif isScoped:
+        elif isScopedImpl:
             proxyBase = ""
+        elif cls.get_parent_capi_name() == "cef_preference_manager_t":
+            proxyBase = " : CefPreferenceManager"
         else:
             raise Exception("Unknown base class type.")
-        body.append(('public sealed unsafe partial class %s' + proxyBase) % schema.cpp2csname(cls.get_name()))
+        body.append(('public ' + maybeSealedModifier + 'unsafe partial class %s' + proxyBase) % schema.cpp2csname(cls.get_name()))
         body.append('{')
         body.append( indent + ('\n' + indent + indent).join( make_proxy_g_body(cls) ) )
         body.append('}')
@@ -357,6 +383,23 @@ def make_proxy_g_body(cls):
     csname = schema.cpp2csname(cls.get_name())
     iname = schema.get_iname(cls)
 
+    isRefCountedImpl = cls.get_parent_capi_name() == "cef_base_ref_counted_t"
+    isScopedImpl = cls.get_parent_capi_name() == "cef_base_scoped_t"
+    isImpl = isRefCountedImpl or isScopedImpl
+    isRefCounted = get_top_base_class_name(cls) == "cef_base_ref_counted_t"
+
+    selfAccessor = "_self"
+    if not isImpl:
+        selfAccessor = "(%s*)_self" % iname
+
+    maybeNewKeyword = ""
+    if not isImpl:
+        maybeNewKeyword = "new "
+
+    privateOrProtected = "private"
+    if schema.is_abstract(cls):
+        privateOrProtected = "private protected"
+
     result = []
 
     # result.append('#if DEBUG')
@@ -380,27 +423,36 @@ def make_proxy_g_body(cls):
     result.append('')
 
     # private fields
-    result.append('private %s* _self;' % iname)
-    result.append('private int _disposed = 0;')
-    result.append('')
+    if isImpl:
+      result.append(privateOrProtected + ' %s* _self;' % iname)
+      result.append(privateOrProtected + ' int _disposed = 0;')
+      result.append('')
 
     isRefCounted = cls.get_parent_capi_name() == "cef_base_ref_counted_t"
     isScoped = cls.get_parent_capi_name() == "cef_base_scoped_t"
 
     # ctor
-    result.append('private %(csname)s(%(iname)s* ptr)' % { 'csname' : csname, 'iname' : iname })
-    result.append('{')
-    result.append(indent + 'if (ptr == null) throw new ArgumentNullException("ptr");')
-    result.append(indent + '_self = ptr;')
-    if isRefCounted:
-        result.append(indent + 'CefObjectTracker.Track(this);')
-    #
-    # todo: diagnostics code: Interlocked.Increment(ref _objCt);
-    #
-    result.append('}')
+    result.append(privateOrProtected + ' %(csname)s(%(iname)s* ptr)' % { 'csname' : csname, 'iname' : iname })
+    if isImpl:
+        result.append('{')
+        result.append(indent + 'if (ptr == null) throw new ArgumentNullException("ptr");')
+        result.append(indent + '_self = ptr;')
+        if isRefCountedImpl:
+            result.append(indent + 'CefObjectTracker.Track(this);')
+        #
+        # todo: diagnostics code: Interlocked.Increment(ref _objCt);
+        #
+        result.append('}')
+    else:
+        base_cls = cls.parent.get_class(cls.parent_name)
+        base_ptr_type = schema.get_iname(base_cls)
+        result.append('    : base((%s*)ptr) {}' % base_ptr_type)
     result.append('')
 
-    if isRefCounted:
+    if cls.get_parent_capi_name() == "cef_preference_manager_t":
+        # no-op
+        pass
+    elif isRefCountedImpl:
         # disposable
         result.append('~%s()' % csname)
         result.append('{')
@@ -447,7 +499,7 @@ def make_proxy_g_body(cls):
         result.append(indent + 'get { return %(iname)s.has_at_least_one_ref(_self) != 0; }' % { 'iname': iname })
         result.append('}')
         result.append('')
-    elif isScoped:
+    elif isScopedImpl:
         result.append("// FIXME: code for CefBaseScoped is not generated")
         result.append("")
     else:
@@ -460,11 +512,11 @@ def make_proxy_g_body(cls):
     # result.append('}')
     # result.append('')
 
-    result.append('internal %(iname)s* ToNative()' % { 'iname' : iname })
+    result.append('internal %(maybeNewKeyword)s%(iname)s* ToNative()' % { 'iname' : iname, 'maybeNewKeyword': maybeNewKeyword })
     result.append('{')
     if isRefCounted:
         result.append(indent + 'AddRef();')
-    result.append(indent + 'return _self;')
+    result.append(indent + 'return ' + selfAccessor + ';')
     result.append('}')
 
     return result
@@ -662,7 +714,7 @@ def make_impl_tmpl_file(cls):
 def make_proxy_impl_tmpl_body(cls):
     csname = schema.cpp2csname(cls.get_name())
     iname = schema.get_iname(cls)
-    funcs = get_funcs(cls, False)
+    funcs = get_funcs(cls, False, False)
     static_funcs = []
     for func in cls.get_static_funcs():
         static_funcs.append( get_func_parts(func, 0) )
@@ -795,12 +847,12 @@ def make_version_cs(content, api_hash_content):
 
 def __get_version_constant(content, name, platform = None):
     if platform is None:
-        m = re.search('^#define\s+' + name + '\s+(.*?)\n', content, re.MULTILINE)
+        m = re.search(r'^#define\s+' + name + r'\s+(.*?)\n', content, re.MULTILINE)
         if m is None:
             raise Exception('Could not find ' + name + ' constant.');
         value = m.group(1)
     else:
-        m = re.search('\n#e?l?if defined\(OS_' + platform + '\)\n+#define\s+' + name + '\s+(.*?)\n', content, re.DOTALL)
+        m = re.search(r'\n#e?l?if defined\(OS_' + platform + r'\)\n+#define\s+' + name + r'\s+(.*?)\n', content, re.DOTALL)
         if m is None:
             raise Exception('Could not find ' + name + ' constant.');
         value = m.group(1)
@@ -831,19 +883,19 @@ def write_interop(header, filepath, backup, schema_name, cppheaderdir):
 
     # libcef.g.cs
     writect += update_file(project_props_compile_items, filepath + '/' + schema.libcef_path, schema.libcef_filename, make_libcef_file(header), backup)
-    
+
     # wrapper
     for cls in header.get_classes():
         content = make_wrapper_g_file(cls)
         writect += update_file(project_props_compile_items, filepath + '/' + schema.wrapper_g_path, schema.cpp2csname(cls.get_name()) + ".g.cs", content, backup)
 
-    # userdata    
+    # userdata
     userdatacls = obj_class(header, 'CefUserData', '', 'CefUserData', 'CefBaseRefCounted', '', '', '', [])
     content = make_struct_file(userdatacls)
     writect += update_file(project_props_compile_items, filepath + '/' + schema.struct_path, userdatacls.get_capi_name() + ".g.cs", content, backup)
     content = make_wrapper_g_file(userdatacls)
     writect += update_file(project_props_compile_items, filepath + '/' + schema.wrapper_g_path, schema.cpp2csname(userdatacls.get_name()) + ".g.cs", content, backup)
-    
+
     # impl template
     for cls in header.get_classes():
         content = make_impl_tmpl_file(cls)
@@ -876,7 +928,7 @@ def make_props_file(filelist, basedir):
         compileElement = document.createElementNS(None, "Compile")
         compileElement.setAttribute("Include", x)
         itemGroupElement.appendChild(compileElement)
-      
+
     return documentElement.toprettyxml(indent = "    ", newl = "\n", encoding = None)
 
     # return "\n".join(list1)

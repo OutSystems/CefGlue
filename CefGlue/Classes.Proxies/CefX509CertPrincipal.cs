@@ -64,18 +64,6 @@
         }
 
         /// <summary>
-        /// Retrieve the list of street addresses.
-        /// </summary>
-        public string[] GetStreetAddresses()
-        {
-            cef_string_list* n_result = libcef.string_list_alloc();
-            cef_x509cert_principal_t.get_street_addresses(_self, n_result);
-            var result = cef_string_list.ToArray(n_result);
-            libcef.string_list_free(n_result);
-            return result;
-        }
-
-        /// <summary>
         /// Retrieve the list of organization names.
         /// </summary>
         public string[] GetOrganizationNames()
@@ -94,18 +82,6 @@
         {
             cef_string_list* n_result = libcef.string_list_alloc();
             cef_x509cert_principal_t.get_organization_unit_names(_self, n_result);
-            var result = cef_string_list.ToArray(n_result);
-            libcef.string_list_free(n_result);
-            return result;
-        }
-
-        /// <summary>
-        /// Retrieve the list of domain components.
-        /// </summary>
-        public string[] GetDomainComponents()
-        {
-            cef_string_list* n_result = libcef.string_list_alloc();
-            cef_x509cert_principal_t.get_domain_components(_self, n_result);
             var result = cef_string_list.ToArray(n_result);
             libcef.string_list_free(n_result);
             return result;

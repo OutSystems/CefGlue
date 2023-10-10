@@ -459,13 +459,13 @@ class CefV8Value : public virtual CefBaseRefCounted {
   /// Create a new CefV8Value object of type int.
   ///
   /*--cef()--*/
-  static CefRefPtr<CefV8Value> CreateInt(int32 value);
+  static CefRefPtr<CefV8Value> CreateInt(int32_t value);
 
   ///
   /// Create a new CefV8Value object of type unsigned int.
   ///
   /*--cef()--*/
-  static CefRefPtr<CefV8Value> CreateUInt(uint32 value);
+  static CefRefPtr<CefV8Value> CreateUInt(uint32_t value);
 
   ///
   /// Create a new CefV8Value object of type double.
@@ -535,6 +535,15 @@ class CefV8Value : public virtual CefBaseRefCounted {
   /*--cef()--*/
   static CefRefPtr<CefV8Value> CreateFunction(const CefString& name,
                                               CefRefPtr<CefV8Handler> handler);
+
+  ///
+  /// Create a new CefV8Value object of type Promise. This method should only be
+  /// called from within the scope of a CefRenderProcessHandler, CefV8Handler or
+  /// CefV8Accessor callback, or in combination with calling Enter() and Exit()
+  /// on a stored CefV8Context reference.
+  ///
+  /*--cef()--*/
+  static CefRefPtr<CefV8Value> CreatePromise();
 
   ///
   /// Returns true if the underlying handle is valid and it can be accessed on
@@ -617,6 +626,12 @@ class CefV8Value : public virtual CefBaseRefCounted {
   virtual bool IsFunction() = 0;
 
   ///
+  /// True if the value type is a Promise.
+  ///
+  /*--cef()--*/
+  virtual bool IsPromise() = 0;
+
+  ///
   /// Returns true if this object is pointing to the same handle as |that|
   /// object.
   ///
@@ -633,13 +648,13 @@ class CefV8Value : public virtual CefBaseRefCounted {
   /// Return an int value.
   ///
   /*--cef()--*/
-  virtual int32 GetIntValue() = 0;
+  virtual int32_t GetIntValue() = 0;
 
   ///
   /// Return an unsigned int value.
   ///
   /*--cef()--*/
-  virtual uint32 GetUIntValue() = 0;
+  virtual uint32_t GetUIntValue() = 0;
 
   ///
   /// Return a double value.
@@ -893,6 +908,29 @@ class CefV8Value : public virtual CefBaseRefCounted {
       CefRefPtr<CefV8Context> context,
       CefRefPtr<CefV8Value> object,
       const CefV8ValueList& arguments) = 0;
+
+  // PROMISE METHODS - These methods are only available on Promises.
+
+  ///
+  /// Resolve the Promise using the current V8 context. This method should only
+  /// be called from within the scope of a CefV8Handler or CefV8Accessor
+  /// callback, or in combination with calling Enter() and Exit() on a stored
+  /// CefV8Context reference. |arg| is the argument passed to the resolved
+  /// promise. Returns true on success. Returns false if this method is called
+  /// incorrectly or an exception is thrown.
+  ///
+  /*--cef(optional_param=arg)--*/
+  virtual bool ResolvePromise(CefRefPtr<CefV8Value> arg) = 0;
+
+  ///
+  /// Reject the Promise using the current V8 context. This method should only
+  /// be called from within the scope of a CefV8Handler or CefV8Accessor
+  /// callback, or in combination with calling Enter() and Exit() on a stored
+  /// CefV8Context reference. Returns true on success. Returns false if this
+  /// method is called incorrectly or an exception is thrown.
+  ///
+  /*--cef()--*/
+  virtual bool RejectPromise(const CefString& errorMsg) = 0;
 };
 
 ///

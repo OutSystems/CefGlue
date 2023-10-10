@@ -66,16 +66,28 @@ class CefDownloadItem : public virtual CefBaseRefCounted {
   virtual bool IsComplete() = 0;
 
   ///
-  /// Returns true if the download has been canceled or interrupted.
+  /// Returns true if the download has been canceled.
   ///
   /*--cef()--*/
   virtual bool IsCanceled() = 0;
 
   ///
+  /// Returns true if the download has been interrupted.
+  ///
+  /*--cef()--*/
+  virtual bool IsInterrupted() = 0;
+
+  ///
+  /// Returns the most recent interrupt reason.
+  ///
+  /*--cef(default_retval=CEF_DOWNLOAD_INTERRUPT_REASON_NONE)--*/
+  virtual cef_download_interrupt_reason_t GetInterruptReason() = 0;
+
+  ///
   /// Returns a simple speed estimate in bytes/s.
   ///
   /*--cef()--*/
-  virtual int64 GetCurrentSpeed() = 0;
+  virtual int64_t GetCurrentSpeed() = 0;
 
   ///
   /// Returns the rough percent complete or -1 if the receive total size is
@@ -88,13 +100,13 @@ class CefDownloadItem : public virtual CefBaseRefCounted {
   /// Returns the total number of bytes.
   ///
   /*--cef()--*/
-  virtual int64 GetTotalBytes() = 0;
+  virtual int64_t GetTotalBytes() = 0;
 
   ///
   /// Returns the number of received bytes.
   ///
   /*--cef()--*/
-  virtual int64 GetReceivedBytes() = 0;
+  virtual int64_t GetReceivedBytes() = 0;
 
   ///
   /// Returns the time that the download started.
@@ -118,7 +130,7 @@ class CefDownloadItem : public virtual CefBaseRefCounted {
   /// Returns the unique identifier for this download.
   ///
   /*--cef()--*/
-  virtual uint32 GetId() = 0;
+  virtual uint32_t GetId() = 0;
 
   ///
   /// Returns the URL.

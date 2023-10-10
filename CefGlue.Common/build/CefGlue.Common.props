@@ -13,7 +13,7 @@
     <PropertyGroup Condition="'$(RuntimeIdentifier)' == '' and $([MSBuild]::IsOSPlatform('OSX'))">
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">osx-x64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">osx-arm64</CefGlueTargetPlatform>
-        <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == ''">osx-x64</CefGlueTargetPlatform> <!-- fallback -->
+        <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == ''">osx-arm64</CefGlueTargetPlatform> <!-- fallback -->
     </PropertyGroup>
     
     <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
