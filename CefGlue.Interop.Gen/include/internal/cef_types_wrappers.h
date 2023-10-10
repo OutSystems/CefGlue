@@ -408,6 +408,7 @@ struct CefSettingsTraits {
     cef_string_set(src->log_file.str, src->log_file.length, &target->log_file,
                    copy);
     target->log_severity = src->log_severity;
+    target->log_items = src->log_items;
     cef_string_set(src->javascript_flags.str, src->javascript_flags.length,
                    &target->javascript_flags, copy);
 
@@ -679,6 +680,8 @@ struct CefPdfPrintSettingsTraits {
                    &target->header_template, copy);
     cef_string_set(src->footer_template.str, src->footer_template.length,
                    &target->footer_template, copy);
+
+    target->generate_tagged_pdf = src->generate_tagged_pdf;
   }
 };
 
