@@ -62,7 +62,6 @@
         <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="buildTransitive\CefGlue.Common$(PackageSuffix).targets" />
     </ItemGroup>
 
-    
     <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
         <ItemGroup>
             <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
