@@ -37,5 +37,9 @@
     <!-- OSX -->
     <Message Text="Publishing CefGlue.BrowserProcess on MacOS ($(Platform))..." Importance="High" />
     <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)osx-$(ArchitectureConfig)" />
+
+    <!-- LINUX -->
+    <Message Text="Publishing CefGlue.BrowserProcess on Linux ($(Platform))..." Importance="High" />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)linux-$(ArchitectureConfig)" />
   </Target>
 </Project>
