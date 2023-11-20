@@ -3,7 +3,7 @@
         <CefGlueBrowserProcessDir>CefGlueBrowserProcess</CefGlueBrowserProcessDir>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'linux'">
+    <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'linux-x64'">
             <None Include="@(CefRedistLinux64)">
                 <Visible>false</Visible>
                 <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
