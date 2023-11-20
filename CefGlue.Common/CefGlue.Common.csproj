@@ -74,8 +74,8 @@
                 <PackagePath>bin\osx-$(ArchitectureConfig)</PackagePath>
             </TfmSpecificPackageFile>
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\linux-x64\publish\**\*">
-                <PackagePath>bin\linux</PackagePath>
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\linux-$(ArchitectureConfig)\publish\**\*">
+                <PackagePath>bin\linux-$(ArchitectureConfig)</PackagePath>
             </TfmSpecificPackageFile>
         </ItemGroup>
     </Target>
