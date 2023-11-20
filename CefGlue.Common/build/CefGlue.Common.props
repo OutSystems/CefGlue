@@ -17,7 +17,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(RuntimeIdentifier)' == '' and $([MSBuild]::IsOSPlatform('Linux'))">
-        <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">linux-x64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform>linux-x64</CefGlueTargetPlatform>
     </PropertyGroup>
     
     <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
