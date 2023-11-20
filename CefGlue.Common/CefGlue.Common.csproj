@@ -31,6 +31,7 @@
     <ItemGroup Condition="'$(Platform)' == 'x64'">
         <PackageReference PrivateAssets="None" Include="chromiumembeddedframework.runtime.win-x64" />
         <PackageReference PrivateAssets="None" Include="cef.redist.osx64" />
+        <PackageReference PrivateAssets="None" Include="cef.redist.linux64" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Platform)' == 'ARM64'">
@@ -61,6 +62,7 @@
         <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="buildTransitive\CefGlue.Common$(PackageSuffix).targets" />
     </ItemGroup>
 
+    
     <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
         <ItemGroup>
             <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
@@ -72,6 +74,11 @@
             <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\osx-$(ArchitectureConfig)\publish\**\*">
                 <PackagePath>bin\osx-$(ArchitectureConfig)</PackagePath>
             </TfmSpecificPackageFile>
+
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Configuration)\$(DotnetVersion)\linux-x64\publish\**\*">
+                <PackagePath>bin\linux</PackagePath>
+            </TfmSpecificPackageFile>
+            
         </ItemGroup>
     </Target>
 
