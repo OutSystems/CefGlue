@@ -39,3 +39,4 @@ packages/
 CefGlue.Interop.Gen/Classes.Handlers.tmpl/
 CefGlue.Interop.Gen/Classes.Proxies.tmpl/
 **/.DS_Store
+Nuget/output/*
