@@ -67,7 +67,7 @@ namespace Xilium.CefGlue.Common
                     }
 
                     settings.NoSandbox = true;
-                    settings.WindowlessRenderingEnabled = true;
+                    settings.WindowlessRenderingEnabled = false;
                     settings.MultiThreadedMessageLoop = true;
                     settings.ExternalMessagePump = false;
                     settings.ResourcesDirPath = basePath;
