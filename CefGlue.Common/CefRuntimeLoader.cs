@@ -60,9 +60,11 @@ namespace Xilium.CefGlue.Common
                     break;
                 
                 case CefRuntimePlatform.Linux:
-                    string localesPath = Path.Combine(basePath, "locales");
+                    var localesPath = Path.Combine(basePath, "locales");
                     if (Directory.Exists(localesPath))
+                    {
                         settings.LocalesDirPath = localesPath;
+                    }
 
                     settings.NoSandbox = true;
                     // settings.WindowlessRenderingEnabled = false;
