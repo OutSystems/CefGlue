@@ -64,12 +64,7 @@ namespace Xilium.CefGlue.Common
                     if (Directory.Exists(localesPath))
                         settings.LocalesDirPath = localesPath;
 
-                    // Note from haltroy: AFAIK CEF won't work with sandbox on
-                    // Linux but since you guys insisted to remove this line,
-                    // I'm just gonna comment these out in case if these actually
-                    // help fix a problem in the future.
-
-                    // settings.NoSandbox = true;
+                    settings.NoSandbox = true;
                     // settings.WindowlessRenderingEnabled = false;
 
                     settings.MultiThreadedMessageLoop = true;
