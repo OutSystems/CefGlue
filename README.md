@@ -8,7 +8,7 @@ The Avalonia implementation runs on Windows, Linux and macOS.
 | Arch     | Windows | macOS | Linux |
 | -------- | ------- | ----- | ----- |
 | x64      |    x    |   x   |   x   |
-| AMD64    |    x    |   x   |   -   |
+| ARM64    |    x    |   x   |   -   |
 
 | Framework | Windows | macOS | Linux |
 | --------- | ------- | ----- | ----- |
