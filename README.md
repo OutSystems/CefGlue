@@ -5,7 +5,15 @@ CefGlue lets you embed Chromium in .NET apps. It is a .NET wrapper control aroun
 It can be used from C# or any other CLR language and provides both Avalonia and WPF web browser control implementations.
 The Avalonia implementation runs on Windows, Linux and macOS.
 
-Currently only x64 and ARM64 architectures are supported on Windows and macOS and only x64 architecture is supported on Linux.
+| Arch     | Windows | macOS | Linux |
+| -------- | ------- | ----- | ----- |
+| x64      |    x    |   x   |   x   |
+| AMD64    |    x    |   x   |   -   |
+
+| Framework | Windows | macOS | Linux |
+| --------- | ------- | ----- | ----- |
+| Avalonia  |    x    |   x   |   x   |
+| WPF       |    x    |   -   |   -   |
  
 ## Releases
 Stable binaries are released on NuGet, and contain everything you need to embed Chromium in your .NET/CLR application. 
