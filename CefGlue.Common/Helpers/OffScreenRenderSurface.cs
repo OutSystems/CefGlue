@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO.MemoryMappedFiles;
 using System.Threading.Tasks;
 
@@ -9,7 +9,7 @@ namespace Xilium.CefGlue.Common.Helpers
     /// </summary>
     internal abstract class OffScreenRenderSurface : IDisposable
     {
-        private const int DefaultDpi = 96;
+        protected const int DefaultDpi = 96;
 
         private int _width;
         private int _height;
@@ -31,9 +31,9 @@ namespace Xilium.CefGlue.Common.Helpers
 
         public int Height => _height;
 
-        public int ScaledWidth => (int)(DeviceScaleFactor * _width);
+        public int ScaledWidth => (int)Math.Ceiling(DeviceScaleFactor * _width);
 
-        public int ScaledHeight => (int)(DeviceScaleFactor * _height);
+        public int ScaledHeight => (int)Math.Ceiling(DeviceScaleFactor * _height);
 
         public float DeviceScaleFactor { get; set; } = 1;
 

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using System;
+using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Avalonia
@@ -48,7 +48,8 @@ namespace Xilium.CefGlue.Avalonia
         {
             // TODO handle transparency
             _bitmap?.Dispose();
-            _bitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(Dpi, Dpi), PixelFormat.Bgra8888, AlphaFormat.Opaque);
+            // width & height are full resolution via actual Dpi then output is scaled in Viewbox container
+            _bitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(DefaultDpi, DefaultDpi), PixelFormat.Bgra8888, AlphaFormat.Opaque);
             Image.Source = _bitmap;
         }
 
