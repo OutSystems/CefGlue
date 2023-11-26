@@ -221,8 +221,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         private void OnHostWindowBoundsChanged(AvaloniaPropertyChangedEventArgs e)
         {
-            if (e.Sender is not Visual v ||
-                v.GetVisualRoot() is not IRenderRoot rr)
+            if (_control.GetVisualRoot() is not IRenderRoot rr)
             {
                 return;
             }
