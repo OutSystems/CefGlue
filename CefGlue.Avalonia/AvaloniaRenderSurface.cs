@@ -48,8 +48,7 @@ namespace Xilium.CefGlue.Avalonia
         {
             // TODO handle transparency
             _bitmap?.Dispose();
-            // width & height are full resolution via actual Dpi then output is scaled in Viewbox container
-            _bitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(DefaultDpi, DefaultDpi), PixelFormat.Bgra8888, AlphaFormat.Opaque);
+            _bitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(DefaultDpi, DefaultDpi), PixelFormat.Bgra8888, AlphaFormat.Premul);
             Image.Source = _bitmap;
         }
 
