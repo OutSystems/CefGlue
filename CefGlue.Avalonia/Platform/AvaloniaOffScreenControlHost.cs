@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -8,6 +6,8 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using System;
+using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 
@@ -193,12 +193,11 @@ namespace Xilium.CefGlue.Avalonia.Platform
             if (e.Root is Window newWindow)
             {
                 _windowStateChangedObservable = newWindow.GetPropertyChangedObservable(Window.WindowStateProperty).Subscribe(OnHostWindowStateChanged);
-
-                if (e.Root.RenderScaling != RenderSurface.DeviceScaleFactor)
-                {
-                    RenderSurface.DeviceScaleFactor = (float)e.Root.RenderScaling;
-                    ScreenInfoChanged?.Invoke(RenderSurface.DeviceScaleFactor);
-                }
+            }
+            if (e.Root.RenderScaling != RenderSurface.DeviceScaleFactor)
+            {
+                RenderSurface.DeviceScaleFactor = (float)e.Root.RenderScaling;
+                ScreenInfoChanged?.Invoke(RenderSurface.DeviceScaleFactor);
             }
         }
 
