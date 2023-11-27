@@ -1,4 +1,6 @@
-﻿using Avalonia;
+﻿using System;
+using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -6,8 +8,6 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Threading;
-using System;
-using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 
@@ -66,10 +66,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
             control.AddHandler(DragDrop.DragOverEvent, OnDragOver);
             control.AddHandler(DragDrop.DropEvent, OnDrop);
 
-            control.AddHandler(Control.KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
-            control.AddHandler(Control.KeyUpEvent, OnKeyUp, RoutingStrategies.Tunnel);
-            //control.KeyDown += OnKeyDown;
-            //control.KeyUp += OnKeyUp;
+            control.KeyDown += OnKeyDown;
+            control.KeyUp += OnKeyUp;
             control.TextInput += OnTextInput;
 
             var image = CreateImage();
