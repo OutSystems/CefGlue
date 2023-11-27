@@ -1,10 +1,10 @@
-﻿using Avalonia;
+using System;
+using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
-using System;
-using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Helpers;
 
 namespace Xilium.CefGlue.Avalonia
