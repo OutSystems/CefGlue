@@ -71,13 +71,13 @@ namespace Xilium.CefGlue.Avalonia.Platform
             control.TextInput += OnTextInput;
 
             var image = CreateImage();
-            var vb = new Viewbox()
+            var viewbox = new Viewbox()
             {
                 Child = image,
                 Stretch = Stretch.Fill,
                 StretchDirection = StretchDirection.Both
             };
-            SetContent(vb);
+            SetContent(viewbox);
             RenderSurface = new AvaloniaRenderSurface(image);
         }
 
@@ -215,7 +215,6 @@ namespace Xilium.CefGlue.Avalonia.Platform
                     break;
             }
         }
-
 
         protected virtual Visual MousePositionReferential => _control;
 
