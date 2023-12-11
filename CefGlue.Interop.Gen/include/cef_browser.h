@@ -396,17 +396,40 @@ class CefBrowserHost : public virtual CefBaseRefCounted {
   virtual CefRefPtr<CefRequestContext> GetRequestContext() = 0;
 
   ///
-  /// Get the current zoom level. The default zoom level is 0.0. This method can
-  /// only be called on the UI thread.
+  /// Returns true if this browser can execute the specified zoom command. This
+  /// method can only be called on the UI thread.
+  ///
+  /*--cef()--*/
+  virtual bool CanZoom(cef_zoom_command_t command) = 0;
+
+  ///
+  /// Execute a zoom command in this browser. If called on the UI thread the
+  /// change will be applied immediately. Otherwise, the change will be applied
+  /// asynchronously on the UI thread.
+  ///
+  /*--cef()--*/
+  virtual void Zoom(cef_zoom_command_t command) = 0;
+
+  ///
+  /// Get the default zoom level. This value will be 0.0 by default but can be
+  /// configured with the Chrome runtime. This method can only be called on the
+  /// UI thread.
+  ///
+  /*--cef()--*/
+  virtual double GetDefaultZoomLevel() = 0;
+
+  ///
+  /// Get the current zoom level. This method can only be called on the UI
+  /// thread.
   ///
   /*--cef()--*/
   virtual double GetZoomLevel() = 0;
 
   ///
   /// Change the zoom level to the specified value. Specify 0.0 to reset the
-  /// zoom level. If called on the UI thread the change will be applied
-  /// immediately. Otherwise, the change will be applied asynchronously on the
-  /// UI thread.
+  /// zoom level to the default. If called on the UI thread the change will be
+  /// applied immediately. Otherwise, the change will be applied asynchronously
+  /// on the UI thread.
   ///
   /*--cef()--*/
   virtual void SetZoomLevel(double zoomLevel) = 0;
@@ -941,6 +964,48 @@ class CefBrowserHost : public virtual CefBaseRefCounted {
   ///
   /*--cef()--*/
   virtual bool IsAudioMuted() = 0;
+
+  ///
+  /// Returns true if the renderer is currently in browser fullscreen. This
+  /// differs from window fullscreen in that browser fullscreen is entered using
+  /// the JavaScript Fullscreen API and modifies CSS attributes such as the
+  /// ::backdrop pseudo-element and :fullscreen pseudo-class. This method can
+  /// only be called on the UI thread.
+  ///
+  /*--cef()--*/
+  virtual bool IsFullscreen() = 0;
+
+  ///
+  /// Requests the renderer to exit browser fullscreen. In most cases exiting
+  /// window fullscreen should also exit browser fullscreen. With the Alloy
+  /// runtime this method should be called in response to a user action such as
+  /// clicking the green traffic light button on MacOS
+  /// (CefWindowDelegate::OnWindowFullscreenTransition callback) or pressing the
+  /// "ESC" key (CefKeyboardHandler::OnPreKeyEvent callback). With the Chrome
+  /// runtime these standard exit actions are handled internally but
+  /// new/additional user actions can use this method. Set |will_cause_resize|
+  /// to true if exiting browser fullscreen will cause a view resize.
+  ///
+  /*--cef()--*/
+  virtual void ExitFullscreen(bool will_cause_resize) = 0;
+
+  ///
+  /// Returns true if a Chrome command is supported and enabled. Values for
+  /// |command_id| can be found in the cef_command_ids.h file. This method can
+  /// only be called on the UI thread. Only used with the Chrome runtime.
+  ///
+  /*--cef()--*/
+  virtual bool CanExecuteChromeCommand(int command_id) = 0;
+
+  ///
+  /// Execute a Chrome command. Values for |command_id| can be found in the
+  /// cef_command_ids.h file. |disposition| provides information about the
+  /// intended command target. Only used with the Chrome runtime.
+  ///
+  /*--cef()--*/
+  virtual void ExecuteChromeCommand(
+      int command_id,
+      cef_window_open_disposition_t disposition) = 0;
 };
 
 #endif  // CEF_INCLUDE_CEF_BROWSER_H_

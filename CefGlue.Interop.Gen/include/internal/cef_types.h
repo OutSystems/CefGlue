@@ -449,10 +449,9 @@ typedef struct _cef_settings_t {
 
   ///
   /// Comma delimited ordered list of language codes without any whitespace that
-  /// will be used in the "Accept-Language" HTTP header. May be overridden on a
-  /// per-browser basis using the CefBrowserSettings.accept_language_list value.
-  /// If both values are empty then "en-US,en" will be used. Can be overridden
-  /// for individual CefRequestContext instances via the
+  /// will be used in the "Accept-Language" HTTP request header and
+  /// "navigator.language" JS attribute. Can be overridden for individual
+  /// CefRequestContext instances via the
   /// CefRequestContextSettings.accept_language_list value.
   ///
   cef_string_t accept_language_list;
@@ -470,6 +469,21 @@ typedef struct _cef_settings_t {
   ///
   cef_string_t cookieable_schemes_list;
   int cookieable_schemes_exclude_defaults;
+
+  ///
+  /// Specify an ID to enable Chrome policy management via Platform and OS-user
+  /// policies. On Windows, this is a registry key like
+  /// "SOFTWARE\\Policies\\Google\\Chrome". On MacOS, this is a bundle ID like
+  /// "com.google.Chrome". On Linux, this is an absolute directory path like
+  /// "/etc/opt/chrome/policies". Only supported with the Chrome runtime. See
+  /// https://support.google.com/chrome/a/answer/9037717 for details.
+  ///
+  /// Chrome Browser Cloud Management integration, when enabled via the
+  /// "enable-chrome-browser-cloud-management" command-line flag, will also use
+  /// the specified ID. See https://support.google.com/chrome/a/answer/9116814
+  /// for details.
+  ///
+  cef_string_t chrome_policy_id;
 } cef_settings_t;
 
 ///
@@ -515,11 +529,11 @@ typedef struct _cef_request_context_settings_t {
 
   ///
   /// Comma delimited ordered list of language codes without any whitespace that
-  /// will be used in the "Accept-Language" HTTP header. Can be set globally
-  /// using the CefSettings.accept_language_list value or overridden on a per-
-  /// browser basis using the CefBrowserSettings.accept_language_list value. If
-  /// all values are empty then "en-US,en" will be used. This value will be
-  /// ignored if |cache_path| matches the CefSettings.cache_path value.
+  /// will be used in the "Accept-Language" HTTP request header and
+  /// "navigator.language" JS attribute. Can be set globally using the
+  /// CefSettings.accept_language_list value. If all values are empty then
+  /// "en-US,en" will be used. This value will be ignored if |cache_path|
+  /// matches the CefSettings.cache_path value.
   ///
   cef_string_t accept_language_list;
 
@@ -674,19 +688,17 @@ typedef struct _cef_browser_settings_t {
   cef_color_t background_color;
 
   ///
-  /// Comma delimited ordered list of language codes without any whitespace that
-  /// will be used in the "Accept-Language" HTTP header. May be set globally
-  /// using the CefSettings.accept_language_list value. If both values are
-  /// empty then "en-US,en" will be used.
-  ///
-  cef_string_t accept_language_list;
-
-  ///
   /// Controls whether the Chrome status bubble will be used. Only supported
   /// with the Chrome runtime. For details about the status bubble see
   /// https://www.chromium.org/user-experience/status-bubble/
   ///
   cef_state_t chrome_status_bubble;
+
+  ///
+  /// Controls whether the Chrome zoom bubble will be shown when zooming. Only
+  /// supported with the Chrome runtime.
+  ///
+  cef_state_t chrome_zoom_bubble;
 } cef_browser_settings_t;
 
 ///
@@ -992,52 +1004,52 @@ typedef enum {
 /// renumbered.
 ///
 typedef enum {
-  WOD_UNKNOWN,
+  CEF_WOD_UNKNOWN,
 
   ///
   /// Current tab. This is the default in most cases.
   ///
-  WOD_CURRENT_TAB,
+  CEF_WOD_CURRENT_TAB,
 
   ///
   /// Indicates that only one tab with the url should exist in the same window.
   ///
-  WOD_SINGLETON_TAB,
+  CEF_WOD_SINGLETON_TAB,
 
   ///
   /// Shift key + Middle mouse button or meta/ctrl key while clicking.
   ///
-  WOD_NEW_FOREGROUND_TAB,
+  CEF_WOD_NEW_FOREGROUND_TAB,
 
   ///
   /// Middle mouse button or meta/ctrl key while clicking.
   ///
-  WOD_NEW_BACKGROUND_TAB,
+  CEF_WOD_NEW_BACKGROUND_TAB,
 
   ///
   /// New popup window.
   ///
-  WOD_NEW_POPUP,
+  CEF_WOD_NEW_POPUP,
 
   ///
   /// Shift key while clicking.
   ///
-  WOD_NEW_WINDOW,
+  CEF_WOD_NEW_WINDOW,
 
   ///
   /// Alt key while clicking.
   ///
-  WOD_SAVE_TO_DISK,
+  CEF_WOD_SAVE_TO_DISK,
 
   ///
   /// New off-the-record (incognito) window.
   ///
-  WOD_OFF_THE_RECORD,
+  CEF_WOD_OFF_THE_RECORD,
 
   ///
   /// Special case error condition from the renderer.
   ///
-  WOD_IGNORE_ACTION,
+  CEF_WOD_IGNORE_ACTION,
 
   ///
   /// Activates an existing tab containing the url, rather than navigating.
@@ -1047,12 +1059,14 @@ typedef enum {
   /// no session history; and behaves like CURRENT_TAB instead of
   /// NEW_FOREGROUND_TAB when no existing tab is found.
   ///
-  WOD_SWITCH_TO_TAB,
+  CEF_WOD_SWITCH_TO_TAB,
 
   ///
   /// Creates a new document picture-in-picture window showing a child WebView.
   ///
-  WOD_NEW_PICTURE_IN_PICTURE,
+  CEF_WOD_NEW_PICTURE_IN_PICTURE,
+
+  CEF_WOD_MAX_VALUE = CEF_WOD_NEW_PICTURE_IN_PICTURE,
 } cef_window_open_disposition_t;
 
 ///
@@ -2282,6 +2296,46 @@ typedef enum {
   DOM_NODE_TYPE_DOCUMENT_TYPE,
   DOM_NODE_TYPE_DOCUMENT_FRAGMENT,
 } cef_dom_node_type_t;
+
+///
+/// DOM form control types. Should be kept in sync with Chromium's
+/// blink::mojom::FormControlType type.
+///
+typedef enum {
+  DOM_FORM_CONTROL_TYPE_UNSUPPORTED = 0,
+  DOM_FORM_CONTROL_TYPE_BUTTON_BUTTON,
+  DOM_FORM_CONTROL_TYPE_BUTTON_SUBMIT,
+  DOM_FORM_CONTROL_TYPE_BUTTON_RESET,
+  DOM_FORM_CONTROL_TYPE_BUTTON_SELECT_LIST,
+  DOM_FORM_CONTROL_TYPE_FIELDSET,
+  DOM_FORM_CONTROL_TYPE_INPUT_BUTTON,
+  DOM_FORM_CONTROL_TYPE_INPUT_CHECKBOX,
+  DOM_FORM_CONTROL_TYPE_INPUT_COLOR,
+  DOM_FORM_CONTROL_TYPE_INPUT_DATE,
+  DOM_FORM_CONTROL_TYPE_INPUT_DATETIME_LOCAL,
+  DOM_FORM_CONTROL_TYPE_INPUT_EMAIL,
+  DOM_FORM_CONTROL_TYPE_INPUT_FILE,
+  DOM_FORM_CONTROL_TYPE_INPUT_HIDDEN,
+  DOM_FORM_CONTROL_TYPE_INPUT_IMAGE,
+  DOM_FORM_CONTROL_TYPE_INPUT_MONTH,
+  DOM_FORM_CONTROL_TYPE_INPUT_NUMBER,
+  DOM_FORM_CONTROL_TYPE_INPUT_PASSWORD,
+  DOM_FORM_CONTROL_TYPE_INPUT_RADIO,
+  DOM_FORM_CONTROL_TYPE_INPUT_RANGE,
+  DOM_FORM_CONTROL_TYPE_INPUT_RESET,
+  DOM_FORM_CONTROL_TYPE_INPUT_SEARCH,
+  DOM_FORM_CONTROL_TYPE_INPUT_SUBMIT,
+  DOM_FORM_CONTROL_TYPE_INPUT_TELEPHONE,
+  DOM_FORM_CONTROL_TYPE_INPUT_TEXT,
+  DOM_FORM_CONTROL_TYPE_INPUT_TIME,
+  DOM_FORM_CONTROL_TYPE_INPUT_URL,
+  DOM_FORM_CONTROL_TYPE_INPUT_WEEK,
+  DOM_FORM_CONTROL_TYPE_OUTPUT,
+  DOM_FORM_CONTROL_TYPE_SELECT_ONE,
+  DOM_FORM_CONTROL_TYPE_SELECT_MULTIPLE,
+  DOM_FORM_CONTROL_TYPE_SELECT_LIST,
+  DOM_FORM_CONTROL_TYPE_TEXT_AREA,
+} cef_dom_form_control_type_t;
 
 ///
 /// Supported file dialog modes.
@@ -3659,6 +3713,15 @@ typedef enum {
   CEF_GESTURE_COMMAND_BACK,
   CEF_GESTURE_COMMAND_FORWARD,
 } cef_gesture_command_t;
+
+///
+/// Specifies the zoom commands supported by CefBrowserHost::Zoom.
+///
+typedef enum {
+  CEF_ZOOM_COMMAND_OUT,
+  CEF_ZOOM_COMMAND_RESET,
+  CEF_ZOOM_COMMAND_IN,
+} cef_zoom_command_t;
 
 #ifdef __cplusplus
 }
