@@ -72,5 +72,7 @@ namespace Xilium.CefGlue
         /// Creates a new document picture-in-picture window showing a child WebView.
         /// </summary>
         NewPictureInPicture,
+
+        MaxValue = NewPictureInPicture
     }
 }

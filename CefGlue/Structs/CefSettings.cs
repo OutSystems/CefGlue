@@ -290,6 +290,21 @@
 
         public bool CookieableSchemesExcludeDefaults { get; set; }
 
+        /// <summary>
+        /// Specify an ID to enable Chrome policy management via Platform and OS-user
+        /// policies. On Windows, this is a registry key like
+        /// "SOFTWARE\\Policies\\Google\\Chrome". On MacOS, this is a bundle ID like
+        /// "com.google.Chrome". On Linux, this is an absolute directory path like
+        /// "/etc/opt/chrome/policies". Only supported with the Chrome runtime. See
+        /// https://support.google.com/chrome/a/answer/9037717 for details.
+        ///
+        /// Chrome Browser Cloud Management integration, when enabled via the
+        /// "enable-chrome-browser-cloud-management" command-line flag, will also use
+        /// the specified ID. See https://support.google.com/chrome/a/answer/9116814
+        /// for details.
+        /// </summary>
+        public string ChromePolicyId { get; set; }
+
         internal cef_settings_t* ToNative()
         {
             var ptr = cef_settings_t.Alloc();
@@ -321,6 +336,7 @@
             cef_string_t.Copy(AcceptLanguageList, &ptr->accept_language_list);
             cef_string_t.Copy(CookieableSchemesList, &ptr->cookieable_schemes_list);
             ptr->cookieable_schemes_exclude_defaults = CookieableSchemesExcludeDefaults ? 1 : 0;
+            cef_string_t.Copy(ChromePolicyId, &ptr->chrome_policy_id);
             return ptr;
         }
 

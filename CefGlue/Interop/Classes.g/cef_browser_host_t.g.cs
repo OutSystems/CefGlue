@@ -170,13 +170,13 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int can_zoom_delegate(cef_browser_host_t* self, cef_zoom_command_t command);
+        private delegate int can_zoom_delegate(cef_browser_host_t* self, CefZoomCommand command);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void zoom_delegate(cef_browser_host_t* self, cef_zoom_command_t command);
+        private delegate void zoom_delegate(cef_browser_host_t* self, CefZoomCommand command);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -733,7 +733,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pd;
         private static can_zoom_delegate _dd;
         
-        public static int can_zoom(cef_browser_host_t* self, cef_zoom_command_t command)
+        public static int can_zoom(cef_browser_host_t* self, CefZoomCommand command)
         {
             can_zoom_delegate d;
             var p = self->_can_zoom;
@@ -750,7 +750,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _pe;
         private static zoom_delegate _de;
         
-        public static void zoom(cef_browser_host_t* self, cef_zoom_command_t command)
+        public static void zoom(cef_browser_host_t* self, CefZoomCommand command)
         {
             zoom_delegate d;
             var p = self->_zoom;
