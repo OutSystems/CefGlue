@@ -27,6 +27,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_file_name;
         internal IntPtr _get_file_contents;
         internal IntPtr _get_file_names;
+        internal IntPtr _get_file_paths;
         internal IntPtr _set_link_url;
         internal IntPtr _set_link_title;
         internal IntPtr _set_link_metadata;
@@ -151,6 +152,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int get_file_names_delegate(cef_drag_data_t* self, cef_string_list* names);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate int get_file_paths_delegate(cef_drag_data_t* self, cef_string_list* paths);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -530,206 +537,223 @@ namespace Xilium.CefGlue.Interop
             return d(self, names);
         }
         
-        // SetLinkURL
+        // GetFilePaths
         private static IntPtr _p12;
-        private static set_link_url_delegate _d12;
+        private static get_file_paths_delegate _d12;
+        
+        public static int get_file_paths(cef_drag_data_t* self, cef_string_list* paths)
+        {
+            get_file_paths_delegate d;
+            var p = self->_get_file_paths;
+            if (p == _p12) { d = _d12; }
+            else
+            {
+                d = (get_file_paths_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_file_paths_delegate));
+                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
+            }
+            return d(self, paths);
+        }
+        
+        // SetLinkURL
+        private static IntPtr _p13;
+        private static set_link_url_delegate _d13;
         
         public static void set_link_url(cef_drag_data_t* self, cef_string_t* url)
         {
             set_link_url_delegate d;
             var p = self->_set_link_url;
-            if (p == _p12) { d = _d12; }
+            if (p == _p13) { d = _d13; }
             else
             {
                 d = (set_link_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_link_url_delegate));
-                if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
+                if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
             }
             d(self, url);
         }
         
         // SetLinkTitle
-        private static IntPtr _p13;
-        private static set_link_title_delegate _d13;
+        private static IntPtr _p14;
+        private static set_link_title_delegate _d14;
         
         public static void set_link_title(cef_drag_data_t* self, cef_string_t* title)
         {
             set_link_title_delegate d;
             var p = self->_set_link_title;
-            if (p == _p13) { d = _d13; }
+            if (p == _p14) { d = _d14; }
             else
             {
                 d = (set_link_title_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_link_title_delegate));
-                if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
+                if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
             }
             d(self, title);
         }
         
         // SetLinkMetadata
-        private static IntPtr _p14;
-        private static set_link_metadata_delegate _d14;
+        private static IntPtr _p15;
+        private static set_link_metadata_delegate _d15;
         
         public static void set_link_metadata(cef_drag_data_t* self, cef_string_t* data)
         {
             set_link_metadata_delegate d;
             var p = self->_set_link_metadata;
-            if (p == _p14) { d = _d14; }
+            if (p == _p15) { d = _d15; }
             else
             {
                 d = (set_link_metadata_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_link_metadata_delegate));
-                if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
+                if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
             }
             d(self, data);
         }
         
         // SetFragmentText
-        private static IntPtr _p15;
-        private static set_fragment_text_delegate _d15;
+        private static IntPtr _p16;
+        private static set_fragment_text_delegate _d16;
         
         public static void set_fragment_text(cef_drag_data_t* self, cef_string_t* text)
         {
             set_fragment_text_delegate d;
             var p = self->_set_fragment_text;
-            if (p == _p15) { d = _d15; }
+            if (p == _p16) { d = _d16; }
             else
             {
                 d = (set_fragment_text_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_fragment_text_delegate));
-                if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
+                if (_p16 == IntPtr.Zero) { _d16 = d; _p16 = p; }
             }
             d(self, text);
         }
         
         // SetFragmentHtml
-        private static IntPtr _p16;
-        private static set_fragment_html_delegate _d16;
+        private static IntPtr _p17;
+        private static set_fragment_html_delegate _d17;
         
         public static void set_fragment_html(cef_drag_data_t* self, cef_string_t* html)
         {
             set_fragment_html_delegate d;
             var p = self->_set_fragment_html;
-            if (p == _p16) { d = _d16; }
+            if (p == _p17) { d = _d17; }
             else
             {
                 d = (set_fragment_html_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_fragment_html_delegate));
-                if (_p16 == IntPtr.Zero) { _d16 = d; _p16 = p; }
+                if (_p17 == IntPtr.Zero) { _d17 = d; _p17 = p; }
             }
             d(self, html);
         }
         
         // SetFragmentBaseURL
-        private static IntPtr _p17;
-        private static set_fragment_base_url_delegate _d17;
+        private static IntPtr _p18;
+        private static set_fragment_base_url_delegate _d18;
         
         public static void set_fragment_base_url(cef_drag_data_t* self, cef_string_t* base_url)
         {
             set_fragment_base_url_delegate d;
             var p = self->_set_fragment_base_url;
-            if (p == _p17) { d = _d17; }
+            if (p == _p18) { d = _d18; }
             else
             {
                 d = (set_fragment_base_url_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_fragment_base_url_delegate));
-                if (_p17 == IntPtr.Zero) { _d17 = d; _p17 = p; }
+                if (_p18 == IntPtr.Zero) { _d18 = d; _p18 = p; }
             }
             d(self, base_url);
         }
         
         // ResetFileContents
-        private static IntPtr _p18;
-        private static reset_file_contents_delegate _d18;
+        private static IntPtr _p19;
+        private static reset_file_contents_delegate _d19;
         
         public static void reset_file_contents(cef_drag_data_t* self)
         {
             reset_file_contents_delegate d;
             var p = self->_reset_file_contents;
-            if (p == _p18) { d = _d18; }
+            if (p == _p19) { d = _d19; }
             else
             {
                 d = (reset_file_contents_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(reset_file_contents_delegate));
-                if (_p18 == IntPtr.Zero) { _d18 = d; _p18 = p; }
+                if (_p19 == IntPtr.Zero) { _d19 = d; _p19 = p; }
             }
             d(self);
         }
         
         // AddFile
-        private static IntPtr _p19;
-        private static add_file_delegate _d19;
+        private static IntPtr _p1a;
+        private static add_file_delegate _d1a;
         
         public static void add_file(cef_drag_data_t* self, cef_string_t* path, cef_string_t* display_name)
         {
             add_file_delegate d;
             var p = self->_add_file;
-            if (p == _p19) { d = _d19; }
+            if (p == _p1a) { d = _d1a; }
             else
             {
                 d = (add_file_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(add_file_delegate));
-                if (_p19 == IntPtr.Zero) { _d19 = d; _p19 = p; }
+                if (_p1a == IntPtr.Zero) { _d1a = d; _p1a = p; }
             }
             d(self, path, display_name);
         }
         
         // ClearFilenames
-        private static IntPtr _p1a;
-        private static clear_filenames_delegate _d1a;
+        private static IntPtr _p1b;
+        private static clear_filenames_delegate _d1b;
         
         public static void clear_filenames(cef_drag_data_t* self)
         {
             clear_filenames_delegate d;
             var p = self->_clear_filenames;
-            if (p == _p1a) { d = _d1a; }
+            if (p == _p1b) { d = _d1b; }
             else
             {
                 d = (clear_filenames_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(clear_filenames_delegate));
-                if (_p1a == IntPtr.Zero) { _d1a = d; _p1a = p; }
+                if (_p1b == IntPtr.Zero) { _d1b = d; _p1b = p; }
             }
             d(self);
         }
         
         // GetImage
-        private static IntPtr _p1b;
-        private static get_image_delegate _d1b;
+        private static IntPtr _p1c;
+        private static get_image_delegate _d1c;
         
         public static cef_image_t* get_image(cef_drag_data_t* self)
         {
             get_image_delegate d;
             var p = self->_get_image;
-            if (p == _p1b) { d = _d1b; }
-            else
-            {
-                d = (get_image_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_image_delegate));
-                if (_p1b == IntPtr.Zero) { _d1b = d; _p1b = p; }
-            }
-            return d(self);
-        }
-        
-        // GetImageHotspot
-        private static IntPtr _p1c;
-        private static get_image_hotspot_delegate _d1c;
-        
-        public static cef_point_t get_image_hotspot(cef_drag_data_t* self)
-        {
-            get_image_hotspot_delegate d;
-            var p = self->_get_image_hotspot;
             if (p == _p1c) { d = _d1c; }
             else
             {
-                d = (get_image_hotspot_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_image_hotspot_delegate));
+                d = (get_image_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_image_delegate));
                 if (_p1c == IntPtr.Zero) { _d1c = d; _p1c = p; }
             }
             return d(self);
         }
         
-        // HasImage
+        // GetImageHotspot
         private static IntPtr _p1d;
-        private static has_image_delegate _d1d;
+        private static get_image_hotspot_delegate _d1d;
+        
+        public static cef_point_t get_image_hotspot(cef_drag_data_t* self)
+        {
+            get_image_hotspot_delegate d;
+            var p = self->_get_image_hotspot;
+            if (p == _p1d) { d = _d1d; }
+            else
+            {
+                d = (get_image_hotspot_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_image_hotspot_delegate));
+                if (_p1d == IntPtr.Zero) { _d1d = d; _p1d = p; }
+            }
+            return d(self);
+        }
+        
+        // HasImage
+        private static IntPtr _p1e;
+        private static has_image_delegate _d1e;
         
         public static int has_image(cef_drag_data_t* self)
         {
             has_image_delegate d;
             var p = self->_has_image;
-            if (p == _p1d) { d = _d1d; }
+            if (p == _p1e) { d = _d1e; }
             else
             {
                 d = (has_image_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_image_delegate));
-                if (_p1d == IntPtr.Zero) { _d1d = d; _p1d = p; }
+                if (_p1e == IntPtr.Zero) { _d1e = d; _p1e = p; }
             }
             return d(self);
         }
