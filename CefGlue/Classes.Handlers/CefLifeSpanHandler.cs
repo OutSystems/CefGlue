@@ -92,6 +92,61 @@
             OnAfterCreated(m_browser);
         }
 
+        private void on_before_dev_tools_popup(cef_life_span_handler_t* self, cef_browser_t* browser, cef_window_info_t* windowInfo, cef_client_t** client, cef_browser_settings_t* settings, cef_dictionary_value_t** extra_info, int* use_default_window)
+        {
+            CheckSelf(self);
+
+            var m_browser = CefBrowser.FromNative(browser);
+            var m_windowInfo = CefWindowInfo.FromNative(windowInfo);
+            var m_client = CefClient.FromNative(*client);
+            var m_settings = new CefBrowserSettings(settings);
+            var m_extraInfo = CefDictionaryValue.FromNativeOrNull(*extra_info);  // TODO dispose?
+            var m_useDefaultWindow = (*use_default_window) != 0;
+
+            var o_extraInfo = m_extraInfo;
+            var o_client = m_client;
+
+            OnBeforeDevToolsPopup(m_browser, m_windowInfo, ref m_client, m_settings, ref m_extraInfo, ref m_useDefaultWindow);
+
+            if ((object)o_client != m_client && m_client != null)
+            {
+                *client = m_client.ToNative();
+            }
+
+            if ((object)o_extraInfo != m_extraInfo)
+            {
+                *extra_info = m_extraInfo != null ? m_extraInfo.ToNative() : null;
+            }
+            
+            *use_default_window = m_useDefaultWindow ? 1 : 0;
+
+            m_windowInfo.Dispose();
+            m_settings.Dispose();
+        }
+
+        /// <summary>
+        /// Called on the UI thread before a new DevTools popup browser is created.
+        /// The |browser| value represents the source of the popup request. Optionally
+        /// modify |windowInfo|, |client|, |settings| and |extra_info| values. The
+        /// |client|, |settings| and |extra_info| values will default to the source
+        /// browser's values. Any modifications to |windowInfo| will be ignored if the
+        /// parent browser is Views-hosted (wrapped in a CefBrowserView).
+        ///
+        /// The |extra_info| parameter provides an opportunity to specify extra
+        /// information specific to the created popup browser that will be passed to
+        /// CefRenderProcessHandler::OnBrowserCreated() in the render process. The
+        /// existing |extra_info| object, if any, will be read-only but may be
+        /// replaced with a new object.
+        ///
+        /// Views-hosted source browsers will create Views-hosted DevTools popups
+        /// unless |use_default_window| is set to to true. DevTools popups can be
+        /// blocked by returning true from CefCommandHandler::OnChromeCommand for
+        /// IDC_DEV_TOOLS. Only used with the Chrome runtime.
+        /// </summary>
+        protected virtual void OnBeforeDevToolsPopup(CefBrowser browser, CefWindowInfo windowInfo, ref CefClient client, CefBrowserSettings settings, ref CefDictionaryValue extraInfo, ref bool useDefaultWindow)
+        {
+        }
+
         /// <summary>
         /// Called after a new browser is created. It is now safe to begin performing
         /// actions with |browser|. CefFrameHandler callbacks related to initial main
@@ -221,61 +276,6 @@
         /// DoClose() documentation for additional usage information.
         /// </summary>
         protected virtual void OnBeforeClose(CefBrowser browser)
-        {
-        }
-
-        private void on_before_dev_tools_popup(cef_life_span_handler_t* self, cef_browser_t* browser, cef_window_info_t* windowInfo, cef_client_t** client, cef_browser_settings_t* settings, cef_dictionary_value_t** extra_info, int* use_default_window)
-        {
-            CheckSelf(self);
-
-            var m_browser = CefBrowser.FromNative(browser);
-            var m_windowInfo = CefWindowInfo.FromNative(windowInfo);
-            var m_client = CefClient.FromNative(*client);
-            var m_settings = new CefBrowserSettings(settings);
-            var m_extraInfo = CefDictionaryValue.FromNativeOrNull(*extra_info);  // TODO dispose?
-            var m_useDefaultWindow = (*use_default_window) != 0;
-
-            var o_extraInfo = m_extraInfo;
-            var o_client = m_client;
-
-            OnBeforeDevToolsPopup(m_browser, m_windowInfo, ref m_client, m_settings, ref m_extraInfo, ref m_useDefaultWindow);
-
-            if ((object)o_client != m_client && m_client != null)
-            {
-                *client = m_client.ToNative();
-            }
-
-            if ((object)o_extraInfo != m_extraInfo)
-            {
-                *extra_info = m_extraInfo != null ? m_extraInfo.ToNative() : null;
-            }
-            
-            *use_default_window = m_useDefaultWindow ? 1 : 0;
-
-            m_windowInfo.Dispose();
-            m_settings.Dispose();
-        }
-
-        /// <summary>
-        /// Called on the UI thread before a new DevTools popup browser is created.
-        /// The |browser| value represents the source of the popup request. Optionally
-        /// modify |windowInfo|, |client|, |settings| and |extra_info| values. The
-        /// |client|, |settings| and |extra_info| values will default to the source
-        /// browser's values. Any modifications to |windowInfo| will be ignored if the
-        /// parent browser is Views-hosted (wrapped in a CefBrowserView).
-        ///
-        /// The |extra_info| parameter provides an opportunity to specify extra
-        /// information specific to the created popup browser that will be passed to
-        /// CefRenderProcessHandler::OnBrowserCreated() in the render process. The
-        /// existing |extra_info| object, if any, will be read-only but may be
-        /// replaced with a new object.
-        ///
-        /// Views-hosted source browsers will create Views-hosted DevTools popups
-        /// unless |use_default_window| is set to to true. DevTools popups can be
-        /// blocked by returning true from CefCommandHandler::OnChromeCommand for
-        /// IDC_DEV_TOOLS. Only used with the Chrome runtime.
-        /// </summary>
-        protected virtual void OnBeforeDevToolsPopup(CefBrowser browser, CefWindowInfo windowInfo, ref CefClient client, CefBrowserSettings settings, ref CefDictionaryValue extraInfo, ref bool useDefaultWindow)
         {
         }
     }
