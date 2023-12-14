@@ -79,9 +79,9 @@
         /// Returns a pointer to the beginning of the memory block.
         /// The returned pointer is valid as long as the CefBinaryValue is alive.
         /// </summary>
-        public UIntPtr GetRawData()
+        public UIntPtr RawData
         {
-            return (UIntPtr)cef_binary_value_t.get_raw_data(_self);
+            get { return (UIntPtr)cef_binary_value_t.get_raw_data(_self); }
         }
 
         /// <summary>
