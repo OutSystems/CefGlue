@@ -305,6 +305,15 @@
         /// </summary>
         public string ChromePolicyId { get; set; }
 
+        /// <summary>
+        /// Specify an ID for an ICON resource that can be loaded from the main
+        /// executable and used when creating default Chrome windows such as DevTools
+        /// and Task Manager. If unspecified the default Chromium ICON (IDR_MAINFRAME
+        /// [101]) will be loaded from libcef.dll. Only supported with the Chrome
+        /// runtime on Windows.
+        /// </summary>
+        public int ChromeAppIconId { get; set; }
+
         internal cef_settings_t* ToNative()
         {
             var ptr = cef_settings_t.Alloc();
@@ -337,6 +346,7 @@
             cef_string_t.Copy(CookieableSchemesList, &ptr->cookieable_schemes_list);
             ptr->cookieable_schemes_exclude_defaults = CookieableSchemesExcludeDefaults ? 1 : 0;
             cef_string_t.Copy(ChromePolicyId, &ptr->chrome_policy_id);
+            ptr->chrome_app_icon_id = ChromeAppIconId;
             return ptr;
         }
 
