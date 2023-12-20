@@ -164,6 +164,10 @@ namespace Xilium.CefGlue.Common
 
         public CefBrowser Browser => _browser;
 
+        public double DefaultZoomLevel => BrowserHost?.GetDefaultZoomLevel() ?? 0.0;
+
+        public bool IsFullscreen => BrowserHost?.IsFullscreen() ?? false;
+
         private void NavigateTo(string url)
         {
             // Remove leading whitespace from the URL
@@ -312,6 +316,31 @@ namespace Xilium.CefGlue.Common
             }
 
             return true;
+        }
+
+        public bool CanZoom(CefZoomCommand command)
+        {
+            return BrowserHost?.CanZoom(command) ?? false;
+        }
+
+        public void Zoom(CefZoomCommand command)
+        {
+            BrowserHost?.Zoom(command);
+        }
+
+        public void ExitFullscreen(bool willCauseResize)
+        {
+            BrowserHost?.ExitFullscreen(willCauseResize);
+        }
+
+        public bool CanExecuteChromeCommand(int commandId)
+        {
+            return BrowserHost?.CanExecuteChromeCommand(commandId) ?? false;
+        }
+
+        public void ExecuteChromeCommand(int commandId, CefWindowOpenDisposition windowOpenDisposition)
+        {
+            BrowserHost?.ExecuteChromeCommand(commandId, windowOpenDisposition);
         }
 
         protected virtual CommonCefClient CreateCefClient()

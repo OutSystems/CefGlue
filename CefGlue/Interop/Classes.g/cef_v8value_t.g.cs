@@ -57,6 +57,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_array_length;
         internal IntPtr _get_array_buffer_release_callback;
         internal IntPtr _neuter_array_buffer;
+        internal IntPtr _get_array_buffer_byte_length;
+        internal IntPtr _get_array_buffer_data;
         internal IntPtr _get_function_name;
         internal IntPtr _get_function_handler;
         internal IntPtr _execute_function;
@@ -403,6 +405,18 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int neuter_array_buffer_delegate(cef_v8value_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate UIntPtr get_array_buffer_byte_length_delegate(cef_v8value_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void* get_array_buffer_data_delegate(cef_v8value_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -1256,104 +1270,138 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetFunctionName
+        // GetArrayBufferByteLength
         private static IntPtr _p30;
-        private static get_function_name_delegate _d30;
+        private static get_array_buffer_byte_length_delegate _d30;
         
-        public static cef_string_userfree* get_function_name(cef_v8value_t* self)
+        public static UIntPtr get_array_buffer_byte_length(cef_v8value_t* self)
         {
-            get_function_name_delegate d;
-            var p = self->_get_function_name;
+            get_array_buffer_byte_length_delegate d;
+            var p = self->_get_array_buffer_byte_length;
             if (p == _p30) { d = _d30; }
             else
             {
-                d = (get_function_name_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_function_name_delegate));
+                d = (get_array_buffer_byte_length_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_array_buffer_byte_length_delegate));
                 if (_p30 == IntPtr.Zero) { _d30 = d; _p30 = p; }
             }
             return d(self);
         }
         
-        // GetFunctionHandler
+        // GetArrayBufferData
         private static IntPtr _p31;
-        private static get_function_handler_delegate _d31;
+        private static get_array_buffer_data_delegate _d31;
         
-        public static cef_v8handler_t* get_function_handler(cef_v8value_t* self)
+        public static void* get_array_buffer_data(cef_v8value_t* self)
         {
-            get_function_handler_delegate d;
-            var p = self->_get_function_handler;
+            get_array_buffer_data_delegate d;
+            var p = self->_get_array_buffer_data;
             if (p == _p31) { d = _d31; }
             else
             {
-                d = (get_function_handler_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_function_handler_delegate));
+                d = (get_array_buffer_data_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_array_buffer_data_delegate));
                 if (_p31 == IntPtr.Zero) { _d31 = d; _p31 = p; }
             }
             return d(self);
         }
         
-        // ExecuteFunction
+        // GetFunctionName
         private static IntPtr _p32;
-        private static execute_function_delegate _d32;
+        private static get_function_name_delegate _d32;
+        
+        public static cef_string_userfree* get_function_name(cef_v8value_t* self)
+        {
+            get_function_name_delegate d;
+            var p = self->_get_function_name;
+            if (p == _p32) { d = _d32; }
+            else
+            {
+                d = (get_function_name_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_function_name_delegate));
+                if (_p32 == IntPtr.Zero) { _d32 = d; _p32 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetFunctionHandler
+        private static IntPtr _p33;
+        private static get_function_handler_delegate _d33;
+        
+        public static cef_v8handler_t* get_function_handler(cef_v8value_t* self)
+        {
+            get_function_handler_delegate d;
+            var p = self->_get_function_handler;
+            if (p == _p33) { d = _d33; }
+            else
+            {
+                d = (get_function_handler_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_function_handler_delegate));
+                if (_p33 == IntPtr.Zero) { _d33 = d; _p33 = p; }
+            }
+            return d(self);
+        }
+        
+        // ExecuteFunction
+        private static IntPtr _p34;
+        private static execute_function_delegate _d34;
         
         public static cef_v8value_t* execute_function(cef_v8value_t* self, cef_v8value_t* @object, UIntPtr argumentsCount, cef_v8value_t** arguments)
         {
             execute_function_delegate d;
             var p = self->_execute_function;
-            if (p == _p32) { d = _d32; }
+            if (p == _p34) { d = _d34; }
             else
             {
                 d = (execute_function_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(execute_function_delegate));
-                if (_p32 == IntPtr.Zero) { _d32 = d; _p32 = p; }
+                if (_p34 == IntPtr.Zero) { _d34 = d; _p34 = p; }
             }
             return d(self, @object, argumentsCount, arguments);
         }
         
         // ExecuteFunctionWithContext
-        private static IntPtr _p33;
-        private static execute_function_with_context_delegate _d33;
+        private static IntPtr _p35;
+        private static execute_function_with_context_delegate _d35;
         
         public static cef_v8value_t* execute_function_with_context(cef_v8value_t* self, cef_v8context_t* context, cef_v8value_t* @object, UIntPtr argumentsCount, cef_v8value_t** arguments)
         {
             execute_function_with_context_delegate d;
             var p = self->_execute_function_with_context;
-            if (p == _p33) { d = _d33; }
+            if (p == _p35) { d = _d35; }
             else
             {
                 d = (execute_function_with_context_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(execute_function_with_context_delegate));
-                if (_p33 == IntPtr.Zero) { _d33 = d; _p33 = p; }
+                if (_p35 == IntPtr.Zero) { _d35 = d; _p35 = p; }
             }
             return d(self, context, @object, argumentsCount, arguments);
         }
         
         // ResolvePromise
-        private static IntPtr _p34;
-        private static resolve_promise_delegate _d34;
+        private static IntPtr _p36;
+        private static resolve_promise_delegate _d36;
         
         public static int resolve_promise(cef_v8value_t* self, cef_v8value_t* arg)
         {
             resolve_promise_delegate d;
             var p = self->_resolve_promise;
-            if (p == _p34) { d = _d34; }
+            if (p == _p36) { d = _d36; }
             else
             {
                 d = (resolve_promise_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(resolve_promise_delegate));
-                if (_p34 == IntPtr.Zero) { _d34 = d; _p34 = p; }
+                if (_p36 == IntPtr.Zero) { _d36 = d; _p36 = p; }
             }
             return d(self, arg);
         }
         
         // RejectPromise
-        private static IntPtr _p35;
-        private static reject_promise_delegate _d35;
+        private static IntPtr _p37;
+        private static reject_promise_delegate _d37;
         
         public static int reject_promise(cef_v8value_t* self, cef_string_t* errorMsg)
         {
             reject_promise_delegate d;
             var p = self->_reject_promise;
-            if (p == _p35) { d = _d35; }
+            if (p == _p37) { d = _d37; }
             else
             {
                 d = (reject_promise_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(reject_promise_delegate));
-                if (_p35 == IntPtr.Zero) { _d35 = d; _p35 = p; }
+                if (_p37 == IntPtr.Zero) { _d37 = d; _p37 = p; }
             }
             return d(self, errorMsg);
         }

@@ -638,6 +638,24 @@
             return cef_v8value_t.neuter_array_buffer(_self) != 0;
         }
 
+        /// <summary>
+        /// Returns the length (in bytes) of the ArrayBuffer.
+        /// </summary>
+        public UIntPtr GetArrayBufferByteLength()
+        {
+            return cef_v8value_t.get_array_buffer_byte_length(_self);
+        }
+
+        /// <summary>
+        /// Returns a pointer to the beginning of the memory block for this
+        /// ArrayBuffer backing store. The returned pointer is valid as long as the
+        /// CefV8Value is alive.
+        /// </summary>
+        public IntPtr GetArrayBufferData()
+        {
+            return (IntPtr)cef_v8value_t.get_array_buffer_data(_self);
+        }
+
         // FUNCTION METHODS - These methods are only available on functions.
 
         /// <summary>

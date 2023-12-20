@@ -180,7 +180,9 @@ c2cs_enumtypes = {
     'cef_chrome_toolbar_button_type_t': 'CefChromeToolbarButtonType',
     'cef_download_interrupt_reason_t': 'CefDownloadInterruptReason',
     'cef_content_setting_types_t': 'CefContentSettingType',
-    'cef_content_setting_values_t': 'CefContentSettingValue'
+    'cef_content_setting_values_t': 'CefContentSettingValue',
+    'cef_zoom_command_t': 'CefZoomCommand',
+    'cef_dom_form_control_type_t': 'CefDomFormControlType'
     }
 
 c2cs_structtypes = { }
