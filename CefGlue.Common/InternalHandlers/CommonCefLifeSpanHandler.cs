@@ -43,14 +43,8 @@ namespace Xilium.CefGlue.Common.InternalHandlers
 
         protected override void OnBeforeDevToolsPopup(CefBrowser browser, CefWindowInfo windowInfo, ref CefClient client, CefBrowserSettings settings, ref CefDictionaryValue extraInfo, ref bool useDefaultWindow)
         {
-            if (_owner.LifeSpanHandler != null)
-            {
-                _owner.LifeSpanHandler?.HandleBeforeDevToolsPopup(browser, windowInfo, ref client, settings, ref extraInfo, ref useDefaultWindow);
-            }
-            else
-            {
-                base.OnBeforeDevToolsPopup(browser, windowInfo, ref client, settings, ref extraInfo, ref useDefaultWindow);
-            }
+            _owner.LifeSpanHandler?.HandleBeforeDevToolsPopup(browser, windowInfo, ref client, settings, ref extraInfo, ref useDefaultWindow);
+            base.OnBeforeDevToolsPopup(browser, windowInfo, ref client, settings, ref extraInfo, ref useDefaultWindow);
         }
     }
 }
