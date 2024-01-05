@@ -333,16 +333,6 @@ namespace Xilium.CefGlue.Common
             BrowserHost?.ExitFullscreen(willCauseResize);
         }
 
-        public bool CanExecuteChromeCommand(int commandId)
-        {
-            return BrowserHost?.CanExecuteChromeCommand(commandId) ?? false;
-        }
-
-        public void ExecuteChromeCommand(int commandId, CefWindowOpenDisposition windowOpenDisposition)
-        {
-            BrowserHost?.ExecuteChromeCommand(commandId, windowOpenDisposition);
-        }
-
         protected virtual CommonCefClient CreateCefClient()
         {
             return new CommonCefClient(this, null, _logger);
