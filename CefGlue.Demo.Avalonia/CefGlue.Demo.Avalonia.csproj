@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug_WindowlessRender'">
-    <DebugType></DebugType>
     <DefineConstants>$(DefineConstants);WINDOWLESS</DefineConstants>
   </PropertyGroup>
 

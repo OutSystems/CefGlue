@@ -28,10 +28,12 @@
                 return CefRuntimePlatform.MacOS;
 
             int p = (int)platformId;
-            if ((p == 4) || (p == 128))
-                return IsRunningOnMac() ? CefRuntimePlatform.MacOS : CefRuntimePlatform.Linux;
+            if ((p != 4) && (p != 128)) return CefRuntimePlatform.Windows;
+            if (IsRunningOnMac()) return CefRuntimePlatform.MacOS;
 
-            return CefRuntimePlatform.Windows;
+            if (IsRunningOnLinux()) return CefRuntimePlatform.Linux;
+
+            throw new PlatformNotSupportedException();
         }
 
         //From Managed.Windows.Forms/XplatUI
@@ -44,12 +46,41 @@
                 // This is a hacktastic way of getting sysname from uname ()
                 if (uname(buf) == 0)
                 {
-                    string os = Marshal.PtrToStringAnsi(buf);
-                    if (os == "Darwin")
+                    if (Marshal.PtrToStringAuto(buf) == "Darwin")
                         return true;
                 }
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
+            finally
+            {
+                if (buf != IntPtr.Zero)
+                    Marshal.FreeHGlobal(buf);
+            }
+
+            return false;
+        }
+        
+        // copied from IsRunningOnMac function above.
+        private static bool IsRunningOnLinux()
+        {
+            IntPtr buf = IntPtr.Zero;
+            try
+            {
+                buf = Marshal.AllocHGlobal(8192);
+                // This is a hacktastic way of getting sysname from uname ()
+                if (uname(buf) == 0)
+                {
+                    if (Marshal.PtrToStringAuto(buf) == "Linux")
+                        return true;
+                }
+            }
+            catch
+            {
+                // ignored
+            }
             finally
             {
                 if (buf != IntPtr.Zero)

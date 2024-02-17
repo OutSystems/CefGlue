@@ -5,7 +5,7 @@
     <TargetFramework>$(DotnetVersion)</TargetFramework>
     <AssemblyName>Xilium.CefGlue.BrowserProcess</AssemblyName>
     <RootNamespace>Xilium.CefGlue.BrowserProcess</RootNamespace>
-    <RuntimeIdentifiers>osx-x64;win-x64;osx-arm64;win-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>osx-x64;osx-arm64;win-x64;win-arm64;linux-x64;linux-arm64</RuntimeIdentifiers>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PublishCommonConfig>Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=</PublishCommonConfig>
@@ -34,6 +34,10 @@
     <Message Text="Publishing CefGlue.BrowserProcess on Windows ($(Platform))..." Importance="High" />
     <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-$(ArchitectureConfig)" />
 
+    <!-- LINUX -->
+    <Message Text="Publishing CefGlue.BrowserProcess on Linux ($(Platform))..." Importance="High" />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)linux-$(ArchitectureConfig)" />
+    
     <!-- OSX -->
     <Message Text="Publishing CefGlue.BrowserProcess on MacOS ($(Platform))..." Importance="High" />
     <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)osx-$(ArchitectureConfig)" />

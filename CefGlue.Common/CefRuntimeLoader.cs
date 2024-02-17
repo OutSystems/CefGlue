@@ -58,6 +58,21 @@ namespace Xilium.CefGlue.Common
                     settings.FrameworkDirPath = basePath;
                     settings.ResourcesDirPath = resourcesPath;
                     break;
+                
+                case CefRuntimePlatform.Linux:
+                    var localesPath = Path.Combine(basePath, "locales");
+                    if (Directory.Exists(localesPath))
+                    {
+                        settings.LocalesDirPath = localesPath;
+                    }
+                    
+                    settings.NoSandbox = true;
+                    // settings.WindowlessRenderingEnabled = false;
+                    
+                    settings.MultiThreadedMessageLoop = true;
+                    settings.ExternalMessagePump = false;
+                    settings.ResourcesDirPath = basePath;
+                    break;
             }
 
             AppDomain.CurrentDomain.ProcessExit += delegate { CefRuntime.Shutdown(); };
