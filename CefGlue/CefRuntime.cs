@@ -175,6 +175,10 @@
             {
                 throw new NotSupportedException("cef_api_hash call is not supported.", ex);
             }
+            catch (DllNotFoundException dll_ex)
+            {
+                throw new NotSupportedException("Can't find CEF.", dll_ex);
+            }
             if (string.IsNullOrEmpty(actual)) throw new NotSupportedException();
 
             string expected;

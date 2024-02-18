@@ -27,12 +27,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="App.xaml" />
-    <None Remove="BrowserView.xaml" />
-    <None Remove="MainWindow.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="App.xaml" />
     <EmbeddedResource Include="BrowserView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -54,7 +48,7 @@
     <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj" />
     <ProjectReference Include="..\CefGlue.Common.Shared\CefGlue.Common.Shared.csproj" />
   </ItemGroup>
-
+  
   <Import Project="$(ProjectDir)..\CefGlue.Common\build\CefGlue.Common.targets" />
-
+  
 </Project>
