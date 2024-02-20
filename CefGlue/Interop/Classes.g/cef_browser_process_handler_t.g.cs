@@ -16,6 +16,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _on_register_custom_preferences;
         internal IntPtr _on_context_initialized;
         internal IntPtr _on_before_child_process_launch;
+        internal IntPtr _on_already_running_app_relaunch;
         internal IntPtr _on_schedule_message_pump_work;
         internal IntPtr _get_default_client;
         
@@ -60,6 +61,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_before_child_process_launch_delegate(cef_browser_process_handler_t* self, cef_command_line_t* command_line);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate int on_already_running_app_relaunch_delegate(cef_browser_process_handler_t* self, cef_command_line_t* command_line, cef_string_t* current_directory);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

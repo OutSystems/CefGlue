@@ -273,18 +273,6 @@
         }
 
         /// <summary>
-        /// Comma delimited ordered list of language codes without any whitespace that
-        /// will be used in the "Accept-Language" HTTP header. May be set globally
-        /// using the CefSettings.accept_language_list value. If both values are
-        /// empty then "en-US,en" will be used.
-        /// </summary>
-        public string AcceptLanguageList
-        {
-            get { return cef_string_t.ToString(&_self->accept_language_list); }
-            set { cef_string_t.Copy(value, &_self->accept_language_list); }
-        }
-
-        /// <summary>
         /// Controls whether the Chrome status bubble will be used. Only supported
         /// with the Chrome runtime. For details about the status bubble see
         /// https://www.chromium.org/user-experience/status-bubble/
@@ -293,6 +281,16 @@
         {
             get { return _self->chrome_status_bubble; }
             set { _self->chrome_status_bubble = value; }
+        }
+
+        /// <summary>
+        /// Controls whether the Chrome zoom bubble will be shown when zooming. Only
+        /// supported with the Chrome runtime.
+        /// </summary>
+        public CefState ChromeZoomBubble
+        {
+            get { return _self->chrome_zoom_bubble; }
+            set { _self->chrome_zoom_bubble = value; }
         }
     }
 }

@@ -373,6 +373,7 @@ struct CefSettingsTraits {
     cef_string_clear(&s->locales_dir_path);
     cef_string_clear(&s->accept_language_list);
     cef_string_clear(&s->cookieable_schemes_list);
+    cef_string_clear(&s->chrome_policy_id);
   }
 
   static inline void set(const struct_type* src,
@@ -430,6 +431,10 @@ struct CefSettingsTraits {
                    &target->cookieable_schemes_list, copy);
     target->cookieable_schemes_exclude_defaults =
         src->cookieable_schemes_exclude_defaults;
+
+    cef_string_set(src->chrome_policy_id.str, src->chrome_policy_id.length,
+                   &target->chrome_policy_id, copy);
+    target->chrome_app_icon_id = src->chrome_app_icon_id;
   }
 };
 
@@ -487,7 +492,6 @@ struct CefBrowserSettingsTraits {
     cef_string_clear(&s->cursive_font_family);
     cef_string_clear(&s->fantasy_font_family);
     cef_string_clear(&s->default_encoding);
-    cef_string_clear(&s->accept_language_list);
   }
 
   static inline void set(const struct_type* src,
@@ -536,11 +540,8 @@ struct CefBrowserSettingsTraits {
 
     target->background_color = src->background_color;
 
-    cef_string_set(src->accept_language_list.str,
-                   src->accept_language_list.length,
-                   &target->accept_language_list, copy);
-
     target->chrome_status_bubble = src->chrome_status_bubble;
+    target->chrome_zoom_bubble = src->chrome_zoom_bubble;
   }
 };
 

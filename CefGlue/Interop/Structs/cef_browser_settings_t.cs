@@ -40,8 +40,8 @@ namespace Xilium.CefGlue.Interop
         public CefState webgl;
 
         public uint background_color;
-        public cef_string_t accept_language_list;
         public CefState chrome_status_bubble;
+        public CefState chrome_zoom_bubble;
 
         #region Alloc & Free
         private static int _sizeof;

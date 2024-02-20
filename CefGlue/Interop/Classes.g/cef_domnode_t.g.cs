@@ -98,7 +98,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_string_userfree* get_form_control_element_type_delegate(cef_domnode_t* self);
+        private delegate CefDomFormControlType get_form_control_element_type_delegate(cef_domnode_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -377,7 +377,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p9;
         private static get_form_control_element_type_delegate _d9;
         
-        public static cef_string_userfree* get_form_control_element_type(cef_domnode_t* self)
+        public static CefDomFormControlType get_form_control_element_type(cef_domnode_t* self)
         {
             get_form_control_element_type_delegate d;
             var p = self->_get_form_control_element_type;

@@ -18,6 +18,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _is_same;
         internal IntPtr _is_equal;
         internal IntPtr _copy;
+        internal IntPtr _get_raw_data;
         internal IntPtr _get_size;
         internal IntPtr _get_data;
         
@@ -78,6 +79,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate cef_binary_value_t* copy_delegate(cef_binary_value_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void* get_raw_data_delegate(cef_binary_value_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -244,36 +251,53 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetSize
+        // GetRawData
         private static IntPtr _p9;
-        private static get_size_delegate _d9;
+        private static get_raw_data_delegate _d9;
         
-        public static UIntPtr get_size(cef_binary_value_t* self)
+        public static void* get_raw_data(cef_binary_value_t* self)
         {
-            get_size_delegate d;
-            var p = self->_get_size;
+            get_raw_data_delegate d;
+            var p = self->_get_raw_data;
             if (p == _p9) { d = _d9; }
             else
             {
-                d = (get_size_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_size_delegate));
+                d = (get_raw_data_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_raw_data_delegate));
                 if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
             }
             return d(self);
         }
         
-        // GetData
+        // GetSize
         private static IntPtr _pa;
-        private static get_data_delegate _da;
+        private static get_size_delegate _da;
+        
+        public static UIntPtr get_size(cef_binary_value_t* self)
+        {
+            get_size_delegate d;
+            var p = self->_get_size;
+            if (p == _pa) { d = _da; }
+            else
+            {
+                d = (get_size_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_size_delegate));
+                if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
+            }
+            return d(self);
+        }
+        
+        // GetData
+        private static IntPtr _pb;
+        private static get_data_delegate _db;
         
         public static UIntPtr get_data(cef_binary_value_t* self, void* buffer, UIntPtr buffer_size, UIntPtr data_offset)
         {
             get_data_delegate d;
             var p = self->_get_data;
-            if (p == _pa) { d = _da; }
+            if (p == _pb) { d = _db; }
             else
             {
                 d = (get_data_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_data_delegate));
-                if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
+                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
             }
             return d(self, buffer, buffer_size, data_offset);
         }

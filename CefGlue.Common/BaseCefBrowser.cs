@@ -379,6 +379,11 @@ namespace Xilium.CefGlue.Common
             return _adapter.IsJavascriptObjectRegistered(name);
         }
 
+        public void Zoom(CefZoomCommand command)
+        {
+            _adapter.Zoom(command);
+        }
+
         /// <summary>
         /// Creates the browser (if not created yet) with the specified dimensions.
         /// </summary>

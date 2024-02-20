@@ -41,6 +41,10 @@ extern "C" {
 /// ContentSettingsType type.
 ///
 typedef enum {
+  // This setting governs whether cookies are enabled by the user in the
+  /// provided context. However, it may be overridden by other settings. This
+  /// enum should NOT be read directly to determine whether cookies are enabled;
+  /// the client should instead rely on the CookieSettings API.
   CEF_CONTENT_SETTING_TYPE_COOKIES = 0,
   CEF_CONTENT_SETTING_TYPE_IMAGES,
   CEF_CONTENT_SETTING_TYPE_JAVASCRIPT,
@@ -58,7 +62,12 @@ typedef enum {
   CEF_CONTENT_SETTING_TYPE_PROTOCOL_HANDLERS,
   CEF_CONTENT_SETTING_TYPE_DEPRECATED_PPAPI_BROKER,
   CEF_CONTENT_SETTING_TYPE_AUTOMATIC_DOWNLOADS,
+
+  /// Advanced device-specific functions on MIDI devices. MIDI-SysEx
+  /// communications can be used for changing the MIDI device's persistent state
+  /// such as firmware.
   CEF_CONTENT_SETTING_TYPE_MIDI_SYSEX,
+
   CEF_CONTENT_SETTING_TYPE_SSL_CERT_DECISIONS,
   CEF_CONTENT_SETTING_TYPE_PROTECTED_MEDIA_IDENTIFIER,
   CEF_CONTENT_SETTING_TYPE_APP_BANNER,
@@ -76,8 +85,9 @@ typedef enum {
   /// decisions for whether or not to show the UI.
   CEF_CONTENT_SETTING_TYPE_ADS_DATA,
 
-  /// This is special-cased in the permissions layer to always allow, and as
-  /// such doesn't have associated prefs data.
+  /// MIDI stands for Musical Instrument Digital Interface. It is a standard
+  /// that allows electronic musical instruments, computers, and other devices
+  /// to communicate with each other.
   CEF_CONTENT_SETTING_TYPE_MIDI,
 
   /// This content setting type is for caching password protection service's
@@ -131,9 +141,6 @@ typedef enum {
 
   /// Used to store whether to allow a website to detect user active/idle state.
   CEF_CONTENT_SETTING_TYPE_IDLE_DETECTION,
-
-  /// Setting for enabling auto-select of all screens for getDisplayMediaSet.
-  CEF_CONTENT_SETTING_TYPE_GET_DISPLAY_MEDIA_SET_SELECT_ALL_SCREENS,
 
   /// Content settings for access to serial ports. The "guard" content setting
   /// stores whether to allow sites to ask for permission to access a port. The
@@ -226,10 +233,11 @@ typedef enum {
   /// screens. See also: https://w3c.github.io/window-placement
   CEF_CONTENT_SETTING_TYPE_WINDOW_MANAGEMENT,
 
-  /// Stores whether to allow insecure websites to make local network requests.
-  /// See also: https://wicg.github.io/local-network-access
+  /// Stores whether to allow insecure websites to make private network
+  /// requests.
+  /// See also: https://wicg.github.io/cors-rfc1918
   /// Set through enterprise policies only.
-  CEF_CONTENT_SETTING_TYPE_INSECURE_LOCAL_NETWORK,
+  CEF_CONTENT_SETTING_TYPE_INSECURE_PRIVATE_NETWORK,
 
   /// Content setting which stores whether or not a site can access low-level
   /// locally installed font data using the Local Fonts Access API.
@@ -249,7 +257,11 @@ typedef enum {
 
   /// Website setting to store permissions metadata granted to paths on the
   /// local file system via the File System Access API.
-  /// |FILE_SYSTEM_WRITE_GUARD| is the corresponding "guard" setting.
+  /// |FILE_SYSTEM_WRITE_GUARD| is the corresponding "guard" setting. The stored
+  /// data represents valid permission only if
+  /// |FILE_SYSTEM_ACCESS_EXTENDED_PERMISSION| is enabled via user opt-in.
+  /// Otherwise, they represent "recently granted but revoked permission", which
+  /// are used to restore the permission.
   CEF_CONTENT_SETTING_TYPE_FILE_SYSTEM_ACCESS_CHOOSER_DATA,
 
   /// Stores a grant that allows a relying party to send a request for identity
@@ -343,11 +355,34 @@ typedef enum {
   /// Used to indicate whether HTTPS-First Mode is enabled on the hostname.
   CEF_CONTENT_SETTING_TYPE_HTTPS_ENFORCED,
 
+  /// Setting for enabling the `getAllScreensMedia` API. Spec link:
+  /// https://github.com/screen-share/capture-all-screens
+  CEF_CONTENT_SETTING_TYPE_ALL_SCREEN_CAPTURE,
+
   /// Stores per origin metadata for cookie controls.
   CEF_CONTENT_SETTING_TYPE_COOKIE_CONTROLS_METADATA,
 
-  /// Setting for supporting 3PCD.
+  /// Content Setting for 3PC accesses granted via 3PC deprecation trial.
   CEF_CONTENT_SETTING_TYPE_TPCD_SUPPORT,
+
+  /// Content setting used to indicate whether entering picture-in-picture
+  /// automatically should be enabled.
+  CEF_CONTENT_SETTING_TYPE_AUTO_PICTURE_IN_PICTURE,
+
+  /// Content Setting for 3PC accesses granted by metadata delivered via the
+  /// component updater service. This type will only be used when
+  /// `net::features::kTpcdMetadataGrants` is enabled.
+  CEF_CONTENT_SETTING_TYPE_TPCD_METADATA_GRANTS,
+
+  /// Whether user has opted into keeping file/directory permissions persistent
+  /// between visits for a given origin. When enabled, permission metadata
+  /// stored under |FILE_SYSTEM_ACCESS_CHOOSER_DATA| can auto-grant incoming
+  /// permission request.
+  CEF_CONTENT_SETTING_TYPE_FILE_SYSTEM_ACCESS_EXTENDED_PERMISSION,
+
+  /// Content Setting for temporary 3PC accesses granted by user behavior
+  /// heuristics.
+  CEF_CONTENT_SETTING_TYPE_TPCD_HEURISTICS_GRANTS,
 
   CEF_CONTENT_SETTING_TYPE_NUM_TYPES,
 } cef_content_setting_types_t;

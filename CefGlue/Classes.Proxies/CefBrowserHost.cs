@@ -173,6 +173,34 @@
                 );
         }
 
+        /// <summary>
+        /// Returns true if this browser can execute the specified zoom command. This
+        /// method can only be called on the UI thread.
+        /// </summary>
+        public bool CanZoom(CefZoomCommand command)
+        {
+            return cef_browser_host_t.can_zoom(_self, command) != 0;
+        }
+
+        /// <summary>
+        /// Execute a zoom command in this browser. If called on the UI thread the
+        /// change will be applied immediately. Otherwise, the change will be applied
+        /// asynchronously on the UI thread.
+        /// </summary>
+        public void Zoom(CefZoomCommand command)
+        {
+            cef_browser_host_t.zoom(_self, command);
+        }
+
+        /// <summary>
+        /// Get the default zoom level. This value will be 0.0 by default but can be
+        /// configured with the Chrome runtime. This method can only be called on the
+        /// UI thread.
+        /// </summary>
+        public double GetDefaultZoomLevel()
+        {
+            return cef_browser_host_t.get_default_zoom_level(_self);
+        }
 
         /// <summary>
         /// Get the current zoom level. The default zoom level is 0.0. This method can
@@ -185,9 +213,9 @@
 
         /// <summary>
         /// Change the zoom level to the specified value. Specify 0.0 to reset the
-        /// zoom level. If called on the UI thread the change will be applied
-        /// immediately. Otherwise, the change will be applied asynchronously on the
-        /// UI thread.
+        /// zoom level to the default. If called on the UI thread the change will be
+        /// applied immediately. Otherwise, the change will be applied asynchronously
+        /// on the UI thread.
         /// </summary>
         public void SetZoomLevel(double value)
         {
@@ -886,6 +914,50 @@
             {
                 return cef_browser_host_t.is_audio_muted(_self) != 0;
             }
+        }
+
+        /// <summary>
+        /// Returns true if the renderer is currently in browser fullscreen. This
+        /// differs from window fullscreen in that browser fullscreen is entered using
+        /// the JavaScript Fullscreen API and modifies CSS attributes such as the
+        /// ::backdrop pseudo-element and :fullscreen pseudo-class. This method can
+        /// only be called on the UI thread.
+        /// </summary>
+        public bool IsFullscreen()
+        {
+            return cef_browser_host_t.is_fullscreen(_self) != 0;
+        }
+
+        /// <summary>
+        /// Returns true if the renderer is currently in browser fullscreen. This
+        /// differs from window fullscreen in that browser fullscreen is entered using
+        /// the JavaScript Fullscreen API and modifies CSS attributes such as the
+        /// ::backdrop pseudo-element and :fullscreen pseudo-class. This method can
+        /// only be called on the UI thread.
+        /// </summary>
+        public void ExitFullscreen(bool willCauseResize)
+        {
+            cef_browser_host_t.exit_fullscreen(_self, willCauseResize ? 1 : 0);
+        }
+
+        /// <summary>
+        /// Returns true if a Chrome command is supported and enabled. Values for
+        /// |command_id| can be found in the cef_command_ids.h file. This method can
+        /// only be called on the UI thread. Only used with the Chrome runtime.
+        /// </summary>
+        public bool CanExecuteChromeCommand(int commandId)
+        {
+            return cef_browser_host_t.can_execute_chrome_command(_self, commandId) != 0;
+        }
+
+        /// <summary>
+        /// Execute a Chrome command. Values for |command_id| can be found in the
+        /// cef_command_ids.h file. |disposition| provides information about the
+        /// intended command target. Only used with the Chrome runtime.
+        /// </summary>
+        public void ExecuteChromeCommand(int commandId, CefWindowOpenDisposition disposition)
+        {
+            cef_browser_host_t.execute_chrome_command(_self, commandId, disposition);
         }
     }
 }
