@@ -1,11 +1,9 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using System;
-using System.Collections;
-using Xilium.CefGlue.Common;
 
 namespace Xilium.CefGlue.Demo.Avalonia
 {
