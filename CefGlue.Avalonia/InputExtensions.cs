@@ -1,7 +1,7 @@
-using Avalonia.Input;
-using Avalonia.VisualTree;
 using System.IO;
 using Avalonia;
+using Avalonia.Input;
+using Avalonia.VisualTree;
 
 namespace Xilium.CefGlue.Avalonia
 {
@@ -15,7 +15,7 @@ namespace Xilium.CefGlue.Avalonia
         /// <returns></returns>
         public static CefMouseEvent AsCefMouseEvent(this PointerEventArgs eventArgs, Visual mousePositionReferential)
         {
-            var cursorPos = mousePositionReferential.IsAttachedToVisualTree() ? eventArgs.GetPosition(mousePositionReferential) : new global::Avalonia.Point(0,0);
+            var cursorPos = mousePositionReferential.IsAttachedToVisualTree() ? eventArgs.GetPosition(mousePositionReferential) : new Point(0,0);
 
             return new CefMouseEvent((int) cursorPos.X, (int) cursorPos.Y, eventArgs.AsCefEventFlags());
         }

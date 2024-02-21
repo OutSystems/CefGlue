@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.VisualTree;
 
 namespace Xilium.CefGlue.Avalonia.Platform
 {
