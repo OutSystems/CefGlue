@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Collections;
@@ -8,7 +8,6 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Platform;
 
@@ -44,7 +43,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
         public event Action<float> ScreenInfoChanged;
         public event Action<bool> VisibilityChanged;
 
-        public AvaloniaOffScreenControlHost(Control control, IAvaloniaList<IVisual> visualChildren) : 
+        public AvaloniaOffScreenControlHost(Control control, IAvaloniaList<Visual> visualChildren) :
             base(control, visualChildren)
         {
             DragDrop.SetAllowDrop(control, true);
@@ -55,7 +54,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             control.LostFocus += OnLostFocus;
 
             control.PointerMoved += OnPointerMoved;
-            control.PointerLeave += OnPointerLeave;
+            control.PointerExited += OnPointerExited;
 
             control.PointerPressed += OnPointerPressed;
             control.PointerReleased += OnPointerReleased;
@@ -72,7 +71,13 @@ namespace Xilium.CefGlue.Avalonia.Platform
             control.TextInput += OnTextInput;
 
             var image = CreateImage();
-            SetContent(image);
+            var viewbox = new Viewbox()
+            {
+                Child = image,
+                Stretch = Stretch.Fill,
+                StretchDirection = StretchDirection.Both
+            };
+            SetContent(viewbox);
             RenderSurface = new AvaloniaRenderSurface(image);
         }
 
@@ -158,7 +163,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             }
         }
 
-        private void OnPointerLeave(object sender, PointerEventArgs e)
+        private void OnPointerExited(object sender, PointerEventArgs e)
         {
             MouseLeave?.Invoke(e.AsCefMouseEvent(MousePositionReferential));
         }
@@ -189,6 +194,11 @@ namespace Xilium.CefGlue.Avalonia.Platform
             {
                 _windowStateChangedObservable = newWindow.GetPropertyChangedObservable(Window.WindowStateProperty).Subscribe(OnHostWindowStateChanged);
             }
+            if (e.Root.RenderScaling != RenderSurface.DeviceScaleFactor)
+            {
+                RenderSurface.DeviceScaleFactor = (float)e.Root.RenderScaling;
+                ScreenInfoChanged?.Invoke(RenderSurface.DeviceScaleFactor);
+            }
         }
 
         private void OnHostWindowStateChanged(AvaloniaPropertyChangedEventArgs e)
@@ -206,7 +216,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             }
         }
 
-        protected virtual IVisual MousePositionReferential => _control;
+        protected virtual Visual MousePositionReferential => _control;
 
         public CefPoint PointToScreen(CefPoint point, float deviceScaleFactor)
         {

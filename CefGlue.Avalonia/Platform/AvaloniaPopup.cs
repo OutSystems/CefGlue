@@ -14,13 +14,13 @@ namespace Xilium.CefGlue.Avalonia.Platform
     {
         private readonly ExtendedAvaloniaPopup _popup;
 
-        public AvaloniaPopup(ExtendedAvaloniaPopup popup, IAvaloniaList<IVisual> visualChildren) : 
+        public AvaloniaPopup(ExtendedAvaloniaPopup popup, IAvaloniaList<Visual> visualChildren) : 
             base(popup, visualChildren)
         {
             _popup = popup;
         }
 
-        protected override IVisual MousePositionReferential => _popup.PlacementTarget;
+        protected override Visual MousePositionReferential => _popup.PlacementTarget;
 
         public int Width => (int)_popup.Width;
 

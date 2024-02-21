@@ -9,10 +9,10 @@
             <NativeMenuItem Header="File">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="New Tab" Clicked="OnNewTabNativeMenuItemClick" />
-                        <NativeMenuItem Header="Open Dev Tools..." Clicked="OnOpenDevToolsNativeMenuItemClick"/>
-                        <NativeMenuItem Header="Evaluate Javascript" Clicked="OnEvaluateJavascriptNativeMenuItemClick" />
-                        <NativeMenuItem Header="Bind Javascript Object" Clicked="OnBindJavascriptObjectNativeMenuItemClick" />
+                        <NativeMenuItem Header="New Tab" Click="OnNewTabNativeMenuItemClick" />
+                        <NativeMenuItem Header="Open Dev Tools..." Click="OnOpenDevToolsNativeMenuItemClick"/>
+                        <NativeMenuItem Header="Evaluate Javascript" Click="OnEvaluateJavascriptNativeMenuItemClick" />
+                        <NativeMenuItem Header="Bind Javascript Object" Click="OnBindJavascriptObjectNativeMenuItemClick" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
