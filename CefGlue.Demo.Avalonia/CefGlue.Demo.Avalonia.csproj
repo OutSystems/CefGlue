@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <RollForward>LatestMajor</RollForward>
-    <TargetFramework>$(DotnetVersion)</TargetFramework>
+    <TargetFrameworks>$(TargetDotnetVersions)</TargetFrameworks>
     <AssemblyName>Xilium.CefGlue.Demo.Avalonia</AssemblyName>
     <RootNamespace>Xilium.CefGlue.Demo.Avalonia</RootNamespace>
   </PropertyGroup>

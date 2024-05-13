@@ -2,7 +2,7 @@
     <Import Project="..\CefGlue.Packages.props" />
     
     <PropertyGroup>
-        <TargetFramework>$(DotnetVersion)</TargetFramework>
+        <TargetFrameworks>$(TargetDotnetVersions)</TargetFrameworks>
         <AssemblyName>Xilium.CefGlue.Common</AssemblyName>
         <RootNamespace>Xilium.CefGlue.Common</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -56,11 +56,11 @@
         <ItemGroup>
             <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\win-$(ArchitectureConfig)\publish\**\*">
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(TargetFramework)\win-$(ArchitectureConfig)\publish\**\*">
                 <PackagePath>bin\win-$(ArchitectureConfig)</PackagePath>
             </TfmSpecificPackageFile>
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\osx-$(ArchitectureConfig)\publish\**\*">
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(TargetFramework)\osx-$(ArchitectureConfig)\publish\**\*">
                 <PackagePath>bin\osx-$(ArchitectureConfig)</PackagePath>
             </TfmSpecificPackageFile>
         </ItemGroup>
