@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     
   <PropertyGroup>
+    <TargetFrameworks>$(TargetDotnetVersionsWindows)</TargetFrameworks>
     <OutputType>Library</OutputType>
-    <DotnetVersionSuffix>-windows</DotnetVersionSuffix>
-    <TargetFrameworks>$(TargetDotnetVersions.Replace(";", "$(DotnetVersionSuffix);"))$(DotnetVersionSuffix)</TargetFrameworks>
     <RootNamespace>Xilium.CefGlue.WPF</RootNamespace>
     <AssemblyName>Xilium.CefGlue.WPF</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
