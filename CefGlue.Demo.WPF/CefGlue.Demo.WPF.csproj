@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFrameworks>net6.0-windows;net8.0-windows</TargetFrameworks>
+        <TargetFramework>$(DefaultTargetDotnetVersion)-windows</TargetFramework>
         <AssemblyName>Xilium.CefGlue.Demo.WPF</AssemblyName>
         <RootNamespace>Xilium.CefGlue.Demo.WPF</RootNamespace>
         <UseWPF>true</UseWPF>
@@ -34,7 +34,7 @@
 
 
     <ItemGroup>
-        <ProjectReference Include="..\CefGlue.WPF\CefGlue.WPF.csproj" />
+        <ProjectReference Include="..\CefGlue.WPF\CefGlue.WPF.csproj" SetTargetFramework="TargetFramework=$(TargetFramework)" />
         <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
         <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj" />
         <ProjectReference Include="..\CefGlue.Common.Shared\CefGlue.Common.Shared.csproj" />

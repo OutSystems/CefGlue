@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
     <PropertyGroup>
-        <TargetDotnetVersions>net6.0;net8.0</TargetDotnetVersions>
+        <DefaultTargetDotnetVersion>net8.0</DefaultTargetDotnetVersion>
+        <TargetDotnetVersions>net6.0;$(DefaultTargetDotnetVersion)</TargetDotnetVersions>
         <LangVersion>latest</LangVersion>
         <CefRedistVersion>120.1.8</CefRedistVersion>
         <CefRedistOSXVersion>120.1.8</CefRedistOSXVersion>
