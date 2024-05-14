@@ -2,12 +2,15 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFrameworks>$(TargetDotnetVersionsWindows)</TargetFrameworks>
+        <DotnetVersionSuffix>-windows</DotnetVersionSuffix>
+        <TargetFramework>$(DefaultTargetDotnetVersion)$(DotnetVersionSuffix)</TargetFramework>
+        <TargetFrameworks>$(TargetDotnetVersions.Replace(";", "$(DotnetVersionSuffix);"))$(DotnetVersionSuffix)</TargetFrameworks>
         <AssemblyName>Xilium.CefGlue.Demo.WPF</AssemblyName>
         <RootNamespace>Xilium.CefGlue.Demo.WPF</RootNamespace>
         <UseWPF>true</UseWPF>
         <StartupObject>Xilium.CefGlue.Demo.WPF.Program</StartupObject>
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
+        <OutputPath>bin\$(Platform)</OutputPath>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Debug_WindowlessRender'">
@@ -34,11 +37,11 @@
 
 
     <ItemGroup>
-        <ProjectReference Include="..\CefGlue.WPF\CefGlue.WPF.csproj" />
+        <ProjectReference Include="..\CefGlue.WPF\CefGlue.WPF.csproj">
+            <SetTargetFramework>TargetFramework=$(DefaultTargetDotnetVersion)$(DotnetVersionSuffix)</SetTargetFramework>
+        </ProjectReference>
         <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
         <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj" />
         <ProjectReference Include="..\CefGlue.Common.Shared\CefGlue.Common.Shared.csproj" />
     </ItemGroup>
-
-    <Import Project="$(ProjectDir)..\CefGlue.Common\build\CefGlue.Common.targets" />
 </Project>
