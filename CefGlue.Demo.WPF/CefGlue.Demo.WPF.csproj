@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFrameworks>$(TargetDotnetVersionsWindows)</TargetFrameworks>
+        <TargetFrameworks>net6.0-windows;net8.0-windows</TargetFrameworks>
         <AssemblyName>Xilium.CefGlue.Demo.WPF</AssemblyName>
         <RootNamespace>Xilium.CefGlue.Demo.WPF</RootNamespace>
         <UseWPF>true</UseWPF>
