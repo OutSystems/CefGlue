@@ -8,7 +8,7 @@
     <RuntimeIdentifiers>osx-x64;win-x64;osx-arm64;win-arm64</RuntimeIdentifiers>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <PublishCommonConfig>Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=</PublishCommonConfig>
+    <PublishCommonConfig>Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(TargetFramework);SelfContained=True;IsPublishing=True;PublishTrimmed=True;RuntimeIdentifier=</PublishCommonConfig>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,11 +31,11 @@
   <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
 
     <!-- WINDOWS -->
-    <Message Text="Publishing CefGlue.BrowserProcess on Windows ($(Platform))..." Importance="High" />
+    <Message Text="Publishing CefGlue.BrowserProcess in $(TargetFramework) on Windows ($(Platform))..." Importance="High" />
     <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-$(ArchitectureConfig)" />
 
     <!-- OSX -->
-    <Message Text="Publishing CefGlue.BrowserProcess on MacOS ($(Platform))..." Importance="High" />
+    <Message Text="Publishing CefGlue.BrowserProcess in $(TargetFramework) on MacOS ($(Platform))..." Importance="High" />
     <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)osx-$(ArchitectureConfig)" />
   </Target>
 </Project>
