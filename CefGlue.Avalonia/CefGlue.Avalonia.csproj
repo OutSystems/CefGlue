@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>$(DotnetVersion)</TargetFramework>
+    <TargetFrameworks>$(TargetDotnetVersions)</TargetFrameworks>
     <RootNamespace>Xilium.CefGlue.Avalonia</RootNamespace>
     <AssemblyName>Xilium.CefGlue.Avalonia</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
