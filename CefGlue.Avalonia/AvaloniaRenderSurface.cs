@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -41,14 +41,14 @@ namespace Xilium.CefGlue.Avalonia
 
         protected override Task ExecuteInUIThread(Action action)
         {
-            return Dispatcher.UIThread.InvokeAsync(action);
+            return Dispatcher.UIThread.InvokeAsync(action).GetTask();
         }
 
         protected override void CreateBitmap(int width, int height)
         {
             // TODO handle transparency
             _bitmap?.Dispose();
-            _bitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(Dpi, Dpi), PixelFormat.Bgra8888, AlphaFormat.Opaque);
+            _bitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(DefaultDpi, DefaultDpi), PixelFormat.Bgra8888, AlphaFormat.Opaque);
             Image.Source = _bitmap;
         }
 

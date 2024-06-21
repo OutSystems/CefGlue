@@ -8,7 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Avalonia;
 using Xilium.CefGlue.Avalonia;
+using Xilium.CefGlue.Common.Handlers;
 
 namespace Xilium.CefGlue.Demo.Avalonia
 {
@@ -27,6 +29,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             browser.RegisterJavascriptObject(new BindingTestClass(), "boundBeforeLoadObject");
             browser.LoadStart += OnBrowserLoadStart;
             browser.TitleChanged += OnBrowserTitleChanged;
+            browser.LifeSpanHandler = new BrowserLifeSpanHandler();
             browserWrapper.Child = browser;
         }
 
@@ -132,6 +135,39 @@ namespace Xilium.CefGlue.Demo.Avalonia
         public void Dispose()
         {
             browser.Dispose();
+        }
+        
+        private class BrowserLifeSpanHandler : LifeSpanHandler
+        {
+            protected override bool OnBeforePopup(
+                CefBrowser browser, 
+                CefFrame frame, 
+                string targetUrl, 
+                string targetFrameName,
+                CefWindowOpenDisposition targetDisposition, 
+                bool userGesture, 
+                CefPopupFeatures popupFeatures,
+                CefWindowInfo windowInfo, 
+                ref CefClient client, 
+                CefBrowserSettings settings, 
+                ref CefDictionaryValue extraInfo,
+                ref bool noJavascriptAccess)
+            {
+                var bounds = windowInfo.Bounds;
+                Dispatcher.UIThread.Post(() =>
+                {
+                    var window = new Window();
+                    var popupBrowser = new AvaloniaCefBrowser();
+                    popupBrowser.Address = targetUrl;
+                    window.Content = popupBrowser;
+                    window.Position = new PixelPoint(bounds.X, bounds.Y);
+                    window.Height = bounds.Height;
+                    window.Width = bounds.Width;
+                    window.Title = targetUrl;
+                    window.Show();
+                });
+                return true;
+            }
         }
     }
 }
