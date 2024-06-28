@@ -29,20 +29,6 @@
     <NSHighResolutionCapable>true</NSHighResolutionCapable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="App.xaml" />
-    <None Remove="BrowserView.xaml" />
-    <None Remove="MainWindow.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaResource Include="App.xaml" />
-    <AvaloniaResource Include="BrowserView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </AvaloniaResource>
-    <AvaloniaResource Include="MainWindow.xaml" />
-  </ItemGroup>
-
   <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />
 
   <ItemGroup>
