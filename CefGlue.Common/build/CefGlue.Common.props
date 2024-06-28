@@ -5,12 +5,14 @@
     </PropertyGroup>
     
     <PropertyGroup Condition="'$(RuntimeIdentifier)' == '' and $([MSBuild]::IsOSPlatform('Windows'))">
+        <CleanTargetFramework>$([System.Text.RegularExpressions.Regex]::Replace($(TargetFramework), '-windows$', ''))</CleanTargetFramework>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">win-x64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">win-arm64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == ''">win-x64</CefGlueTargetPlatform> <!-- fallback -->
     </PropertyGroup>
     
     <PropertyGroup Condition="'$(RuntimeIdentifier)' == '' and $([MSBuild]::IsOSPlatform('OSX'))">
+        <CleanTargetFramework>$(TargetFramework)</CleanTargetFramework>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">osx-x64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">osx-arm64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == ''">osx-arm64</CefGlueTargetPlatform> <!-- fallback -->
@@ -21,6 +23,6 @@
     </PropertyGroup>
     
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' != ''">
-        <CefGlueBrowserProcessFiles Include="$(MSBuildThisFileDirectory)..\bin\$(TargetFramework)\$(CefGlueTargetPlatform)\*" />
+        <CefGlueBrowserProcessFiles Include="$(MSBuildThisFileDirectory)..\bin\$(CleanTargetFramework)\$(CefGlueTargetPlatform)\*" />
     </ItemGroup>
 </Project>
