@@ -1,9 +1,12 @@
 # CefGlue
+
+This is an attempt to make CefGlue available for Linux systems. Currently work in progress.
+
 .NET binding for The Chromium Embedded Framework (CEF). 
 
 CefGlue lets you embed Chromium in .NET apps. It is a .NET wrapper control around the Chromium Embedded Framework ([CEF](https://bitbucket.org/chromiumembedded/cef/src/master/)). 
 It can be used from C# or any other CLR language and provides both Avalonia and WPF web browser control implementations.
-The Avalonia implementation runs on Windows and macOS. Linux is not supported yet.
+The Avalonia implementation runs on Windows and macOS. Linux is partially supported.
 
 Currently only x64 and ARM64 architectures are supported.
 

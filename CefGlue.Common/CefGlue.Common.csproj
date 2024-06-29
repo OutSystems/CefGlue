@@ -59,6 +59,10 @@
             <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(TargetFramework)\win-$(ArchitectureConfig)\publish\**\*">
                 <PackagePath>bin\$(TargetFramework)\win-$(ArchitectureConfig)</PackagePath>
             </TfmSpecificPackageFile>
+            
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\linux-$(ArchitectureConfig)\publish\**\*">
+                <PackagePath>bin\linux-$(ArchitectureConfig)</PackagePath>
+            </TfmSpecificPackageFile>
 
             <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(TargetFramework)\osx-$(ArchitectureConfig)\publish\**\*">
                 <PackagePath>bin\$(TargetFramework)\osx-$(ArchitectureConfig)</PackagePath>

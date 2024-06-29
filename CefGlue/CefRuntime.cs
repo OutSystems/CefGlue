@@ -1,4 +1,6 @@
-﻿namespace Xilium.CefGlue
+﻿using System.IO;
+
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -28,10 +30,12 @@
                 return CefRuntimePlatform.MacOS;
 
             int p = (int)platformId;
-            if ((p == 4) || (p == 128))
-                return IsRunningOnMac() ? CefRuntimePlatform.MacOS : CefRuntimePlatform.Linux;
+            if ((p != 4) && (p != 128)) return CefRuntimePlatform.Windows;
+            if (IsRunningOnMac()) return CefRuntimePlatform.MacOS;
 
-            return CefRuntimePlatform.Windows;
+            if (IsRunningOnLinux()) return CefRuntimePlatform.Linux;
+
+            throw new PlatformNotSupportedException();
         }
 
         //From Managed.Windows.Forms/XplatUI
@@ -44,12 +48,41 @@
                 // This is a hacktastic way of getting sysname from uname ()
                 if (uname(buf) == 0)
                 {
-                    string os = Marshal.PtrToStringAnsi(buf);
-                    if (os == "Darwin")
+                    if (Marshal.PtrToStringAuto(buf) == "Darwin")
                         return true;
                 }
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
+            finally
+            {
+                if (buf != IntPtr.Zero)
+                    Marshal.FreeHGlobal(buf);
+            }
+
+            return false;
+        }
+        
+        // copied from IsRunningOnMac function above.
+        private static bool IsRunningOnLinux()
+        {
+            IntPtr buf = IntPtr.Zero;
+            try
+            {
+                buf = Marshal.AllocHGlobal(8192);
+                // This is a hacktastic way of getting sysname from uname ()
+                if (uname(buf) == 0)
+                {
+                    if (Marshal.PtrToStringAuto(buf) == "Linux")
+                        return true;
+                }
+            }
+            catch
+            {
+                // ignored
+            }
             finally
             {
                 if (buf != IntPtr.Zero)
@@ -133,6 +166,20 @@
 
         private static void CheckVersionByApiHash()
         {
+            // find all the libcef.[so/dylib/dll] files inside the appkication folder and its subfolders
+            var libcefs = Directory.GetFiles(Directory.GetCurrentDirectory(), Platform switch
+                {
+                    CefRuntimePlatform.MacOS => libcef.DllName + ".dylib",
+                    CefRuntimePlatform.Windows => libcef.DllName + ".dll",
+                    CefRuntimePlatform.Linux => libcef.DllName + ".so",
+                    _ => throw new PlatformNotSupportedException()
+                },
+                SearchOption.AllDirectories);
+
+            // if found, load the first one.
+            if (libcefs.Length > 0)
+                NativeLibrary.TryLoad(libcefs[0], out _);
+            
             // get CEF_API_HASH_PLATFORM
             string actual;
             try
@@ -144,10 +191,14 @@
             {
                 throw new NotSupportedException("cef_api_hash call is not supported.", ex);
             }
+            catch (DllNotFoundException dll_ex)
+            {
+                throw new NotSupportedException($"Can't find CEF in \"{Directory.GetCurrentDirectory()}\"", dll_ex);
+            }
             if (string.IsNullOrEmpty(actual)) throw new NotSupportedException();
 
             string expected;
-            switch (CefRuntime.Platform)
+            switch (Platform)
             {
                 case CefRuntimePlatform.Windows: expected = libcef.CEF_API_HASH_PLATFORM_WIN; break;
                 case CefRuntimePlatform.MacOS: expected = libcef.CEF_API_HASH_PLATFORM_MACOS; break;

@@ -58,6 +58,11 @@ namespace Xilium.CefGlue.Common
                     settings.FrameworkDirPath = basePath;
                     settings.ResourcesDirPath = resourcesPath;
                     break;
+                
+                case CefRuntimePlatform.Linux:
+                    settings.NoSandbox = true;
+                    settings.MultiThreadedMessageLoop = true;
+                    break;
             }
 
             AppDomain.CurrentDomain.ProcessExit += delegate { CefRuntime.Shutdown(); };
