@@ -27,6 +27,6 @@
     </PropertyGroup>
 
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' != ''">
-        <CefGlueBrowserProcessFiles Include="$(MSBuildThisFileDirectory)..\bin\$(OperatingSystemAgnosticTargetFramework)$(OperatingSystemSuffix)\$(CefGlueTargetPlatform)\*" />
+        <CefGlueBrowserProcessFiles Include="$(MSBuildThisFileDirectory)..\bin\$(OperatingSystemAgnosticTargetFramework)\$(CefGlueTargetPlatform)\*" />
     </ItemGroup>
 </Project>
