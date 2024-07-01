@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     
   <PropertyGroup>
-    <TargetFramework>$(DefaultTargetDotnetVersion)-windows</TargetFramework>
+    <OperatingSystemAgnosticTargetFramework>$(DefaultTargetDotnetVersion)</OperatingSystemAgnosticTargetFramework>
+    <TargetFramework>$(DefaultTargetDotnetVersion)-$(OperatingSystemSuffix)</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>Xilium.CefGlue.WPF</RootNamespace>
     <AssemblyName>Xilium.CefGlue.WPF</AssemblyName>
