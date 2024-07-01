@@ -7,7 +7,7 @@ using Avalonia.Threading;
 
 namespace Xilium.CefGlue.Demo.Avalonia
 {
-    public class MainWindow : Window
+    public partial class MainWindow : Window
     {
         public MainWindow()
         {
