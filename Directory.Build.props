@@ -46,4 +46,8 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <OperatingSystemSuffix>-windows</OperatingSystemSuffix>
+    </PropertyGroup>
+
 </Project>
