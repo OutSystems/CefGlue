@@ -2,6 +2,7 @@
 <Project>
     <PropertyGroup>
         <DefaultTargetDotnetVersion>net8.0</DefaultTargetDotnetVersion>
+        <DefaultTargetDotnetVersionForWpfProjects>$(DefaultTargetDotnetVersion)-windows</DefaultTargetDotnetVersionForWpfProjects>
         <TargetDotnetVersions>net6.0;$(DefaultTargetDotnetVersion)</TargetDotnetVersions>
         <LangVersion>latest</LangVersion>
         <CefRedistVersion>120.1.8</CefRedistVersion>
@@ -44,10 +45,6 @@
     <!-- Generate documentation in Release builds. -->
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-        <OperatingSystemSuffix>-windows</OperatingSystemSuffix>
     </PropertyGroup>
 
 </Project>
