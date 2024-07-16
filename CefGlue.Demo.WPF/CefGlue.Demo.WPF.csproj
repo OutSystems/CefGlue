@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
+        <OperatingSystemAgnosticTargetFramework>$(DefaultTargetDotnetVersion)</OperatingSystemAgnosticTargetFramework>
         <TargetFramework>$(DefaultTargetDotnetVersion)-windows</TargetFramework>
         <AssemblyName>Xilium.CefGlue.Demo.WPF</AssemblyName>
         <RootNamespace>Xilium.CefGlue.Demo.WPF</RootNamespace>
