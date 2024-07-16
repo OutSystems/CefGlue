@@ -3,7 +3,7 @@
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <OperatingSystemAgnosticTargetFramework>$(DefaultTargetDotnetVersion)</OperatingSystemAgnosticTargetFramework>
-        <TargetFramework>$(DefaultTargetDotnetVersion)-$(OperatingSystemSuffix)</TargetFramework>
+        <TargetFramework>$(DefaultTargetDotnetVersion)-windows</TargetFramework>
         <AssemblyName>Xilium.CefGlue.Demo.WPF</AssemblyName>
         <RootNamespace>Xilium.CefGlue.Demo.WPF</RootNamespace>
         <UseWPF>true</UseWPF>
@@ -15,7 +15,6 @@
       <DebugType />
       <DefineConstants>$(DefineConstants);WINDOWLESS</DefineConstants>
     </PropertyGroup>
-
 
     <ItemGroup>
         <None Remove="App.xaml" />
@@ -32,7 +31,6 @@
     </ItemGroup>
 
     <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />
-
 
     <ItemGroup>
         <ProjectReference Include="..\CefGlue.WPF\CefGlue.WPF.csproj" />
