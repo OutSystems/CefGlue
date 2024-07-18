@@ -484,6 +484,12 @@ namespace Xilium.CefGlue.Common
             Control.DestroyRender();
             Cleanup(browser);
 
+            if (CefRuntime.Platform == CefRuntimePlatform.Linux)
+            {
+                // On Linux, we should return false to let cef close the browser window.
+                // We shouldn't close the window directly, or disposing browser will not work as expected.
+                return false;
+            }
             return true;
         }
 

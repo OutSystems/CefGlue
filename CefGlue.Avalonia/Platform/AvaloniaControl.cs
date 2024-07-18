@@ -7,6 +7,7 @@ using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using Xilium.CefGlue.Avalonia.Platform.Linux;
 using Xilium.CefGlue.Avalonia.Platform.MacOS;
 using Xilium.CefGlue.Avalonia.Platform.Windows;
 using Xilium.CefGlue.Common.Helpers;
@@ -54,7 +55,17 @@ namespace Xilium.CefGlue.Avalonia.Platform
             Dispatcher.UIThread.VerifyAccess();
             if (_hostWindowPlatformHandle == null)
             {
-                _hostWindowPlatformHandle = new Window().TryGetPlatformHandle();
+                if (CefRuntime.Platform == CefRuntimePlatform.Windows)
+                {
+                    _hostWindowPlatformHandle = new Window().TryGetPlatformHandle();
+                }
+                else if (CefRuntime.Platform == CefRuntimePlatform.Linux)
+                {
+                    // Avalonia window doesn't work. It's color depth is 32.
+                    // We should create a x11 window with color depth 24.
+                    // Cef create browser window with CopyFromParent colormap, so the color depth must be same.
+                    _hostWindowPlatformHandle = XWindow.CreateHostWindow();
+                }
             }
             return _hostWindowPlatformHandle;
         }
@@ -83,7 +94,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
                     var menu = new ContextMenu();
 
                     menu.Items.Clear();
-                    
+
                     foreach (var menuEntry in menuEntries)
                     {
                         if (menuEntry.IsSeparator)
@@ -145,6 +156,12 @@ namespace Xilium.CefGlue.Avalonia.Platform
             {
                 // store cef window handle, to dispose later
                 _browserView = new HostWindow(browserHandle);
+            }
+            else if (CefRuntime.Platform == CefRuntimePlatform.Linux)
+            {
+                // This window is created by cef. It should be closed when browser close.
+                // We shouldn't close it directly, or disposing browser will not work as expected.
+                _browserView = new XWindow(browserHandle, false);
             }
 
             Dispatcher.UIThread.Post(() =>
