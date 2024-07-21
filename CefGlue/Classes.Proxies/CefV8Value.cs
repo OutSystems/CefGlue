@@ -1,10 +1,6 @@
 ﻿namespace Xilium.CefGlue
 {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Runtime.InteropServices;
-    using System.Xml.Linq;
 
     using Xilium.CefGlue.Interop;
 
@@ -531,7 +527,7 @@
             fixed (char* key_str = key)
             {
                 var n_key = new cef_string_t(key_str, key != null ? key.Length : 0);
-                return cef_v8value_t.set_value_byaccessor(_self, &n_key, settings, attribute) != 0;
+                return cef_v8value_t.set_value_byaccessor(_self, &n_key, attribute) != 0;
             }
         }
 

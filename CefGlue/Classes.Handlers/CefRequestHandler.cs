@@ -1,9 +1,6 @@
 ﻿namespace Xilium.CefGlue
 {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Runtime.InteropServices;
     using Xilium.CefGlue.Interop;
 
     /// <summary>
@@ -244,24 +241,74 @@
         }
 
 
-        private void on_render_process_terminated(cef_request_handler_t* self, cef_browser_t* browser, CefTerminationStatus status)
+        private void on_render_process_terminated(cef_request_handler_t* self, cef_browser_t* browser, CefTerminationStatus status, int error_code, cef_string_t* error_string)
         {
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
 
-            OnRenderProcessTerminated(m_browser, status);
+            OnRenderProcessTerminated(m_browser, status, error_code, cef_string_t.ToString(error_string));
         }
 
         /// <summary>
         /// Called on the browser process UI thread when the render process
-        /// terminates unexpectedly. |status| indicates how the process
-        /// terminated.
+        /// terminates unexpectedly. |status| indicates how the process terminated.
+        /// |error_code| and |error_string| represent the error that would be
+        /// displayed in Chrome's "Aw, Snap!" view. Possible |error_code| values
+        /// include cef_resultcode_t non-normal exit values and platform-specific
+        /// crash values (for example, a Posix signal or Windows hardware exception).
         /// </summary>
-        protected virtual void OnRenderProcessTerminated(CefBrowser browser, CefTerminationStatus status)
+        protected virtual void OnRenderProcessTerminated(CefBrowser browser, CefTerminationStatus status, int errorCode, string errorString)
         {
         }
 
+        private int on_render_process_unresponsive(cef_request_handler_t* self, cef_browser_t* browser, cef_unresponsive_process_callback_t* callback)
+        {
+            var mBrowser = CefBrowser.FromNative(browser);
+            var mCallback = CefUnresponsiveProcessCallback.FromNative(callback);
+
+            return OnRenderProcessUnresponsive(mBrowser, mCallback);
+        }
+
+        /// <summary>
+        /// Called on the browser process UI thread when the render process is
+        /// unresponsive as indicated by a lack of input event processing for at
+        /// least 15 seconds. Return false for the default behavior which is an
+        /// indefinite wait with the Alloy runtime or display of the "Page
+        /// unresponsive" dialog with the Chrome runtime. Return true and don't
+        /// execute the callback for an indefinite wait without display of the Chrome
+        /// runtime dialog. Return true and call CefUnresponsiveProcessCallback::Wait
+        /// either in this method or at a later time to reset the wait timer,
+        /// potentially triggering another call to this method if the process remains
+        /// unresponsive. Return true and call CefUnresponsiveProcessCallback::
+        /// Terminate either in this method or at a later time to terminate the
+        /// unresponsive process, resulting in a call to OnRenderProcessTerminated.
+        /// OnRenderProcessResponsive will be called if the process becomes responsive
+        /// after this method is called. This functionality depends on the hang
+        /// monitor which can be disabled by passing the `--disable-hang-monitor`
+        /// command-line flag.
+        /// </summary>
+        protected virtual int OnRenderProcessUnresponsive(CefBrowser browser, CefUnresponsiveProcessCallback callback)
+        {
+            return 0;
+        }
+
+        private void on_render_process_responsive(cef_request_handler_t* self, cef_browser_t* browser)
+        {
+            CheckSelf(self);
+
+            OnRenderProcessResponsive(CefBrowser.FromNative(browser));
+        }
+
+        /// <summary>
+        /// Called on the browser process UI thread when the render process becomes
+        /// responsive after previously being unresponsive. See documentation on
+        /// OnRenderProcessUnresponsive.
+        /// </summary>
+        protected virtual void OnRenderProcessResponsive(CefBrowser browser)
+        {
+
+        }
 
         private void on_document_available_in_main_frame(cef_request_handler_t* self, cef_browser_t* browser)
         {

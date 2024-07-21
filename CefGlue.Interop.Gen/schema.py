@@ -86,6 +86,7 @@ c2cs_types = {
     'cef_touch_handle_state_t': 'cef_touch_handle_state_t',
     'cef_basetime_t': 'CefBaseTime',
     'cef_time_t': 'CefTime',
+    'cef_accelerated_paint_info_t': 'cef_accelerated_paint_info_t',
 
     # platform dependend structs
     'cef_main_args_t': 'cef_main_args_t',
@@ -98,7 +99,7 @@ c2cs_types = {
 
     'cef_cursor_type_t': 'CefCursorType',
 
-	'cef_range_t': 'cef_range_t',
+	  'cef_range_t': 'cef_range_t',
     'cef_channel_layout_t': 'CefChannelLayout',
     'cef_text_input_mode_t': 'CefTextInputMode',
     }
@@ -154,16 +155,16 @@ c2cs_enumtypes = {
     'cef_json_writer_options_t': 'CefJsonWriterOptions',
     'cef_json_parser_error_t': 'CefJsonParserError',
     'cef_pdf_print_margin_type_t': 'CefPdfPrintMarginType',
-	'cef_scale_factor_t': 'CefScaleFactor',
-	'cef_plugin_policy_t': 'CefPluginPolicy',
+	  'cef_scale_factor_t': 'CefScaleFactor',
+	  'cef_plugin_policy_t': 'CefPluginPolicy',
     'cef_cert_status_t': 'CefCertStatus',
     'cef_response_filter_status_t': 'CefResponseFilterStatus',
     'cef_referrer_policy_t': 'CefReferrerPolicy',
-	'cef_color_type_t': 'CefColorType',
-	'cef_alpha_type_t': 'CefAlphaType',
+	  'cef_color_type_t': 'CefColorType',
+	  'cef_alpha_type_t': 'CefAlphaType',
     'cef_cdm_registration_error_t': 'CefCdmRegistrationError',
-	'cef_ssl_version_t': 'CefSslVersion',
-	'cef_ssl_content_status_t': 'CefSslContentStatus',
+	  'cef_ssl_version_t': 'CefSslVersion',
+	  'cef_ssl_content_status_t': 'CefSslContentStatus',
     'cef_menu_color_type_t': 'CefMenuColorType',
     'cef_state_t': 'CefState',
     'cef_media_route_connection_state_t': 'CefMediaRouteConnectionState',
@@ -182,7 +183,9 @@ c2cs_enumtypes = {
     'cef_content_setting_types_t': 'CefContentSettingType',
     'cef_content_setting_values_t': 'CefContentSettingValue',
     'cef_zoom_command_t': 'CefZoomCommand',
-    'cef_dom_form_control_type_t': 'CefDomFormControlType'
+    'cef_dom_form_control_type_t': 'CefDomFormControlType',
+    'cef_runtime_style_t': 'CefRuntimeStyle',
+    'cef_color_variant_t': 'CefColorVariant'
     }
 
 c2cs_structtypes = { }

@@ -1,9 +1,6 @@
 ﻿namespace Xilium.CefGlue
 {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Runtime.InteropServices;
     using Xilium.CefGlue.Interop;
 
     /// <summary>
@@ -159,24 +156,29 @@
         /// <summary>
         /// Returns the frame with the specified identifier, or NULL if not found.
         /// </summary>
-        public CefFrame GetFrame(long identifier)
+        public CefFrame GetFrameByIdentifier(string identifier)
         {
-            return CefFrame.FromNativeOrNull(
-                cef_browser_t.get_frame_byident(_self, identifier)
-                );
+            fixed (char* identifier_str = identifier)
+            {
+                var n_identifier = new cef_string_t(identifier_str, identifier.Length);
+
+                return CefFrame.FromNativeOrNull(
+                    cef_browser_t.get_frame_by_identifier(_self, &n_identifier)
+                    );
+            }
         }
 
         /// <summary>
         /// Returns the frame with the specified name, or NULL if not found.
         /// </summary>
-        public CefFrame GetFrame(string name)
+        public CefFrame GetFrameByName(string name)
         {
             fixed (char* name_str = name)
             {
                 var n_name = new cef_string_t(name_str, name.Length);
 
                 return CefFrame.FromNativeOrNull(
-                    cef_browser_t.get_frame(_self, &n_name)
+                    cef_browser_t.get_frame_by_name(_self, &n_name)
                     );
             }
         }
@@ -192,16 +194,15 @@
         /// <summary>
         /// Returns the identifiers of all existing frames.
         /// </summary>
-        public long[] GetFrameIdentifiers()
+        public string[] GetFrameIdentifiers()
         {
             var frameCount = FrameCount;
-            var identifiers = new long[frameCount * 2];
             UIntPtr n_count = (UIntPtr)frameCount;
 
-            fixed (long* identifiers_ptr = identifiers)
-            {
-                cef_browser_t.get_frame_identifiers(_self, &n_count, identifiers_ptr);
-            }
+            var list = libcef.string_list_alloc();
+            cef_browser_t.get_frame_identifiers(_self, list);
+            var identifiers = cef_string_list.ToArray(list);
+            libcef.string_list_free(list);
 
             if ((int)n_count < 0)
             {

@@ -1,9 +1,7 @@
 ﻿namespace Xilium.CefGlue
 {
+    using global::CefGlue.Structs;
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Runtime.InteropServices;
     using Xilium.CefGlue.Interop;
 
     /// <summary>
@@ -215,7 +213,7 @@
         protected abstract void OnPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr buffer, int width, int height);
 
 
-        private void on_accelerated_paint(cef_render_handler_t* self, cef_browser_t* browser, CefPaintElementType type, UIntPtr dirtyRectsCount, cef_rect_t* dirtyRects, void* shared_handle)
+        private void on_accelerated_paint(cef_render_handler_t* self, cef_browser_t* browser, CefPaintElementType type, UIntPtr dirtyRectsCount, cef_rect_t* dirtyRects, cef_accelerated_paint_info_t* shared_handle)
         {
             CheckSelf(self);
 
@@ -236,19 +234,35 @@
                 rect++;
             }
 
-            OnAcceleratedPaint(m_browser, type, m_dirtyRects, (IntPtr)shared_handle);
+            var m_info = new CefAcceleratedPaintInfo
+            {
+                format = shared_handle->format,
+                shared_texture_handle = shared_handle->shared_texture_handle,
+            };
+
+            OnAcceleratedPaint(m_browser, type, m_dirtyRects, m_info);
         }
 
         /// <summary>
         /// Called when an element has been rendered to the shared texture handle.
         /// |type| indicates whether the element is the view or the popup widget.
         /// |dirtyRects| contains the set of rectangles in pixel coordinates that need
-        /// to be repainted. |shared_handle| is the handle for a D3D11 Texture2D that
-        /// can be accessed via ID3D11Device using the OpenSharedResource method. This
-        /// method is only called when CefWindowInfo::SharedTextureEnabled is set to
-        /// true, and is currently only supported on Windows.
+        /// to be repainted. |info| contains the shared handle; on Windows it is a
+        /// HANDLE to a texture that can be opened with D3D11 OpenSharedResource, on
+        /// macOS it is an IOSurface pointer that can be opened with Metal or OpenGL,
+        /// and on Linux it contains several planes, each with an fd to the underlying
+        /// system native buffer.
+        ///
+        /// The underlying implementation uses a pool to deliver frames. As a result,
+        /// the handle may differ every frame depending on how many frames are
+        /// in-progress. The handle's resource cannot be cached and cannot be accessed
+        /// outside of this callback. It should be reopened each time this callback is
+        /// executed and the contents should be copied to a texture owned by the
+        /// client application. The contents of |info| will be released back to the
+        /// pool after this callback returns.
+        ///
         /// </summary>
-        protected abstract void OnAcceleratedPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr sharedHandle);
+        protected abstract void OnAcceleratedPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, CefAcceleratedPaintInfo sharedHandle);
 
 
         private void get_touch_handle_size(cef_render_handler_t* self, cef_browser_t* browser, CefHorizontalAlignment orientation, cef_size_t* size)

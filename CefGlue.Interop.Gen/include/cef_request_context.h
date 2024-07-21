@@ -266,6 +266,8 @@ class CefRequestContext : public CefPreferenceManager {
   /// See https://developer.chrome.com/extensions for extension implementation
   /// and usage documentation.
   ///
+  /// WARNING: This method is deprecated and will be removed in ~M127.
+  ///
   /*--cef(optional_param=manifest,optional_param=handler)--*/
   virtual void LoadExtension(const CefString& root_directory,
                              CefRefPtr<CefDictionaryValue> manifest,
@@ -277,6 +279,8 @@ class CefRequestContext : public CefPreferenceManager {
   /// access to the extension (see HasExtension). This method must be called on
   /// the browser process UI thread.
   ///
+  /// WARNING: This method is deprecated and will be removed in ~M127.
+  ///
   /*--cef()--*/
   virtual bool DidLoadExtension(const CefString& extension_id) = 0;
 
@@ -285,6 +289,8 @@ class CefRequestContext : public CefPreferenceManager {
   /// |extension_id|. This may not be the context that was used to load the
   /// extension (see DidLoadExtension). This method must be called on the
   /// browser process UI thread.
+  ///
+  /// WARNING: This method is deprecated and will be removed in ~M127.
   ///
   /*--cef()--*/
   virtual bool HasExtension(const CefString& extension_id) = 0;
@@ -295,6 +301,8 @@ class CefRequestContext : public CefPreferenceManager {
   /// extension ID values. Returns true on success. This method must be called
   /// on the browser process UI thread.
   ///
+  /// WARNING: This method is deprecated and will be removed in ~M127.
+  ///
   /*--cef()--*/
   virtual bool GetExtensions(std::vector<CefString>& extension_ids) = 0;
 
@@ -302,6 +310,8 @@ class CefRequestContext : public CefPreferenceManager {
   /// Returns the extension matching |extension_id| or NULL if no matching
   /// extension is accessible in this context (see HasExtension). This method
   /// must be called on the browser process UI thread.
+  ///
+  /// WARNING: This method is deprecated and will be removed in ~M127.
   ///
   /*--cef()--*/
   virtual CefRefPtr<CefExtension> GetExtension(
@@ -381,6 +391,38 @@ class CefRequestContext : public CefPreferenceManager {
                                  const CefString& top_level_url,
                                  cef_content_setting_types_t content_type,
                                  cef_content_setting_values_t value) = 0;
+
+  ///
+  /// Sets the Chrome color scheme for all browsers that share this request
+  /// context. |variant| values of SYSTEM, LIGHT and DARK change the underlying
+  /// color mode (e.g. light vs dark). Other |variant| values determine how
+  /// |user_color| will be applied in the current color mode. If |user_color| is
+  /// transparent (0) the default color will be used.
+  ///
+  /*--cef()--*/
+  virtual void SetChromeColorScheme(cef_color_variant_t variant,
+                                    cef_color_t user_color) = 0;
+
+  ///
+  /// Returns the current Chrome color scheme mode (SYSTEM, LIGHT or DARK). Must
+  /// be called on the browser process UI thread.
+  ///
+  /*--cef(default_retval=CEF_COLOR_VARIANT_SYSTEM)--*/
+  virtual cef_color_variant_t GetChromeColorSchemeMode() = 0;
+
+  ///
+  /// Returns the current Chrome color scheme color, or transparent (0) for the
+  /// default color. Must be called on the browser process UI thread.
+  ///
+  /*--cef(default_retval=0)--*/
+  virtual cef_color_t GetChromeColorSchemeColor() = 0;
+
+  ///
+  /// Returns the current Chrome color scheme variant. Must be called on the
+  /// browser process UI thread.
+  ///
+  /*--cef(default_retval=CEF_COLOR_VARIANT_SYSTEM)--*/
+  virtual cef_color_variant_t GetChromeColorSchemeVariant() = 0;
 };
 
 #endif  // CEF_INCLUDE_CEF_REQUEST_CONTEXT_H_

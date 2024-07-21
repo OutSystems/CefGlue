@@ -1,9 +1,5 @@
 ﻿namespace Xilium.CefGlue
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Runtime.InteropServices;
     using Xilium.CefGlue.Interop;
 
     /// <summary>
@@ -71,7 +67,7 @@
         {
             CheckSelf(self);
 
-            using (var m_commandLine = CefCommandLine.FromNative(command_line)) 
+            using (var m_commandLine = CefCommandLine.FromNative(command_line))
             {
                 OnBeforeChildProcessLaunch(m_commandLine);
             }
@@ -92,7 +88,7 @@
         {
             CheckSelf(self);
 
-            using (var m_commandLine = CefCommandLine.FromNative(command_line)) 
+            using (var m_commandLine = CefCommandLine.FromNative(command_line))
             {
                 return OnAlreadyRunningAppRelaunch(m_commandLine, cef_string_t.ToString(current_directory)) ? 1 : 0;
             }
@@ -142,7 +138,6 @@
         /// </summary>
         protected virtual void OnScheduleMessagePumpWork(long delayMs) { }
 
-
         private cef_client_t* get_default_client(cef_browser_process_handler_t* self)
         {
             CheckSelf(self);
@@ -160,5 +155,25 @@
         /// with the chrome runtime.
         /// </summary>
         protected virtual CefClient GetDefaultClient() => null;
+
+        private cef_request_context_handler_t* get_default_request_context_handler(cef_browser_process_handler_t* self)
+        {
+            CheckSelf(self);
+
+            var result = GetDefaultRequestContextHandler();
+            return result != null ? result.ToNative() : null;
+        }
+
+        /// <summary>
+        /// Return the default handler for use with a new user or incognito profile
+        /// (CefRequestContext object). If null is returned the CefRequestContext will
+        /// be unmanaged (no callbacks will be executed for that CefRequestContext).
+        /// This method is currently only used with the Chrome runtime when creating
+        /// new browser windows via Chrome UI.
+        /// </summary>
+        protected virtual CefRequestContextHandler GetDefaultRequestContextHandler()
+        {
+            return null;
+        }
     }
 }

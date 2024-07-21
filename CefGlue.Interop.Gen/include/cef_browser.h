@@ -39,6 +39,7 @@
 #pragma once
 
 #include <vector>
+
 #include "include/cef_base.h"
 #include "include/cef_devtools_message_observer.h"
 #include "include/cef_drag_data.h"
@@ -169,14 +170,15 @@ class CefBrowser : public virtual CefBaseRefCounted {
   ///
   /// Returns the frame with the specified identifier, or NULL if not found.
   ///
-  /*--cef(capi_name=get_frame_byident)--*/
-  virtual CefRefPtr<CefFrame> GetFrame(int64_t identifier) = 0;
+  /*--cef()--*/
+  virtual CefRefPtr<CefFrame> GetFrameByIdentifier(
+      const CefString& identifier) = 0;
 
   ///
   /// Returns the frame with the specified name, or NULL if not found.
   ///
   /*--cef(optional_param=name)--*/
-  virtual CefRefPtr<CefFrame> GetFrame(const CefString& name) = 0;
+  virtual CefRefPtr<CefFrame> GetFrameByName(const CefString& name) = 0;
 
   ///
   /// Returns the number of frames that currently exist.
@@ -188,7 +190,7 @@ class CefBrowser : public virtual CefBaseRefCounted {
   /// Returns the identifiers of all existing frames.
   ///
   /*--cef(count_func=identifiers:GetFrameCount)--*/
-  virtual void GetFrameIdentifiers(std::vector<int64_t>& identifiers) = 0;
+  virtual void GetFrameIdentifiers(std::vector<CefString>& identifiers) = 0;
 
   ///
   /// Returns the names of all existing frames.
@@ -941,6 +943,8 @@ class CefBrowserHost : public virtual CefBaseRefCounted {
   /// Returns the extension hosted in this browser or NULL if no extension is
   /// hosted. See CefRequestContext::LoadExtension for details.
   ///
+  /// WARNING: This method is deprecated and will be removed in ~M127.
+  ///
   /*--cef()--*/
   virtual CefRefPtr<CefExtension> GetExtension() = 0;
 
@@ -948,6 +952,8 @@ class CefBrowserHost : public virtual CefBaseRefCounted {
   /// Returns true if this browser is hosting an extension background script.
   /// Background hosts do not have a window and are not displayable. See
   /// CefRequestContext::LoadExtension for details.
+  ///
+  /// WARNING: This method is deprecated and will be removed in ~M127.
   ///
   /*--cef()--*/
   virtual bool IsBackgroundHost() = 0;
@@ -1006,6 +1012,24 @@ class CefBrowserHost : public virtual CefBaseRefCounted {
   virtual void ExecuteChromeCommand(
       int command_id,
       cef_window_open_disposition_t disposition) = 0;
+
+  ///
+  /// Returns true if the render process associated with this browser is
+  /// currently unresponsive as indicated by a lack of input event processing
+  /// for at least 15 seconds. To receive associated state change notifications
+  /// and optionally handle an unresponsive render process implement
+  /// CefRequestHandler::OnRenderProcessUnresponsive. This method can only be
+  /// called on the UI thread.
+  ///
+  /*--cef()--*/
+  virtual bool IsRenderProcessUnresponsive() = 0;
+
+  ///
+  /// Returns the runtime style for this browser (ALLOY or CHROME). See
+  /// cef_runtime_style_t documentation for details.
+  ///
+  /*--cef(default_retval=CEF_RUNTIME_STYLE_DEFAULT)--*/
+  virtual cef_runtime_style_t GetRuntimeStyle() = 0;
 };
 
 #endif  // CEF_INCLUDE_CEF_BROWSER_H_
