@@ -79,6 +79,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _exit_fullscreen;
         internal IntPtr _can_execute_chrome_command;
         internal IntPtr _execute_chrome_command;
+        internal IntPtr _is_render_process_unresponsive;
+        internal IntPtr _get_runtime_style;
         
         // CreateBrowser
         [DllImport(libcef.DllName, EntryPoint = "cef_browser_host_create_browser", CallingConvention = libcef.CEF_CALL)]
@@ -507,6 +509,18 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate void execute_chrome_command_delegate(cef_browser_host_t* self, int command_id, CefWindowOpenDisposition disposition);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate int is_render_process_unresponsive_delegate(cef_browser_host_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate CefRuntimeStyle get_runtime_style_delegate(cef_browser_host_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -1696,6 +1710,40 @@ namespace Xilium.CefGlue.Interop
                 if (_p45 == IntPtr.Zero) { _d45 = d; _p45 = p; }
             }
             d(self, command_id, disposition);
+        }
+        
+        // IsRenderProcessUnresponsive
+        private static IntPtr _p46;
+        private static is_render_process_unresponsive_delegate _d46;
+        
+        public static int is_render_process_unresponsive(cef_browser_host_t* self)
+        {
+            is_render_process_unresponsive_delegate d;
+            var p = self->_is_render_process_unresponsive;
+            if (p == _p46) { d = _d46; }
+            else
+            {
+                d = (is_render_process_unresponsive_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_render_process_unresponsive_delegate));
+                if (_p46 == IntPtr.Zero) { _d46 = d; _p46 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetRuntimeStyle
+        private static IntPtr _p47;
+        private static get_runtime_style_delegate _d47;
+        
+        public static CefRuntimeStyle get_runtime_style(cef_browser_host_t* self)
+        {
+            get_runtime_style_delegate d;
+            var p = self->_get_runtime_style;
+            if (p == _p47) { d = _d47; }
+            else
+            {
+                d = (get_runtime_style_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_runtime_style_delegate));
+                if (_p47 == IntPtr.Zero) { _d47 = d; _p47 = p; }
+            }
+            return d(self);
         }
         
     }

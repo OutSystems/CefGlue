@@ -4,7 +4,7 @@
         <DefaultTargetDotnetVersion>net8.0</DefaultTargetDotnetVersion>
         <TargetDotnetVersions>net6.0;$(DefaultTargetDotnetVersion)</TargetDotnetVersions>
         <LangVersion>latest</LangVersion>
-        <CefRedistVersion>120.1.8</CefRedistVersion>
+        <CefRedistVersion>126.2.18</CefRedistVersion>
         <CefRedistOSXVersion>120.1.8</CefRedistOSXVersion>
         <Platforms>x64;ARM64</Platforms>
         <Configurations>Debug;DebugWindowlessRender;Release;ReleaseWPFAvalonia</Configurations>
@@ -12,7 +12,7 @@
 
     <PropertyGroup>
         <PackageOutputPath>$(MSBuildProjectDirectory)\..\Nuget\output</PackageOutputPath>
-        <Version>120.6099.203</Version>
+        <Version>126.6478.1</Version>
         <Authors>XiliumHQ,OutSystems</Authors>
         <Product>CefGlue</Product>
         <AssemblyTitle>CefGlue</AssemblyTitle>

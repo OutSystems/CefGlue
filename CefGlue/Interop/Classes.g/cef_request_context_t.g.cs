@@ -40,6 +40,10 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _set_website_setting;
         internal IntPtr _get_content_setting;
         internal IntPtr _set_content_setting;
+        internal IntPtr _set_chrome_color_scheme;
+        internal IntPtr _get_chrome_color_scheme_mode;
+        internal IntPtr _get_chrome_color_scheme_color;
+        internal IntPtr _get_chrome_color_scheme_variant;
         
         // GetGlobalContext
         [DllImport(libcef.DllName, EntryPoint = "cef_request_context_get_global_context", CallingConvention = libcef.CEF_CALL)]
@@ -238,6 +242,30 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate void set_content_setting_delegate(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type, CefContentSettingValue value);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void set_chrome_color_scheme_delegate(cef_request_context_t* self, CefColorVariant variant, uint user_color);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate CefColorVariant get_chrome_color_scheme_mode_delegate(cef_request_context_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate uint get_chrome_color_scheme_color_delegate(cef_request_context_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate CefColorVariant get_chrome_color_scheme_variant_delegate(cef_request_context_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -764,6 +792,74 @@ namespace Xilium.CefGlue.Interop
                 if (_p1e == IntPtr.Zero) { _d1e = d; _p1e = p; }
             }
             d(self, requesting_url, top_level_url, content_type, value);
+        }
+        
+        // SetChromeColorScheme
+        private static IntPtr _p1f;
+        private static set_chrome_color_scheme_delegate _d1f;
+        
+        public static void set_chrome_color_scheme(cef_request_context_t* self, CefColorVariant variant, uint user_color)
+        {
+            set_chrome_color_scheme_delegate d;
+            var p = self->_set_chrome_color_scheme;
+            if (p == _p1f) { d = _d1f; }
+            else
+            {
+                d = (set_chrome_color_scheme_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_chrome_color_scheme_delegate));
+                if (_p1f == IntPtr.Zero) { _d1f = d; _p1f = p; }
+            }
+            d(self, variant, user_color);
+        }
+        
+        // GetChromeColorSchemeMode
+        private static IntPtr _p20;
+        private static get_chrome_color_scheme_mode_delegate _d20;
+        
+        public static CefColorVariant get_chrome_color_scheme_mode(cef_request_context_t* self)
+        {
+            get_chrome_color_scheme_mode_delegate d;
+            var p = self->_get_chrome_color_scheme_mode;
+            if (p == _p20) { d = _d20; }
+            else
+            {
+                d = (get_chrome_color_scheme_mode_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_chrome_color_scheme_mode_delegate));
+                if (_p20 == IntPtr.Zero) { _d20 = d; _p20 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetChromeColorSchemeColor
+        private static IntPtr _p21;
+        private static get_chrome_color_scheme_color_delegate _d21;
+        
+        public static uint get_chrome_color_scheme_color(cef_request_context_t* self)
+        {
+            get_chrome_color_scheme_color_delegate d;
+            var p = self->_get_chrome_color_scheme_color;
+            if (p == _p21) { d = _d21; }
+            else
+            {
+                d = (get_chrome_color_scheme_color_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_chrome_color_scheme_color_delegate));
+                if (_p21 == IntPtr.Zero) { _d21 = d; _p21 = p; }
+            }
+            return d(self);
+        }
+        
+        // GetChromeColorSchemeVariant
+        private static IntPtr _p22;
+        private static get_chrome_color_scheme_variant_delegate _d22;
+        
+        public static CefColorVariant get_chrome_color_scheme_variant(cef_request_context_t* self)
+        {
+            get_chrome_color_scheme_variant_delegate d;
+            var p = self->_get_chrome_color_scheme_variant;
+            if (p == _p22) { d = _d22; }
+            else
+            {
+                d = (get_chrome_color_scheme_variant_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_chrome_color_scheme_variant_delegate));
+                if (_p22 == IntPtr.Zero) { _d22 = d; _p22 = p; }
+            }
+            return d(self);
         }
         
     }

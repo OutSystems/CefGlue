@@ -29,8 +29,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _has_document;
         internal IntPtr _get_main_frame;
         internal IntPtr _get_focused_frame;
-        internal IntPtr _get_frame_byident;
-        internal IntPtr _get_frame;
+        internal IntPtr _get_frame_by_identifier;
+        internal IntPtr _get_frame_by_name;
         internal IntPtr _get_frame_count;
         internal IntPtr _get_frame_identifiers;
         internal IntPtr _get_frame_names;
@@ -159,13 +159,13 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_frame_t* get_frame_byident_delegate(cef_browser_t* self, long identifier);
+        private delegate cef_frame_t* get_frame_by_identifier_delegate(cef_browser_t* self, cef_string_t* identifier);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_frame_t* get_frame_delegate(cef_browser_t* self, cef_string_t* name);
+        private delegate cef_frame_t* get_frame_by_name_delegate(cef_browser_t* self, cef_string_t* name);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -177,7 +177,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void get_frame_identifiers_delegate(cef_browser_t* self, UIntPtr* identifiersCount, long* identifiers);
+        private delegate void get_frame_identifiers_delegate(cef_browser_t* self, cef_string_list* identifiers);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -525,35 +525,35 @@ namespace Xilium.CefGlue.Interop
             return d(self);
         }
         
-        // GetFrame
+        // GetFrameByIdentifier
         private static IntPtr _p14;
-        private static get_frame_byident_delegate _d14;
+        private static get_frame_by_identifier_delegate _d14;
         
-        public static cef_frame_t* get_frame_byident(cef_browser_t* self, long identifier)
+        public static cef_frame_t* get_frame_by_identifier(cef_browser_t* self, cef_string_t* identifier)
         {
-            get_frame_byident_delegate d;
-            var p = self->_get_frame_byident;
+            get_frame_by_identifier_delegate d;
+            var p = self->_get_frame_by_identifier;
             if (p == _p14) { d = _d14; }
             else
             {
-                d = (get_frame_byident_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_byident_delegate));
+                d = (get_frame_by_identifier_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_by_identifier_delegate));
                 if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
             }
             return d(self, identifier);
         }
         
-        // GetFrame
+        // GetFrameByName
         private static IntPtr _p15;
-        private static get_frame_delegate _d15;
+        private static get_frame_by_name_delegate _d15;
         
-        public static cef_frame_t* get_frame(cef_browser_t* self, cef_string_t* name)
+        public static cef_frame_t* get_frame_by_name(cef_browser_t* self, cef_string_t* name)
         {
-            get_frame_delegate d;
-            var p = self->_get_frame;
+            get_frame_by_name_delegate d;
+            var p = self->_get_frame_by_name;
             if (p == _p15) { d = _d15; }
             else
             {
-                d = (get_frame_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_delegate));
+                d = (get_frame_by_name_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_by_name_delegate));
                 if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
             }
             return d(self, name);
@@ -580,7 +580,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p17;
         private static get_frame_identifiers_delegate _d17;
         
-        public static void get_frame_identifiers(cef_browser_t* self, UIntPtr* identifiersCount, long* identifiers)
+        public static void get_frame_identifiers(cef_browser_t* self, cef_string_list* identifiers)
         {
             get_frame_identifiers_delegate d;
             var p = self->_get_frame_identifiers;
@@ -590,7 +590,7 @@ namespace Xilium.CefGlue.Interop
                 d = (get_frame_identifiers_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_frame_identifiers_delegate));
                 if (_p17 == IntPtr.Zero) { _d17 = d; _p17 = p; }
             }
-            d(self, identifiersCount, identifiers);
+            d(self, identifiers);
         }
         
         // GetFrameNames

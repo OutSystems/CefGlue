@@ -17,6 +17,10 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_initialize", CallingConvention = libcef.CEF_CALL)]
         public static extern int initialize(cef_main_args_t* args, cef_settings_t* settings, cef_app_t* application, void* windows_sandbox_info);
         
+        // CefGetExitCode
+        [DllImport(libcef.DllName, EntryPoint = "cef_get_exit_code", CallingConvention = libcef.CEF_CALL)]
+        public static extern int get_exit_code();
+        
         // CefShutdown
         [DllImport(libcef.DllName, EntryPoint = "cef_shutdown", CallingConvention = libcef.CEF_CALL)]
         public static extern void shutdown();

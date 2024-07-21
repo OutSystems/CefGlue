@@ -169,7 +169,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate long get_identifier_delegate(cef_frame_t* self);
+        private delegate cef_string_userfree* get_identifier_delegate(cef_frame_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -574,7 +574,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p15;
         private static get_identifier_delegate _d15;
         
-        public static long get_identifier(cef_frame_t* self)
+        public static cef_string_userfree* get_identifier(cef_frame_t* self)
         {
             get_identifier_delegate d;
             var p = self->_get_identifier;

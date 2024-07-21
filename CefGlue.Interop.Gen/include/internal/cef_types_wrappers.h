@@ -387,7 +387,9 @@ struct CefSettingsTraits {
                    &target->framework_dir_path, copy);
     cef_string_set(src->main_bundle_path.str, src->main_bundle_path.length,
                    &target->main_bundle_path, copy);
+#if !defined(DISABLE_ALLOY_BOOTSTRAP)
     target->chrome_runtime = src->chrome_runtime;
+#endif
     target->multi_threaded_message_loop = src->multi_threaded_message_loop;
     target->external_message_pump = src->external_message_pump;
     target->windowless_rendering_enabled = src->windowless_rendering_enabled;
@@ -683,6 +685,7 @@ struct CefPdfPrintSettingsTraits {
                    &target->footer_template, copy);
 
     target->generate_tagged_pdf = src->generate_tagged_pdf;
+    target->generate_document_outline = src->generate_document_outline;
   }
 };
 
@@ -696,7 +699,9 @@ using CefPdfPrintSettings = CefStructBase<CefPdfPrintSettingsTraits>;
 ///
 class CefBoxLayoutSettings : public cef_box_layout_settings_t {
  public:
-  CefBoxLayoutSettings() : cef_box_layout_settings_t{} {}
+  CefBoxLayoutSettings() : cef_box_layout_settings_t{} {
+    cross_axis_alignment = CEF_AXIS_ALIGNMENT_STRETCH;
+  }
   CefBoxLayoutSettings(const cef_box_layout_settings_t& r)
       : cef_box_layout_settings_t(r) {}
 };
@@ -746,5 +751,15 @@ struct CefMediaSinkDeviceInfoTraits {
 /// Class representing MediaSink device info.
 ///
 using CefMediaSinkDeviceInfo = CefStructBase<CefMediaSinkDeviceInfoTraits>;
+
+///
+/// Class representing accelerated paint info.
+///
+class CefAcceleratedPaintInfo : public cef_accelerated_paint_info_t {
+ public:
+  CefAcceleratedPaintInfo() : cef_accelerated_paint_info_t{} {}
+  CefAcceleratedPaintInfo(const cef_accelerated_paint_info_t& r)
+      : cef_accelerated_paint_info_t(r) {}
+};
 
 #endif  // CEF_INCLUDE_INTERNAL_CEF_TYPES_WRAPPERS_H_

@@ -235,12 +235,14 @@ typedef struct _cef_settings_t {
   ///
   cef_string_t main_bundle_path;
 
+#if !defined(DISABLE_ALLOY_BOOTSTRAP)
   ///
   /// Set to true (1) to enable use of the Chrome runtime in CEF. This feature
   /// is considered experimental and is not recommended for most users at this
   /// time. See issue #2969 for details.
   ///
   int chrome_runtime;
+#endif
 
   ///
   /// Set to true (1) to have the browser process message loop run in a separate
@@ -433,10 +435,14 @@ typedef struct _cef_settings_t {
   ///
   /// Set to a value between 1024 and 65535 to enable remote debugging on the
   /// specified port. Also configurable using the "remote-debugging-port"
-  /// command-line switch. Remote debugging can be accessed by loading the
-  /// chrome://inspect page in Google Chrome. Port numbers 9222 and 9229 are
-  /// discoverable by default. Other port numbers may need to be configured via
-  /// "Discover network targets" on the Devices tab.
+  /// command-line switch. Specifying 0 via the command-line switch will result
+  /// in the selection of an ephemeral port and the port number will be printed
+  /// as part of the WebSocket endpoint URL to stderr. If a cache directory path
+  /// is provided the port will also be written to the
+  /// <cache-dir>/DevToolsActivePort file. Remote debugging can be accessed by
+  /// loading the chrome://inspect page in Google Chrome. Port numbers 9222 and
+  /// 9229 are discoverable by default. Other port numbers may need to be
+  /// configured via "Discover network targets" on the Devices tab.
   ///
   int remote_debugging_port;
 
@@ -913,6 +919,16 @@ typedef enum {
   /// Out of memory. Some platforms may use TS_PROCESS_CRASHED instead.
   ///
   TS_PROCESS_OOM,
+
+  ///
+  /// Child process never launched.
+  ///
+  TS_LAUNCH_FAILED,
+
+  ///
+  /// On Windows, the OS terminated the process due to code integrity failure.
+  ///
+  TS_INTEGRITY_FAILURE,
 } cef_termination_status_t;
 
 ///
@@ -1024,6 +1040,100 @@ typedef enum {
 } cef_cert_status_t;
 
 ///
+/// Process result codes. This is not a comprehensive list, as result codes
+/// might also include platform-specific crash values (Posix signal or Windows
+/// hardware exception), or internal-only implementation values.
+///
+typedef enum {
+  // The following values should be kept in sync with Chromium's
+  // content::ResultCode type.
+
+  CEF_RESULT_CODE_NORMAL_EXIT,
+
+  /// Process was killed by user or system.
+  CEF_RESULT_CODE_KILLED,
+
+  /// Process hung.
+  CEF_RESULT_CODE_HUNG,
+
+  /// A bad message caused the process termination.
+  CEF_RESULT_CODE_KILLED_BAD_MESSAGE,
+
+  /// The GPU process exited because initialization failed.
+  CEF_RESULT_CODE_GPU_DEAD_ON_ARRIVAL,
+
+  // The following values should be kept in sync with Chromium's
+  // chrome::ResultCode type. Unused chrome values are excluded.
+
+  CEF_RESULT_CODE_CHROME_FIRST,
+
+  /// A critical chrome file is missing.
+  CEF_RESULT_CODE_MISSING_DATA = 7,
+
+  /// Command line parameter is not supported.
+  CEF_RESULT_CODE_UNSUPPORTED_PARAM = 13,
+
+  /// The profile was in use on another host.
+  CEF_RESULT_CODE_PROFILE_IN_USE = 21,
+
+  /// Failed to pack an extension via the command line.
+  CEF_RESULT_CODE_PACK_EXTENSION_ERROR = 22,
+
+  /// The browser process exited early by passing the command line to another
+  /// running browser.
+  CEF_RESULT_CODE_NORMAL_EXIT_PROCESS_NOTIFIED = 24,
+
+  /// A browser process was sandboxed. This should never happen.
+  CEF_RESULT_CODE_INVALID_SANDBOX_STATE = 31,
+
+  /// Cloud policy enrollment failed or was given up by user.
+  CEF_RESULT_CODE_CLOUD_POLICY_ENROLLMENT_FAILED = 32,
+
+  /// The GPU process was terminated due to context lost.
+  CEF_RESULT_CODE_GPU_EXIT_ON_CONTEXT_LOST = 34,
+
+  /// An early startup command was executed and the browser must exit.
+  CEF_RESULT_CODE_NORMAL_EXIT_PACK_EXTENSION_SUCCESS = 36,
+
+  /// The browser process exited because system resources are exhausted. The
+  /// system state can't be recovered and will be unstable.
+  CEF_RESULT_CODE_SYSTEM_RESOURCE_EXHAUSTED = 37,
+
+  CEF_RESULT_CODE_CHROME_LAST = 39,
+
+  // The following values should be kept in sync with Chromium's
+  // sandbox::TerminationCodes type.
+
+  CEF_RESULT_CODE_SANDBOX_FATAL_FIRST = 7006,
+
+  /// Windows sandbox could not set the integrity level.
+  CEF_RESULT_CODE_SANDBOX_FATAL_INTEGRITY = CEF_RESULT_CODE_SANDBOX_FATAL_FIRST,
+
+  /// Windows sandbox could not lower the token.
+  CEF_RESULT_CODE_SANDBOX_FATAL_DROPTOKEN,
+
+  /// Windows sandbox failed to flush registry handles.
+  CEF_RESULT_CODE_SANDBOX_FATAL_FLUSHANDLES,
+
+  /// Windows sandbox failed to forbid HCKU caching.
+  CEF_RESULT_CODE_SANDBOX_FATAL_CACHEDISABLE,
+
+  /// Windows sandbox failed to close pending handles.
+  CEF_RESULT_CODE_SANDBOX_FATAL_CLOSEHANDLES,
+
+  /// Windows sandbox could not set the mitigation policy.
+  CEF_RESULT_CODE_SANDBOX_FATAL_MITIGATION,
+
+  /// Windows sandbox exceeded the job memory limit.
+  CEF_RESULT_CODE_SANDBOX_FATAL_MEMORY_EXCEEDED,
+
+  /// Windows sandbox failed to warmup.
+  CEF_RESULT_CODE_SANDBOX_FATAL_WARMUP,
+
+  CEF_RESULT_CODE_SANDBOX_FATAL_LAST,
+} cef_resultcode_t;
+
+///
 /// The manner in which a link click should be opened. These constants match
 /// their equivalents in Chromium's window_open_disposition.h and should not be
 /// renumbered.
@@ -1128,16 +1238,6 @@ typedef enum {
 
   CEF_TEXT_INPUT_MODE_MAX = CEF_TEXT_INPUT_MODE_SEARCH,
 } cef_text_input_mode_t;
-
-///
-/// V8 access control values.
-///
-typedef enum {
-  V8_ACCESS_CONTROL_DEFAULT = 0,
-  V8_ACCESS_CONTROL_ALL_CAN_READ = 1,
-  V8_ACCESS_CONTROL_ALL_CAN_WRITE = 1 << 1,
-  V8_ACCESS_CONTROL_PROHIBITS_OVERWRITING = 1 << 2
-} cef_v8_accesscontrol_t;
 
 ///
 /// V8 property attribute values.
@@ -2332,6 +2432,7 @@ typedef enum {
   DOM_FORM_CONTROL_TYPE_BUTTON_SUBMIT,
   DOM_FORM_CONTROL_TYPE_BUTTON_RESET,
   DOM_FORM_CONTROL_TYPE_BUTTON_SELECT_LIST,
+  DOM_FORM_CONTROL_TYPE_BUTTON_POPOVER,
   DOM_FORM_CONTROL_TYPE_FIELDSET,
   DOM_FORM_CONTROL_TYPE_INPUT_BUTTON,
   DOM_FORM_CONTROL_TYPE_INPUT_CHECKBOX,
@@ -2708,6 +2809,11 @@ typedef struct _cef_pdf_print_settings_t {
   /// Set to true (1) to generate tagged (accessible) PDF.
   ///
   int generate_tagged_pdf;
+
+  ///
+  /// Set to true (1) to generate a document outline.
+  ///
+  int generate_document_outline;
 } cef_pdf_print_settings_t;
 
 ///
@@ -2812,21 +2918,6 @@ typedef enum {
 } cef_response_filter_status_t;
 
 ///
-/// Describes how to interpret the components of a pixel.
-///
-typedef enum {
-  ///
-  /// RGBA with 8 bits per pixel (32bits total).
-  ///
-  CEF_COLOR_TYPE_RGBA_8888,
-
-  ///
-  /// BGRA with 8 bits per pixel (32bits total).
-  ///
-  CEF_COLOR_TYPE_BGRA_8888,
-} cef_color_type_t;
-
-///
 /// Describes how to interpret the alpha component of a pixel.
 ///
 typedef enum {
@@ -2858,51 +2949,22 @@ typedef enum {
 } cef_text_style_t;
 
 ///
-/// Specifies where along the main axis the CefBoxLayout child views should be
-/// laid out.
+/// Specifies where along the axis the CefBoxLayout child views should be laid
+/// out. Should be kept in sync with Chromium's views::LayoutAlignment type.
 ///
 typedef enum {
-  ///
-  /// Child views will be left-aligned.
-  ///
-  CEF_MAIN_AXIS_ALIGNMENT_START,
+  /// Child views will be left/top-aligned.
+  CEF_AXIS_ALIGNMENT_START,
 
-  ///
   /// Child views will be center-aligned.
-  ///
-  CEF_MAIN_AXIS_ALIGNMENT_CENTER,
+  CEF_AXIS_ALIGNMENT_CENTER,
 
-  ///
-  /// Child views will be right-aligned.
-  ///
-  CEF_MAIN_AXIS_ALIGNMENT_END,
-} cef_main_axis_alignment_t;
+  /// Child views will be right/bottom-aligned.
+  CEF_AXIS_ALIGNMENT_END,
 
-///
-/// Specifies where along the cross axis the CefBoxLayout child views should be
-/// laid out.
-///
-typedef enum {
-  ///
   /// Child views will be stretched to fit.
-  ///
-  CEF_CROSS_AXIS_ALIGNMENT_STRETCH,
-
-  ///
-  /// Child views will be left-aligned.
-  ///
-  CEF_CROSS_AXIS_ALIGNMENT_START,
-
-  ///
-  /// Child views will be center-aligned.
-  ///
-  CEF_CROSS_AXIS_ALIGNMENT_CENTER,
-
-  ///
-  /// Child views will be right-aligned.
-  ///
-  CEF_CROSS_AXIS_ALIGNMENT_END,
-} cef_cross_axis_alignment_t;
+  CEF_AXIS_ALIGNMENT_STRETCH,
+} cef_axis_alignment_t;
 
 ///
 /// Settings used when initializing a CefBoxLayout.
@@ -2939,12 +3001,12 @@ typedef struct _cef_box_layout_settings_t {
   ///
   /// Specifies where along the main axis the child views should be laid out.
   ///
-  cef_main_axis_alignment_t main_axis_alignment;
+  cef_axis_alignment_t main_axis_alignment;
 
   ///
   /// Specifies where along the cross axis the child views should be laid out.
   ///
-  cef_cross_axis_alignment_t cross_axis_alignment;
+  cef_axis_alignment_t cross_axis_alignment;
 
   ///
   /// Minimum cross axis size.
@@ -3213,64 +3275,65 @@ typedef enum {
   /// Front L, Front R, Front C, LFE, Back L, Back R
   CEF_CHANNEL_LAYOUT_5_1_BACK = 12,
 
-  /// Front L, Front R, Front C, Side L, Side R, Back L, Back R
+  /// Front L, Front R, Front C, Back L, Back R, Side L, Side R
   CEF_CHANNEL_LAYOUT_7_0 = 13,
 
-  /// Front L, Front R, Front C, LFE, Side L, Side R, Back L, Back R
+  /// Front L, Front R, Front C, LFE, Back L, Back R, Side L, Side R
   CEF_CHANNEL_LAYOUT_7_1 = 14,
 
-  /// Front L, Front R, Front C, LFE, Side L, Side R, Front LofC, Front RofC
+  /// Front L, Front R, Front C, LFE, Front LofC, Front RofC, Side L, Side R
   CEF_CHANNEL_LAYOUT_7_1_WIDE = 15,
 
-  /// Stereo L, Stereo R
+  /// Front L, Front R
   CEF_CHANNEL_LAYOUT_STEREO_DOWNMIX = 16,
 
-  /// Stereo L, Stereo R, LFE
+  /// Front L, Front R, LFE
   CEF_CHANNEL_LAYOUT_2POINT1 = 17,
 
-  /// Stereo L, Stereo R, Front C, LFE
+  /// Front L, Front R, Front C, LFE
   CEF_CHANNEL_LAYOUT_3_1 = 18,
 
-  /// Stereo L, Stereo R, Front C, Rear C, LFE
+  /// Front L, Front R, Front C, LFE, Back C
   CEF_CHANNEL_LAYOUT_4_1 = 19,
 
-  /// Stereo L, Stereo R, Front C, Side L, Side R, Back C
+  /// Front L, Front R, Front C, Back C, Side L, Side R
   CEF_CHANNEL_LAYOUT_6_0 = 20,
 
-  /// Stereo L, Stereo R, Side L, Side R, Front LofC, Front RofC
+  /// Front L, Front R, Front LofC, Front RofC, Side L, Side R
   CEF_CHANNEL_LAYOUT_6_0_FRONT = 21,
 
-  /// Stereo L, Stereo R, Front C, Rear L, Rear R, Rear C
+  /// Front L, Front R, Front C, Back L, Back R, Back C
   CEF_CHANNEL_LAYOUT_HEXAGONAL = 22,
 
-  /// Stereo L, Stereo R, Front C, LFE, Side L, Side R, Rear Center
+  /// Front L, Front R, Front C, LFE, Back C, Side L, Side R
   CEF_CHANNEL_LAYOUT_6_1 = 23,
 
-  /// Stereo L, Stereo R, Front C, LFE, Back L, Back R, Rear Center
+  /// Front L, Front R, Front C, LFE, Back L, Back R, Back C
   CEF_CHANNEL_LAYOUT_6_1_BACK = 24,
 
-  /// Stereo L, Stereo R, Side L, Side R, Front LofC, Front RofC, LFE
+  /// Front L, Front R, LFE, Front LofC, Front RofC, Side L, Side R
   CEF_CHANNEL_LAYOUT_6_1_FRONT = 25,
 
-  /// Front L, Front R, Front C, Side L, Side R, Front LofC, Front RofC
+  /// Front L, Front R, Front C, Front LofC, Front RofC, Side L, Side R
   CEF_CHANNEL_LAYOUT_7_0_FRONT = 26,
 
   /// Front L, Front R, Front C, LFE, Back L, Back R, Front LofC, Front RofC
   CEF_CHANNEL_LAYOUT_7_1_WIDE_BACK = 27,
 
-  /// Front L, Front R, Front C, Side L, Side R, Rear L, Back R, Back C.
+  /// Front L, Front R, Front C, Back L, Back R, Back C, Side L, Side R
   CEF_CHANNEL_LAYOUT_OCTAGONAL = 28,
 
   /// Channels are not explicitly mapped to speakers.
   CEF_CHANNEL_LAYOUT_DISCRETE = 29,
 
+  /// Deprecated, but keeping the enum value for UMA consistency.
   /// Front L, Front R, Front C. Front C contains the keyboard mic audio. This
   /// layout is only intended for input for WebRTC. The Front C channel
   /// is stripped away in the WebRTC audio input pipeline and never seen outside
   /// of that.
   CEF_CHANNEL_LAYOUT_STEREO_AND_KEYBOARD_MIC = 30,
 
-  /// Front L, Front R, Side L, Side R, LFE
+  /// Front L, Front R, LFE, Side L, Side R
   CEF_CHANNEL_LAYOUT_4_1_QUAD_SIDE = 31,
 
   /// Actual channel layout is specified in the bitstream and the actual channel
@@ -3284,8 +3347,14 @@ typedef enum {
   /// kMaxConcurrentChannels
   CEF_CHANNEL_LAYOUT_5_1_4_DOWNMIX = 33,
 
+  /// Front C, LFE
+  CEF_CHANNEL_LAYOUT_1_1 = 34,
+
+  /// Front L, Front R, LFE, Back C
+  CEF_CHANNEL_LAYOUT_3_1_BACK = 35,
+
   /// Max value, must always equal the largest entry ever logged.
-  CEF_CHANNEL_LAYOUT_MAX = CEF_CHANNEL_LAYOUT_5_1_4_DOWNMIX
+  CEF_CHANNEL_LAYOUT_MAX = CEF_CHANNEL_LAYOUT_3_1_BACK
 } cef_channel_layout_t;
 
 ///
@@ -3394,18 +3463,18 @@ typedef enum {
   CEF_CPAIT_COOKIE_CONTROLS,
   CEF_CPAIT_FILE_SYSTEM_ACCESS,
   CEF_CPAIT_FIND,
-  CEF_CPAIT_HIGH_EFFICIENCY,
+  CEF_CPAIT_MEMORY_SAVER,
   CEF_CPAIT_INTENT_PICKER,
   CEF_CPAIT_LOCAL_CARD_MIGRATION,
   CEF_CPAIT_MANAGE_PASSWORDS,
   CEF_CPAIT_PAYMENTS_OFFER_NOTIFICATION,
   CEF_CPAIT_PRICE_TRACKING,
   CEF_CPAIT_PWA_INSTALL,
-  CEF_CPAIT_QR_CODE_GENERATOR,
-  CEF_CPAIT_READER_MODE,
+  CEF_CPAIT_QR_CODE_GENERATOR_DEPRECATED,
+  CEF_CPAIT_READER_MODE_DEPRECATED,
   CEF_CPAIT_SAVE_AUTOFILL_ADDRESS,
   CEF_CPAIT_SAVE_CARD,
-  CEF_CPAIT_SEND_TAB_TO_SELF,
+  CEF_CPAIT_SEND_TAB_TO_SELF_DEPRECATED,
   CEF_CPAIT_SHARING_HUB,
   CEF_CPAIT_SIDE_SEARCH,
   CEF_CPAIT_SMS_REMOTE_FETCHER,
@@ -3416,7 +3485,10 @@ typedef enum {
   CEF_CPAIT_SAVE_IBAN,
   CEF_CPAIT_MANDATORY_REAUTH,
   CEF_CPAIT_PRICE_INSIGHTS,
-  CEF_CPAIT_MAX_VALUE = CEF_CPAIT_PRICE_INSIGHTS,
+  CEF_CPAIT_PRICE_READ_ANYTHING,
+  CEF_CPAIT_PRODUCT_SPECIFICATIONS,
+  CEF_CPAIT_LENS_OVERLAY,
+  CEF_CPAIT_MAX_VALUE = CEF_CPAIT_LENS_OVERLAY,
 } cef_chrome_page_action_icon_type_t;
 
 ///
@@ -3446,10 +3518,21 @@ typedef enum {
 /// Show states supported by CefWindowDelegate::GetInitialShowState.
 ///
 typedef enum {
+  // Show the window as normal.
   CEF_SHOW_STATE_NORMAL = 1,
+
+  // Show the window as minimized.
   CEF_SHOW_STATE_MINIMIZED,
+
+  // Show the window as maximized.
   CEF_SHOW_STATE_MAXIMIZED,
+
+  // Show the window as fullscreen.
   CEF_SHOW_STATE_FULLSCREEN,
+
+  // Show the window as hidden (no dock thumbnail).
+  // Only supported on MacOS.
+  CEF_SHOW_STATE_HIDDEN,
 } cef_show_state_t;
 
 ///
@@ -3539,23 +3622,26 @@ typedef enum {
   CEF_PERMISSION_TYPE_AR_SESSION = 1 << 1,
   CEF_PERMISSION_TYPE_CAMERA_PAN_TILT_ZOOM = 1 << 2,
   CEF_PERMISSION_TYPE_CAMERA_STREAM = 1 << 3,
-  CEF_PERMISSION_TYPE_CLIPBOARD = 1 << 4,
-  CEF_PERMISSION_TYPE_TOP_LEVEL_STORAGE_ACCESS = 1 << 5,
-  CEF_PERMISSION_TYPE_DISK_QUOTA = 1 << 6,
-  CEF_PERMISSION_TYPE_LOCAL_FONTS = 1 << 7,
-  CEF_PERMISSION_TYPE_GEOLOCATION = 1 << 8,
-  CEF_PERMISSION_TYPE_IDLE_DETECTION = 1 << 9,
-  CEF_PERMISSION_TYPE_MIC_STREAM = 1 << 10,
-  CEF_PERMISSION_TYPE_MIDI = 1 << 11,
-  CEF_PERMISSION_TYPE_MIDI_SYSEX = 1 << 12,
-  CEF_PERMISSION_TYPE_MULTIPLE_DOWNLOADS = 1 << 13,
-  CEF_PERMISSION_TYPE_NOTIFICATIONS = 1 << 14,
-  CEF_PERMISSION_TYPE_PROTECTED_MEDIA_IDENTIFIER = 1 << 15,
-  CEF_PERMISSION_TYPE_REGISTER_PROTOCOL_HANDLER = 1 << 16,
-  CEF_PERMISSION_TYPE_STORAGE_ACCESS = 1 << 17,
-  CEF_PERMISSION_TYPE_VR_SESSION = 1 << 18,
-  CEF_PERMISSION_TYPE_WINDOW_MANAGEMENT = 1 << 19,
-  CEF_PERMISSION_TYPE_FILE_SYSTEM_ACCESS = 1 << 20,
+  CEF_PERMISSION_TYPE_CAPTURED_SURFACE_CONTROL = 1 << 4,
+  CEF_PERMISSION_TYPE_CLIPBOARD = 1 << 5,
+  CEF_PERMISSION_TYPE_TOP_LEVEL_STORAGE_ACCESS = 1 << 6,
+  CEF_PERMISSION_TYPE_DISK_QUOTA = 1 << 7,
+  CEF_PERMISSION_TYPE_LOCAL_FONTS = 1 << 8,
+  CEF_PERMISSION_TYPE_GEOLOCATION = 1 << 9,
+  CEF_PERMISSION_TYPE_IDENTITY_PROVIDER = 1 << 10,
+  CEF_PERMISSION_TYPE_IDLE_DETECTION = 1 << 11,
+  CEF_PERMISSION_TYPE_MIC_STREAM = 1 << 12,
+  CEF_PERMISSION_TYPE_MIDI_SYSEX = 1 << 13,
+  CEF_PERMISSION_TYPE_MULTIPLE_DOWNLOADS = 1 << 14,
+  CEF_PERMISSION_TYPE_NOTIFICATIONS = 1 << 15,
+  CEF_PERMISSION_TYPE_KEYBOARD_LOCK = 1 << 16,
+  CEF_PERMISSION_TYPE_POINTER_LOCK = 1 << 17,
+  CEF_PERMISSION_TYPE_PROTECTED_MEDIA_IDENTIFIER = 1 << 18,
+  CEF_PERMISSION_TYPE_REGISTER_PROTOCOL_HANDLER = 1 << 19,
+  CEF_PERMISSION_TYPE_STORAGE_ACCESS = 1 << 20,
+  CEF_PERMISSION_TYPE_VR_SESSION = 1 << 21,
+  CEF_PERMISSION_TYPE_WINDOW_MANAGEMENT = 1 << 22,
+  CEF_PERMISSION_TYPE_FILE_SYSTEM_ACCESS = 1 << 23,
 } cef_permission_request_types_t;
 
 ///
@@ -3748,6 +3834,20 @@ typedef enum {
   CEF_ZOOM_COMMAND_RESET,
   CEF_ZOOM_COMMAND_IN,
 } cef_zoom_command_t;
+
+///
+/// Specifies the color variants supported by
+/// CefRequestContext::SetChromeThemeColor.
+///
+typedef enum {
+  CEF_COLOR_VARIANT_SYSTEM,
+  CEF_COLOR_VARIANT_LIGHT,
+  CEF_COLOR_VARIANT_DARK,
+  CEF_COLOR_VARIANT_TONAL_SPOT,
+  CEF_COLOR_VARIANT_NEUTRAL,
+  CEF_COLOR_VARIANT_VIBRANT,
+  CEF_COLOR_VARIANT_EXPRESSIVE,
+} cef_color_variant_t;
 
 #ifdef __cplusplus
 }
