@@ -135,9 +135,9 @@ namespace Xilium.CefGlue
             {
                 throw new NotSupportedException("cef_api_hash call is not supported.", ex);
             }
-            catch (DllNotFoundException dll_ex)
+            catch (DllNotFoundException dllEx)
             {
-                throw new NotSupportedException($"Can't find CEF in \"{Directory.GetCurrentDirectory()}\"", dll_ex);
+                throw new NotSupportedException($"Can't find CEF in \"{AppDomain.CurrentDomain.BaseDirectory}\"", dllEx);
             }
             if (string.IsNullOrEmpty(actual)) throw new NotSupportedException();
 
