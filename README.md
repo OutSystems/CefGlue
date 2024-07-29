@@ -15,7 +15,7 @@ It can be used from C# or any other CLR language and provides both Avalonia and 
 
 ✅: Supported
 ❌: Not supported
-🟡: Might work, untested at the moment.
+🟡: Works with issues.
 
 Currently only x64 and ARM64 architectures are supported.
 
