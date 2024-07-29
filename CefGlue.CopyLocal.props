@@ -12,6 +12,7 @@
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">linux-x64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">linux-arm64</CefGlueTargetPlatform>
     </PropertyGroup>
+    
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
         <OperatingSystemSuffix />
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">osx-x64</CefGlueTargetPlatform>
