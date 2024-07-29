@@ -10,8 +10,8 @@ Here's a table for supported architectures, frameworks and operating systems:
 | OS      | x64 | ARM64 | WPF | Avalonia |
 |---------|-----|-------|-----|----------|
 | Windows | ✔️  | ✔️    | ✔️  | ✔️      |
-| macOS   | ✔️  | ✔️    | ❌   | ✔️     |
-| Linux   | ✔️  | 🔘    | ❌   | ✔️     |
+| macOS   | ✔️  | ✔️    | ❌  | ✔️      |
+| Linux   | ✔️  | 🔘    | ❌  | ✔️      |
 
 ✔️ Supported
 ❌ Not supported
