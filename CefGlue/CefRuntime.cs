@@ -24,76 +24,23 @@ namespace Xilium.CefGlue
         #region Platform Detection
         private static CefRuntimePlatform DetectPlatform()
         {
-            var platformId = Environment.OSVersion.Platform;
-
-            if (platformId == PlatformID.MacOSX)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return CefRuntimePlatform.Windows;
+            }
+            
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
                 return CefRuntimePlatform.MacOS;
+            }
 
-            int p = (int)platformId;
-            if ((p != 4) && (p != 128)) return CefRuntimePlatform.Windows;
-            if (IsRunningOnMac()) return CefRuntimePlatform.MacOS;
-
-            if (IsRunningOnLinux()) return CefRuntimePlatform.Linux;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                return CefRuntimePlatform.Linux;
+            }
 
             throw new PlatformNotSupportedException();
         }
-
-        //From Managed.Windows.Forms/XplatUI
-        private static bool IsRunningOnMac()
-        {
-            IntPtr buf = IntPtr.Zero;
-            try
-            {
-                buf = Marshal.AllocHGlobal(8192);
-                // This is a hacktastic way of getting sysname from uname ()
-                if (uname(buf) == 0)
-                {
-                    if (Marshal.PtrToStringAuto(buf) == "Darwin")
-                        return true;
-                }
-            }
-            catch
-            {
-                // ignored
-            }
-            finally
-            {
-                if (buf != IntPtr.Zero)
-                    Marshal.FreeHGlobal(buf);
-            }
-
-            return false;
-        }
-        
-        // copied from IsRunningOnMac function above.
-        private static bool IsRunningOnLinux()
-        {
-            IntPtr buf = IntPtr.Zero;
-            try
-            {
-                buf = Marshal.AllocHGlobal(8192);
-                // This is a hacktastic way of getting sysname from uname ()
-                if (uname(buf) == 0)
-                {
-                    if (Marshal.PtrToStringAuto(buf) == "Linux")
-                        return true;
-                }
-            }
-            catch
-            {
-                // ignored
-            }
-            finally
-            {
-                if (buf != IntPtr.Zero)
-                    Marshal.FreeHGlobal(buf);
-            }
-
-            return false;
-        }
-
-        [DllImport("libc")]
-        private static extern int uname(IntPtr buf);
 
         public static CefRuntimePlatform Platform
         {
@@ -1146,15 +1093,5 @@ namespace Xilium.CefGlue
         {
             if (!_loaded) Load();
         }
-
-        #region linux
-
-        /////
-        //// Return the singleton X11 display shared with Chromium. The display is not
-        //// thread-safe and must only be accessed on the browser process UI thread.
-        /////
-        //CEF_EXPORT XDisplay* cef_get_xdisplay();
-
-        #endregion
     }
 }
