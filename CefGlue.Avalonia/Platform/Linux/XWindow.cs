@@ -22,13 +22,6 @@ namespace Xilium.CefGlue.Avalonia.Platform.Linux
         [DllImport("libX11.so.6")]
         private static extern int XFlush(IntPtr display);
 
-        public IntPtr Handle { get; }
-
-        public string HandleDescriptor => "XWindow";
-
-        private static IntPtr _display;
-        private readonly bool _needDispose;
-
         public XWindow(IntPtr handle) : this(handle, false) { }
         
         private XWindow(IntPtr handle, bool needDispose)
@@ -36,6 +29,13 @@ namespace Xilium.CefGlue.Avalonia.Platform.Linux
             Handle = handle;
             _needDispose = needDispose;
         }
+
+         public IntPtr Handle { get; }
+
+        public string HandleDescriptor => "XWindow";
+
+        private static IntPtr _display;
+        private readonly bool _needDispose;
 
         public static IPlatformHandle CreateHostWindow()
         {
