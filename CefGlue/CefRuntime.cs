@@ -113,19 +113,16 @@ namespace Xilium.CefGlue
 
         private static void CheckVersionByApiHash()
         {
-            // find all the libcef.[so/dylib/dll] files inside the appkication folder and its subfolders
-            var libcefs = Directory.GetFiles(Directory.GetCurrentDirectory(), Platform switch
-                {
-                    CefRuntimePlatform.MacOS => libcef.DllName + ".dylib",
-                    CefRuntimePlatform.Windows => libcef.DllName + ".dll",
-                    CefRuntimePlatform.Linux => libcef.DllName + ".so",
-                    _ => throw new PlatformNotSupportedException()
-                },
-                SearchOption.AllDirectories);
+            // We need to load libCEF.so before getting API Hash on Linux.
+            if (Platform == CefRuntimePlatform.Linux) 
+            {
+                // find all the libcef.so files inside the application folder and its subfolders
+                var found_libs = Directory.GetFiles(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".."), libcef.DllName + ".so", SearchOption.AllDirectories);
 
-            // if found, load the first one.
-            if (libcefs.Length > 0)
-                NativeLibrary.TryLoad(libcefs[0], out _);
+                // if found, load the first one.
+                if (found_libs.Length > 0)
+                    NativeLibrary.TryLoad(found_libs[0], out _);
+            }
             
             // get CEF_API_HASH_PLATFORM
             string actual;
