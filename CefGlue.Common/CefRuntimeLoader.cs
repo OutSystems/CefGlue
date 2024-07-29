@@ -70,7 +70,7 @@ namespace Xilium.CefGlue.Common
 
             IsOSREnabled = settings.WindowlessRenderingEnabled;
 
-            // On Linux, with osr disable, the filename in CefMainArgs will be use as accessible name.
+            // On Linux, with osr disable, the filename in CefMainArgs will be used as accessible name.
             // If the name is empty, chromium will crash at ui::AXNodeData:SetNamechecked.
             var exeFileName = Process.GetCurrentProcess().MainModule.FileName;
             if (string.IsNullOrEmpty(exeFileName))
