@@ -17,6 +17,8 @@ Here's a table for supported architectures, frameworks and operating systems:
 ❌: Not supported
 🟡: Works with issues.
 
+See [LINUX.md](./LINUX.md) for more information about issues and tested distribution list. 
+
 Currently only x64 and ARM64 architectures are supported.
 
 ## Releases
