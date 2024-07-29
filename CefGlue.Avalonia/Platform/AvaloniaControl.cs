@@ -162,7 +162,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
                 case CefRuntimePlatform.Linux:
                     // This window is created by cef. It should be closed when browser close.
                     // We shouldn't close it directly, or disposing browser will not work as expected.
-                    _browserView = new XWindow(browserHandle, false);
+                    _browserView = new XWindow(browserHandle);
                     break;
             }
 
