@@ -22,7 +22,7 @@ namespace Xilium.CefGlue.Avalonia.Platform.Linux
         [DllImport("libX11.so.6")]
         private static extern int XFlush(IntPtr display);
 
-        public IntPtr Handle { get; private set; }
+        public IntPtr Handle { get; }
 
         public string HandleDescriptor => "XWindow";
 
