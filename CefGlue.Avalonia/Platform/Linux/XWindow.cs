@@ -20,6 +20,7 @@ namespace Xilium.CefGlue.Avalonia.Platform.Linux
         private static extern IntPtr XDefaultRootWindow(IntPtr display);
 
         [DllImport("libX11.so.6")]
+
         private static extern int XFlush(IntPtr display);
         private static IntPtr _display;
         private readonly bool _needDispose;
