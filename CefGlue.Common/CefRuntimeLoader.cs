@@ -5,13 +5,14 @@ using System.IO;
 using System.Reflection;
 using Xilium.CefGlue.Common.Handlers;
 using Xilium.CefGlue.Common.Shared;
+using System.Diagnostics;
 
 namespace Xilium.CefGlue.Common
 {
     public static class CefRuntimeLoader
     {
         private const string DefaultBrowserProcessDirectory = "CefGlueBrowserProcess";
-        
+
         private static Action<BrowserProcessHandler> _delayedInitialization;
 
         public static void Initialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null)
@@ -68,7 +69,15 @@ namespace Xilium.CefGlue.Common
             AppDomain.CurrentDomain.ProcessExit += delegate { CefRuntime.Shutdown(); };
 
             IsOSREnabled = settings.WindowlessRenderingEnabled;
-            CefRuntime.Initialize(new CefMainArgs(new string[0]), settings, new BrowserCefApp(customSchemes, flags, browserProcessHandler), IntPtr.Zero);
+
+            // On Linux, with osr disable, the filename in CefMainArgs will be use as accessible name.
+            // If the name is empty, chromium will crash at ui::AXNodeData:SetNamechecked.
+            var exeFileName = Process.GetCurrentProcess().MainModule.FileName;
+            if (string.IsNullOrEmpty(exeFileName))
+            {
+                exeFileName = "CefGlue";
+            }
+            CefRuntime.Initialize(new CefMainArgs(new[] { exeFileName }), settings, new BrowserCefApp(customSchemes, flags, browserProcessHandler), IntPtr.Zero);
 
             if (customSchemes != null)
             {
@@ -107,8 +116,10 @@ namespace Xilium.CefGlue.Common
 
         internal static bool IsOSREnabled { get; private set; }
 
-        private static string BrowserProcessFileName {
-            get {
+        private static string BrowserProcessFileName
+        {
+            get
+            {
                 const string Filename = "Xilium.CefGlue.BrowserProcess";
                 switch (CefRuntime.Platform)
                 {

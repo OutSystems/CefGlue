@@ -254,9 +254,11 @@ namespace Xilium.CefGlue.Common
         public void ShowDeveloperTools()
         {
             var windowInfo = CefWindowInfo.Create();
-            if (CefRuntime.Platform != CefRuntimePlatform.MacOS)
+
+            if (CefRuntime.Platform == CefRuntimePlatform.Windows)
             {
-                // don't know why but I can't do this on macosx
+                // This function set ParentHandle (owner in Windows) and set Bounds to CW_USERDEFAULT (only work in Windows).
+                // So, it should be called only in Windows.
                 windowInfo.SetAsPopup(BrowserHost?.GetWindowHandle() ?? IntPtr.Zero, "DevTools");
             }
 
@@ -484,6 +486,12 @@ namespace Xilium.CefGlue.Common
             Control.DestroyRender();
             Cleanup(browser);
 
+            if (CefRuntime.Platform == CefRuntimePlatform.Linux)
+            {
+                // On Linux, we should return false to let cef close the browser window.
+                // We shouldn't close the window directly, or disposing browser will not work as expected.
+                return false;
+            }
             return true;
         }
 
