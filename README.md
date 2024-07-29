@@ -11,9 +11,11 @@ It can be used from C# or any other CLR language and provides both Avalonia and 
 | --------| ---- | ------ | --- | -------- |
 | Windows | ✅   | ✅    |  ✅ |    ✅    |
 | macOS   | ✅   | ✅    |  ❌ |    ✅    |
-| Linux   | ⏲️\* | ⏲️\*  |  ❌ |    ⏲️\*  |
+| Linux   | ✅   | 🟡    |  ❌ |    ✅    |
 
-\*: Only works on Windowless Rendering at the moment.
+✅: Supported
+❌: Not supported
+🟡: Might work, untested at the moment.
 
 Currently only x64 and ARM64 architectures are supported.
 
