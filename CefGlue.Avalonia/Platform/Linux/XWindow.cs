@@ -8,19 +8,19 @@ namespace Xilium.CefGlue.Avalonia.Platform.Linux
     internal class XWindow : IHandleHolder, IPlatformHandle
     {
         [DllImport("libX11.so.6")]
-        public static extern int XDestroyWindow(IntPtr display, IntPtr w);
+        private static extern int XDestroyWindow(IntPtr display, IntPtr w);
 
         [DllImport("libX11.so.6")]
-        public static extern IntPtr XOpenDisplay([MarshalAs(UnmanagedType.LPUTF8Str)] string display_name);
+        private static extern IntPtr XOpenDisplay([MarshalAs(UnmanagedType.LPUTF8Str)] string display_name);
 
         [DllImport("libX11.so.6")]
-        public static extern IntPtr XCreateSimpleWindow(IntPtr display, IntPtr parent, int x, int y, uint width, uint height, uint border_width, UIntPtr border, UIntPtr background);
+        private static extern IntPtr XCreateSimpleWindow(IntPtr display, IntPtr parent, int x, int y, uint width, uint height, uint border_width, UIntPtr border, UIntPtr background);
 
         [DllImport("libX11.so.6")]
-        public static extern IntPtr XDefaultRootWindow(IntPtr display);
+        private static extern IntPtr XDefaultRootWindow(IntPtr display);
 
         [DllImport("libX11.so.6")]
-        public static extern int XFlush(IntPtr display);
+        private static extern int XFlush(IntPtr display);
 
         public IntPtr Handle { get; private set; }
 
