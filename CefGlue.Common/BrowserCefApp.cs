@@ -21,11 +21,6 @@ namespace Xilium.CefGlue.Common
         {
             if (string.IsNullOrEmpty(processType))
             {
-                if (CefRuntime.Platform == CefRuntimePlatform.Linux) 
-                {
-                    commandLine.AppendSwitch("no-zygote");   
-                }
-                
                 if (CefRuntimeLoader.IsOSREnabled)
                 {
                     commandLine.AppendSwitch("disable-gpu", "1");
