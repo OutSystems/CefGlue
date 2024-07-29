@@ -117,11 +117,11 @@ namespace Xilium.CefGlue
             if (Platform == CefRuntimePlatform.Linux) 
             {
                 // find all the libcef.so files inside the application folder and its subfolders
-                var found_libs = Directory.GetFiles(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".."), libcef.DllName + ".so", SearchOption.AllDirectories);
+                var libCefFile = Directory.EnumerateFiles(AppDomain.CurrentDomain.BaseDirectory, libcef.DllName + ".so", SearchOption.AllDirectories).FirstOrDefault();
 
                 // if found, load the first one.
-                if (found_libs.Length > 0)
-                    NativeLibrary.TryLoad(found_libs[0], out _);
+                if (libCefFile != null)
+                    NativeLibrary.TryLoad(libCefFile, out _);
             }
             
             // get CEF_API_HASH_PLATFORM
