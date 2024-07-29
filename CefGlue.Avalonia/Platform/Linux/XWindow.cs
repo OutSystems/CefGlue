@@ -55,11 +55,11 @@ namespace Xilium.CefGlue.Avalonia.Platform.Linux
 
         public void Dispose()
         {
-            if (_needDispose)
+            var display = _display;
+            if (_needDispose && display != IntPtr.Zero)
             {
-                EnsureDisplay();
-                XDestroyWindow(_display, Handle);
-                XFlush(_display);
+                XDestroyWindow(display, Handle);
+                XFlush(display);
             }
         }
     }
