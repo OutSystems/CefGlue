@@ -152,16 +152,17 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public void InitializeRender(IntPtr browserHandle)
         {
-            if (CefRuntime.Platform == CefRuntimePlatform.Windows)
+            switch (CefRuntime.Platform)
             {
-                // store cef window handle, to dispose later
-                _browserView = new HostWindow(browserHandle);
-            }
-            else if (CefRuntime.Platform == CefRuntimePlatform.Linux)
-            {
-                // This window is created by cef. It should be closed when browser close.
-                // We shouldn't close it directly, or disposing browser will not work as expected.
-                _browserView = new XWindow(browserHandle, false);
+                case CefRuntimePlatform.Windows:
+                    // store cef window handle, to dispose later
+                    _browserView = new HostWindow(browserHandle);
+                    break;
+                case CefRuntimePlatform.Linux:
+                    // This window is created by cef. It should be closed when browser close.
+                    // We shouldn't close it directly, or disposing browser will not work as expected.
+                    _browserView = new XWindow(browserHandle, false);
+                    break;
             }
 
             Dispatcher.UIThread.Post(() =>
