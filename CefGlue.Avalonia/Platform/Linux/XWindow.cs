@@ -29,7 +29,9 @@ namespace Xilium.CefGlue.Avalonia.Platform.Linux
         private static IntPtr _display;
         private readonly bool _needDispose;
 
-        public XWindow(IntPtr handle, bool needDispose)
+        public XWindow(IntPtr handle) : this(handle, false) { }
+        
+        private XWindow(IntPtr handle, bool needDispose)
         {
             Handle = handle;
             _needDispose = needDispose;
