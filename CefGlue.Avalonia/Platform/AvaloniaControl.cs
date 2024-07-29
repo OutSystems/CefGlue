@@ -55,12 +55,12 @@ namespace Xilium.CefGlue.Avalonia.Platform
             Dispatcher.UIThread.VerifyAccess();
             if (_hostWindowPlatformHandle == null)
             {
-                if (CefRuntime.Platform == CefRuntimePlatform.Windows)
+                switch (CefRuntime.Platform)
                 {
-                    _hostWindowPlatformHandle = new Window().TryGetPlatformHandle();
-                }
-                else if (CefRuntime.Platform == CefRuntimePlatform.Linux)
-                {
+                    case CefRuntimePlatform.Windows:
+                        _hostWindowPlatformHandle = new Window().TryGetPlatformHandle();
+                        break;
+                    case CefRuntimePlatform.Linux:
                     // Avalonia window doesn't work. It's color depth is 32.
                     // We should create a x11 window with color depth 24.
                     // Cef create browser window with CopyFromParent colormap, so the color depth must be same.
