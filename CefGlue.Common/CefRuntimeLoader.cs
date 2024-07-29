@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Diagnostics;
 using System.Reflection;
 using Xilium.CefGlue.Common.Handlers;
 using Xilium.CefGlue.Common.Shared;
-using System.Diagnostics;
 
 namespace Xilium.CefGlue.Common
 {

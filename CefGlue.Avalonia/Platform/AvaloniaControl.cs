@@ -61,10 +61,11 @@ namespace Xilium.CefGlue.Avalonia.Platform
                         _hostWindowPlatformHandle = new Window().TryGetPlatformHandle();
                         break;
                     case CefRuntimePlatform.Linux:
-                    // Avalonia window doesn't work. It's color depth is 32.
-                    // We should create a x11 window with color depth 24.
-                    // Cef creates browser window with CopyFromParent colormap, so the color depth must be same.
-                    _hostWindowPlatformHandle = XWindow.CreateHostWindow();
+                        // Avalonia window doesn't work. It's color depth is 32.
+                        // We should create a x11 window with color depth 24.
+                        // Cef creates browser window with CopyFromParent colormap, so the color depth must be same.
+                        _hostWindowPlatformHandle = XWindow.CreateHostWindow();
+                        break;
                 }
             }
             return _hostWindowPlatformHandle;

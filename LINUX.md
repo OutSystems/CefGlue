@@ -8,8 +8,8 @@ While porting CefGlue to Linux we tested on these platforms and confirmed to be 
 
 ## ARM64 Issues
 
-We have not found the işsue why dynamic loading CEF is falinig with "cannot allocate memory in static TLS block" and currently our guess is that CLR uses too much TLS. 
-Loading CEf with `LD_PRELOAD` environment variable works but need to load HarfBuzzSharp first (`LD_PRELOAD=/path/to/libHarfBuzzSharp.so:/path/to/libcef.so`).
+We have not found the işsue why dynamic loading CEF is failing with "cannot allocate memory in static TLS block" and currently our guess is that CLR uses too much TLS. 
+Loading CEf with `LD_PRELOAD` environment variable works but needs to load HarfBuzzSharp first (`LD_PRELOAD=/path/to/libHarfBuzzSharp.so:/path/to/libcef.so`).
 
 One can also modify the ELF files using these commands before running their CefGlue application for CEF to load correctly:
 ````bash

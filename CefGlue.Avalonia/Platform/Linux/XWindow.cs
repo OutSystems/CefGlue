@@ -1,7 +1,7 @@
-﻿using Avalonia.Controls;
-using Avalonia.Platform;
 using System;
 using System.Runtime.InteropServices;
+﻿using Avalonia.Controls;
+using Avalonia.Platform;
 
 namespace Xilium.CefGlue.Avalonia.Platform.Linux
 {
@@ -21,6 +21,8 @@ namespace Xilium.CefGlue.Avalonia.Platform.Linux
 
         [DllImport("libX11.so.6")]
         private static extern int XFlush(IntPtr display);
+        private static IntPtr _display;
+        private readonly bool _needDispose;
 
         public XWindow(IntPtr handle) : this(handle, false) { }
         
@@ -30,12 +32,9 @@ namespace Xilium.CefGlue.Avalonia.Platform.Linux
             _needDispose = needDispose;
         }
 
-         public IntPtr Handle { get; }
+        public IntPtr Handle { get; }
 
         public string HandleDescriptor => "XWindow";
-
-        private static IntPtr _display;
-        private readonly bool _needDispose;
 
         public static IPlatformHandle CreateHostWindow()
         {

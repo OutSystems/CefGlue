@@ -1,5 +1,4 @@
 # CefGlue
-
 .NET binding for The Chromium Embedded Framework (CEF). 
 
 CefGlue lets you embed Chromium in .NET apps. It is a .NET wrapper control around the Chromium Embedded Framework ([CEF](https://bitbucket.org/chromiumembedded/cef/src/master/)). 
