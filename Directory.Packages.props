@@ -28,8 +28,8 @@
         <PackageVersion Include="chromiumembeddedframework.runtime.win-x64" Version="$(CefRedistVersion)" />
         <PackageVersion Include="chromiumembeddedframework.runtime.win-arm64" Version="$(CefRedistVersion)" />
 
-        <PackageVersion Include="cef.bin.linux64" Version="$(CefRedistLinuxVersion)" />
-        <PackageVersion Include="cef.bin.linuxarm64" Version="$(CefRedistLinuxVersion)" />
+        <PackageVersion Include="cef.redist.linux64" Version="$(CefRedistLinuxVersion)" />
+        <PackageVersion Include="cef.redist.linuxarm64" Version="$(CefRedistLinuxVersion)" />
         
         <PackageVersion Include="cef.redist.osx64" Version="$(CefRedistOSXVersion)" />
         <PackageVersion Include="cef.redist.osx.arm64" Version="$(CefRedistOSXVersion)" />

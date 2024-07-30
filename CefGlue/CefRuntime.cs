@@ -1,12 +1,10 @@
-﻿using System.IO;
-
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
-    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
     using System.Globalization;
     using System.Runtime.InteropServices;
-    using System.Text;
     using Xilium.CefGlue.Interop;
 
     public static unsafe class CefRuntime
