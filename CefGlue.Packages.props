@@ -3,12 +3,12 @@
     <ItemGroup Condition="'$(Platform)' == 'x64'">
         <PackageReference PrivateAssets="None" Include="chromiumembeddedframework.runtime.win-x64" />
         <PackageReference PrivateAssets="None" Include="cef.redist.osx64" />
-        <PackageReference PrivateAssets="None" Include="cef.bin.linux64" />
+        <PackageReference PrivateAssets="None" Include="cef.redist.linux64" />
     </ItemGroup>
     
     <ItemGroup Condition="'$(Platform)' == 'ARM64'">
         <PackageReference PrivateAssets="None" Include="chromiumembeddedframework.runtime.win-arm64" />
         <PackageReference PrivateAssets="None" Include="cef.redist.osx.arm64" />
-        <PackageReference PrivateAssets="None" Include="cef.bin.linuxarm64" />
+        <PackageReference PrivateAssets="None" Include="cef.redist.linuxarm64" />
     </ItemGroup>
 </Project>
