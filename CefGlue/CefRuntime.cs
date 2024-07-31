@@ -1,7 +1,4 @@
-﻿using System.IO;
-﻿using System.Linq;
-
-namespace Xilium.CefGlue
+﻿namespace Xilium.CefGlue
 {
     using System;
     using System.IO;
@@ -122,7 +119,9 @@ namespace Xilium.CefGlue
 
                 // if found, load the first one.
                 if (libCefFile != null)
+                {
                     NativeLibrary.TryLoad(libCefFile, out _);
+                }
             }
             
             // get CEF_API_HASH_PLATFORM
