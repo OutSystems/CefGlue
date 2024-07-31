@@ -11,7 +11,6 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug_WindowlessRender'">
-    <DebugType></DebugType>
     <DefineConstants>$(DefineConstants);WINDOWLESS</DefineConstants>
   </PropertyGroup>
 
@@ -28,7 +27,6 @@
     <NSPrincipalClass>NSApplication</NSPrincipalClass>
     <NSHighResolutionCapable>true</NSHighResolutionCapable>
   </PropertyGroup>
-
   <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />
 
   <ItemGroup>

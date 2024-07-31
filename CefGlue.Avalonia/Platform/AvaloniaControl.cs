@@ -7,6 +7,7 @@ using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using Xilium.CefGlue.Avalonia.Platform.Linux;
 using Xilium.CefGlue.Avalonia.Platform.MacOS;
 using Xilium.CefGlue.Avalonia.Platform.Windows;
 using Xilium.CefGlue.Common.Helpers;
@@ -54,7 +55,18 @@ namespace Xilium.CefGlue.Avalonia.Platform
             Dispatcher.UIThread.VerifyAccess();
             if (_hostWindowPlatformHandle == null)
             {
-                _hostWindowPlatformHandle = new Window().TryGetPlatformHandle();
+                switch (CefRuntime.Platform)
+                {
+                    case CefRuntimePlatform.Windows:
+                        _hostWindowPlatformHandle = new Window().TryGetPlatformHandle();
+                        break;
+                    case CefRuntimePlatform.Linux:
+                        // Avalonia window doesn't work. It's color depth is 32.
+                        // We should create a x11 window with color depth 24.
+                        // Cef creates browser window with CopyFromParent colormap, so the color depth must be same.
+                        _hostWindowPlatformHandle = XWindow.CreateHostWindow();
+                        break;
+                }
             }
             return _hostWindowPlatformHandle;
         }
@@ -83,7 +95,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
                     var menu = new ContextMenu();
 
                     menu.Items.Clear();
-                    
+
                     foreach (var menuEntry in menuEntries)
                     {
                         if (menuEntry.IsSeparator)
@@ -141,10 +153,17 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         public void InitializeRender(IntPtr browserHandle)
         {
-            if (CefRuntime.Platform == CefRuntimePlatform.Windows)
+            switch (CefRuntime.Platform)
             {
-                // store cef window handle, to dispose later
-                _browserView = new HostWindow(browserHandle);
+                case CefRuntimePlatform.Windows:
+                    // store cef window handle, to dispose later
+                    _browserView = new HostWindow(browserHandle);
+                    break;
+                case CefRuntimePlatform.Linux:
+                    // This window is created by cef. It should be closed when browser close.
+                    // We shouldn't close it directly, or disposing browser will not work as expected.
+                    _browserView = new XWindow(browserHandle);
+                    break;
             }
 
             Dispatcher.UIThread.Post(() =>
