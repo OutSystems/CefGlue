@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
         <!-- adding the supported indentifiers to make bundle work properly -->
-        <RuntimeIdentifiers>osx-x64;win-x64;osx-arm64;win-arm64</RuntimeIdentifiers>
+        <RuntimeIdentifiers>osx-x64;osx-arm64;win-x64;win-arm64;linux-x64;linux-arm64</RuntimeIdentifiers>
     </PropertyGroup>
     
     <PropertyGroup Condition="'$(RuntimeIdentifier)' == '' and $([MSBuild]::IsOSPlatform('Windows'))">
@@ -9,6 +9,12 @@
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">win-x64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">win-arm64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == ''">win-x64</CefGlueTargetPlatform> <!-- fallback -->
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(RuntimeIdentifier)' == '' and $([MSBuild]::IsOSPlatform('Linux'))">
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">linux-x64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">linux-arm64</CefGlueTargetPlatform>
+        <CefGlueTargetPlatform Condition="'$(CefGlueTargetPlatform)' == ''">linux-x64</CefGlueTargetPlatform> <!-- fallback -->
     </PropertyGroup>
     
     <PropertyGroup Condition="'$(RuntimeIdentifier)' == '' and $([MSBuild]::IsOSPlatform('OSX'))">

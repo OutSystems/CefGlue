@@ -6,6 +6,7 @@
         <LangVersion>latest</LangVersion>
         <CefRedistVersion>126.2.18</CefRedistVersion>
         <CefRedistOSXVersion>120.1.8</CefRedistOSXVersion>
+        <CefRedistLinuxVersion>120.1.8</CefRedistLinuxVersion>
         <Platforms>x64;ARM64</Platforms>
         <Configurations>Debug;DebugWindowlessRender;Release;ReleaseWPFAvalonia</Configurations>
     </PropertyGroup>

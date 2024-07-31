@@ -1,4 +1,7 @@
-﻿namespace Xilium.CefGlue
+﻿using System.IO;
+﻿using System.Linq;
+
+namespace Xilium.CefGlue
 {
     using System;
     using System.Collections.Generic;
@@ -22,45 +25,23 @@
         #region Platform Detection
         private static CefRuntimePlatform DetectPlatform()
         {
-            var platformId = Environment.OSVersion.Platform;
-
-            if (platformId == PlatformID.MacOSX)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return CefRuntimePlatform.Windows;
+            }
+            
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
                 return CefRuntimePlatform.MacOS;
-
-            int p = (int)platformId;
-            if ((p == 4) || (p == 128))
-                return IsRunningOnMac() ? CefRuntimePlatform.MacOS : CefRuntimePlatform.Linux;
-
-            return CefRuntimePlatform.Windows;
-        }
-
-        //From Managed.Windows.Forms/XplatUI
-        private static bool IsRunningOnMac()
-        {
-            IntPtr buf = IntPtr.Zero;
-            try
-            {
-                buf = Marshal.AllocHGlobal(8192);
-                // This is a hacktastic way of getting sysname from uname ()
-                if (uname(buf) == 0)
-                {
-                    string os = Marshal.PtrToStringAnsi(buf);
-                    if (os == "Darwin")
-                        return true;
-                }
-            }
-            catch { }
-            finally
-            {
-                if (buf != IntPtr.Zero)
-                    Marshal.FreeHGlobal(buf);
             }
 
-            return false;
-        }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                return CefRuntimePlatform.Linux;
+            }
 
-        [DllImport("libc")]
-        private static extern int uname(IntPtr buf);
+            throw new PlatformNotSupportedException();
+        }
 
         public static CefRuntimePlatform Platform
         {
@@ -133,6 +114,17 @@
 
         private static void CheckVersionByApiHash()
         {
+            // We need to load libCEF.so before getting API Hash on Linux.
+            if (Platform == CefRuntimePlatform.Linux) 
+            {
+                // find all the libcef.so files inside the application folder and its subfolders
+                var libCefFile = Directory.EnumerateFiles(AppDomain.CurrentDomain.BaseDirectory, libcef.DllName + ".so", SearchOption.AllDirectories).FirstOrDefault();
+
+                // if found, load the first one.
+                if (libCefFile != null)
+                    NativeLibrary.TryLoad(libCefFile, out _);
+            }
+            
             // get CEF_API_HASH_PLATFORM
             string actual;
             try
@@ -144,10 +136,14 @@
             {
                 throw new NotSupportedException("cef_api_hash call is not supported.", ex);
             }
+            catch (DllNotFoundException dllEx)
+            {
+                throw new NotSupportedException($"Can't find CEF in \"{AppDomain.CurrentDomain.BaseDirectory}\"", dllEx);
+            }
             if (string.IsNullOrEmpty(actual)) throw new NotSupportedException();
 
             string expected;
-            switch (CefRuntime.Platform)
+            switch (Platform)
             {
                 case CefRuntimePlatform.Windows: expected = libcef.CEF_API_HASH_PLATFORM_WIN; break;
                 case CefRuntimePlatform.MacOS: expected = libcef.CEF_API_HASH_PLATFORM_MACOS; break;
@@ -1095,15 +1091,5 @@
         {
             if (!_loaded) Load();
         }
-
-        #region linux
-
-        /////
-        //// Return the singleton X11 display shared with Chromium. The display is not
-        //// thread-safe and must only be accessed on the browser process UI thread.
-        /////
-        //CEF_EXPORT XDisplay* cef_get_xdisplay();
-
-        #endregion
     }
 }
