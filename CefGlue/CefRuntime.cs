@@ -1,4 +1,7 @@
-﻿namespace Xilium.CefGlue
+﻿using System.IO;
+﻿using System.Linq;
+
+namespace Xilium.CefGlue
 {
     using System;
     using System.IO;
