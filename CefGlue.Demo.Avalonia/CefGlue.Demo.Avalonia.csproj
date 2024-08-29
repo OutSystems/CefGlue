@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <RollForward>LatestMajor</RollForward>
-    <TargetFrameworks>$(TargetDotnetVersions)</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>Xilium.CefGlue.Demo.Avalonia</AssemblyName>
     <RootNamespace>Xilium.CefGlue.Demo.Avalonia</RootNamespace>
     <RollForward>Major</RollForward>
@@ -27,21 +27,13 @@
     <NSPrincipalClass>NSApplication</NSPrincipalClass>
     <NSHighResolutionCapable>true</NSHighResolutionCapable>
   </PropertyGroup>
-  <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="CefGlue.Avalonia.ARM64" />
+    <PackageReference Include="CefGlue.Common.ARM64" />
     <PackageReference Include="Dotnet.Bundle" />
     <PackageReference Include="Avalonia.Diagnostics" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CefGlue.Avalonia\CefGlue.Avalonia.csproj" />
-    <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
-    <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj" />
-    <ProjectReference Include="..\CefGlue.Common.Shared\CefGlue.Common.Shared.csproj" />
-  </ItemGroup>
-
-  <Import Project="$(ProjectDir)..\CefGlue.Common\build\CefGlue.Common.targets" />
 
 </Project>
