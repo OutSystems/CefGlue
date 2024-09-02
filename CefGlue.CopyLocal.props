@@ -2,11 +2,6 @@
 <Project>
     <Import Project="CefGlue.Packages.props" />
 
-    <PropertyGroup>
-        <BrowserProcessDir>$(MSBuildThisFileDirectory)CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(TargetFramework)</BrowserProcessDir>
-        <RuntimeIdentifiers>osx-x64;win-x64;osx-arm64;win-arm64</RuntimeIdentifiers>
-    </PropertyGroup>
-
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">win-x64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">win-arm64</CefGlueTargetPlatform>
@@ -23,8 +18,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <BrowserProcessDir>
-            $(MSBuildThisFileDirectory)CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)</BrowserProcessDir>
+        <BrowserProcessDir>$(MSBuildThisFileDirectory)CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)</BrowserProcessDir>
         <RuntimeIdentifiers>osx-x64;osx-arm64;win-x64;win-arm64;linux-x64;linux-arm64</RuntimeIdentifiers>
     </PropertyGroup>
 
