@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using System.Threading.Tasks;
 
 namespace CefGlue.Tests.CustomSchemes
@@ -11,7 +12,19 @@ namespace CefGlue.Tests.CustomSchemes
             var loadTask = Browser.AwaitLoad();
 
             Browser.Address = $"{CustomSchemeHandlerFactory.SchemeName}://testdomain/test";
-            await loadTask;
+
+            try
+            {
+                await loadTask.WaitAsync(TimeSpan.FromSeconds(5));
+            }
+            catch (TimeoutException)
+            {
+                Assert.Fail(
+                    "Fail to load url" + Environment.NewLine +
+                    $"Current url: {Browser.Address}" + Environment.NewLine +
+                    $"Initialized: {Browser.IsBrowserInitialized}." + Environment.NewLine +
+                    $"Loading: {Browser.IsLoading}");
+            }
         }
     }
 }
