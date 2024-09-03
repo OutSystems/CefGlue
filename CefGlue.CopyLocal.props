@@ -1,31 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
     <Import Project="CefGlue.Packages.props" />
+
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-        <OperatingSystemSuffix>-windows</OperatingSystemSuffix>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">win-x64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">win-arm64</CefGlueTargetPlatform>
     </PropertyGroup>
 
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
-        <OperatingSystemSuffix />
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">linux-x64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">linux-arm64</CefGlueTargetPlatform>
     </PropertyGroup>
     
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-        <OperatingSystemSuffix />
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">osx-x64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">osx-arm64</CefGlueTargetPlatform>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(OperatingSystemAgnosticTargetFramework)' == ''">
-        <OperatingSystemAgnosticTargetFramework>$(TargetFramework)</OperatingSystemAgnosticTargetFramework>
-    </PropertyGroup>
-
     <PropertyGroup>
-        <BrowserProcessDir>
-            $(MSBuildThisFileDirectory)CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(OperatingSystemAgnosticTargetFramework)</BrowserProcessDir>
+        <BrowserProcessDir>$(MSBuildThisFileDirectory)CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)</BrowserProcessDir>
         <RuntimeIdentifiers>osx-x64;osx-arm64;win-x64;win-arm64;linux-x64;linux-arm64</RuntimeIdentifiers>
     </PropertyGroup>
 
