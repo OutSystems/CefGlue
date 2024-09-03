@@ -9,21 +9,22 @@ namespace CefGlue.Tests.CustomSchemes
         [Test]
         public async Task LoadCustomScheme()
         {
-            var loadTask = Browser.AwaitLoad();
-
-            Browser.Address = $"{CustomSchemeHandlerFactory.SchemeName}://testdomain/test";
-
             try
             {
-                await loadTask.WaitAsync(TimeSpan.FromSeconds(5));
+                var loadTask = Browser.AwaitLoad();
+
+                Browser.Address = $"{CustomSchemeHandlerFactory.SchemeName}://testdomain/test";
+                await Task.WhenAny(Task.Delay(5000), loadTask);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Assert.Fail(
-                    "Fail to load url" + Environment.NewLine +
+                var message = "Fail to load url" + Environment.NewLine +
                     $"Current url: {Browser.Address}" + Environment.NewLine +
                     $"Initialized: {Browser.IsBrowserInitialized}." + Environment.NewLine +
-                    $"Loading: {Browser.IsLoading}");
+                    $"Loading: {Browser.IsLoading}";
+                Console.WriteLine(e.ToString());
+                Console.WriteLine(message);
+                Assert.Fail(message);
             }
         }
     }
