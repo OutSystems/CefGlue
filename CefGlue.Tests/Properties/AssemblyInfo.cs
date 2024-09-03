@@ -1,3 +1,3 @@
 ﻿#if !DEBUG
-[assembly: Timeout(15000)]
+[assembly: NUnit.Framework.Timeout(15000)]
 #endif
