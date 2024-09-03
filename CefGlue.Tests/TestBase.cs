@@ -1,15 +1,9 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Threading;
-using CefGlue.Tests.CustomSchemes;
-using CefGlue.Tests.Helpers;
 using NUnit.Framework;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Avalonia;
-using Xilium.CefGlue.Common;
-using Xilium.CefGlue.Common.Shared;
 
 namespace CefGlue.Tests
 {

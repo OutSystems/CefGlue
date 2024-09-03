@@ -8,39 +8,38 @@ using NUnit.Framework;
 using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Shared;
 
-namespace CefGlue.Tests;
-
-[SetUpFixture]
-public class GlobalSetup
+namespace CefGlue.Tests
 {
 
-    [OneTimeSetUp]
-    protected async Task SetUp()
+    [SetUpFixture]
+    public class GlobalSetup
     {
-        var initializationTaskCompletionSource = new TaskCompletionSource<bool>();
 
-        CefRuntimeLoader.Initialize(customSchemes: new[]
+        [OneTimeSetUp]
+        protected async Task SetUp()
         {
-            new CustomScheme()
-            {
-                SchemeName = CustomSchemeHandlerFactory.SchemeName,
-                SchemeHandlerFactory = new CustomSchemeHandlerFactory()
-            }
-        });
+            var initializationTaskCompletionSource = new TaskCompletionSource<bool>();
 
-        var uiThread = new Thread(() =>
-        {
-            AppBuilder.Configure<App>().UsePlatformDetect().SetupWithoutStarting();
-
-            Dispatcher.UIThread.Post(() =>
+            CefRuntimeLoader.Initialize(customSchemes: new[]
             {
-                initializationTaskCompletionSource.SetResult(true);
+                new CustomScheme()
+                {
+                    SchemeName = CustomSchemeHandlerFactory.SchemeName,
+                    SchemeHandlerFactory = new CustomSchemeHandlerFactory()
+                }
             });
-            Dispatcher.UIThread.MainLoop(CancellationToken.None);
-        });
-        uiThread.IsBackground = true;
-        uiThread.Start();
 
-        await initializationTaskCompletionSource.Task;
+            var uiThread = new Thread(() =>
+            {
+                AppBuilder.Configure<App>().UsePlatformDetect().SetupWithoutStarting();
+
+                Dispatcher.UIThread.Post(() => { initializationTaskCompletionSource.SetResult(true); });
+                Dispatcher.UIThread.MainLoop(CancellationToken.None);
+            });
+            uiThread.IsBackground = true;
+            uiThread.Start();
+
+            await initializationTaskCompletionSource.Task;
+        }
     }
 }
