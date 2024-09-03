@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(TargetDotnetVersions)</TargetFrameworks>
+    <TargetFramework>$(DotnetVersion)</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
