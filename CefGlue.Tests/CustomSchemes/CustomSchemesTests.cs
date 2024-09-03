@@ -17,7 +17,7 @@ namespace CefGlue.Tests.CustomSchemes
             {
                 await loadTask.WaitAsync(TimeSpan.FromSeconds(5));
             }
-            catch (TimeoutException)
+            catch (Exception)
             {
                 Assert.Fail(
                     "Fail to load url" + Environment.NewLine +
