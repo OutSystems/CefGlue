@@ -1,5 +1,3 @@
-﻿using NUnit.Framework;
-
-#if !DEBUG
-[assembly: Timeout(50000)]
+﻿#if !DEBUG
+[assembly: Timeout(15000)]
 #endif

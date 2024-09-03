@@ -15,56 +15,10 @@ namespace CefGlue.Tests
 {
     public class TestBase
     {
-        private static object initLock = new object();
-        private static bool initialized = false;
-
         private AvaloniaCefBrowser browser;
         private Window window;
 
         protected AvaloniaCefBrowser Browser => browser;
-
-        [OneTimeSetUp]
-        protected async Task SetUp()
-        {
-            if (initialized)
-            {
-                return;
-            }
-
-            var initializationTaskCompletionSource = new TaskCompletionSource<bool>();
-
-            CefRuntimeLoader.Initialize(customSchemes: new[] { 
-                new CustomScheme()
-                {
-                    SchemeName = CustomSchemeHandlerFactory.SchemeName,
-                    SchemeHandlerFactory = new CustomSchemeHandlerFactory()
-                }
-            });
-
-            lock (initLock)
-            {
-                if (initialized)
-                {
-                    return;
-                }
-
-                var uiThread = new Thread(() =>
-                {
-                    AppBuilder.Configure<App>().UsePlatformDetect().SetupWithoutStarting();
-
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        initialized = true;
-                        initializationTaskCompletionSource.SetResult(true);
-                    });
-                    Dispatcher.UIThread.MainLoop(CancellationToken.None);
-                });
-                uiThread.IsBackground = true;
-                uiThread.Start();
-            }
-
-            await initializationTaskCompletionSource.Task;
-        }
 
         [SetUp]
         protected virtual async Task Setup()
