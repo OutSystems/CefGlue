@@ -12,10 +12,10 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         private static volatile int lastCallId;
 
         private readonly object _registrationSyncRoot = new object();
-        private readonly Dictionary<string, ObjectRegistrationInfo> _registeredObjects = new Dictionary<string, ObjectRegistrationInfo>();
+        private readonly Dictionary<string, ObjectInfo> _registeredObjects = new Dictionary<string, ObjectInfo>();
         private readonly ConcurrentDictionary<int, PromiseHolder> _pendingCalls = new ConcurrentDictionary<int, PromiseHolder>();
         private readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _pendingBoundQueryTasks = new ConcurrentDictionary<string, TaskCompletionSource<bool>>();
-        
+
         public JavascriptToNativeDispatcherRenderSide(MessageDispatcher dispatcher)
         {
             dispatcher.RegisterMessageHandler(Messages.NativeObjectRegistrationRequest.Name, HandleNativeObjectRegistration);
@@ -28,7 +28,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         private void HandleNativeObjectRegistration(MessageReceivedEventArgs args)
         {
             var message = Messages.NativeObjectRegistrationRequest.FromCefMessage(args.Message);
-            var objectInfo = new ObjectRegistrationInfo(message.ObjectName, message.MethodsNames);
+            var objectInfo = message.ObjectInfo;
 
             lock (_registrationSyncRoot)
             {
@@ -112,7 +112,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     {
                         if (message.Success)
                         {
-                            var value = CefV8Value.CreateString(message.ResultAsJson);
+                            var value = CefV8Value.CreateArrayBuffer(message.Result);
                             resolve(value);
                         }
                         else
@@ -126,7 +126,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         }
 
         public void HandleContextCreated(CefV8Context context, bool isMain)
-        { 
+        {
             if (isMain)
             {
                 lock (_registrationSyncRoot)
@@ -165,7 +165,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             }
         }
 
-        private bool CreateNativeObjects(IEnumerable<ObjectRegistrationInfo> objectInfos, CefV8Context context)
+        private bool CreateNativeObjects(IEnumerable<ObjectInfo> objectInfos, CefV8Context context)
         {
             if (context.Enter())
             {
@@ -175,12 +175,14 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     foreach (var objectInfo in objectInfos)
                     {
                         var handler = new V8FunctionHandler(objectInfo.Name, HandleNativeObjectCall);
-                        
+
                         var v8Obj = CefV8Value.CreateObject();
-                        foreach (var methodName in objectInfo.MethodsNames)
+
+                        foreach (var method in objectInfo.Methods)
                         {
-                            var v8Function = CefV8Value.CreateFunction(methodName, handler);
-                            v8Obj.SetValue(methodName, v8Function);
+                            var v8Function = CefV8Value.CreateFunction(method.Name, handler);
+                            var result = v8Function.SetValue("length", CefV8Value.CreateInt(method.ParameterCount), CefV8PropertyAttribute.ReadOnly);
+                            v8Obj.SetValue(method.Name, v8Function);
                         }
 
                         // the interceptor object is a proxy that will trap all calls to the native object and

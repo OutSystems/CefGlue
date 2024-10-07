@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using Xilium.CefGlue.Common.ObjectBinding;
-using Xilium.CefGlue.Common.Shared.Serialization;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace CefGlue.Tests.Javascript
 {
@@ -14,7 +13,7 @@ namespace CefGlue.Tests.Javascript
         {
             public bool Executed;
         }
-        
+
         class NativeTestObject
         {
             public object MethodWithParams(string param1, int param2)
@@ -26,13 +25,13 @@ namespace CefGlue.Tests.Javascript
             {
                 return "this is the result";
             }
-            
+
             public Task AsyncMethod(Token token)
             {
                 token.Executed = true;
                 return Task.CompletedTask;
             }
-            
+
             public Task<string> AsyncMethodWithReturn()
             {
                 return Task.FromResult("this is the result");
@@ -55,7 +54,11 @@ namespace CefGlue.Tests.Javascript
         [OneTimeSetUp]
         protected void Setup()
         {
-            nativeObject = new NativeObject("test", nativeTestObject);
+            nativeObject = new NativeObject(
+                MessageContext.DefaultMsgPack,
+                "test",
+                nativeTestObject
+            );
         }
 
         private object ExecuteMethod(string name, object[] args)
@@ -73,7 +76,7 @@ namespace CefGlue.Tests.Javascript
             }
             return result;
         }
-        
+
         private Task<object> ExecuteAsyncMethod(string name, object[] args)
         {
             var tcs = new TaskCompletionSource<object>();
@@ -82,7 +85,7 @@ namespace CefGlue.Tests.Javascript
                 if (e != null)
                 {
                     tcs.SetException(e);
-                } 
+                }
                 else
                 {
                     tcs.SetResult(r);
@@ -102,11 +105,11 @@ namespace CefGlue.Tests.Javascript
         public void AsyncMethodIsExecuted()
         {
             var token = new Token();
-            var result = ExecuteAsyncMethod("asyncMethod", new [] { token });
+            var result = ExecuteAsyncMethod("asyncMethod", new[] { token });
             Assert.IsNull(result.Result);
             Assert.IsTrue(token.Executed);
         }
-        
+
         [Test]
         public void AsyncMethodWithReturnIsExecuted()
         {
@@ -119,45 +122,45 @@ namespace CefGlue.Tests.Javascript
         {
             const string Arg1 = "arg1";
             const int Arg2 = 2;
-            var result = (object[]) ExecuteMethod("methodWithParams", new object[] { Arg1, Arg2 } );
+            var result = (object[])ExecuteMethod("methodWithParams", new object[] { Arg1, Arg2 });
 
             Assert.AreEqual(2, result.Length);
             Assert.AreEqual(Arg1, result[0]);
             Assert.AreEqual(Arg2, result[1]);
         }
 
-        [Test]
+        [Test(Description = "No automatic conversion to open argument list. TODO: Why is this needed?")]
         public void MethodWithOptionalParamsIsExecuted()
         {
             const string Arg1 = "arg1";
             const string Arg2 = "arg2";
-            var result = (object[])ExecuteMethod("methodWithOptionalParams", new object[] { Arg1, Arg2 });
+            var result = (object[])ExecuteMethod("methodWithOptionalParams", [(string[])[Arg1, Arg2]]);
 
             Assert.AreEqual(2, result.Length);
             Assert.AreEqual(Arg1, result[0]);
             Assert.AreEqual(Arg2, result[1]);
 
-            result = (object[])ExecuteMethod("methodWithOptionalParams", new object[0]);
+            result = (object[])ExecuteMethod("methodWithOptionalParams", [(string[])[]]);
 
             Assert.AreEqual(0, result.Length);
         }
 
-        [Test]
+        [Test(Description = "No automatic conversion to open argument list. TODO: Why is this needed?")]
         public void MethodWithFixedAndOptionalParamsIsExecuted()
         {
             const string Arg1 = "arg1";
-            var arg2 = new int[] { 1, 2 , 3 };
-            var result = (object[])ExecuteMethod("methodWithFixedAndOptionalParams", new object[] { Arg1, (int)1, (int)2, (int)3 });
+            var arg2 = new int[] { 1, 2, 3 };
+            var result = (object[])ExecuteMethod("methodWithFixedAndOptionalParams", [Arg1, (int[])[1, 2, 3]]);
 
             Assert.AreEqual(2, result.Length);
             Assert.AreEqual(Arg1, result[0]);
-            CollectionAssert.AreEqual(arg2, (IEnumerable) result[1]);
+            CollectionAssert.AreEqual(arg2, (IEnumerable)result[1]);
 
-            result = (object[])ExecuteMethod("methodWithFixedAndOptionalParams", new object[] { Arg1 });
+            result = (object[])ExecuteMethod("methodWithFixedAndOptionalParams", [Arg1, (int[])[]]);
 
             Assert.AreEqual(2, result.Length);
             Assert.AreEqual(Arg1, result[0]);
-            Assert.AreEqual(0, ((int[]) result[1]).Length);
+            Assert.AreEqual(0, ((int[])result[1]).Length);
         }
     }
 }

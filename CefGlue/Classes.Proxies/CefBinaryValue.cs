@@ -96,9 +96,9 @@
         /// Read up to |buffer_size| number of bytes into |buffer|. Reading begins at
         /// the specified byte |data_offset|. Returns the number of bytes read.
         /// </summary>
-        public long GetData(byte[] buffer, long bufferSize, long dataOffset)
+        public long GetData(Span<byte> buffer, long bufferSize, long dataOffset)
         {
-            if (buffer.LongLength < dataOffset + bufferSize) throw new ArgumentOutOfRangeException("dataOffset");
+            if (buffer.Length < dataOffset + bufferSize) throw new ArgumentOutOfRangeException("dataOffset");
 
             fixed (byte* buffer_ptr = buffer)
             {

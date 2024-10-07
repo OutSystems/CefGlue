@@ -5,7 +5,7 @@
     using System.Diagnostics;
     using System.Runtime.InteropServices;
     using Xilium.CefGlue.Interop;
-    
+
     /// <summary>
     /// Callback interface that is passed to CefV8Value::CreateArrayBuffer.
     /// </summary>
@@ -24,5 +24,10 @@
         /// along with this object.
         /// </summary>
         protected abstract void ReleaseBuffer(IntPtr buffer);
+    }
+
+    public class GlobalHeapArrayBufferReleaseCallback : CefV8ArrayBufferReleaseCallback
+    {
+        protected override void ReleaseBuffer(IntPtr buffer) => Marshal.FreeHGlobal(buffer);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
@@ -11,6 +10,8 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         private CefBrowser _browser;
         private readonly Dictionary<string, NativeObject> _registeredObjects = new Dictionary<string, NativeObject>();
         private readonly object _registrationSyncRoot = new object();
+
+        public MessageContext MessageContext { get; } = MessageContext.DefaultMsgPack;
 
         /// <summary>
         /// 
@@ -24,8 +25,8 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 return false;
             }
-            
-            var nativeObj = new NativeObject(name, obj, methodHandler);
+
+            var nativeObj = new NativeObject(MessageContext, name, obj, methodHandler);
 
             lock (_registrationSyncRoot)
             {
@@ -36,7 +37,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 }
 
                 _registeredObjects.Add(name, nativeObj);
-                
+
                 if (_browser != null)
                 {
                     SendRegistrationMessage(nativeObj);
@@ -88,8 +89,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         {
             var message = new Messages.NativeObjectRegistrationRequest()
             {
-                ObjectName = obj.Name,
-                MethodsNames = obj.MethodsNames.ToArray()
+                ObjectInfo = obj.ToObjectInfo()
             };
 
             var cefMessage = message.ToCefProcessMessage();

@@ -31,7 +31,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 return;
             }
 
-            nativeObject.ExecuteMethod(message.MemberName, message.ArgumentsAsJson, (result, exception) =>
+            nativeObject.ExecuteMethod(message.MemberName, message.Arguments, (result, exception) =>
             {
                 using (CefObjectTracker.StartTracking())
                 {
@@ -40,7 +40,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             });
         }
 
-        private static void SendResult(int callId, object result, string exceptionMessage, CefFrame frame)
+        private void SendResult(int callId, object result, string exceptionMessage, CefFrame frame)
         {
             var resultMessage = new Messages.NativeObjectCallResult()
             {
@@ -59,7 +59,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 try
                 {
-                    resultMessage.ResultAsJson = Serializer.Serialize(result);
+                    resultMessage.Result = _objectRegistry.MessageContext.Serialize(result);
                 }
                 catch (Exception e)
                 {

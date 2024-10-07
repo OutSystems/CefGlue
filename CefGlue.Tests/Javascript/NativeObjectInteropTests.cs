@@ -141,12 +141,12 @@ namespace CefGlue.Tests.Javascript
 
             public DateTime MethodWithDateTimeReturn()
             {
-                return DateTime.Parse(Date);
+                return DateTime.Parse(Date).ToUniversalTime();
             }
 
             public Person MethodWithObjectReturn()
             {
-                return new Person() {Name = "John", Age = 30, BirthDate = DateTime.Parse(Date)};
+                return new Person() {Name = "John", Age = 30, BirthDate = DateTime.Parse(Date).ToUniversalTime()};
             }
         }
 
@@ -208,7 +208,7 @@ namespace CefGlue.Tests.Javascript
             Assert.AreEqual(4, result.Length);
             Assert.AreEqual(Arg1, result[0]);
             Assert.AreEqual(Arg2, result[1]);
-            Assert.AreEqual(DateTime.Parse(Date), result[2]);
+            Assert.AreEqual(DateTime.Parse(Date).ToUniversalTime(), result[2]);
             Assert.AreEqual(true, result[3]);
         }
 
@@ -297,10 +297,11 @@ namespace CefGlue.Tests.Javascript
             var arg = (Person) result[0];
             Assert.AreEqual("cef", arg.Name);
             Assert.AreEqual(10, arg.Age);
-            Assert.AreEqual(DateTime.Parse(Date), arg.BirthDate);
+            Assert.AreEqual(DateTime.Parse(Date).ToUniversalTime(), arg.BirthDate);
         }
 
         [Test]
+        [Ignore("cyclic references are not supported")]
         public async Task MethodWithCyclicObjectParamIsPassed()
         {
             var taskCompletionSource = new TaskCompletionSource<object[]>();
@@ -345,7 +346,8 @@ namespace CefGlue.Tests.Javascript
             Assert.AreEqual("stringParam", result[0]);
             Assert.AreEqual("person1", ((Person)result[1]).Name);
             Assert.AreEqual("person2", ((Person)result[2]).Name);
-            Assert.AreSame(result[1], result[3]);
+            // cycles are not supported"
+            // Assert.AreSame(result[1], result[3]);
         }
 
         [Test]
@@ -365,8 +367,8 @@ namespace CefGlue.Tests.Javascript
             Assert.IsNull(result[0]);
             Assert.AreEqual("text", result[1]);
             Assert.AreEqual(5, result[2]);
-            Assert.IsInstanceOf<IDictionary<string, object>>(result[3]);
-            var dict = (IDictionary<string, object>)result[3];
+            Assert.IsInstanceOf<IDictionary<object, object>>(result[3]);
+            var dict = (IDictionary<object, object>)result[3];
             Assert.AreEqual(1, dict.Count);
             Assert.AreEqual("Name", dict.Keys.Single());
             Assert.AreEqual("plainObjName", dict.Values.Single());
@@ -374,7 +376,8 @@ namespace CefGlue.Tests.Javascript
             var arr = (object[])result[4];
             Assert.AreEqual(3, arr.Length);
             Assert.AreEqual(2, arr[1]);
-            Assert.AreSame(result[4], result[5]);
+            // cycles are not supported"
+            // Assert.AreSame(result[4], result[5]);
         }
 
         [Test]

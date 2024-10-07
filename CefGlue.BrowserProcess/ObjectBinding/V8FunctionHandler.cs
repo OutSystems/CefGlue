@@ -27,7 +27,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 ObjectName = _objectName,
                 MemberName = name,
-                ArgumentsAsJson = arguments.FirstOrDefault()?.GetStringValue() ?? string.Empty
+                Arguments = arguments.FirstOrDefault()?.GetArrayBuffer() ?? []
             };
 
             var promiseHolder = _functionCallHandler(message);

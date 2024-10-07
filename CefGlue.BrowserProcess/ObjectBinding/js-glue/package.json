@@ -1,0 +1,33 @@
+{
+   "name": "js-glue",
+   "version": "1.0.0",
+   "description": "JavaScript side glue code fro CefGlue",
+   "main": "index.js",
+   "scripts": {
+      "build": "rollup -c && tsx tools/extract-symbols.ts dist/main.d.ts ../ScriptFunctions.cs Xilium.CefGlue.BrowserProcess && shx cp dist/main.js ../CefGlueGlobalScript.js",
+      "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+      "format:check": "prettier --check \"src/**/*.{ts,tsx}\""
+   },
+   "author": "",
+   "license": "ISC",
+   "devDependencies": {
+      "@eslint/js": "^9.10.0",
+      "@rollup/plugin-node-resolve": "^15.3.0",
+      "@rollup/plugin-terser": "^0.4.4",
+      "@rollup/plugin-typescript": "^11.1.6",
+      "@types/node": "^22.5.5",
+      "eslint": "^9.10.0",
+      "eslint-config-prettier": "^9.1.0",
+      "eslint-plugin-prettier": "^5.2.1",
+      "globals": "^15.9.0",
+      "prettier": "3.3.3",
+      "rollup": "^4.21.3",
+      "shx": "^0.3.4",
+      "tsx": "^4.19.1",
+      "typescript": "^5.6.2",
+      "typescript-eslint": "^8.5.0"
+   },
+   "dependencies": {
+      "@msgpack/msgpack": "^3.0.0-beta2"
+   }
+}
