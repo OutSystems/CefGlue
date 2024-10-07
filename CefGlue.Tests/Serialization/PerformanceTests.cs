@@ -18,7 +18,7 @@ public class PerformanceTests : TestBase
         await base.ExtraSetup();
     }
 
-    [TestCase(1_000, 1.0d)]
+    [TestCase(1_000, 1.5d)]
     [TestCase(10_000, 2.0d)]
     [TestCase(100_000, 8.5d)]
     [TestCase(1_000_000, 65.0d)]

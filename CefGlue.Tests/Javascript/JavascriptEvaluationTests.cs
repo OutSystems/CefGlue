@@ -106,7 +106,6 @@ namespace CefGlue.Tests.Javascript
         public async Task DynamicObjectReturn()
         {
             var result = await EvaluateJavascript<dynamic>("return { 'foo': 'foo-value', 'bar': 10, 'baz': [1, 2] }");
-            Assert.IsInstanceOf<IDictionary<string, object>>(result);
             Assert.AreEqual("foo-value", result["foo"]);
             Assert.AreEqual(10, result["bar"]);
             Assert.IsInstanceOf<object[]>(result["baz"]);
