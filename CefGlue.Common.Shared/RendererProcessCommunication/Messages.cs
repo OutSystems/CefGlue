@@ -108,22 +108,24 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
 
             public static NativeObjectRegistrationRequest FromCefMessage(CefProcessMessage message)
             {
-                using var arguments = message.Arguments;
-                var methods = new List<MethodInfo>();
-
-                string objectName = arguments.GetString(0);
-                var methodList = arguments.GetList(1);
-                for (int index = 0; index < methodList.Count; index++)
+                using (var arguments = message.Arguments)
                 {
-                    using var value = methodList.GetList(index);
-                    methods.Add(new MethodInfo(value.GetString(0), value.GetInt(1)));
+                    var methods = new List<MethodInfo>();
+
+                    string objectName = arguments.GetString(0);
+                    var methodList = arguments.GetList(1);
+                    for (int index = 0; index < methodList.Count; index++)
+                    {
+                        using var value = methodList.GetList(index);
+                        methods.Add(new MethodInfo(value.GetString(0), value.GetInt(1)));
+                    }
+
+                    string messaging = arguments.GetNullableString(2);
+                    return new NativeObjectRegistrationRequest
+                    {
+                        ObjectInfo = new ObjectInfo(objectName, methods.ToArray()), Messaging = messaging,
+                    };
                 }
-
-                string messaging = arguments.GetNullableString(2);
-                return new NativeObjectRegistrationRequest
-                {
-                    ObjectInfo = new ObjectInfo(objectName, methods.ToArray()), Messaging = messaging,
-                };
             }
         }
 
@@ -136,20 +138,23 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
             public CefProcessMessage ToCefProcessMessage()
             {
                 var message = CefProcessMessage.Create(Name);
-                using var arguments = message.Arguments;
-
-                arguments.SetString(0, ObjectName);
+                using (var arguments = message.Arguments)
+                {
+                    arguments.SetString(0, ObjectName);
+                }
 
                 return message;
             }
 
             public static NativeObjectUnregistrationRequest FromCefMessage(CefProcessMessage message)
             {
-                using var arguments = message.Arguments;
-                return new NativeObjectUnregistrationRequest()
+                using (var arguments = message.Arguments)
                 {
-                    ObjectName = arguments.GetString(0),
-                };
+                    return new NativeObjectUnregistrationRequest()
+                    {
+                        ObjectName = arguments.GetString(0),
+                    };
+                }
             }
         }
 
@@ -175,14 +180,16 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
 
             public static NativeObjectCallRequest FromCefMessage(CefProcessMessage message)
             {
-                using var arguments = message.Arguments;
-                return new NativeObjectCallRequest()
+                using (var arguments = message.Arguments)
                 {
-                    CallId = arguments.GetInt(0),
-                    ObjectName = arguments.GetString(1),
-                    MemberName = arguments.GetString(2),
-                    Arguments = arguments.GetNullableBinary(3),
-                };
+                    return new NativeObjectCallRequest()
+                    {
+                        CallId = arguments.GetInt(0),
+                        ObjectName = arguments.GetString(1),
+                        MemberName = arguments.GetString(2),
+                        Arguments = arguments.GetNullableBinary(3),
+                    };
+                }
             }
         }
 

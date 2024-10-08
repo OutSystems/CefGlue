@@ -41,18 +41,6 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             return new PromiseHolder(promise, resolve, reject, context);
         }
 
-        public static void SetDefaultSerializer(this CefV8Context context, CefV8Value serializer)
-        {
-            var serializerFunction = context.GetGlueValue(JsGlueFunction.SetDefaultSerializer);
-            serializerFunction.ExecuteFunctionWithContext(context, null, [serializer]);
-        }
-
-        public static CefV8Value GetDefaultSerializer(this CefV8Context context)
-        {
-            var serializerFunction = context.GetGlueValue(JsGlueFunction.GetDefaultSerializer);
-            return serializerFunction.ExecuteFunctionWithContext(context, null, []);
-        }
-
         public static CefV8Value CreateInterceptorObject(this CefV8Context context, CefV8Value targetObj, CefV8Value serializer)
         {
             var interceptorFactory = context.GetGlueValue(JsGlueFunction.CreateInterceptor);
@@ -73,6 +61,18 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         public static string WrapScriptForEvaluation(string script)
         {
             return $"{GlueObjectName}.{JsGlueFunction.EvaluateScript}(function() {{{script}\n}})";
+        }
+
+        public static void SetDefaultSerializer(this CefV8Context context, CefV8Value serializer)
+        {
+            var serializerFunction = context.GetGlueValue(JsGlueFunction.SetDefaultSerializer);
+            serializerFunction.ExecuteFunctionWithContext(context, null, [serializer]);
+        }
+
+        public static CefV8Value GetDefaultSerializer(this CefV8Context context)
+        {
+            var serializerFunction = context.GetGlueValue(JsGlueFunction.GetDefaultSerializer);
+            return serializerFunction.ExecuteFunctionWithContext(context, null, []);
         }
     }
 }

@@ -10,11 +10,11 @@ export default {
       format: 'iife',
       dir: 'dist',
       name: 'cefglue',
-      // compact: true,
+      compact: true,
    },
    plugins: [
       typescript({ rootDir: 'src', declarationDir: 'dist', declaration: true }),
-      // terser(),
+      terser(),
       nodeResolve(),
    ]
 }

@@ -30,6 +30,7 @@ namespace CefGlue.Tests.Javascript
 
             private string PrivateProperty => "";
         }
+
         private static Messaging GetMessaging(MessagingType messagingType) => messagingType switch
         {
             MessagingType.Json => Messaging.Json,
