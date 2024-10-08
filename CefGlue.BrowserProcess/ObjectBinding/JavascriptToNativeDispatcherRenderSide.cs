@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {
+    internal record ObjectRegistration(ObjectInfo Info, string Messaging);
+
     internal class JavascriptToNativeDispatcherRenderSide : INativeObjectRegistry
     {
         private static volatile int lastCallId;
 
         private readonly object _registrationSyncRoot = new object();
-        private readonly Dictionary<string, ObjectInfo> _registeredObjects = new Dictionary<string, ObjectInfo>();
+        private readonly Dictionary<string, ObjectRegistration> _registeredObjects = new Dictionary<string, ObjectRegistration>();
         private readonly ConcurrentDictionary<int, PromiseHolder> _pendingCalls = new ConcurrentDictionary<int, PromiseHolder>();
         private readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _pendingBoundQueryTasks = new ConcurrentDictionary<string, TaskCompletionSource<bool>>();
 
@@ -28,17 +31,18 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         private void HandleNativeObjectRegistration(MessageReceivedEventArgs args)
         {
             var message = Messages.NativeObjectRegistrationRequest.FromCefMessage(args.Message);
-            var objectInfo = message.ObjectInfo;
+            var registration = new ObjectRegistration(message.ObjectInfo, message.Messaging);
 
             lock (_registrationSyncRoot)
             {
-                if (_registeredObjects.ContainsKey(objectInfo.Name))
+                string objectName = registration.Info.Name;
+                if (_registeredObjects.ContainsKey(objectName))
                 {
                     return;
                 }
 
-                _registeredObjects.Add(objectInfo.Name, objectInfo);
-                var taskSource = _pendingBoundQueryTasks.GetOrAdd(objectInfo.Name, _ => new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously));
+                _registeredObjects.Add(objectName, registration);
+                var taskSource = _pendingBoundQueryTasks.GetOrAdd(objectName, _ => new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously));
 
                 // register objects in the main frame
                 var frame = args.Browser.GetMainFrame();
@@ -50,7 +54,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     return;
                 }
 
-                var objectCreated = CreateNativeObjects(new[] { objectInfo }, context);
+                var objectCreated = CreateNativeObjects([registration], context);
 
                 if (!objectCreated)
                 {
@@ -71,32 +75,6 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             using (var context = frame.V8Context.EnterOrFail())
             {
                 DeleteNativeObject(message.ObjectName, context.V8Context);
-            }
-        }
-
-        private PromiseHolder HandleNativeObjectCall(Messages.NativeObjectCallRequest message)
-        {
-            message.CallId = lastCallId++;
-
-            using (var context = CefV8Context.GetCurrentContext().EnterOrFail(shallDispose: false)) // context will be released when promise is resolved
-            {
-                var frame = context.V8Context.GetFrame();
-                if (frame == null)
-                {
-                    // TODO, what now?
-                    return null;
-                }
-
-                var promiseHolder = context.V8Context.CreatePromise();
-                if (!_pendingCalls.TryAdd(message.CallId, promiseHolder))
-                {
-                    throw new InvalidOperationException("Call id already exists");
-                }
-
-                var cefMessage = message.ToCefProcessMessage();
-                frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
-
-                return promiseHolder;
             }
         }
 
@@ -165,18 +143,63 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             }
         }
 
-        private bool CreateNativeObjects(IEnumerable<ObjectInfo> objectInfos, CefV8Context context)
+        private bool CreateNativeObjects(IEnumerable<ObjectRegistration> objectRegistrations, CefV8Context context)
         {
             if (context.Enter())
             {
                 try
                 {
-                    var global = context.GetGlobal();
-                    foreach (var objectInfo in objectInfos)
+                    CefV8Value global = context.GetGlobal();
+                    foreach (var registration in objectRegistrations)
                     {
-                        var handler = new V8FunctionHandler(objectInfo.Name, HandleNativeObjectCall);
+                        ObjectInfo objectInfo = registration.Info;
+
+                        var handler = new V8FunctionHandler((string name, CefV8Value obj, CefV8Value[] arguments, out CefV8Value returnValue, out string exception) =>
+                        {
+                            if (arguments.Length > 1)
+                            {
+                                throw new ArgumentException($"The array must be either empty or contain only one argument, a json string. The array has {arguments.Length} elements.", nameof(arguments));
+                            }
+
+                            using var context = CefV8Context.GetCurrentContext().EnterOrFail(shallDispose: false); // context will be released when promise is resolved
+                            var message = new Messages.NativeObjectCallRequest()
+                            {
+                                ObjectName = objectInfo.Name,
+                                CallId = lastCallId++,
+                                MemberName = name,
+                                Arguments = arguments.FirstOrDefault()?.GetArrayBuffer() ?? []
+                            };
+
+                            var frame = context.V8Context.GetFrame();
+                            if (frame == null)
+                            {
+                                // TODO, what now?
+                                returnValue = null;
+                                exception = "Failed to create promise";
+                            }
+
+                            CefV8Value serializer = obj.GetValue("serializer");
+                            PromiseHolder promiseHolder = context.V8Context.CreatePromise(serializer);
+                            if (!_pendingCalls.TryAdd(message.CallId, promiseHolder))
+                            {
+                                throw new InvalidOperationException("Call id already exists");
+                            }
+
+                            var cefMessage = message.ToCefProcessMessage();
+                            frame.SendProcessMessage(CefProcessId.Browser, cefMessage);
+
+                            returnValue = promiseHolder.Promise;
+                            exception = null;
+
+                            return true;
+                        });
+
+                        CefV8Value serializer = registration.Messaging != null
+                            ? global.GetGlueValue(registration.Messaging)
+                            : CefV8Value.CreateUndefined();
 
                         var v8Obj = CefV8Value.CreateObject();
+                        v8Obj.SetValue("serializer", serializer, CefV8PropertyAttribute.ReadOnly);
 
                         foreach (var method in objectInfo.Methods)
                         {
@@ -187,7 +210,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 
                         // the interceptor object is a proxy that will trap all calls to the native object and
                         // and pass the arguments serialized as json (to the native method)
-                        var interceptorObj = JavascriptHelper.CreateInterceptorObject(context, v8Obj);
+                        var interceptorObj = JavascriptHelper.CreateInterceptorObject(context, v8Obj, serializer);
                         global.SetValue(objectInfo.Name, interceptorObj);
                     }
 

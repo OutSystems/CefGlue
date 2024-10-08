@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { format, parse } from 'node:path';
 import { argv } from 'node:process';
-import { FunctionDeclaration, Node, ScriptTarget, SyntaxKind, createSourceFile, isFunctionDeclaration } from 'typescript';
+import { Declaration, DeclarationStatement, FunctionDeclaration, NamedDeclaration, Node, ScriptTarget, SyntaxKind, createSourceFile, isFunctionDeclaration, isVariableDeclaration } from 'typescript';
 import { toPascalCase } from './identifier-cases';
 
 if (argv.length < 5) {
@@ -31,7 +31,7 @@ function hasExportModifier(declaration: FunctionDeclaration): boolean {
    return declaration.modifiers?.some(modifier => modifier.kind === SyntaxKind.ExportKeyword) ?? false;
 }
 
-function* getFunctionDeclarations(node: Node): Iterable<FunctionDeclaration> {
+function* getFunctionDeclarations(node: Node): Iterable<Declaration> {
    for (const childNode of node.getChildren()) {
       if (isFunctionDeclaration(childNode) && hasExportModifier(childNode)) {
          yield childNode;
@@ -40,17 +40,35 @@ function* getFunctionDeclarations(node: Node): Iterable<FunctionDeclaration> {
    }
 }
 
-const declarations = [...getFunctionDeclarations(sourceFile)]
-const formatSymbol = (decl: FunctionDeclaration) => {
+function* getVariableDeclarations(node: Node): Iterable<Declaration> {
+   for (const childNode of node.getChildren()) {
+      if (isVariableDeclaration(childNode)) {
+         yield childNode;
+      }
+      yield* getVariableDeclarations(childNode)
+   }
+}
+
+const functionDeclarations = [...getFunctionDeclarations(sourceFile)]
+const variableDeclarations = [...getVariableDeclarations(sourceFile)]
+function formatNamedDeclaration(decl: NamedDeclaration) {
    const name = decl.name?.getText() ?? ''
    return `   public const string ${toPascalCase(name)} = "${name}";`
 }
-const sourceCode = `
+writeFileSync(target+"Function.cs", `
 namespace ${namespace};
 
-public static class ${toPascalCase(module)}
+public static class ${toPascalCase(module)+"Function"}
 {
-${declarations.map(formatSymbol).join('\n')}
+${functionDeclarations.map(formatNamedDeclaration).join('\n')}
 }
-`
-writeFileSync(target, sourceCode)
+`)
+
+writeFileSync(target+"Constant.cs", `
+namespace ${namespace};
+
+public static class ${toPascalCase(module)+"Constant"}
+{
+${variableDeclarations.map(formatNamedDeclaration).join('\n')}
+}
+`)

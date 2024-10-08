@@ -1,5 +1,4 @@
 ﻿using System;
-using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace CefGlue.Tests.Serialization
 {
@@ -69,24 +68,9 @@ namespace CefGlue.Tests.Serialization
         public CyclicObj otherObj;
     }
 
-    public enum MessageContextType
+    public enum MessagingType
     {
         Json,
         MsgPack
-    }
-
-    public static class MessageContextTypeHelper
-    {
-        public static MessageContext GetMessageContext(MessageContextType messageContextType)
-        {
-            MessageContext messageContext = messageContextType switch
-            {
-                MessageContextType.Json => MessageContext.DefaultJson,
-                MessageContextType.MsgPack => MessageContext.DefaultMsgPack,
-                _ => throw new ArgumentException($"Invalid MessageContextType argument: {messageContextType}")
-            };
-
-            return messageContext;
-        }
     }
 }

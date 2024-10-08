@@ -25,6 +25,8 @@ function convertBinaryToBase64(byteArray: Uint8Array) {
 }
 
 export class JsonSerializer implements Serializer {
+   static Instance = new JsonSerializer();
+
    static convertStringToJsType(value: string) {
       switch (value.substring(0, 1)) {
          case TypeMarker.string:

@@ -11,12 +11,12 @@ namespace CefGlue.Tests.Serialization
     [TestFixture]
     public class CyclicSerializationTests
     {
-        private static readonly MessageContext messageContext = MessageContext.DefaultJson;
+        private static readonly Messaging messaging = Messaging.Json;
 
         private static ObjectType SerializeAndDeserialize<ObjectType>(ObjectType value)
         {
-            var json = messageContext.Serialize(value);
-            var result = messageContext.Deserialize<ObjectType>(json);
+            var json = messaging.Serialize(value);
+            var result = messaging.Deserialize<ObjectType>(json);
             return result;
         }
 
@@ -73,8 +73,8 @@ namespace CefGlue.Tests.Serialization
 
             byte[] bytes = Array.Empty<byte>();
             List<object> obtainedValue = null;
-            Assert.DoesNotThrow(() => bytes = messageContext.Serialize(list));
-            Assert.DoesNotThrow(() => obtainedValue = messageContext.Deserialize<List<object>>(bytes));
+            Assert.DoesNotThrow(() => bytes = messaging.Serialize(list));
+            Assert.DoesNotThrow(() => obtainedValue = messaging.Deserialize<List<object>>(bytes));
             Assert.AreEqual(2, obtainedValue.Count());
             Assert.AreSame(obtainedValue[0], obtainedValue[1]);
         }

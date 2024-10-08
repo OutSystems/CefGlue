@@ -13,12 +13,12 @@ namespace CefGlue.Tests.Serialization
     [TestFixture]
     public class JsonSerializationTests
     {
-        private static readonly MessageContext messageContext = MessageContext.DefaultJson;
+        private static readonly Messaging messaging = Messaging.Json;
 
         private static ObjectType SerializeAndDeserialize<ObjectType>(ObjectType value)
         {
-            var json = messageContext.Serialize(value);
-            var result = messageContext.Deserialize<ObjectType>(json);
+            var json = messaging.Serialize(value);
+            var result = messaging.Deserialize<ObjectType>(json);
             return result;
         }
 
@@ -56,13 +56,13 @@ namespace CefGlue.Tests.Serialization
             var json = JsonSerializer.Serialize(list, jsonSerializerOptions);
             object obtainedValue = null;
 
-            Assert.DoesNotThrow(() => obtainedValue = messageContext.Deserialize<List<object>>(Encoding.UTF8.GetBytes(json)));
+            Assert.DoesNotThrow(() => obtainedValue = messaging.Deserialize<List<object>>(Encoding.UTF8.GetBytes(json)));
         }
 
         [Test]
         public void HandlesNumberAsObject()
         {
-            var obtained = messageContext.Deserialize<object>(Encoding.UTF8.GetBytes("5"));
+            var obtained = messaging.Deserialize<object>(Encoding.UTF8.GetBytes("5"));
             Assert.IsInstanceOf<double>(obtained);
             Assert.AreEqual(5, obtained);
         }
@@ -70,7 +70,7 @@ namespace CefGlue.Tests.Serialization
         [Test]
         public void HandlesNumberArrayAsObject()
         {
-            var obtained = messageContext.Deserialize<object>(Encoding.UTF8.GetBytes("[5]"));
+            var obtained = messaging.Deserialize<object>(Encoding.UTF8.GetBytes("[5]"));
             Assert.IsInstanceOf<object[]>(obtained);
             CollectionAssert.AreEqual(new[] { 5 }, (object[])obtained);
         }
@@ -78,7 +78,7 @@ namespace CefGlue.Tests.Serialization
         [Test]
         public void HandlesJsObjectAsObject()
         {
-            var obtained = messageContext.Deserialize<object>(Encoding.UTF8.GetBytes("{\"key\":5}"));
+            var obtained = messaging.Deserialize<object>(Encoding.UTF8.GetBytes("{\"key\":5}"));
             Assert.IsInstanceOf<IDictionary<string, object>>(obtained);
             CollectionAssert.AreEqual(new[] { KeyValuePair.Create("key", 5) }, (IDictionary<string, object>)obtained);
         }
@@ -86,7 +86,7 @@ namespace CefGlue.Tests.Serialization
         [Test]
         public void HandlesJsObjectAsExpandoObject()
         {
-            var obtained = messageContext.Deserialize<ExpandoObject>(Encoding.UTF8.GetBytes("{\"key\":5}"));
+            var obtained = messaging.Deserialize<ExpandoObject>(Encoding.UTF8.GetBytes("{\"key\":5}"));
             Assert.IsInstanceOf<IDictionary<string, object>>(obtained);
             CollectionAssert.AreEqual(new[] { KeyValuePair.Create("key", 5) }, obtained);
         }
@@ -94,21 +94,21 @@ namespace CefGlue.Tests.Serialization
         [Test]
         public void HandlesValueTypes()
         {
-            var obtained = messageContext.Deserialize<StructObject>(Encoding.UTF8.GetBytes("null"));
+            var obtained = messaging.Deserialize<StructObject>(Encoding.UTF8.GetBytes("null"));
             Assert.IsInstanceOf<StructObject>(obtained);
             Assert.AreEqual(default(StructObject), obtained);
 
             // when null is deserialized to a Structs array
-            var obtainedNullArray = messageContext.Deserialize<StructObject[]>(Encoding.UTF8.GetBytes("null"));
+            var obtainedNullArray = messaging.Deserialize<StructObject[]>(Encoding.UTF8.GetBytes("null"));
             Assert.IsNull(obtainedNullArray);
 
             // when null appears as an element of a Structs array
-            var obtainedArray = messageContext.Deserialize<StructObject[]>(Encoding.UTF8.GetBytes("[null]"));
+            var obtainedArray = messaging.Deserialize<StructObject[]>(Encoding.UTF8.GetBytes("[null]"));
             Assert.IsInstanceOf<StructObject[]>(obtainedArray);
             CollectionAssert.AreEqual(new[] { default(StructObject) }, obtainedArray);
 
             // when null appears inside an object
-            var obtainedParentObj = messageContext.Deserialize<ParentObj>(Encoding.UTF8.GetBytes("{ \"childObj\":null }"));
+            var obtainedParentObj = messaging.Deserialize<ParentObj>(Encoding.UTF8.GetBytes("{ \"childObj\":null }"));
             Assert.IsInstanceOf<ParentObj>(obtainedParentObj);
             Assert.AreEqual(default(ChildObj), obtainedParentObj.childObj);
         }
@@ -116,7 +116,7 @@ namespace CefGlue.Tests.Serialization
         [Test]
         public void HandlesMissingObjectFields()
         {
-            Assert.DoesNotThrow(() => messageContext.Deserialize<Person>(Encoding.UTF8.GetBytes($"{{\"Name\":\"{DataMarkers.StringMarker}student\",\"MissingField\":0}}")));
+            Assert.DoesNotThrow(() => messaging.Deserialize<Person>(Encoding.UTF8.GetBytes($"{{\"Name\":\"{DataMarkers.StringMarker}student\",\"MissingField\":0}}")));
         }
     }
 }

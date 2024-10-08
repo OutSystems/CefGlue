@@ -15,11 +15,11 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         private readonly object _methodHandlerTarget;
         private readonly NativeMethod _methodHandler;
 
-        public MessageContext MessageContext { get; }
+        public Messaging Messaging { get; }
 
-        public NativeObject(MessageContext messageContext, string name, object target, MethodCallHandler methodHandler = null)
+        public NativeObject(Messaging messaging, string name, object target, MethodCallHandler methodHandler = null)
         {
-            MessageContext = messageContext;
+            Messaging = messaging;
             Name = name;
             _target = target;
             _methods = GetObjectMembers(target);
@@ -44,7 +44,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             }
 
             var arguments = method.ParameterTypes.Length > 0 
-                ? MessageContext.Deserialize(serializedArguments, method.ParameterTypes)
+                ? Messaging.Deserialize(serializedArguments, method.ParameterTypes)
                 : [];
             ExecuteMethod(methodName, arguments, handleResult);
         }

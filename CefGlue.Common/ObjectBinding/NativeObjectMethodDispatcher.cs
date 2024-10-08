@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
-using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
@@ -27,7 +26,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             var nativeObject = _objectRegistry.Get(message.ObjectName ?? "");
             if (nativeObject == null)
             {
-                SendResult(callId, null, $"Object named {message.ObjectName} was not found. Make sure it was registered before.", frame);
+                SendResult(_objectRegistry.DefaultMessaging, callId, null, $"Object named {message.ObjectName} was not found. Make sure it was registered before.", frame);
                 return;
             }
 
@@ -35,12 +34,12 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 using (CefObjectTracker.StartTracking())
                 {
-                    SendResult(callId, result, exception?.Message, frame);
+                    SendResult(nativeObject.Messaging, callId, result, exception?.Message, frame);
                 }
             });
         }
 
-        private void SendResult(int callId, object result, string exceptionMessage, CefFrame frame)
+        private void SendResult(Messaging messaging, int callId, object result, string exceptionMessage, CefFrame frame)
         {
             var resultMessage = new Messages.NativeObjectCallResult()
             {
@@ -59,7 +58,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 try
                 {
-                    resultMessage.Result = _objectRegistry.MessageContext.Serialize(result);
+                    resultMessage.Result = messaging.Serialize(result);
                 }
                 catch (Exception e)
                 {

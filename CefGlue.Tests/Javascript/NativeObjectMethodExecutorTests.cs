@@ -55,7 +55,7 @@ namespace CefGlue.Tests.Javascript
         protected void Setup()
         {
             nativeObject = new NativeObject(
-                MessageContext.DefaultMsgPack,
+                Messaging.MsgPack,
                 "test",
                 nativeTestObject
             );

@@ -57,7 +57,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 {
                     arguments.SetInt(0, TaskId);
                     arguments.SetBool(1, Success);
-                    arguments.SetByteArray(2, Result);
+                    arguments.SetNullableBinary(2, Result);
                     arguments.SetString(3, Exception);
                 }
                 return message;
@@ -71,7 +71,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                     {
                         TaskId = arguments.GetInt(0),
                         Success = arguments.GetBool(1),
-                        Result = arguments.GetByteArray(2),
+                        Result = arguments.GetNullableBinary(2),
                         Exception = arguments.GetString(3)
                     };
                 }
@@ -83,6 +83,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
             public const string Name = nameof(NativeObjectRegistrationRequest);
 
             public ObjectInfo ObjectInfo;
+            public string Messaging;
 
             public CefProcessMessage ToCefProcessMessage()
             {
@@ -101,6 +102,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 using var arguments = message.Arguments;
                 arguments.SetString(0, ObjectInfo.Name);
                 arguments.SetList(1, methodList);
+                arguments.SetNullableString(2, Messaging);
                 return message;
             }
 
@@ -109,6 +111,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 using var arguments = message.Arguments;
                 var methods = new List<MethodInfo>();
 
+                string objectName = arguments.GetString(0);
                 var methodList = arguments.GetList(1);
                 for (int index = 0; index < methodList.Count; index++)
                 {
@@ -116,9 +119,10 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                     methods.Add(new MethodInfo(value.GetString(0), value.GetInt(1)));
                 }
 
+                string messaging = arguments.GetNullableString(2);
                 return new NativeObjectRegistrationRequest
                 {
-                    ObjectInfo = new ObjectInfo(arguments.GetString(0), methods.ToArray())
+                    ObjectInfo = new ObjectInfo(objectName, methods.ToArray()), Messaging = messaging,
                 };
             }
         }
@@ -165,7 +169,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 arguments.SetInt(0, CallId);
                 arguments.SetString(1, ObjectName);
                 arguments.SetString(2, MemberName);
-                arguments.SetByteArray(3, Arguments);
+                arguments.SetNullableBinary(3, Arguments);
                 return message;
             }
 
@@ -177,7 +181,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                     CallId = arguments.GetInt(0),
                     ObjectName = arguments.GetString(1),
                     MemberName = arguments.GetString(2),
-                    Arguments = arguments.GetByteArray(3),
+                    Arguments = arguments.GetNullableBinary(3),
                 };
             }
         }
@@ -199,8 +203,8 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                 {
                     arguments.SetInt(0, CallId);
                     arguments.SetBool(1, Success);
-                    arguments.SetByteArray(2, Result);
-                    arguments.SetString(3, Exception);
+                    arguments.SetNullableBinary(2, Result);
+                    arguments.SetNullableString(3, Exception);
                 }
                 return message;
             }
@@ -213,8 +217,8 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
                     {
                         CallId = arguments.GetInt(0),
                         Success = arguments.GetBool(1),
-                        Result = arguments.GetByteArray(2),
-                        Exception = arguments.GetString(3)
+                        Result = arguments.GetNullableBinary(2),
+                        Exception = arguments.GetNullableString(3)
                     };
                 }
             }
@@ -365,7 +369,7 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
 
     public static class CefListExtensions
     {
-        public static bool SetByteArray(this ICefListValue valueList, int index, byte[] bytes)
+        public static bool SetNullableBinary(this ICefListValue valueList, int index, byte[] bytes)
         {
             if (bytes != null && bytes.Length > 0)
             {
@@ -375,17 +379,30 @@ namespace Xilium.CefGlue.Common.Shared.RendererProcessCommunication
             return valueList.SetNull(index);
         }
 
-        public static byte[] GetByteArray(this ICefListValue valueList, int index)
+        public static byte[] GetNullableBinary(this ICefListValue valueList, int index)
         {
             CefValueType valueType = valueList.GetValueType(index);
-            if (valueType == CefValueType.Null)
+            return valueType == CefValueType.Null
+                ? []
+                : valueList.GetBinary(index).ToArray();
+        }
+
+        public static bool SetNullableString(this ICefListValue valueList, int index, string @string)
+        {
+            if (!string.IsNullOrEmpty(@string))
             {
-                return [];
+                return valueList.SetString(index, @string);
             }
-            else
-            {
-                return valueList.GetBinary(index).ToArray();
-            }
+
+            return valueList.SetNull(index);
+        }
+
+        public static string GetNullableString(this ICefListValue valueList, int index)
+        {
+            CefValueType valueType = valueList.GetValueType(index);
+            return valueType == CefValueType.Null
+                ? default
+                : valueList.GetString(index);
         }
     }
 }

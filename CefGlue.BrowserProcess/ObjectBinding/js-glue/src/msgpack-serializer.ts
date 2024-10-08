@@ -2,6 +2,8 @@ import { decode, encode } from "@msgpack/msgpack"
 import { Serializer } from "./main";
 
 export class MsgPackSerializer implements Serializer {
+   static Instance = new MsgPackSerializer();
+
    deserialize<T = any>(value: ArrayBuffer): T {
       return decode(value)as T;
    }

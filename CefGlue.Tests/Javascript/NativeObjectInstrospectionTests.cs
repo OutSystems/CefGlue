@@ -30,12 +30,19 @@ namespace CefGlue.Tests.Javascript
 
             private string PrivateProperty => "";
         }
-
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void CLRObjectInstanceMethodsAreCaptured(MessageContextType messageContextType)
+        private static Messaging GetMessaging(MessagingType messagingType) => messagingType switch
         {
-            NativeObject nativeObject = new NativeObject(MessageContextTypeHelper.GetMessageContext(messageContextType), "object", new object());
+            MessagingType.Json => Messaging.Json,
+            MessagingType.MsgPack => Messaging.MsgPack,
+            _ => throw new ArgumentException($"Invalid MessagingType argument: {messagingType}")
+        };
+
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void CLRObjectInstanceMethodsAreCaptured(MessagingType messagingType)
+        {
+            Messaging messaging = GetMessaging(messagingType);
+            NativeObject nativeObject = new NativeObject(messaging, "object", new object());
             ObjectInfo objectInfo = nativeObject.ToObjectInfo();
             var members = objectInfo.Methods;
 
@@ -47,11 +54,12 @@ namespace CefGlue.Tests.Javascript
             Assert.Contains(new MethodInfo("equals", 1), members);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void CustomObjectInstanceMethodsAreCaptured(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void CustomObjectInstanceMethodsAreCaptured(MessagingType messagingType)
         {
-            NativeObject nativeObject = new NativeObject(MessageContextTypeHelper.GetMessageContext(messageContextType), "CustomObject", new CustomObject());
+            Messaging messaging = GetMessaging(messagingType);
+            NativeObject nativeObject = new NativeObject(messaging, "CustomObject", new CustomObject());
             ObjectInfo objectInfo = nativeObject.ToObjectInfo();
             var members = objectInfo.Methods;
 

@@ -367,7 +367,6 @@ namespace CefGlue.Tests.Javascript
             Assert.IsNull(result[0]);
             Assert.AreEqual("text", result[1]);
             Assert.AreEqual(5, result[2]);
-            Assert.IsInstanceOf<IDictionary<object, object>>(result[3]);
             var dict = (IDictionary<object, object>)result[3];
             Assert.AreEqual(1, dict.Count);
             Assert.AreEqual("Name", dict.Keys.Single());

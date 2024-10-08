@@ -7,10 +7,20 @@ export interface Serializer {
    serialize(value: any, options?: Partial<{ skipReferenceForInitialArrayObject: boolean }>): ArrayBuffer;
 }
 
-const serializer2: Serializer = new JsonSerializer();
-const serializer: Serializer = new MsgPackSerializer();
+let defaultSerializer: Serializer = MsgPackSerializer.Instance;
 
-export function createPromise(): any {
+export const MsgPack: Serializer = MsgPackSerializer.Instance;
+export const Json: Serializer = JsonSerializer.Instance;
+
+export function setDefaultSerializer(serializer: Serializer) {
+   defaultSerializer = serializer;
+}
+
+export function getDefaultSerializer() {
+   return defaultSerializer;
+}
+
+export function createPromise(serializer = defaultSerializer): any {
    const result: any = {};
    const promise = new Promise(function (resolve, reject) {
       result.resolve = function (result: ArrayBuffer) {
@@ -26,7 +36,7 @@ export function createPromise(): any {
    return result;
 }
 
-export function createInterceptor(targetObj: any): object {
+export function createInterceptor(targetObj: any, serializer = defaultSerializer): object {
    const functionsMap = new Map();
    const handler: ProxyHandler<string[]> = {
       get(target, propKey, receiver) {
@@ -72,6 +82,6 @@ export function deleteObjectBound(objName: string) {
    Unbind(objName);
 }
 
-export function evaluateScript(fn: () => any) {
+export function evaluateScript(fn: () => any, serializer = defaultSerializer) {
    return serializer.serialize(fn());
 }

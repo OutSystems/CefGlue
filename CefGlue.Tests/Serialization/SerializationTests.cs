@@ -8,18 +8,18 @@ namespace CefGlue.Tests.Serialization
     [TestFixture]
     public class SerializationTests
     {
-        private static ObjectType SerializeAndDeserialize<ObjectType>(ObjectType value, MessageContextType messageContextType)
+        private static ObjectType SerializeAndDeserialize<ObjectType>(ObjectType value, MessagingType messagingType)
         {
-            var messageContext = MessageContextTypeHelper.GetMessageContext(messageContextType);
-            var bytes = messageContext.Serialize(value);
-            var result = messageContext.Deserialize<ObjectType>(bytes);
+            Messaging messaging = GetMessaging(messagingType);
+            var bytes = messaging.Serialize(value);
+            var result = messaging.Deserialize<ObjectType>(bytes);
             return result;
         }
 
         private static ObjectType AssertSerialization<ObjectType>(ObjectType value,
-            MessageContextType messageContextType, bool assertEquality = true)
+            MessagingType messagingType, bool assertEquality = true)
         {
-            var obtainedValue = SerializeAndDeserialize(value, messageContextType);
+            var obtainedValue = SerializeAndDeserialize(value, messagingType);
             Assert.AreSame(value?.GetType(), obtainedValue?.GetType());
             if (assertEquality)
             {
@@ -29,141 +29,141 @@ namespace CefGlue.Tests.Serialization
             return obtainedValue;
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesNullObject(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesNullObject(MessagingType messageContextType)
         {
             AssertSerialization((object)null, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack,
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack,
             Ignore = "Msgpack serializer insists to deserialize plain objects to dictionaries.")]
-        public void HandlesPlainObject(MessageContextType messageContextType)
+        public void HandlesPlainObject(MessagingType messageContextType)
         {
             var obtainedValue = AssertSerialization(new object(), messageContextType, assertEquality: false);
             Assert.NotNull(obtainedValue);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesBooleans(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesBooleans(MessagingType messageContextType)
         {
             AssertSerialization(true, messageContextType);
             AssertSerialization(false, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesSignedIntegers16(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesSignedIntegers16(MessagingType messageContextType)
         {
             AssertSerialization(Int16.MaxValue, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesSignedIntegers32(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesSignedIntegers32(MessagingType messageContextType)
         {
             AssertSerialization(Int32.MaxValue, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesSignedIntegers64(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesSignedIntegers64(MessagingType messageContextType)
         {
             AssertSerialization(Int64.MaxValue, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesUnsignedIntegers16(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesUnsignedIntegers16(MessagingType messageContextType)
         {
             AssertSerialization(UInt16.MinValue, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesUnsignedIntegers32(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesUnsignedIntegers32(MessagingType messageContextType)
         {
             AssertSerialization(UInt32.MinValue, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesUnsignedIntegers64(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesUnsignedIntegers64(MessagingType messageContextType)
         {
             AssertSerialization(UInt64.MinValue, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesBytes(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesBytes(MessagingType messageContextType)
         {
             AssertSerialization((byte)12, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesStrings(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesStrings(MessagingType messageContextType)
         {
             AssertSerialization("this is a string", messageContextType);
             AssertSerialization("", messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesStringsWithSpecialChars(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesStringsWithSpecialChars(MessagingType messageContextType)
         {
             AssertSerialization("日本語組版処理の", messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesChars(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesChars(MessagingType messageContextType)
         {
             AssertSerialization('c', messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesDoubles(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesDoubles(MessagingType messageContextType)
         {
             AssertSerialization(10.5d, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesFloats(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesFloats(MessagingType messageContextType)
         {
             AssertSerialization(10.5f, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesDecimals(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesDecimals(MessagingType messageContextType)
         {
             AssertSerialization(10.5m, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesBinaries(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesBinaries(MessagingType messageContextType)
         {
             AssertSerialization((byte[]) [0, 1, 2, 3], messageContextType);
             AssertSerialization((byte[]) [], messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesDateTimes(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesDateTimes(MessagingType messageContextType)
         {
             var date = new DateTime(2000, 1, 31, 15, 00, 10);
             AssertSerialization(date, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesDictionaryOfPrimitiveValueTypeCollection(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesDictionaryOfPrimitiveValueTypeCollection(MessagingType messageContextType)
         {
             Dictionary<string, int> dict = new Dictionary<string, int>
             {
@@ -172,36 +172,36 @@ namespace CefGlue.Tests.Serialization
             AssertSerialization(dict, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesArrays(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesArrays(MessagingType messageContextType)
         {
             string[] list = ["1", "2"];
             AssertSerialization(list, messageContextType);
             AssertSerialization(new string[0], messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesArraysOfStructs(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesArraysOfStructs(MessagingType messageContextType)
         {
 
             StructObject[] list = [new StructObject("first", 1), new StructObject("second", 2)];
             AssertSerialization(list, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesLists(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesLists(MessagingType messageContextType)
         {
             List<string> list = ["1", "2"];
             AssertSerialization(list, messageContextType);
             AssertSerialization(new List<string>(), messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesNestedLists(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesNestedLists(MessagingType messageContextType)
         {
             List<List<string>> list =
             [
@@ -211,9 +211,9 @@ namespace CefGlue.Tests.Serialization
             AssertSerialization(list, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesListsOfObjects(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesListsOfObjects(MessagingType messageContextType)
         {
             List<Dictionary<string, string>> list =
             [
@@ -223,9 +223,9 @@ namespace CefGlue.Tests.Serialization
             AssertSerialization(list, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesObjectsArray(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesObjectsArray(MessagingType messageContextType)
         {
             object[] array =
             [
@@ -238,11 +238,11 @@ namespace CefGlue.Tests.Serialization
             AssertSerialization(array, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesMultiTargetTypeArray(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesMultiTargetTypeArray(MessagingType messagingType)
         {
-            MessageContext messageContext = MessageContextTypeHelper.GetMessageContext(messageContextType);
+            Messaging messaging = GetMessaging(messagingType);
 
             object[] list =
             [
@@ -258,10 +258,11 @@ namespace CefGlue.Tests.Serialization
                     3,
                 ]
             ];
-            var bytes = messageContext.Serialize(list);
+            var bytes = messaging.Serialize(list);
+
             Type[] types =
                 [typeof(string), typeof(decimal), typeof(string[]), typeof(bool), typeof(StructObject), typeof(int[])];
-            var obtained = messageContext.Deserialize(bytes, types);
+            var obtained = messaging.Deserialize(bytes, types);
             Assert.AreEqual(list, obtained);
 
             // TODO: Ensure removed support for null input is handled elsewhere
@@ -270,11 +271,11 @@ namespace CefGlue.Tests.Serialization
             //Assert.AreEqual(Array.Empty<object>(), emptyObtained);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesSerializationOfDeepListsWith250Levels(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesSerializationOfDeepListsWith250Levels(MessagingType messagingType)
         {
-            MessageContext messageContext = MessageContextTypeHelper.GetMessageContext(messageContextType);
+            Messaging messaging = GetMessaging(messagingType);
 
             var list = new List<object>();
             var child = new List<object>();
@@ -287,14 +288,14 @@ namespace CefGlue.Tests.Serialization
                 child = nestedChild;
             }
 
-            Assert.DoesNotThrow(() => messageContext.Serialize(list));
+            Assert.DoesNotThrow(() => messaging.Serialize(list));
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesListWithObjectReferences(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesListWithObjectReferences(MessagingType messagingType)
         {
-            MessageContext messageContext = MessageContextTypeHelper.GetMessageContext(messageContextType);
+            Messaging messaging = GetMessaging(messagingType);
 
             List<object> list = [];
             List<object> childList = [];
@@ -303,15 +304,15 @@ namespace CefGlue.Tests.Serialization
 
             byte[] bytes = [];
             List<object> obtainedValue = null;
-            Assert.DoesNotThrow(() => bytes = messageContext.Serialize(list));
-            Assert.DoesNotThrow(() => obtainedValue = messageContext.Deserialize<List<object>>(bytes));
+            Assert.DoesNotThrow(() => bytes = messaging.Serialize(list));
+            Assert.DoesNotThrow(() => obtainedValue = messaging.Deserialize<List<object>>(bytes));
             Assert.AreEqual(2, obtainedValue.Count);
             Assert.AreSame(obtainedValue[0], obtainedValue[1]);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesSimpleDictionaries(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesSimpleDictionaries(MessagingType messageContextType)
         {
             var dict = new Dictionary<string, object>
             {
@@ -327,9 +328,9 @@ namespace CefGlue.Tests.Serialization
             AssertSerialization(dict, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack)]
-        public void HandlesNestedDictionaries(MessageContextType messageContextType)
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void HandlesNestedDictionaries(MessagingType messageContextType)
         {
             var dict = new Dictionary<string, Dictionary<string, double>>()
             {
@@ -351,10 +352,10 @@ namespace CefGlue.Tests.Serialization
             AssertSerialization(dict, messageContextType);
         }
 
-        [TestCase(MessageContextType.Json)]
-        [TestCase(MessageContextType.MsgPack,
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack,
             Ignore = "Msgpack serializer insists to deserialize plain objects to dictionaries.")]
-        public void HandlesObjects(MessageContextType messageContextType)
+        public void HandlesObjects(MessagingType messageContextType)
         {
             var obj = new ParentObj
             {
@@ -385,5 +386,12 @@ namespace CefGlue.Tests.Serialization
             Assert.NotNull(obtainedChild
                 .referenceField); // Assert.Equal fails when comparing two plain object instances, hence the Assert.NotNull
         }
+
+        private static Messaging GetMessaging(MessagingType messagingType) => messagingType switch
+        {
+            MessagingType.Json => Messaging.Json,
+            MessagingType.MsgPack => Messaging.MsgPack,
+            _ => throw new ArgumentException($"Invalid MessageContextType argument: {messagingType}")
+        };
     }
 }
