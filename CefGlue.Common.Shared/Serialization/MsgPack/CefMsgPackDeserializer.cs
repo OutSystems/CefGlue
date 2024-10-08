@@ -43,7 +43,6 @@ public class CefMsgPackDeserializer : IDeserializer
         }
 
         Type type = createTupleType(targetTypes);
-        //var json = MessagePackSerializer.ConvertToJson(bytes);
         return iterateTuple((ITuple)MessagePackSerializer.Deserialize(type, bytes, ContractlessStandardResolverAllowPrivate.Options)).ToArray();
     }
 

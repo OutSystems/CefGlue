@@ -4,6 +4,7 @@ using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Handlers;
 using Xilium.CefGlue.Common.Helpers.Logger;
 using Xilium.CefGlue.Common.Platform;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common
 {

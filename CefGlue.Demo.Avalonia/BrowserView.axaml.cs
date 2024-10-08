@@ -110,7 +110,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             const string TestObject = "dotNetObject";
 
             var obj = new BindingTestClass();
-            browser.RegisterJavascriptObject(obj, TestObject, AsyncCallNativeMethod);
+            browser.RegisterJavascriptObject(obj, TestObject, methodHandler: AsyncCallNativeMethod);
 
             var methods = obj.GetType().GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public)
                                        .Where(m => m.GetParameters().Length == 0)
