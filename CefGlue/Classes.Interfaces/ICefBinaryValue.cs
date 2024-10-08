@@ -9,7 +9,7 @@ namespace Xilium.CefGlue
         long Size { get; }
 
         ICefBinaryValue Copy();
-        long GetData(Span<byte> buffer, long bufferSize, long dataOffset);
+        long GetData(byte[] buffer, long bufferSize, long dataOffset);
         bool IsEqual(ICefBinaryValue that);
         bool IsSame(ICefBinaryValue that);
         byte[] ToArray();
