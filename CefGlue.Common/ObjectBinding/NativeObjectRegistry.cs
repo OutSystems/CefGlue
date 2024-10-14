@@ -18,9 +18,10 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="name"></param>
+        /// <param name="methodHandler"></param>
         /// <param name="messaging"></param>
         /// <returns>True if the object was successfully registered, false if the object was already registered before.</returns>
-        public bool Register(object obj, string name, Messaging messaging = null, MethodCallHandler methodHandler = null)
+        public bool Register(object obj, string name, MethodCallHandler methodHandler = null, Messaging messaging = null)
         {
             if (_registeredObjects.ContainsKey(name))
             {
