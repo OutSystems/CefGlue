@@ -4,6 +4,7 @@ using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Handlers;
 using Xilium.CefGlue.Common.Helpers.Logger;
 using Xilium.CefGlue.Common.Platform;
+using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common
@@ -360,6 +361,15 @@ namespace Xilium.CefGlue.Common
         public void RegisterJavascriptObject(object targetObject, string name, MethodCallHandler methodHandler = null, Messaging messaging = null)
         {
             _adapter.RegisterJavascriptObject(targetObject, name, methodHandler, messaging);
+        }
+
+        /// <summary>
+        /// Gets the current message format which is used for the transfer between browser and client process.
+        /// </summary>
+        /// <returns></returns>
+        public MessagingType GetMessagingType()
+        {
+            return _adapter.GetMessagingType();
         }
 
         /// <summary>

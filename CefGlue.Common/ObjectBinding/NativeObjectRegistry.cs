@@ -11,7 +11,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         private readonly Dictionary<string, NativeObject> _registeredObjects = new Dictionary<string, NativeObject>();
         private readonly object _registrationSyncRoot = new object();
 
-        public Messaging DefaultMessaging { get; } = Messaging.MsgPack;
+        public Messaging DefaultMessaging { get; } = Messaging.Json;
 
         /// <summary>
         /// 

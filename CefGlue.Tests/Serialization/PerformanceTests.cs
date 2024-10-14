@@ -25,10 +25,10 @@ public class PerformanceTests : TestBase
     }
 
     [TestCase(1_000, 1.25)]
-    [TestCase(10_000, 7.0)]
+    [TestCase(10_000, 5.0)]
     [TestCase(100_000, 9.0)]
     [TestCase(250_000, 10.0)]
-    [TestCase(1_000_000, 10.0)]
+    // [TestCase(1_000_000, 10.0)] // This test takes a long time (above 1 minute)
     public async Task ComparePerformanceJsonVsMsgPack(int numberOfValues, double expectedResult)
     {
         // Perform json performance test

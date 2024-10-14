@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Xilium.CefGlue.Common.Shared.Helpers;
 
 namespace CefGlue.Tests.Javascript
 {
@@ -301,9 +302,14 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
-        [Ignore("cyclic references are not supported")]
         public async Task MethodWithCyclicObjectParamIsPassed()
         {
+            var messagingType = Browser.GetMessagingType();
+            if (messagingType == MessagingType.MsgPack)
+            {
+                Assert.Ignore("cyclic references are not supported");
+            }
+
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithCyclicObjectParamCalled += (args) => taskCompletionSource.SetResult(args);
 
@@ -367,10 +373,26 @@ namespace CefGlue.Tests.Javascript
             Assert.IsNull(result[0]);
             Assert.AreEqual("text", result[1]);
             Assert.AreEqual(5, result[2]);
-            var dict = (IDictionary<object, object>)result[3];
-            Assert.AreEqual(1, dict.Count);
-            Assert.AreEqual("Name", dict.Keys.Single());
-            Assert.AreEqual("plainObjName", dict.Values.Single());
+
+            if (result[3] is IDictionary<string, object>)
+            {
+                var dict = (IDictionary<string, object>)result[3];
+                Assert.AreEqual(1, dict.Count);
+                Assert.AreEqual("Name", dict.Keys.Single());
+                Assert.AreEqual("plainObjName", dict.Values.Single());
+            }
+            else if (result[3] is IDictionary<object, object>)
+            {
+                var dict = (IDictionary<object, object>)result[3];
+                Assert.AreEqual(1, dict.Count);
+                Assert.AreEqual("Name", dict.Keys.Single());
+                Assert.AreEqual("plainObjName", dict.Values.Single());
+            }
+            else
+            {
+                Assert.Fail("Unknown format for result[3]");
+            }
+            
             Assert.IsInstanceOf<object[]>(result[4]);
             var arr = (object[])result[4];
             Assert.AreEqual(3, arr.Length);

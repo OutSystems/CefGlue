@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using CefGlue.Tests.Serialization;
 using NUnit.Framework;
 using Xilium.CefGlue.Common.ObjectBinding;
+using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace CefGlue.Tests.Javascript

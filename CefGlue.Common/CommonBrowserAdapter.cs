@@ -275,6 +275,11 @@ namespace Xilium.CefGlue.Common
             _objectRegistry.Register(targetObject, name, methodHandler, messaging);
         }
 
+        public MessagingType GetMessagingType()
+        {
+            return _objectRegistry.DefaultMessaging.Id.Equals("MsgPack") ? MessagingType.MsgPack : MessagingType.Json;
+        }
+
         public void UnregisterJavascriptObject(string name)
         {
             _objectRegistry.Unregister(name);

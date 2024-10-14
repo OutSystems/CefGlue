@@ -67,10 +67,4 @@ namespace CefGlue.Tests.Serialization
         public string stringField;
         public CyclicObj otherObj;
     }
-
-    public enum MessagingType
-    {
-        Json,
-        MsgPack
-    }
 }
