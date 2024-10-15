@@ -9,10 +9,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
     internal static partial class JavascriptHelper
     {
         private const string CefGlueGlobalScriptFileName = "CefGlueGlobalScript.js";
-        private const string GlobalObjectName = "cefglue";
-        private const string PromiseFactoryFunctionName = "createPromise";
-        private const string InterceptorFactoryFunctionName = "createInterceptor";
-        private const string EvaluateScriptFunctionName = "evaluateScript";
+        private const string GlueObjectName = "cefglue";
         private const string BindNativeFunctionName = "Bind";
         private const string UnbindNativeFunctionName = "Unbind";
 
@@ -23,15 +20,15 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             var currentAssembly = currentType.Assembly;
             using (var stream = new StreamReader(currentAssembly.GetManifestResourceStream($"{currentNamespace}.{CefGlueGlobalScriptFileName}")))
             {
-                var cefGlueGlobalScript = FillScriptPlaceholders(stream.ReadToEnd());
-                CefRuntime.RegisterExtension("cefglue", cefGlueGlobalScript, new V8BuiltinFunctionHandler(nativeObjectRegistry));
+                var cefGlueGlobalScript = stream.ReadToEnd();
+                CefRuntime.RegisterExtension(GlueObjectName, cefGlueGlobalScript, new V8BuiltinFunctionHandler(nativeObjectRegistry));
             }
         }
 
-        public static PromiseHolder CreatePromise(this CefV8Context context)
+        public static PromiseHolder CreatePromise(this CefV8Context context, CefV8Value serializer = null)
         {
-            var promiseFactory = GetGlobalInnerValue(context, PromiseFactoryFunctionName);
-            var promiseData = promiseFactory.ExecuteFunctionWithContext(context, null, new CefV8Value[0]); // create a promise and return the resolve and reject callbacks
+            var promiseFactory = GetGlueValue(context, JsGlueFunction.CreatePromise);
+            var promiseData = promiseFactory.ExecuteFunctionWithContext(context, null, [serializer ?? CefV8Value.CreateUndefined()]); // create a promise and return the resolve and reject callbacks
 
             var promise = promiseData.GetValue("promise");
             var resolve = promiseData.GetValue("resolve");
@@ -44,44 +41,38 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             return new PromiseHolder(promise, resolve, reject, context);
         }
 
-        public static CefV8Value CreateInterceptorObject(this CefV8Context context, CefV8Value targetObj)
+        public static CefV8Value CreateInterceptorObject(this CefV8Context context, CefV8Value targetObj, CefV8Value serializer)
         {
-            var interceptorFactory = GetGlobalInnerValue(context, InterceptorFactoryFunctionName);
-            
-            return interceptorFactory.ExecuteFunctionWithContext(context, null, new[] { targetObj });
+            var interceptorFactory = context.GetGlueValue(JsGlueFunction.CreateInterceptor);
+
+            return interceptorFactory.ExecuteFunctionWithContext(context, null, [targetObj, serializer]);
         }
 
-        private static CefV8Value GetGlobalInnerValue(CefV8Context context, string innerValueKey)
+        public static CefV8Value GetGlueValue(this CefV8Value global, string innerValueKey)
         {
-            var global = context.GetGlobal();
-            var cefGlueGlobal = global.GetValue(GlobalObjectName); // TODO what if cefGlueGlobal == null?
-            
-            return cefGlueGlobal.GetValue(innerValueKey);
+            return global.GetValue(GlueObjectName).GetValue(innerValueKey); // TODO what if cefGlueGlobal == null?
+        }
+
+        public static CefV8Value GetGlueValue(this CefV8Context context, string innerValueKey)
+        {
+            return context.GetGlobal().GetGlueValue(innerValueKey);
         }
 
         public static string WrapScriptForEvaluation(string script)
         {
-            return $"{GlobalObjectName}.{EvaluateScriptFunctionName}(function() {{{script}\n}})";
+            return $"{GlueObjectName}.{JsGlueFunction.EvaluateScript}(function() {{{script}\n}})";
         }
 
-        private static string FillScriptPlaceholders(string script)
+        public static void SetDefaultSerializer(this CefV8Context context, CefV8Value serializer)
         {
-            var sb = new StringBuilder(script);
-            return sb
-                .Replace("$GlobalObjectName$", GlobalObjectName)
-                .Replace("$JsonIdAttribute$", JsonAttributes.Id)
-                .Replace("$JsonRefAttribute$", JsonAttributes.Ref)
-                .Replace("$JsonValuesAttribute$", JsonAttributes.Values)
-                .Replace("$DataMarkerLength$", DataMarkers.MarkerLength.ToString())
-                .Replace("$StringMarker$", DataMarkers.StringMarker)
-                .Replace("$DateTimeMarker$", DataMarkers.DateTimeMarker)
-                .Replace("$BinaryMarker$", DataMarkers.BinaryMarker)
-                .Replace("$PromiseFactoryFunctionName$", PromiseFactoryFunctionName)
-                .Replace("$InterceptorFactoryFunctionName$", InterceptorFactoryFunctionName)
-                .Replace("$BindNativeFunctionName$", BindNativeFunctionName)
-                .Replace("$UnbindNativeFunctionName$", UnbindNativeFunctionName)
-                .Replace("$EvaluateScriptFunctionName$", EvaluateScriptFunctionName)
-                .ToString();
+            var serializerFunction = context.GetGlueValue(JsGlueFunction.SetDefaultSerializer);
+            serializerFunction.ExecuteFunctionWithContext(context, null, [serializer]);
+        }
+
+        public static CefV8Value GetDefaultSerializer(this CefV8Context context)
+        {
+            var serializerFunction = context.GetGlueValue(JsGlueFunction.GetDefaultSerializer);
+            return serializerFunction.ExecuteFunctionWithContext(context, null, []);
         }
     }
 }

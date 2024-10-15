@@ -6,7 +6,7 @@
     using System.Runtime.InteropServices;
     using Xilium.CefGlue.Interop;
 
-    // TODO: use intptr-sized implementations ?
+// TODO: use intptr-sized implementations ?
 
     /// <summary>
     /// Class representing a binary value. Can be used on any process and thread.

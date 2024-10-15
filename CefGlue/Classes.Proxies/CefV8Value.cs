@@ -158,6 +158,13 @@
             return CefV8Value.FromNative(n_value);
         }
 
+        public static CefV8Value CreateArrayBuffer(byte[] bytes)
+        {
+            IntPtr unmanagedPointer = Marshal.AllocHGlobal(bytes.Length);
+            Marshal.Copy(bytes, 0, unmanagedPointer, bytes.Length);
+            return CefV8Value.CreateArrayBuffer(unmanagedPointer, (ulong)bytes.Length, new GlobalHeapArrayBufferReleaseCallback());
+        }
+
         /// <summary>
         /// Create a new CefV8Value object of type function. This method should only
         /// be called from within the scope of a CefRenderProcessHandler, CefV8Handler
@@ -654,6 +661,19 @@
         public IntPtr GetArrayBufferData()
         {
             return (IntPtr)cef_v8value_t.get_array_buffer_data(_self);
+        }
+
+        public byte[] GetArrayBuffer()
+        {
+            int length = (int)GetArrayBufferByteLength();
+            if (length == 0)
+            {
+                return [];
+            }
+            nint buffer = GetArrayBufferData();
+            byte[] array = new byte[length];
+            Marshal.Copy(buffer, array, 0, length);
+            return array;
         }
 
         // FUNCTION METHODS - These methods are only available on functions.

@@ -1,0 +1,17 @@
+# Remove the line below if you want to inherit .editorconfig settings from higher directories
+root = true
+
+#### Core EditorConfig Options ####
+
+[*]
+charset = utf-8
+
+# New line preferences
+insert_final_newline = true
+end_of_line = lf
+
+# Indentation and spacing
+indent_style = space
+indent_size = 3
+tab_width = 3
+max_line_length = 132

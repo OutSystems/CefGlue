@@ -1,0 +1,25 @@
+{
+   "compilerOptions": {
+      /* Visit https://aka.ms/tsconfig to read more about this file */
+
+      /* Language and Environment */
+      "target": "ES2022", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+
+      /* Modules */
+      "module": "ES2022", /* Specify what module code is generated. */
+      "moduleResolution": "Node", /* Specify how TypeScript looks up a file from a given module specifier. */
+
+      /* JavaScript Support */
+      "allowJs": true, /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */
+
+      /* Interop Constraints */
+      "esModuleInterop": false, /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
+      "forceConsistentCasingInFileNames": true, /* Ensure that casing is correct in imports. */
+
+      /* Type Checking */
+      "strict": true, /* Enable all strict type-checking options. */
+
+      /* Completeness */
+      "skipLibCheck": true /* Skip type checking all .d.ts files. */
+   }
+}
