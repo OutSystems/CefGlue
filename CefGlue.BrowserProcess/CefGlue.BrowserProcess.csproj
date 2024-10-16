@@ -39,7 +39,7 @@
       <VcvarsFile Condition="'$(Platform)' == 'x64'">vcvars64.bat</VcvarsFile>
       <VcvarsFile Condition="'$(Platform)' == 'ARM64'">vcvarsamd64_arm64.bat</VcvarsFile>
       <VcvarsLocation Condition="Exists($(DevEnvDir))">$(DevEnvDir)..\..\VC\Auxiliary\Build\</VcvarsLocation>
-      <VcvarsLocation Condition="!Exists($(DevEnvDir))">C:\Program Files\Microsoft Visual Studio\2022\Enterprise\</VcvarsLocation> <!-- Path used in Microsoft-hosted agents -->
+      <VcvarsLocation Condition="!Exists($(DevEnvDir))">C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\</VcvarsLocation> <!-- Path used in Microsoft-hosted agents -->
       <RunsEditBin Condition="$(VcvarsFile) != '' And $(SkipEditbin) == False And $([MSBuild]::IsOSPlatform('Windows'))">True</RunsEditBin>
     </PropertyGroup>
 
@@ -47,8 +47,7 @@
       This command aims at increasing the stack size of Xilium.CefGlue.BrowserProcess.exe to 8 MiBs, using the visual studio tool "editbin".
       Comment it only for development purposes.
     -->
-    <Exec Condition="Exists($(VcvarsLocation)) == True" Command="call dir /s &quot;$(VcvarsLocation)&quot;" />
-    <!--<Exec Condition="$(RunsEditBin) == True" Command="call &quot;$(VcvarsLocation)$(VcvarsFile)&quot;&#xD;&#xA; editbin /STACK:0x800000 &quot;$(TargetDir)Xilium.CefGlue.BrowserProcess.exe&quot;&#xD;&#xA;" />-->
+    <Exec Condition="$(RunsEditBin) == True" Command="call &quot;$(VcvarsLocation)$(VcvarsFile)&quot;&#xD;&#xA; editbin /STACK:0x800000 &quot;$(TargetDir)Xilium.CefGlue.BrowserProcess.exe&quot;&#xD;&#xA;" />
   </Target>
 
   <Target Name="PublishApp" AfterTargets="Editbin" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
