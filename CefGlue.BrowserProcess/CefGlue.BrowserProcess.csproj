@@ -31,13 +31,15 @@
 
   <Target Name="Editbin" BeforeTargets="AfterBuild">
     <!--
-      Quick explanation: This targets runs on build, and currently 3 more times for each MSBuild command executed in the next target "PublishApp".
+      Quick explanation: This target runs after build, and currently 3 more times for each MSBuild command executed in the next target "PublishApp".
       We just want this target to be executed for windows specs.
     -->
 
     <PropertyGroup>
-      <Vcvars Condition="'$(Platform)' == 'x64'">vcvars64.bat</Vcvars>
-      <Vcvars Condition="'$(Platform)' == 'ARM64'">vcvarsamd64_arm64.bat</Vcvars>
+      <VcvarsFile Condition="'$(Platform)' == 'x64'">vcvars64.bat</VcvarsFile>
+      <VcvarsFile Condition="'$(Platform)' == 'ARM64'">vcvarsamd64_arm64.bat</VcvarsFile>
+      <VcvarsLocation Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)..\..\VC\Auxiliary\Build\</VcvarsLocation>
+      <VcvarsLocation Condition="'$(DevEnvDir)' == ''">C:\Program Files (x86)\Microsoft Visual Studio\</VcvarsLocation>
       <RunsEditBin Condition="$(Vcvars) != '' And $(SkipEditbin) == False And $([MSBuild]::IsOSPlatform('Windows'))">True</RunsEditBin>
     </PropertyGroup>
 
@@ -45,7 +47,9 @@
       This command aims at increasing the stack size of Xilium.CefGlue.BrowserProcess.exe to 8 MiBs, using the visual studio tool "editbin".
       Comment it only for development purposes.
     -->
-    <Exec Condition="$(RunsEditBin) == True" Command="call &quot;$(DevEnvDir)..\..\VC\Auxiliary\Build\$(Vcvars)&quot;&#xD;&#xA; editbin /STACK:0x800000 &quot;$(TargetDir)Xilium.CefGlue.BrowserProcess.exe&quot;&#xD;&#xA;" />
+    <Exec Command="echo ******************************************* $(VcvarsLocation)$(VcvarsFile)" />
+    <Exec Condition="Exists($(VcvarsLocation)) == True" Command="echo ******************************************* folder exists" />
+    <!--<Exec Condition="$(RunsEditBin) == True" Command="call &quot;$(VcvarsLocation)$(VcvarsFile)&quot;&#xD;&#xA; editbin /STACK:0x800000 &quot;$(TargetDir)Xilium.CefGlue.BrowserProcess.exe&quot;&#xD;&#xA;" />-->
   </Target>
 
   <Target Name="PublishApp" AfterTargets="Editbin" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
