@@ -9,6 +9,7 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PublishCommonConfig>Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;SelfContained=True;RuntimeIdentifier=</PublishCommonConfig>
+    <SkipEditbin>False</SkipEditbin>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,19 +28,37 @@
   <ItemGroup>
     <PackageReference Include="System.Runtime.Loader" />
   </ItemGroup>
-  
-  <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
 
+  <Target Name="Editbin" BeforeTargets="AfterBuild">
+    <!--
+      Quick explanation: This targets runs on build, and currently 3 more times for each MSBuild command executed in the next target "PublishApp".
+      We just want this target to be executed for windows specs.
+    -->
+
+    <PropertyGroup>
+      <Vcvars Condition="'$(Platform)' == 'x64'">vcvars64.bat</Vcvars>
+      <Vcvars Condition="'$(Platform)' == 'ARM64'">vcvarsamd64_arm64.bat</Vcvars>
+      <RunsEditBin Condition="$(Vcvars) != '' And $(SkipEditbin) == False And $([MSBuild]::IsOSPlatform('Windows'))">True</RunsEditBin>
+    </PropertyGroup>
+
+    <!--
+      This command aims at increasing the stack size of Xilium.CefGlue.BrowserProcess.exe to 8 MiBs, using the visual studio tool "editbin".
+      Comment it only for development purposes.
+    -->
+    <Exec Condition="$(RunsEditBin) == True" Command="call &quot;$(DevEnvDir)..\..\VC\Auxiliary\Build\$(Vcvars)&quot;&#xD;&#xA; editbin /STACK:0x800000 &quot;$(TargetDir)Xilium.CefGlue.BrowserProcess.exe&quot;&#xD;&#xA;" />
+  </Target>
+
+  <Target Name="PublishApp" AfterTargets="Editbin" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
     <!-- WINDOWS -->
     <Message Text="Publishing CefGlue.BrowserProcess on Windows ($(Platform))..." Importance="High" />
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-$(ArchitectureConfig)" />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-$(ArchitectureConfig);SkipEditbin=False;"  />
 
     <!-- LINUX -->
     <Message Text="Publishing CefGlue.BrowserProcess on Linux ($(Platform))..." Importance="High" />
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)linux-$(ArchitectureConfig)" />
-    
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)linux-$(ArchitectureConfig);SkipEditbin=True;" />
+
     <!-- OSX -->
     <Message Text="Publishing CefGlue.BrowserProcess on MacOS ($(Platform))..." Importance="High" />
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)osx-$(ArchitectureConfig)" />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)osx-$(ArchitectureConfig);SkipEditbin=True;" />
   </Target>
 </Project>
