@@ -9,7 +9,7 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PublishCommonConfig>Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(TargetFramework);IsPublishing=True;PublishTrimmed=True;SelfContained=True;RuntimeIdentifier=</PublishCommonConfig>
-    <SkipEditbin>False</SkipEditbin>
+    <IsEditbinEnabled>False</IsEditbinEnabled>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,7 +40,7 @@
       <VcvarsFile Condition="'$(Platform)' == 'ARM64'">vcvarsamd64_arm64.bat</VcvarsFile>
       <VcvarsLocation Condition="Exists($(DevEnvDir))">$(DevEnvDir)..\..\VC\Auxiliary\Build\</VcvarsLocation>
       <VcvarsLocation Condition="!Exists($(DevEnvDir))">C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\</VcvarsLocation> <!-- Path used in Microsoft-hosted agents -->
-      <RunsEditBin Condition="$(VcvarsFile) != '' And $(SkipEditbin) == False And $([MSBuild]::IsOSPlatform('Windows'))">True</RunsEditBin>
+      <RunsEditBin Condition="$(VcvarsFile) != '' And $(IsEditbinEnabled) == True And $([MSBuild]::IsOSPlatform('Windows'))">True</RunsEditBin>
     </PropertyGroup>
 
     <!--
@@ -53,14 +53,14 @@
   <Target Name="PublishApp" AfterTargets="Editbin" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
     <!-- WINDOWS -->
     <Message Text="Publishing CefGlue.BrowserProcess on Windows ($(Platform))..." Importance="High" />
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-$(ArchitectureConfig);SkipEditbin=False;"  />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-$(ArchitectureConfig);IsEditbinEnabled=True;"  />
 
     <!-- LINUX -->
     <Message Text="Publishing CefGlue.BrowserProcess on Linux ($(Platform))..." Importance="High" />
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)linux-$(ArchitectureConfig);SkipEditbin=True;" />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)linux-$(ArchitectureConfig);IsEditbinEnabled=False;" />
 
     <!-- OSX -->
     <Message Text="Publishing CefGlue.BrowserProcess on MacOS ($(Platform))..." Importance="High" />
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)osx-$(ArchitectureConfig);SkipEditbin=True;" />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)osx-$(ArchitectureConfig);IsEditbinEnabled=False;" />
   </Target>
 </Project>
