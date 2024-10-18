@@ -29,7 +29,7 @@
     <PackageReference Include="System.Runtime.Loader" />
   </ItemGroup>
 
-  <Target Name="Editbin" BeforeTargets="AfterBuild">
+  <Target Name="Editbin" AfterTargets="Compile">
     <!--
       Quick explanation: This target runs after build, and currently 3 more times for each MSBuild command executed in the next target "PublishApp".
       We just want this target to be executed for windows specs.
@@ -41,19 +41,21 @@
       <VcvarsLocation Condition="Exists($(DevEnvDir))">$(DevEnvDir)..\..\VC\Auxiliary\Build\</VcvarsLocation>
       <VcvarsLocation Condition="!Exists($(DevEnvDir))">C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\</VcvarsLocation> <!-- Path used in Microsoft-hosted agents -->
       <RunsEditBin Condition="$(VcvarsFile) != '' And $(IsEditbinEnabled) == True And $([MSBuild]::IsOSPlatform('Windows'))">True</RunsEditBin>
+      <ApphostLocation>$(ProjectDir)$(BaseIntermediateOutputPath)$(Platform)\$(Configuration)\$(TargetFramework)\</ApphostLocation>
+      <ApphostLocation Condition="'$(IsPublishing)' == 'True'">$(ApphostLocation)$(RuntimeIdentifier)\</ApphostLocation>
     </PropertyGroup>
 
     <!--
       This command aims at increasing the stack size of Xilium.CefGlue.BrowserProcess.exe to 8 MiBs, using the visual studio tool "editbin".
       Comment it only for development purposes.
     -->
-    <Exec Condition="$(RunsEditBin) == True" Command="call &quot;$(VcvarsLocation)$(VcvarsFile)&quot;&#xD;&#xA; editbin /STACK:0x800000 &quot;$(TargetDir)Xilium.CefGlue.BrowserProcess.exe&quot;&#xD;&#xA;" />
+    <Exec Condition="$(RunsEditBin) == True" Command="call &quot;$(VcvarsLocation)$(VcvarsFile)&quot;&#xD;&#xA; editbin /STACK:0x800000 &quot;$(ApphostLocation)\apphost.exe&quot;&#xD;&#xA;" />
   </Target>
 
-  <Target Name="PublishApp" AfterTargets="Editbin" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
+  <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
     <!-- WINDOWS -->
     <Message Text="Publishing CefGlue.BrowserProcess on Windows ($(Platform))..." Importance="High" />
-    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-$(ArchitectureConfig);IsEditbinEnabled=True;"  />
+    <MSBuild Projects="CefGlue.BrowserProcess.csproj" Targets="Publish" Properties="$(PublishCommonConfig)win-$(ArchitectureConfig);IsEditbinEnabled=True;" />
 
     <!-- LINUX -->
     <Message Text="Publishing CefGlue.BrowserProcess on Linux ($(Platform))..." Importance="High" />
