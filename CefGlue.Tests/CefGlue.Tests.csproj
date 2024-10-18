@@ -42,13 +42,13 @@
   <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />
   <Import Project="$(ProjectDir)..\CefGlue.Common\build\CefGlue.Common.targets" />
 
-  <Target Name="CustomTarget" BeforeTargets="AfterBuild">
-    <Exec Command="echo hello $(ProjectDir)..\CefGlue.CopyLocal.props" />
-    <Exec Command="echo hello $(ProjectDir)..\CefGlue.Common\build\CefGlue.Common.targets" />
+<!--  <Target Name="CustomTarget" BeforeTargets="AfterBuild">-->
+<!--    <Exec Command="echo hello $(ProjectDir)..\CefGlue.CopyLocal.props" />-->
+<!--    <Exec Command="echo hello $(ProjectDir)..\CefGlue.Common\build\CefGlue.Common.targets" />-->
 
-    <Exec Condition="Exists('$(ProjectDir)..\CefGlue.CopyLocal.props')" Command="echo first exists" />
-    <Exec Condition="Exists('$(ProjectDir)..\CefGlue.Common\build\CefGlue.Common.targets')" Command="echo second exists" />
-    <Exec Command="dir /s ." />
-  </Target>
+<!--    <Exec Condition="Exists('$(ProjectDir)..\CefGlue.CopyLocal.props')" Command="echo first exists" />-->
+<!--    <Exec Condition="Exists('$(ProjectDir)..\CefGlue.Common\build\CefGlue.Common.targets')" Command="echo second exists" />-->
+<!--    <Exec Command="dir /s ." />-->
+<!--  </Target>-->
   
 </Project>
