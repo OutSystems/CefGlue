@@ -42,4 +42,8 @@
   <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />
   <Import Project="$(ProjectDir)..\CefGlue.Common\build\CefGlue.Common.targets" />
 
+  <Target Name="CustomTarget" BeforeTargets="AfterBuild">
+    <Exec Command="dir /s ." />
+  </Target>
+  
 </Project>
