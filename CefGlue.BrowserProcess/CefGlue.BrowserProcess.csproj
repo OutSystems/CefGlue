@@ -31,22 +31,22 @@
 
   <Target Name="Editbin" AfterTargets="Compile">
     <!--
-      Quick explanation: This target runs after build, and currently 3 more times for each MSBuild command executed in the next target "PublishApp".
+      Quick explanation: This target runs after compile, and currently 3 more times for each MSBuild command executed in the next target "PublishApp".
       We just want this target to be executed for windows specs.
     -->
 
     <PropertyGroup>
       <VcvarsFile Condition="'$(Platform)' == 'x64'">vcvars64.bat</VcvarsFile>
-      <VcvarsFile Condition="'$(Platform)' == 'ARM64'">vcvarsamd64_arm64.bat</VcvarsFile>
       <VcvarsLocation Condition="Exists($(DevEnvDir))">$(DevEnvDir)..\..\VC\Auxiliary\Build\</VcvarsLocation>
       <VcvarsLocation Condition="!Exists($(DevEnvDir))">C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\</VcvarsLocation> <!-- Path used in Microsoft-hosted agents -->
       <RunsEditBin Condition="$(VcvarsFile) != '' And $(IsEditbinEnabled) == True And $([MSBuild]::IsOSPlatform('Windows'))">True</RunsEditBin>
       <ApphostLocation>$(ProjectDir)$(BaseIntermediateOutputPath)$(Platform)\$(Configuration)\$(TargetFramework)\</ApphostLocation>
-      <ApphostLocation Condition="'$(IsPublishing)' == 'True'">$(ApphostLocation)$(RuntimeIdentifier)\</ApphostLocation>
+      <ApphostLocation Condition="'$(IsPublishing)' == 'True'">$(ApphostLocation)$(RuntimeIdentifier)\</ApphostLocation> <!-- When publishing, we also use the runtime identifiers (check the next target "PublishApp") -->
     </PropertyGroup>
 
     <!--
       This command aims at increasing the stack size of Xilium.CefGlue.BrowserProcess.exe to 8 MiBs, using the visual studio tool "editbin".
+      Since we are reaching the .exe at the compile time, the file name is "apphost.exe" instead and located at /obj folder
       Comment it only for development purposes.
     -->
     <Exec Condition="$(RunsEditBin) == True" Command="call &quot;$(VcvarsLocation)$(VcvarsFile)&quot;&#xD;&#xA; editbin /STACK:0x800000 &quot;$(ApphostLocation)\apphost.exe&quot;&#xD;&#xA;" />
