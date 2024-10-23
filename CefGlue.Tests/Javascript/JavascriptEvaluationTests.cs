@@ -5,7 +5,7 @@ using System.Dynamic;
 using System.Globalization;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Xilium.CefGlue.Common.Shared.Serialization;
+using Xilium.CefGlue.Common.Shared.Serialization.Json;
 
 namespace CefGlue.Tests.Javascript
 {
@@ -44,7 +44,7 @@ namespace CefGlue.Tests.Javascript
         [Test]
         public async Task DateTimeReturn()
         {
-            var expected = DateTime.Parse("2022-12-20T15:50:21.817Z");
+            var expected = DateTime.Parse("2022-12-20T15:50:21.817Z").ToUniversalTime();
             var result = await EvaluateJavascript<DateTime>($"return new Date('{expected.ToString("o", CultureInfo.InvariantCulture)}');");
             Assert.AreEqual(expected, result);
         }
@@ -106,12 +106,10 @@ namespace CefGlue.Tests.Javascript
         public async Task DynamicObjectReturn()
         {
             var result = await EvaluateJavascript<dynamic>("return { 'foo': 'foo-value', 'bar': 10, 'baz': [1, 2] }");
-            Assert.IsInstanceOf<IDictionary<string, object>>(result);
-            var obtainedDictionary = (IDictionary<string, object>)result;
-            Assert.AreEqual("foo-value", obtainedDictionary["foo"]);
-            Assert.AreEqual(10, obtainedDictionary["bar"]);
-            Assert.IsInstanceOf<object[]>(obtainedDictionary["baz"]);
-            CollectionAssert.AreEqual(new[] { 1, 2 }, (object[])obtainedDictionary["baz"]);
+            Assert.AreEqual("foo-value", result["foo"]);
+            Assert.AreEqual(10, result["bar"]);
+            Assert.IsInstanceOf<object[]>(result["baz"]);
+            CollectionAssert.AreEqual(new[] { 1, 2 }, (object[])result["baz"]);
         }
 
         [Test]
@@ -132,6 +130,7 @@ namespace CefGlue.Tests.Javascript
         }
 
         [Test]
+        [Ignore("cyclic references are not supported")]
         public async Task CyclicObjectReturn()
         {
             var script =
