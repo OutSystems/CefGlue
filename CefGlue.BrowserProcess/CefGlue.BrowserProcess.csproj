@@ -34,7 +34,7 @@
       Quick explanation: This target runs after compile, and currently 3 more times for each MSBuild command executed in the next target "PublishApp".
       We just want this target to be executed for windows specs and when passed the VcvarsFile location.
       Using VS Studio: VcvarsFile="$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars64.bat"
-      Using VS Studio tools: VcvarsFile=""C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build\vcvars64.bat"
+      Using VS Studio tools: VcvarsFile="C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build\vcvars64.bat"
     -->
 
     <PropertyGroup>
