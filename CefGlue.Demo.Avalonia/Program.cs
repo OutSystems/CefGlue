@@ -22,7 +22,8 @@ namespace Xilium.CefGlue.Demo.Avalonia
                       .With(new Win32PlatformOptions())
                       .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings() {
                           RootCachePath = cachePath,
-#if WINDOWLESS
+#if WINDOWLESS 
+                          // its recommended to leave this off (false), since its less performant and can cause more issues
                           WindowlessRenderingEnabled = true
 #else
                           WindowlessRenderingEnabled = false
