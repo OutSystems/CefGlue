@@ -17,6 +17,7 @@ namespace Xilium.CefGlue.Demo.WPF
             
             var settings = new CefSettings()
             {
+                RootCachePath = cachePath,
 #if WINDOWLESS
                 // its recommended to leave this off (false), since its less performant and can cause more issues
                 WindowlessRenderingEnabled = true
