@@ -46,7 +46,7 @@
       This command aims at increasing the stack size of Xilium.CefGlue.BrowserProcess.exe to 8 MiBs, using the visual studio tool "editbin".
       Since we are reaching the .exe at the compile time, the file name is "apphost.exe" instead and located at /obj folder
     -->
-    <Exec Condition="$(RunsEditBin) == True" Command="call &quot;$(VcvarsFile)&quot;&#xD;&#xA; editbin /STACK:0x800000 &quot;$(ApphostLocation)\apphost.exe&quot;&#xD;&#xA;" />
+    <Exec Command="call &quot;$(VcvarsFile)&quot;&#xD;&#xA; editbin /STACK:0x800000 &quot;$(ApphostLocation)\apphost.exe&quot;&#xD;&#xA;" />
   </Target>
 
   <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
