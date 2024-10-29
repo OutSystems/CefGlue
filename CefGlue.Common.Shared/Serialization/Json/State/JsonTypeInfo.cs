@@ -108,7 +108,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.Json.State
                     typeMembers.Add(field.Name, new TypeMemberInfo(field.FieldType, (obj, value) => field.SetValue(obj, value)));
                 }
             }
-
+            
             return new InternalTypeInfo(objectKind, typeMembers, collectionAddMethod, enumerableElementTypeInfo);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
 {

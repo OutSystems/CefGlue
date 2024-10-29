@@ -38,10 +38,10 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.Json.State
                 case TypeCode.Empty:
                     return ObjectTypeInfo;
                 default:
-                    return
-                        type == null ?
-                        null :
-                        TypesInfoCache.GetOrAdd(type, _ => new JsonTypeInfo(type, typeCode));
+                    return 
+                        type == null ? 
+                            null :
+                            TypesInfoCache.GetOrAdd(type, _ => new JsonTypeInfo(type, typeCode));
             }
         }
     }

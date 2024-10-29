@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using Xilium.CefGlue.Common.Shared.Serialization.Json.State;
 
@@ -197,7 +198,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.Json
                     default:
                         newState = CreateNewDeserializerState(reader, state.Peek());
                         break;
-
+                        
                 }
             }
 

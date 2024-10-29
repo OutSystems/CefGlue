@@ -352,8 +352,7 @@ namespace CefGlue.Tests.Javascript
             Assert.AreEqual("stringParam", result[0]);
             Assert.AreEqual("person1", ((Person)result[1]).Name);
             Assert.AreEqual("person2", ((Person)result[2]).Name);
-            // cycles are not supported"
-            // Assert.AreSame(result[1], result[3]);
+            Assert.AreSame(result[1], result[3]);
         }
 
         [Test]
@@ -397,8 +396,7 @@ namespace CefGlue.Tests.Javascript
             var arr = (object[])result[4];
             Assert.AreEqual(3, arr.Length);
             Assert.AreEqual(2, arr[1]);
-            // cycles are not supported"
-            // Assert.AreSame(result[4], result[5]);
+            Assert.AreSame(result[4], result[5]);
         }
 
         [Test]

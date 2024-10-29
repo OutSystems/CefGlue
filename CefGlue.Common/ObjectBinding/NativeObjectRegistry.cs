@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
@@ -41,7 +42,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 }
 
                 _registeredObjects.Add(name, nativeObj);
-
+                
                 if (_browser != null)
                 {
                     SendRegistrationMessage(nativeObj, messaging.Id);

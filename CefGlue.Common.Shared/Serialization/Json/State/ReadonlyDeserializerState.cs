@@ -6,7 +6,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.Json.State
 {
     internal class ReadonlyDeserializerState : IDeserializerState<object>
     {
-        public ReadonlyDeserializerState(object value)
+        public ReadonlyDeserializerState(object value) 
         {
             Value = value;
         }
@@ -16,7 +16,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.Json.State
         public object Value { get; }
 
         public void SetCurrentPropertyName(string value) => throw new InvalidOperationException();
-
+        
         public JsonTypeInfo CurrentElementTypeInfo => null;
 
         public void SetCurrentElementValue(object value)

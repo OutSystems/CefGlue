@@ -25,7 +25,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.Json.State
 
         public void SetCurrentPropertyName(string value) => throw new InvalidOperationException();
 
-        public JsonTypeInfo CurrentElementTypeInfo =>
+        public JsonTypeInfo CurrentElementTypeInfo => 
             _arrayElementsTypeInfo[(int)Math.Min(_arrayElementsTypeInfo.Count - 1, _arrayIndex)];
 
         public void SetCurrentElementValue(object value)

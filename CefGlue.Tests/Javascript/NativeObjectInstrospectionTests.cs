@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Xilium.CefGlue.Common.ObjectBinding;
@@ -21,13 +22,13 @@ namespace CefGlue.Tests.Javascript
             public void MethodWithParams(string param1, int param2) { }
 
             public Task AsyncMethod() => Task.CompletedTask;
-
+            
             public static void StaticMethod() { }
 
             private void PrivateMethod() { }
 
             public string PublicProperty => "";
-
+            
             private string PrivateProperty => "";
         }
 

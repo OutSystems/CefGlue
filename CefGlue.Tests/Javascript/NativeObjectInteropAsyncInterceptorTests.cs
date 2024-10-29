@@ -8,7 +8,7 @@ namespace CefGlue.Tests.Javascript
         protected override void RegisterObject()
         {
             nativeObject = new NativeObject();
-            Browser.RegisterJavascriptObject(nativeObject, ObjName, Intercept, null);
+            Browser.RegisterJavascriptObject(nativeObject, ObjName, Intercept);
         }
 
         private Task<object> Intercept(Func<object> originalMethod)

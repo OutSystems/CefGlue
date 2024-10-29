@@ -7,7 +7,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.Json.State
     {
         private readonly JsonTypeInfo _collectionTypeInfo;
         private readonly JsonTypeInfo _collectionElementTypeInfo;
-
+        
         private string _propertyName;
 
         public CollectionDeserializerState(JsonTypeInfo collectionTypeInfo)
@@ -25,7 +25,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.Json.State
         public object Value { get; }
 
         public void SetCurrentPropertyName(string value) => _propertyName = value;
-
+        
         public JsonTypeInfo CurrentElementTypeInfo => _collectionElementTypeInfo;
 
         public void SetCurrentElementValue(object value)

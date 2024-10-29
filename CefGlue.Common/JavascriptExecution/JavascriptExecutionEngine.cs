@@ -88,10 +88,10 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
 
                 if (timeout.HasValue)
                 {
-                    var tasks = Task.WhenAny([
+                    var tasks = Task.WhenAny(new[] {
                         evaluationTask,
                         Task.Delay(timeout.Value)
-                    ]);
+                    });
 
                     return tasks.ContinueWith(resultTask => ProcessResult<T>(evaluationTask, taskId, timedOut: resultTask.Result != evaluationTask));
                 }

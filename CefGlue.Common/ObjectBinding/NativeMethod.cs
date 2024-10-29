@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
+using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
@@ -41,7 +42,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
 
         public void Execute(object targetObj, Func<object> innerMethod, Action<object, Exception> handleResult)
         {
-            Execute(targetObj, [innerMethod], handleResult);
+            Execute(targetObj, new[] { innerMethod }, handleResult);
         }
 
         public void Execute(object targetObj, object[] parameters, Action<object, Exception> handleResult)

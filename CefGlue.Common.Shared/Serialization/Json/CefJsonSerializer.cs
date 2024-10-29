@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -10,7 +13,7 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.Json
     internal class CefJsonSerializer : ISerializer
     {
         private const int SerializerMaxDepth = int.MaxValue;
-
+        
         private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
         {
             Converters =

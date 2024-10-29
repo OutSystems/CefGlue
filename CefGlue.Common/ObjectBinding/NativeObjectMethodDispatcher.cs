@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
+using Xilium.CefGlue.Common.Shared.Serialization;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {

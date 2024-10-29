@@ -25,10 +25,10 @@ namespace Xilium.CefGlue.Common.Shared.Serialization.Json.State
                 throw new InvalidOperationException("The root shouldn't be set multiple times.");
             }
 
-            Value =
+            Value = 
                 value == null && _valueTypeInfo.ObjectType.IsValueType ?
-                Activator.CreateInstance(_valueTypeInfo.ObjectType, nonPublic: true) :
-                value;
+                    Activator.CreateInstance(_valueTypeInfo.ObjectType, nonPublic: true) : 
+                    value;
         }
     }
 }

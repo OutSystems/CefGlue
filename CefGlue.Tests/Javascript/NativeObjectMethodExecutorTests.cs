@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using Xilium.CefGlue.Common.ObjectBinding;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
@@ -13,7 +14,7 @@ namespace CefGlue.Tests.Javascript
         {
             public bool Executed;
         }
-
+        
         class NativeTestObject
         {
             public object MethodWithParams(string param1, int param2)
@@ -25,13 +26,13 @@ namespace CefGlue.Tests.Javascript
             {
                 return "this is the result";
             }
-
+            
             public Task AsyncMethod(Token token)
             {
                 token.Executed = true;
                 return Task.CompletedTask;
             }
-
+            
             public Task<string> AsyncMethodWithReturn()
             {
                 return Task.FromResult("this is the result");
@@ -54,11 +55,7 @@ namespace CefGlue.Tests.Javascript
         [OneTimeSetUp]
         protected void Setup()
         {
-            nativeObject = new NativeObject(
-                Messaging.MsgPack,
-                "test",
-                nativeTestObject
-            );
+            nativeObject = new NativeObject(Messaging.MsgPack, "test", nativeTestObject);
         }
 
         private object ExecuteMethod(string name, object[] args)
@@ -76,7 +73,7 @@ namespace CefGlue.Tests.Javascript
             }
             return result;
         }
-
+        
         private Task<object> ExecuteAsyncMethod(string name, object[] args)
         {
             var tcs = new TaskCompletionSource<object>();
@@ -85,7 +82,7 @@ namespace CefGlue.Tests.Javascript
                 if (e != null)
                 {
                     tcs.SetException(e);
-                }
+                } 
                 else
                 {
                     tcs.SetResult(r);
@@ -105,11 +102,11 @@ namespace CefGlue.Tests.Javascript
         public void AsyncMethodIsExecuted()
         {
             var token = new Token();
-            var result = ExecuteAsyncMethod("asyncMethod", new[] { token });
+            var result = ExecuteAsyncMethod("asyncMethod", new [] { token });
             Assert.IsNull(result.Result);
             Assert.IsTrue(token.Executed);
         }
-
+        
         [Test]
         public void AsyncMethodWithReturnIsExecuted()
         {
@@ -122,7 +119,7 @@ namespace CefGlue.Tests.Javascript
         {
             const string Arg1 = "arg1";
             const int Arg2 = 2;
-            var result = (object[])ExecuteMethod("methodWithParams", new object[] { Arg1, Arg2 });
+            var result = (object[]) ExecuteMethod("methodWithParams", new object[] { Arg1, Arg2 } );
 
             Assert.AreEqual(2, result.Length);
             Assert.AreEqual(Arg1, result[0]);

@@ -18,7 +18,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         private readonly Dictionary<string, ObjectRegistration> _registeredObjects = new Dictionary<string, ObjectRegistration>();
         private readonly ConcurrentDictionary<int, PromiseHolder> _pendingCalls = new ConcurrentDictionary<int, PromiseHolder>();
         private readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _pendingBoundQueryTasks = new ConcurrentDictionary<string, TaskCompletionSource<bool>>();
-
+        
         public JavascriptToNativeDispatcherRenderSide(MessageDispatcher dispatcher)
         {
             dispatcher.RegisterMessageHandler(Messages.NativeObjectRegistrationRequest.Name, HandleNativeObjectRegistration);
@@ -54,7 +54,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
                     return;
                 }
 
-                var objectCreated = CreateNativeObjects([registration], context);
+                var objectCreated = CreateNativeObjects(new [] { registration }, context);
 
                 if (!objectCreated)
                 {
@@ -104,7 +104,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
         }
 
         public void HandleContextCreated(CefV8Context context, bool isMain)
-        {
+        { 
             if (isMain)
             {
                 lock (_registrationSyncRoot)
@@ -149,7 +149,7 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 try
                 {
-                    CefV8Value global = context.GetGlobal();
+                    var global = context.GetGlobal();
                     foreach (var registration in objectRegistrations)
                     {
                         ObjectInfo objectInfo = registration.Info;
