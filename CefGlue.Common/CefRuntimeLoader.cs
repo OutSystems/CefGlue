@@ -77,6 +77,18 @@ namespace Xilium.CefGlue.Common
             {
                 exeFileName = "CefGlue";
             }
+            
+            // Fix crash with youtube https://github.com/chromiumembedded/cef/issues/3643
+            {
+#if DEBUG
+                if (CefRuntime.ChromeVersion.Split(".").First() != "120")
+                {
+                    throw new Exception("Remove this fix block after CEF upgrade");
+                }
+#endif
+                flags = (flags ?? []).Append(KeyValuePair.Create("disable-features", "FirstPartySets")).ToArray();
+            }
+            
             CefRuntime.Initialize(new CefMainArgs(new[] { exeFileName }), settings, new BrowserCefApp(customSchemes, flags, browserProcessHandler), IntPtr.Zero);
 
             if (customSchemes != null)
