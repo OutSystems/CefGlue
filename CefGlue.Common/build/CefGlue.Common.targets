@@ -68,6 +68,18 @@
         </None>
     </ItemGroup>
 
+    <!--<ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)..\lib\net8.0\Xilium.CefGlue.dll">
+            <Link>runtimes\win-x64\native\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Visible>false</Visible>
+        </None>
+        <None Include="$(MSBuildThisFileDirectory)..\lib\net8.0\Xilium.CefGlue.Common.Shared.dll">
+            <Link>runtimes\win-x64\native\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Visible>false</Visible>
+        </None>
+    </ItemGroup>-->
     <!-- Copy CEF resources from 'chromiumembeddedframework.runtime.<architecture>' dependency package
      to the root folder of the build output directory. It is only applicable when compiling in Windows OS. 
      Relies on ResolvePackageAssets MSBuild target to identify resources deployed from that specific package. -->
