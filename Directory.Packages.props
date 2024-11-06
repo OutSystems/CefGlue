@@ -25,6 +25,7 @@
         <PackageVersion Include="System.Text.Json" Version="6.0.1" />
         <PackageVersion Include="System.Runtime.Loader" Version="4.3.0" />
 
+        <PackageVersion Include="chromiumembeddedframework.runtime" Version="$(CefRedistVersion)" />
         <PackageVersion Include="chromiumembeddedframework.runtime.win-x64" Version="$(CefRedistVersion)" />
         <PackageVersion Include="chromiumembeddedframework.runtime.win-arm64" Version="$(CefRedistVersion)" />
 
