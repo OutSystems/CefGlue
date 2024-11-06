@@ -82,5 +82,20 @@
                 <PublishState>Included</PublishState>
             </None>
         </ItemGroup>
+    
+        <ItemGroup>
+            <None Include="@(CefRuntimeWin64Locales)" Condition="'$(CefGlueTargetPlatform)' == 'win-x64'">
+                <Visible>false</Visible>
+                <Link>runtimes\win-x64\native\locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
+                <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                <PublishState>Included</PublishState>
+            </None>
+            <None Include="@(CefRuntimeWinArm64Locales)"  Condition="'$(CefGlueTargetPlatform)' == 'win-arm64'">
+                <Visible>false</Visible>
+                <Link>runtimes\win-arm64\native\locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
+                <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                <PublishState>Included</PublishState>
+            </None>
+        </ItemGroup>
     </Target>
 </Project>

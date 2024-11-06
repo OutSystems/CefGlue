@@ -11,4 +11,8 @@
         <PackageReference PrivateAssets="None" Include="cef.redist.osx.arm64" />
         <PackageReference PrivateAssets="None" Include="cef.redist.linuxarm64" />
     </ItemGroup>
+    
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <PackageReference PrivateAssets="None" Include="chromiumembeddedframework.runtime" />
+    </ItemGroup>
 </Project>
