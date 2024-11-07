@@ -40,7 +40,6 @@
         <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="build\CefGlue.Common$(PackageSuffix).targets" />
         <None Include="build\CefGlue.Common.props" Pack="True" PackagePath="buildTransitive\CefGlue.Common$(PackageSuffix).props" />
         <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="buildTransitive\CefGlue.Common$(PackageSuffix).targets" />
-
     </ItemGroup>
 
     <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
@@ -49,17 +48,14 @@
 
             <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\win-$(ArchitectureConfig)\Xilium.CefGlue.BrowserProcess.*">
                 <PackagePath>runtimes\win-$(ArchitectureConfig)\native</PackagePath>
-                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             </TfmSpecificPackageFile>
 
             <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\linux-$(ArchitectureConfig)\Xilium.CefGlue.BrowserProcess.*">
                 <PackagePath>runtimes\linux-$(ArchitectureConfig)\native</PackagePath>
-                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             </TfmSpecificPackageFile>
 
             <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\osx-$(ArchitectureConfig)\Xilium.CefGlue.BrowserProcess.*">
                 <PackagePath>runtimes\osx-$(ArchitectureConfig)\native</PackagePath>
-                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             </TfmSpecificPackageFile>
         </ItemGroup>
     </Target>
