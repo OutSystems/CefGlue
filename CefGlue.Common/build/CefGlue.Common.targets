@@ -1,40 +1,44 @@
 <Project>
-    <PropertyGroup>
-        <CefGlueBrowserProcessDir>CefGlueBrowserProcess</CefGlueBrowserProcessDir>
+    <!-- define CefGlueBrowserProcessRuntimeDirectory to copy browserprocess runtime files-->
+    <PropertyGroup Condition="'$(RuntimeIdentifier)' == ''">
+        <CefGlueBrowserProcessRuntimeDirectory>runtimes\$(CefGlueTargetPlatform)\native\</CefGlueBrowserProcessRuntimeDirectory>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+        <CefGlueBrowserProcessRuntimeDirectory>$(OutputDirectory)\</CefGlueBrowserProcessRuntimeDirectory>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'osx-x64' OR '$(CefGlueTargetPlatform)' == 'osx-arm64'">
         <None Condition="'$(CefGlueTargetPlatform)' == 'osx-x64'" Include="@(CefRedistOSX64)">
             <Visible>false</Visible>
-            <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <Link>$(CefGlueBrowserProcessRuntimeDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>
         </None>
         <None Condition="'$(CefGlueTargetPlatform)' == 'osx-arm64'" Include="@(CefRedistOSXARM64)">
             <Visible>false</Visible>
-            <Link>$(OutputDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <Link>$(CefGlueBrowserProcessRuntimeDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>
         </None>
         <None Include="$(OutDir)\libEGL.dylib">
             <Visible>false</Visible>
-            <Link>$(OutputDirectory)$(CefGlueBrowserProcessDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <Link>$(CefGlueBrowserProcessRuntimeDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>
         </None>
         <None Include="$(OutDir)\libGLESv2.dylib">
             <Visible>false</Visible>
-            <Link>$(OutputDirectory)$(CefGlueBrowserProcessDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <Link>$(CefGlueBrowserProcessRuntimeDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>
         </None>
         <None Include="$(OutDir)\libvk_swiftshader.dylib">
             <Visible>false</Visible>
-            <Link>$(OutputDirectory)$(CefGlueBrowserProcessDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <Link>$(CefGlueBrowserProcessRuntimeDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>
@@ -44,70 +48,46 @@
     <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'linux-x64' OR '$(CefGlueTargetPlatform)' == 'linux-arm64'">
         <None Condition="'$(CefGlueTargetPlatform)' == 'linux-x64'" Include="@(CefRedistLinux64)">
             <Visible>false</Visible>
-            <Link>$(OutputDirectory)$(CefGlueBrowserProcessDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <Link>$(CefGlueBrowserProcessRuntimeDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>
         </None>
         <None Condition="'$(CefGlueTargetPlatform)' == 'linux-arm64'" Include="@(CefRedistLinuxARM64)">
             <Visible>false</Visible>
-            <Link>$(OutputDirectory)$(CefGlueBrowserProcessDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <Link>$(CefGlueBrowserProcessRuntimeDirectory)%(RecursiveDir)%(FileName)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <PublishState>Included</PublishState>
         </None>
     </ItemGroup>
 
-    <ItemGroup>
-        <None Include="@(CefGlueBrowserProcessFiles)">
-            <Visible>false</Visible>
-            <Link>$(OutputDirectory)runtimes\$(CefGlueTargetPlatform)\native\%(RecursiveDir)%(FileName)%(Extension)</Link>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-            <PublishState>Included</PublishState>
-        </None>
-    </ItemGroup>
-
-    <!--<ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory)..\lib\net8.0\Xilium.CefGlue.dll">
-            <Link>runtimes\win-x64\native\%(RecursiveDir)%(FileName)%(Extension)</Link>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <Visible>false</Visible>
-        </None>
-        <None Include="$(MSBuildThisFileDirectory)..\lib\net8.0\Xilium.CefGlue.Common.Shared.dll">
-            <Link>runtimes\win-x64\native\%(RecursiveDir)%(FileName)%(Extension)</Link>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <Visible>false</Visible>
-        </None>
-    </ItemGroup>-->
-    <!-- Copy CEF resources from 'chromiumembeddedframework.runtime.<architecture>' dependency package
-     to the root folder of the build output directory. It is only applicable when compiling in Windows OS. 
-     Relies on ResolvePackageAssets MSBuild target to identify resources deployed from that specific package. -->
     <Target Name="ResolveCEFAssets" Condition="$([MSBuild]::IsOSPlatform('Windows')) and '$(CefGlueTargetPlatform)' != ''" AfterTargets="ResolvePackageAssets">
-        <!--<ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'win-x64' OR '$(CefGlueTargetPlatform)' == 'win-arm64'">
-            <CefRuntimeFiles Include="@(RuntimeTargetsCopyLocalItems->WithMetadataValue('NuGetPackageId', 'chromiumembeddedframework.runtime.$(CefGlueTargetPlatform)'))" />
-            <None Include="@(CefRuntimeFiles)">
-                <Visible>false</Visible>
-                <Link>$(OutputDirectory)%(FileName)%(Extension)</Link>
-                <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-                <PublishState>Included</PublishState>
-            </None>
-        </ItemGroup>-->
-
         <ItemGroup>
             <None Include="@(CefRuntimeWin64Locales)" Condition="'$(CefGlueTargetPlatform)' == 'win-x64'">
                 <Visible>false</Visible>
-                <Link>runtimes\win-x64\native\locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
+                <Link>$(CefGlueBrowserProcessRuntimeDirectory)locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
                 <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
                 <PublishState>Included</PublishState>
             </None>
             <None Include="@(CefRuntimeWinArm64Locales)"  Condition="'$(CefGlueTargetPlatform)' == 'win-arm64'">
                 <Visible>false</Visible>
-                <Link>runtimes\win-arm64\native\locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
+                <Link>$(CefGlueBrowserProcessRuntimeDirectory)locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
                 <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
                 <PublishState>Included</PublishState>
             </None>
         </ItemGroup>
     </Target>
+
+    <ItemGroup>
+        <_CefGlueBrowserProcessFiles Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\runtimes\$(CefGlueTargetPlatform)\native\Xilium.CefGlue.BrowserProcess.deps.json'))"/>
+        <_CefGlueBrowserProcessFiles Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\runtimes\$(CefGlueTargetPlatform)\native\Xilium.CefGlue.BrowserProcess.runtimeconfig.json'))"/>
+    </ItemGroup>
+
+    <Target Name="ExcludeBrowserProcessRuntimeConfigAfterComputeFilesToPublish" AfterTargets="ComputeFilesToPublish" Condition="'$(CefGlueTargetPlatform)' != '' AND '$(SelfContained)' == 'true'">
+        <ItemGroup>
+            <ResolvedFileToPublish Remove="@(_CefGlueBrowserProcessFiles)" />
+        </ItemGroup>
+    </Target>
+
 </Project>
