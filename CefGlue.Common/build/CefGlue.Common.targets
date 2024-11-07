@@ -62,37 +62,20 @@
         </None>
     </ItemGroup>
 
-    <Target Name="ResolveCEFAssets" Condition="$([MSBuild]::IsOSPlatform('Windows')) and '$(CefGlueTargetPlatform)' != ''" AfterTargets="ResolvePackageAssets">
-        <ItemGroup>
-            <None Include="@(CefRuntimeWin64Locales)" Condition="'$(CefGlueTargetPlatform)' == 'win-x64'">
-                <Visible>false</Visible>
-                <Link>$(CefGlueBrowserProcessRuntimeDirectory)locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
-                <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-                <PublishState>Included</PublishState>
-            </None>
-            <None Include="@(CefRuntimeWinArm64Locales)"  Condition="'$(CefGlueTargetPlatform)' == 'win-arm64'">
-                <Visible>false</Visible>
-                <Link>$(CefGlueBrowserProcessRuntimeDirectory)locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
-                <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-                <PublishState>Included</PublishState>
-            </None>
-        </ItemGroup>
-    
-        <ItemGroup>
-            <None Include="@(CefRuntimeWin64Locales)" Condition="'$(CefGlueTargetPlatform)' == 'win-x64'">
-                <Visible>false</Visible>
-                <Link>runtimes\win-x64\native\locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
-                <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-                <PublishState>Included</PublishState>
-            </None>
-            <None Include="@(CefRuntimeWinArm64Locales)"  Condition="'$(CefGlueTargetPlatform)' == 'win-arm64'">
-                <Visible>false</Visible>
-                <Link>runtimes\win-arm64\native\locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
-                <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-                <PublishState>Included</PublishState>
-            </None>
-        </ItemGroup>
-    </Target>
+    <ItemGroup Condition="'$(CefGlueTargetPlatform)' == 'win-x64' OR '$(CefGlueTargetPlatform)' == 'win-arm64'">
+        <None Condition="'$(CefGlueTargetPlatform)' == 'win-x64'" Include="@(CefRuntimeWin64Locales)">
+            <Visible>false</Visible>
+            <Link>$(CefGlueBrowserProcessRuntimeDirectory)locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PublishState>Included</PublishState>
+        </None>
+        <None Condition="'$(CefGlueTargetPlatform)' == 'win-arm64'" Include="@(CefRuntimeWinArm64Locales)">
+            <Visible>false</Visible>
+            <Link>$(CefGlueBrowserProcessRuntimeDirectory)locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PublishState>Included</PublishState>
+        </None>
+    </ItemGroup>
 
     <ItemGroup>
         <_CefGlueBrowserProcessFiles Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\runtimes\$(CefGlueTargetPlatform)\native\Xilium.CefGlue.BrowserProcess.deps.json'))"/>
