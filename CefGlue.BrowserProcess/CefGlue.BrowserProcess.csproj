@@ -12,13 +12,13 @@
     <IsEditbinEnabled>True</IsEditbinEnabled>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="ObjectBinding\CefGlueGlobalScript.js" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="ObjectBinding\CefGlueGlobalScript.js" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="ObjectBinding\CefGlueGlobalScript.js" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="ObjectBinding\CefGlueGlobalScript.js" />
+	</ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CefGlue.Common.Shared\CefGlue.Common.Shared.csproj" />

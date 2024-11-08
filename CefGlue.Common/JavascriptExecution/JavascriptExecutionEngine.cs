@@ -7,14 +7,16 @@ using Xilium.CefGlue.Common.Helpers;
 using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 using Xilium.CefGlue.Common.Shared.Serialization;
+using Xilium.CefGlue.Common.Shared.Serialization.MsgPack;
 
 namespace Xilium.CefGlue.Common.JavascriptExecution
 {
     internal class JavascriptExecutionEngine : IDisposable
     {
         private static volatile int lastTaskId;
+        private static readonly IDeserializer deserializer = new CefMsgPackDeserializer();
 
-        private readonly ConcurrentDictionary<int, TaskCompletionSource<string>> _pendingTasks = new ConcurrentDictionary<int, TaskCompletionSource<string>>();
+        private readonly ConcurrentDictionary<int, TaskCompletionSource<byte[]>> _pendingTasks = new ConcurrentDictionary<int, TaskCompletionSource<byte[]>>();
 
         public JavascriptExecutionEngine(MessageDispatcher dispatcher)
         {
@@ -36,7 +38,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             {
                 if (message.Success)
                 {
-                    pendingTask.SetResult(message.ResultAsJson);
+                    pendingTask.SetResult(message.Result);
                 }
                 else
                 {
@@ -73,7 +75,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                 Line = line
             };
 
-            var messageReceiveCompletionSource = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var messageReceiveCompletionSource = new TaskCompletionSource<byte[]>(TaskCreationOptions.RunContinuationsAsynchronously);
 
             _pendingTasks.TryAdd(taskId, messageReceiveCompletionSource);
 
@@ -116,7 +118,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
             }
         }
 
-        private T ProcessResult<T>(Task<string> task, int taskId, bool timedOut = false)
+        private T ProcessResult<T>(Task<byte[]> task, int taskId, bool timedOut = false)
         {
             try
             {
@@ -131,7 +133,7 @@ namespace Xilium.CefGlue.Common.JavascriptExecution
                     throw task.Exception.InnerException;
                 }
 
-                return Deserializer.Deserialize<T>(task.Result);
+                return deserializer.Deserialize<T>(task.Result);
             }
             catch (Exception e)
             {

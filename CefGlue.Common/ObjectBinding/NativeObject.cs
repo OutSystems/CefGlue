@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Common.ObjectBinding
 {
@@ -13,35 +14,42 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         private readonly IDictionary<string, NativeMethod> _methods;
         private readonly object _methodHandlerTarget;
         private readonly NativeMethod _methodHandler;
-        
-        public NativeObject(string name, object target, MethodCallHandler methodHandler = null)
+
+        public Messaging Messaging { get; }
+
+        public NativeObject(Messaging messaging, string name, object target, MethodCallHandler methodHandler = null)
         {
+            Messaging = messaging;
             Name = name;
             _target = target;
             _methods = GetObjectMembers(target);
 
             if (methodHandler != null)
             {
-                _methodHandler = new NativeMethod(methodHandler.Method);
+                _methodHandler = new NativeMethod(this, methodHandler.Method);
                 _methodHandlerTarget = methodHandler.Target;
             }
         }
 
         public string Name { get; }
 
-        public IEnumerable<string> MethodsNames => _methods.Keys;
+        public IEnumerable<NativeMethod> Methods => _methods.Values;
+
+        public void ExecuteMethod(string methodName, byte[] serializedArguments, Action<object, Exception> handleResult)
+        {
+            if (!_methods.TryGetValue(methodName ?? "", out var method))
+            {
+                handleResult(default, new Exception($"Object does not have a {methodName} method."));
+                return;
+            }
+
+            var arguments = method.ParameterTypes.Length > 0 
+                ? Messaging.Deserialize(serializedArguments, method.ParameterTypes)
+                : [];
+            ExecuteMethod(methodName, arguments, handleResult);
+        }
 
         public void ExecuteMethod(string methodName, object[] args, Action<object, Exception> handleResult)
-        {
-            InnerExecuteMethod(methodName, args, handleResult);
-        }
-
-        public void ExecuteMethod(string methodName, string argsAsJson, Action<object, Exception> handleResult)
-        {
-            InnerExecuteMethod(methodName, argsAsJson, handleResult);
-        }
-
-        private void InnerExecuteMethod<T>(string methodName, T args, Action<object, Exception> handleResult)
         {
             if (!_methods.TryGetValue(methodName ?? "", out var method))
             {
@@ -72,13 +80,10 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             });
         }
 
-        private static IDictionary<string, NativeMethod> GetObjectMembers(object obj)
+        private IDictionary<string, NativeMethod> GetObjectMembers(object obj)
         {
             var methods = obj.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public).Where(m => !m.IsSpecialName);
-            return methods.ToDictionary(m => ToJavascriptMemberName(m.Name), m => new NativeMethod(m));
+            return methods.ToDictionary(m => m.Name.ToCamelCase(), m => new NativeMethod(this, m));
         }
-
-        private static string ToJavascriptMemberName(string name) =>
-            name.Substring(0, 1).ToLowerInvariant() + name.Substring(1);
     }
 }

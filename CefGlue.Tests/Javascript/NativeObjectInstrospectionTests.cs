@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Xilium.CefGlue.Common.ObjectBinding;
+using Xilium.CefGlue.Common.Shared.Helpers;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace CefGlue.Tests.Javascript
 {
@@ -29,30 +31,48 @@ namespace CefGlue.Tests.Javascript
             
             private string PrivateProperty => "";
         }
-        
-        [Test]
-        public void CRLObjectInstanceMethodsAreCaptured()
-        {
-            var members = new HashSet<string>(new NativeObject("", new object()).MethodsNames);
 
-            Assert.IsTrue(members.Contains("toString"));
-            Assert.IsTrue(members.Contains("getHashCode"));
-            Assert.IsTrue(members.Contains("getType"));
-            Assert.IsTrue(members.Contains("equals"));
+        private static Messaging GetMessaging(MessagingType messagingType) => messagingType switch
+        {
+            MessagingType.Json => Messaging.Json,
+            MessagingType.MsgPack => Messaging.MsgPack,
+            _ => throw new ArgumentException($"Invalid MessagingType argument: {messagingType}")
+        };
+
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void CLRObjectInstanceMethodsAreCaptured(MessagingType messagingType)
+        {
+            Messaging messaging = GetMessaging(messagingType);
+            NativeObject nativeObject = new NativeObject(messaging, "object", new object());
+            ObjectInfo objectInfo = nativeObject.ToObjectInfo();
+            var members = objectInfo.Methods;
+
+            Assert.AreEqual("object", objectInfo.Name);
+            Assert.AreEqual(4, members.Length); // object members
+            Assert.Contains(new MethodInfo("toString", 0), members);
+            Assert.Contains(new MethodInfo("getHashCode", 0), members);
+            Assert.Contains(new MethodInfo("getType", 0), members);
+            Assert.Contains(new MethodInfo("equals", 1), members);
         }
-        
-        [Test]
-        public void CustomObjectInstanceMethodsAreCaptured()
-        {
-            var members = new HashSet<string>(new NativeObject("", new CustomObject()).MethodsNames);
 
-            Assert.AreEqual(6, members.Count); // object members + 2 public methods
-            Assert.IsTrue(members.Contains("toString"));
-            Assert.IsTrue(members.Contains("getHashCode"));
-            Assert.IsTrue(members.Contains("getType"));
-            Assert.IsTrue(members.Contains("equals"));
-            Assert.IsTrue(members.Contains("methodWithParams"));
-            Assert.IsTrue(members.Contains("asyncMethod"));
+        [TestCase(MessagingType.Json)]
+        [TestCase(MessagingType.MsgPack)]
+        public void CustomObjectInstanceMethodsAreCaptured(MessagingType messagingType)
+        {
+            Messaging messaging = GetMessaging(messagingType);
+            NativeObject nativeObject = new NativeObject(messaging, "CustomObject", new CustomObject());
+            ObjectInfo objectInfo = nativeObject.ToObjectInfo();
+            var members = objectInfo.Methods;
+
+            Assert.AreEqual("customObject", objectInfo.Name);
+            Assert.AreEqual(6, members.Length); // object members + 2 public methods
+            Assert.Contains(new MethodInfo("toString", 0), members);
+            Assert.Contains(new MethodInfo("getHashCode", 0), members);
+            Assert.Contains(new MethodInfo("getType", 0), members);
+            Assert.Contains(new MethodInfo("equals", 1), members);
+            Assert.Contains(new MethodInfo("methodWithParams", 2), members);
+            Assert.Contains(new MethodInfo("asyncMethod", 0), members);
         }
     }
 }

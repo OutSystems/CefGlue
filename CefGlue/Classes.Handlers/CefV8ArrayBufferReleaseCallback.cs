@@ -25,4 +25,9 @@
         /// </summary>
         protected abstract void ReleaseBuffer(IntPtr buffer);
     }
+
+    public class GlobalHeapArrayBufferReleaseCallback : CefV8ArrayBufferReleaseCallback
+    {
+        protected override void ReleaseBuffer(IntPtr buffer) => Marshal.FreeHGlobal(buffer);
+    }
 }

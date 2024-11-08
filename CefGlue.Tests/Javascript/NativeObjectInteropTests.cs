@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Xilium.CefGlue.Common.Shared.Helpers;
 
 namespace CefGlue.Tests.Javascript
 {
@@ -141,12 +142,12 @@ namespace CefGlue.Tests.Javascript
 
             public DateTime MethodWithDateTimeReturn()
             {
-                return DateTime.Parse(Date);
+                return DateTime.Parse(Date).ToUniversalTime();
             }
 
             public Person MethodWithObjectReturn()
             {
-                return new Person() {Name = "John", Age = 30, BirthDate = DateTime.Parse(Date)};
+                return new Person() {Name = "John", Age = 30, BirthDate = DateTime.Parse(Date).ToUniversalTime()};
             }
         }
 
@@ -208,7 +209,7 @@ namespace CefGlue.Tests.Javascript
             Assert.AreEqual(4, result.Length);
             Assert.AreEqual(Arg1, result[0]);
             Assert.AreEqual(Arg2, result[1]);
-            Assert.AreEqual(DateTime.Parse(Date), result[2]);
+            Assert.AreEqual(DateTime.Parse(Date).ToUniversalTime(), result[2]);
             Assert.AreEqual(true, result[3]);
         }
 
@@ -297,12 +298,18 @@ namespace CefGlue.Tests.Javascript
             var arg = (Person) result[0];
             Assert.AreEqual("cef", arg.Name);
             Assert.AreEqual(10, arg.Age);
-            Assert.AreEqual(DateTime.Parse(Date), arg.BirthDate);
+            Assert.AreEqual(DateTime.Parse(Date).ToUniversalTime(), arg.BirthDate);
         }
 
         [Test]
         public async Task MethodWithCyclicObjectParamIsPassed()
         {
+            var messagingType = Browser.GetMessagingType();
+            if (messagingType == MessagingType.MsgPack)
+            {
+                Assert.Ignore("cyclic references are not supported");
+            }
+
             var taskCompletionSource = new TaskCompletionSource<object[]>();
             nativeObject.MethodWithCyclicObjectParamCalled += (args) => taskCompletionSource.SetResult(args);
 
@@ -365,11 +372,26 @@ namespace CefGlue.Tests.Javascript
             Assert.IsNull(result[0]);
             Assert.AreEqual("text", result[1]);
             Assert.AreEqual(5, result[2]);
-            Assert.IsInstanceOf<IDictionary<string, object>>(result[3]);
-            var dict = (IDictionary<string, object>)result[3];
-            Assert.AreEqual(1, dict.Count);
-            Assert.AreEqual("Name", dict.Keys.Single());
-            Assert.AreEqual("plainObjName", dict.Values.Single());
+
+            if (result[3] is IDictionary<string, object>)
+            {
+                var dict = (IDictionary<string, object>)result[3];
+                Assert.AreEqual(1, dict.Count);
+                Assert.AreEqual("Name", dict.Keys.Single());
+                Assert.AreEqual("plainObjName", dict.Values.Single());
+            }
+            else if (result[3] is IDictionary<object, object>)
+            {
+                var dict = (IDictionary<object, object>)result[3];
+                Assert.AreEqual(1, dict.Count);
+                Assert.AreEqual("Name", dict.Keys.Single());
+                Assert.AreEqual("plainObjName", dict.Values.Single());
+            }
+            else
+            {
+                Assert.Fail("Unknown format for result[3]");
+            }
+            
             Assert.IsInstanceOf<object[]>(result[4]);
             var arr = (object[])result[4];
             Assert.AreEqual(3, arr.Length);

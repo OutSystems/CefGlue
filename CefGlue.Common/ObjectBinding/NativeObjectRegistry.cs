@@ -12,20 +12,26 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         private readonly Dictionary<string, NativeObject> _registeredObjects = new Dictionary<string, NativeObject>();
         private readonly object _registrationSyncRoot = new object();
 
+        public Messaging DefaultMessaging { get; } = Messaging.Json;
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="name"></param>
+        /// <param name="methodHandler"></param>
+        /// <param name="messaging"></param>
         /// <returns>True if the object was successfully registered, false if the object was already registered before.</returns>
-        public bool Register(object obj, string name, MethodCallHandler methodHandler = null)
+        public bool Register(object obj, string name, MethodCallHandler methodHandler = null, Messaging messaging = null)
         {
             if (_registeredObjects.ContainsKey(name))
             {
                 return false;
             }
-            
-            var nativeObj = new NativeObject(name, obj, methodHandler);
+
+            messaging = messaging ?? DefaultMessaging;
+
+            var nativeObj = new NativeObject(messaging, name, obj, methodHandler);
 
             lock (_registrationSyncRoot)
             {
@@ -39,7 +45,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 
                 if (_browser != null)
                 {
-                    SendRegistrationMessage(nativeObj);
+                    SendRegistrationMessage(nativeObj, messaging.Id);
                 }
 
                 return true;
@@ -73,7 +79,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 _browser = browser;
                 foreach (var obj in _registeredObjects.Values)
                 {
-                    SendRegistrationMessage(obj);
+                    SendRegistrationMessage(obj, null);
                 }
             }
         }
@@ -84,12 +90,12 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             return obj;
         }
 
-        private void SendRegistrationMessage(NativeObject obj)
+        private void SendRegistrationMessage(NativeObject obj, string serializer)
         {
             var message = new Messages.NativeObjectRegistrationRequest()
             {
-                ObjectName = obj.Name,
-                MethodsNames = obj.MethodsNames.ToArray()
+                ObjectInfo = obj.ToObjectInfo(),
+                Messaging = serializer,
             };
 
             var cefMessage = message.ToCefProcessMessage();

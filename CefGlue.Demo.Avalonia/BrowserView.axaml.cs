@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Xilium.CefGlue.Avalonia;
 using Xilium.CefGlue.Common.Handlers;
+using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 
 namespace Xilium.CefGlue.Demo.Avalonia
 {
@@ -110,7 +111,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             const string TestObject = "dotNetObject";
 
             var obj = new BindingTestClass();
-            browser.RegisterJavascriptObject(obj, TestObject, AsyncCallNativeMethod);
+            browser.RegisterJavascriptObject(obj, TestObject, methodHandler: AsyncCallNativeMethod, messaging: Messaging.Json); // User the JSON Messaging format by default. If you prefer a binary format, select Messaging.MsgPack.
 
             var methods = obj.GetType().GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public)
                                        .Where(m => m.GetParameters().Length == 0)

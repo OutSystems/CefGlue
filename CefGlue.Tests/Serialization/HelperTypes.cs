@@ -50,6 +50,8 @@ namespace CefGlue.Tests.Serialization
 
     public struct StructObject
     {
+        public StructObject() { }
+
         public StructObject(string name, int number)
         {
             NameProp = name;

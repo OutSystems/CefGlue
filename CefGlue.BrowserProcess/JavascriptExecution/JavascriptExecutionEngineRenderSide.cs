@@ -27,7 +27,7 @@ namespace Xilium.CefGlue.BrowserProcess.JavascriptExecution
                     TaskId = message.TaskId,
                     Success = success,
                     Exception = success ? null : exception.Message,
-                    ResultAsJson = value?.GetStringValue()
+                    Result = value?.GetArrayBuffer()
                 };
 
                 var cefResponseMessage = response.ToCefProcessMessage();
