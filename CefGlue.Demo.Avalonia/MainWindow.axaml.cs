@@ -121,5 +121,11 @@ namespace Xilium.CefGlue.Demo.Avalonia
         {
             ActiveBrowserView.OpenDevTools();
         }
+        
+        private void OnOpenChildDialogMenuItemClick(object sender, RoutedEventArgs e)
+        {
+            var newWindow = new MainWindow();
+            newWindow.Show(this);
+        }
     }
 }

@@ -22,6 +22,7 @@
     <DockPanel>
         <Menu Name="mainMenu" DockPanel.Dock="Top">
             <MenuItem Header="_File">
+                <MenuItem Header="Open Child Dialog..." Click="OnOpenChildDialogMenuItemClick"/>
                 <MenuItem Header="_New Tab" Click="OnNewTabMenuItemClick" />
                 <MenuItem Header="_Open Dev Tools..." Click="OnOpenDevToolsMenuItemClick"/>
                 <MenuItem Header="_Evaluate Javascript" Click="OnEvaluateJavascriptMenuItemClick" />
