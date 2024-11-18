@@ -4,6 +4,7 @@
         <DotnetVersion>net8.0</DotnetVersion>
         <LangVersion>latest</LangVersion>
         <CefRedistVersion>120.1.8</CefRedistVersion>
+        <AvaloniaVersion>11.2.1</AvaloniaVersion>        
         <CefRedistOSXVersion>120.1.8</CefRedistOSXVersion>
         <CefRedistLinuxVersion>120.1.8</CefRedistLinuxVersion>
         <Platforms>x64;ARM64</Platforms>
