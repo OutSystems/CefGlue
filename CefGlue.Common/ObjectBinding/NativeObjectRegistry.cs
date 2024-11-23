@@ -13,7 +13,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
         private readonly object _registrationSyncRoot = new object();
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="name"></param>
@@ -24,7 +24,7 @@ namespace Xilium.CefGlue.Common.ObjectBinding
             {
                 return false;
             }
-            
+
             var nativeObj = new NativeObject(name, obj, methodHandler);
 
             lock (_registrationSyncRoot)
@@ -36,8 +36,9 @@ namespace Xilium.CefGlue.Common.ObjectBinding
                 }
 
                 _registeredObjects.Add(name, nativeObj);
-                
-                if (_browser != null)
+
+                // If the browser is loading the object will be registered by CommonBrowserAdapter.HandleLoadEnd
+                if (_browser != null && !_browser.IsLoading)
                 {
                     SendRegistrationMessage(nativeObj);
                 }
