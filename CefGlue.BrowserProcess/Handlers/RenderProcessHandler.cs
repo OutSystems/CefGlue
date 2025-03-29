@@ -108,9 +108,9 @@ namespace Xilium.CefGlue.BrowserProcess.Handlers
         }
 
 
-        protected override void OnBrowserCreated(CefBrowser browser, CefDictionaryValue extraInfo)
+        protected override void OnBrowserCreated(CefBrowser browser, CefDictionaryValue? extraInfo)
         {
-            _crashPipeName = extraInfo.GetString(Constants.CrashPipeNameKey);
+            _crashPipeName = extraInfo?.GetString(Constants.CrashPipeNameKey);
             _browser = browser;
             base.OnBrowserCreated(browser, extraInfo);
         }
