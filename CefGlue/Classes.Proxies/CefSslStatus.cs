@@ -50,7 +50,7 @@
         public CefX509Certificate GetX509Certificate()
         {
             return CefX509Certificate.FromNative(
-                cef_sslstatus_t.get_x509certificate(_self)
+                cef_sslstatus_t.get_x509_certificate(_self)
                 );
         }
     }

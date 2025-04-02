@@ -80,7 +80,7 @@
         }
 
         /// <summary>
-        /// A message was recieved over |route|. |message| is only valid for
+        /// A message was received over |route|. |message| is only valid for
         /// the scope of this callback and should be copied if necessary.
         /// </summary>
         protected abstract void OnRouteMessageReceived(CefMediaRoute route, IntPtr message, int messageSize);

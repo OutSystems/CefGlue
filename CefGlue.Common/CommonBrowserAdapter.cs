@@ -232,7 +232,7 @@ namespace Xilium.CefGlue.Common
 
         public Task<T> EvaluateJavaScript<T>(string code, string url, int line, string frameName = null, TimeSpan? timeout = null)
         {
-            var frame = frameName != null ? _browser?.GetFrame(frameName) : _browser?.GetMainFrame();
+            var frame = frameName != null ? _browser?.GetFrameByName(frameName) : _browser?.GetMainFrame();
             if (frame != null)
             {
                 return EvaluateJavaScript<T>(code, url, line, frame, timeout);

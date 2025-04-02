@@ -9,6 +9,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_screen_info_t
     {
+        public UIntPtr size;
         public float device_scale_factor;
         public int depth;
         public int depth_per_component;
