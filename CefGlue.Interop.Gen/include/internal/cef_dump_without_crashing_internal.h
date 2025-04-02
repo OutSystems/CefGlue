@@ -1,4 +1,4 @@
-// Copyright (c) 2014 Marshall A. Greenblatt. All rights reserved.
+// Copyright (c) 2024 Marshall A. Greenblatt. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -27,18 +27,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef CEF_INCLUDE_INTERNAL_CEF_THREAD_INTERNAL_H_
-#define CEF_INCLUDE_INTERNAL_CEF_THREAD_INTERNAL_H_
+#ifndef CEF_INCLUDE_INTERNAL_CEF_DUMP_WITHOUT_CRASHING_INTERNAL_H_
+#define CEF_INCLUDE_INTERNAL_CEF_DUMP_WITHOUT_CRASHING_INTERNAL_H_
 #pragma once
 
-#if !defined(GENERATING_CEF_API_HASH)
-#if defined(OS_WIN)
-#include <windows.h>
-#elif defined(OS_POSIX)
-#include <pthread.h>
-#include <unistd.h>
-#endif
-#endif
+#include <stddef.h>
 
 #include "include/internal/cef_export.h"
 
@@ -46,35 +39,30 @@
 extern "C" {
 #endif
 
-#if defined(OS_WIN)
-typedef DWORD cef_platform_thread_id_t;
-#define kInvalidPlatformThreadId 0U
-#elif defined(OS_POSIX)
-typedef pid_t cef_platform_thread_id_t;
-#define kInvalidPlatformThreadId 0
-#endif
+// See include/base/cef_dump_without_crashing.h for intended usage.
 
 ///
-/// Returns the current platform thread ID.
+/// cef_dump_without_crashing allows for capturing crash dumps in a throttled
+/// manner. This function should only be called after CefInitialize has been
+/// successfully called. For detailed behavior, usage instructions, and
+/// considerations, refer to the documentation of DumpWithoutCrashing in
+/// base/debug/dump_without_crashing.h.
 ///
-CEF_EXPORT cef_platform_thread_id_t cef_get_current_platform_thread_id(void);
-
-#if defined(OS_WIN)
-typedef DWORD cef_platform_thread_handle_t;
-#define kInvalidPlatformThreadHandle 0U
-#elif defined(OS_POSIX)
-typedef pthread_t cef_platform_thread_handle_t;
-#define kInvalidPlatformThreadHandle 0
-#endif
-
+CEF_EXPORT int cef_dump_without_crashing(long long mseconds_between_dumps,
+                                         const char* function_name,
+                                         const char* file_name,
+                                         int line_number);
 ///
-/// Returns the current platform thread handle.
+/// cef_dump_without_crashing_unthrottled allows for capturing crash dumps
+/// without any throttling constraints. This function should also only be called
+/// after CefInitialize has been successfully called. For detailed behavior,
+/// usage instructions, and considerations, refer to the documentation of
+/// DumpWithoutCrashingUnthrottled in base/debug/dump_without_crashing.h.
 ///
-CEF_EXPORT cef_platform_thread_handle_t
-cef_get_current_platform_thread_handle(void);
+CEF_EXPORT int cef_dump_without_crashing_unthrottled();
 
 #ifdef __cplusplus
 }
 #endif  // __cplusplus
 
-#endif  // CEF_INCLUDE_INTERNAL_CEF_THREAD_INTERNAL_H_
+#endif  // CEF_INCLUDE_INTERNAL_CEF_DUMP_WITHOUT_CRASHING_INTERNAL_H_
