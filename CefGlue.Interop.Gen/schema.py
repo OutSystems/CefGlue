@@ -185,7 +185,8 @@ c2cs_enumtypes = {
     'cef_dom_form_control_type_t': 'CefDomFormControlType',
     'cef_color_variant_t': 'CefColorVariantType',
     'cef_runtime_style_t': 'CefRuntimeStyleType',
-    }
+    'cef_task_type_t': 'CefTaskType',
+ }
 
 c2cs_structtypes = { }
 
