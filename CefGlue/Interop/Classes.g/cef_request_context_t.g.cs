@@ -226,13 +226,13 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void set_chrome_color_scheme_delegate(cef_request_context_t* self, cef_color_variant_t variant, uint user_color);
+        private delegate void set_chrome_color_scheme_delegate(cef_request_context_t* self, CefColorVariantType variant, uint user_color);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_color_variant_t get_chrome_color_scheme_mode_delegate(cef_request_context_t* self);
+        private delegate CefColorVariantType get_chrome_color_scheme_mode_delegate(cef_request_context_t* self);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -244,7 +244,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_color_variant_t get_chrome_color_scheme_variant_delegate(cef_request_context_t* self);
+        private delegate CefColorVariantType get_chrome_color_scheme_variant_delegate(cef_request_context_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -726,7 +726,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1c;
         private static set_chrome_color_scheme_delegate _d1c;
         
-        public static void set_chrome_color_scheme(cef_request_context_t* self, cef_color_variant_t variant, uint user_color)
+        public static void set_chrome_color_scheme(cef_request_context_t* self, CefColorVariantType variant, uint user_color)
         {
             set_chrome_color_scheme_delegate d;
             var p = self->_set_chrome_color_scheme;
@@ -743,7 +743,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1d;
         private static get_chrome_color_scheme_mode_delegate _d1d;
         
-        public static cef_color_variant_t get_chrome_color_scheme_mode(cef_request_context_t* self)
+        public static CefColorVariantType get_chrome_color_scheme_mode(cef_request_context_t* self)
         {
             get_chrome_color_scheme_mode_delegate d;
             var p = self->_get_chrome_color_scheme_mode;
@@ -777,7 +777,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p1f;
         private static get_chrome_color_scheme_variant_delegate _d1f;
         
-        public static cef_color_variant_t get_chrome_color_scheme_variant(cef_request_context_t* self)
+        public static CefColorVariantType get_chrome_color_scheme_variant(cef_request_context_t* self)
         {
             get_chrome_color_scheme_variant_delegate d;
             var p = self->_get_chrome_color_scheme_variant;
