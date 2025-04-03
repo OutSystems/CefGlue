@@ -20,6 +20,8 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _on_certificate_error;
         internal IntPtr _on_select_client_certificate;
         internal IntPtr _on_render_view_ready;
+        internal IntPtr _on_render_process_unresponsive;
+        internal IntPtr _on_render_process_responsive;
         internal IntPtr _on_render_process_terminated;
         internal IntPtr _on_document_available_in_main_frame;
         
@@ -93,7 +95,19 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_render_process_terminated_delegate(cef_request_handler_t* self, cef_browser_t* browser, CefTerminationStatus status);
+        internal delegate int on_render_process_unresponsive_delegate(cef_request_handler_t* self, cef_browser_t* browser, cef_unresponsive_process_callback_t* callback);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void on_render_process_responsive_delegate(cef_request_handler_t* self, cef_browser_t* browser);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void on_render_process_terminated_delegate(cef_request_handler_t* self, cef_browser_t* browser, CefTerminationStatus status, int error_code, cef_string_t* error_string);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
