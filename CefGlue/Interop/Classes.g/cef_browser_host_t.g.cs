@@ -524,7 +524,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_runtime_style_t get_runtime_style_delegate(cef_browser_host_t* self);
+        private delegate CefRuntimeStyleType get_runtime_style_delegate(cef_browser_host_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -1737,7 +1737,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p47;
         private static get_runtime_style_delegate _d47;
         
-        public static cef_runtime_style_t get_runtime_style(cef_browser_host_t* self)
+        public static CefRuntimeStyleType get_runtime_style(cef_browser_host_t* self)
         {
             get_runtime_style_delegate d;
             var p = self->_get_runtime_style;
