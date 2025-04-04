@@ -189,10 +189,7 @@
         /// Returns the globally unique identifier for this frame or &lt; 0 if the
         /// underlying frame does not yet exist.
         /// </summary>
-        public long Identifier
-        {
-            get { return cef_frame_t.get_identifier(_self); }
-        }
+        public string Identifier => cef_string_userfree.ToString(cef_frame_t.get_identifier(_self));
 
         /// <summary>
         /// Returns the parent of this frame or NULL if this is the main (top-level)

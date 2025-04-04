@@ -7,11 +7,9 @@
 
     public struct CefAcceleratedPaintInfo
     {
-
-        internal CefAcceleratedPaintInfo(cef_accelerated_paint_info_t info)
+        internal unsafe CefAcceleratedPaintInfo(cef_accelerated_paint_info_t* info)
         {
-            
+            // TODO hgo: Finish structure
         }
-
     }
 }
