@@ -243,14 +243,24 @@
         {
         }
 
-
-        private void on_render_process_terminated(cef_request_handler_t* self, cef_browser_t* browser, CefTerminationStatus status)
+        private void on_render_process_terminated(cef_request_handler_t* self, cef_browser_t* browser, CefTerminationStatus status, int error_code, cef_string_t* error_string)
         {
             CheckSelf(self);
 
             var m_browser = CefBrowser.FromNative(browser);
+            var error = cef_string_t.ToString(error_string);
 
-            OnRenderProcessTerminated(m_browser, status);
+            OnRenderProcessTerminated(m_browser, status, error_code, error);
+        }
+        
+        private int on_render_process_unresponsive(cef_request_handler_t* self, cef_browser_t* browser, cef_unresponsive_process_callback_t* callback)
+        {
+            // TODO hgo: Reviewwhat we should return
+            return 0;
+        }
+        
+        private void on_render_process_responsive(cef_request_handler_t* self, cef_browser_t* browser)
+        {
         }
 
         /// <summary>
@@ -258,7 +268,7 @@
         /// terminates unexpectedly. |status| indicates how the process
         /// terminated.
         /// </summary>
-        protected virtual void OnRenderProcessTerminated(CefBrowser browser, CefTerminationStatus status)
+        protected virtual void OnRenderProcessTerminated(CefBrowser browser, CefTerminationStatus status, int error_code, string error)
         {
         }
 

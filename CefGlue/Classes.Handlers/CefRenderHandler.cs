@@ -215,7 +215,7 @@
         protected abstract void OnPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr buffer, int width, int height);
 
 
-        private void on_accelerated_paint(cef_render_handler_t* self, cef_browser_t* browser, CefPaintElementType type, UIntPtr dirtyRectsCount, cef_rect_t* dirtyRects, void* shared_handle)
+        private void on_accelerated_paint(cef_render_handler_t* self, cef_browser_t* browser, CefPaintElementType type, UIntPtr dirtyRectsCount, cef_rect_t* dirtyRects, cef_accelerated_paint_info_t* info)
         {
             CheckSelf(self);
 
@@ -235,8 +235,10 @@
 
                 rect++;
             }
-
-            OnAcceleratedPaint(m_browser, type, m_dirtyRects, (IntPtr)shared_handle);
+            
+            var mInfo = new CefAcceleratedPaintInfo(info);
+            
+            OnAcceleratedPaint(m_browser, type, m_dirtyRects, mInfo);
         }
 
         /// <summary>
@@ -248,8 +250,7 @@
         /// method is only called when CefWindowInfo::SharedTextureEnabled is set to
         /// true, and is currently only supported on Windows.
         /// </summary>
-        protected abstract void OnAcceleratedPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, IntPtr sharedHandle);
-
+        protected abstract void OnAcceleratedPaint(CefBrowser browser, CefPaintElementType type, CefRectangle[] dirtyRects, CefAcceleratedPaintInfo info);
 
         private void get_touch_handle_size(cef_render_handler_t* self, cef_browser_t* browser, CefHorizontalAlignment orientation, cef_size_t* size)
         {

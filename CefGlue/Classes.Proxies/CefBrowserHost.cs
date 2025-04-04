@@ -874,29 +874,6 @@
         }
 
         /// <summary>
-        /// Returns the extension hosted in this browser or NULL if no extension is
-        /// hosted. See CefRequestContext::LoadExtension for details.
-        /// </summary>
-        public CefExtension GetExtension()
-        {
-            var nExtension = cef_browser_host_t.get_extension(_self);
-            return CefExtension.FromNativeOrNull(nExtension);
-        }
-
-        /// <summary>
-        /// Returns true if this browser is hosting an extension background script.
-        /// Background hosts do not have a window and are not displayable. See
-        /// CefRequestContext::LoadExtension for details.
-        /// </summary>
-        public bool IsBackgroundHost
-        {
-            get
-            {
-                return cef_browser_host_t.is_background_host(_self) != 0;
-            }
-        }
-
-        /// <summary>
         /// Set whether the browser's audio is muted.
         /// </summary>
         public void SetAudioMuted(bool value)
@@ -908,13 +885,7 @@
         /// Returns true if the browser's audio is muted.  This method can only be
         /// called on the UI thread.
         /// </summary>
-        public bool IsAudioMuted
-        {
-            get
-            {
-                return cef_browser_host_t.is_audio_muted(_self) != 0;
-            }
-        }
+        public bool IsAudioMuted => cef_browser_host_t.is_audio_muted(_self) != 0;
 
         /// <summary>
         /// Returns true if the renderer is currently in browser fullscreen. This

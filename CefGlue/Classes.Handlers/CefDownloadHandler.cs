@@ -33,7 +33,7 @@
             => true;
 
 
-        private void on_before_download(cef_download_handler_t* self, cef_browser_t* browser, cef_download_item_t* download_item, cef_string_t* suggested_name, cef_before_download_callback_t* callback)
+        private int on_before_download(cef_download_handler_t* self, cef_browser_t* browser, cef_download_item_t* download_item, cef_string_t* suggested_name, cef_before_download_callback_t* callback)
         {
             CheckSelf(self);
 
@@ -43,7 +43,7 @@
                 var m_suggested_name = cef_string_t.ToString(suggested_name);
                 var m_callback = CefBeforeDownloadCallback.FromNative(callback);
 
-                OnBeforeDownload(m_browser, m_download_item, m_suggested_name, m_callback);
+                return OnBeforeDownload(m_browser, m_download_item, m_suggested_name, m_callback);
             }
         }
 
@@ -54,8 +54,10 @@
         /// download if desired. Do not keep a reference to |download_item| outside of
         /// this method.
         /// </summary>
-        protected virtual void OnBeforeDownload(CefBrowser browser, CefDownloadItem downloadItem, string suggestedName, CefBeforeDownloadCallback callback)
+        protected virtual int OnBeforeDownload(CefBrowser browser, CefDownloadItem downloadItem, string suggestedName, CefBeforeDownloadCallback callback)
         {
+            // TODO hgo: Review return
+            return 0;
         }
 
 

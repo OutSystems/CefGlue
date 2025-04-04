@@ -526,12 +526,12 @@
         /// incorrectly or an exception is thrown. For read-only values this method
         /// will return true even though assignment failed.
         /// </summary>
-        public bool SetValue(string key, CefV8AccessControl settings, CefV8PropertyAttribute attribute = CefV8PropertyAttribute.None)
+        public bool SetValue(string key, CefV8PropertyAttribute attribute = CefV8PropertyAttribute.None)
         {
             fixed (char* key_str = key)
             {
                 var n_key = new cef_string_t(key_str, key != null ? key.Length : 0);
-                return cef_v8value_t.set_value_byaccessor(_self, &n_key, settings, attribute) != 0;
+                return cef_v8value_t.set_value_byaccessor(_self, &n_key, attribute) != 0;
             }
         }
 
