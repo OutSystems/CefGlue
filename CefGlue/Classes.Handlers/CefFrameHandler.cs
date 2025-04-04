@@ -92,8 +92,12 @@
         /// etc.) will be queued until OnFrameAttached is called for |frame|.
         /// </summary>
         protected virtual void OnFrameCreated(CefBrowser browser, CefFrame frame)
-        { }
+        {
+        }
 
+        private void on_frame_destroyed(cef_frame_handler_t* self, cef_browser_t* browser, cef_frame_t* frame)
+        {
+        }
 
         private void on_frame_attached(cef_frame_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, int reattached)
         {

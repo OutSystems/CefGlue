@@ -160,5 +160,11 @@
         /// with the chrome runtime.
         /// </summary>
         protected virtual CefClient GetDefaultClient() => null;
+        
+        private cef_request_context_handler_t* get_default_request_context_handler(cef_browser_process_handler_t* self)
+        {
+            // TODO hgo: This must be reviewed
+            throw new NotImplementedException(); 
+        }
     }
 }
