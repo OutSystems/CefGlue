@@ -10,6 +10,9 @@
         internal unsafe CefAcceleratedPaintInfo(cef_accelerated_paint_info_t* info)
         {
             // TODO hgo: Finish structure
+            Extra = new CefAcceleratedPaintInfoCommon(info->extra);
         }
+
+        public CefAcceleratedPaintInfoCommon Extra;
     }
 }
