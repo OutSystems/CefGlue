@@ -43,21 +43,19 @@
                 var m_suggested_name = cef_string_t.ToString(suggested_name);
                 var m_callback = CefBeforeDownloadCallback.FromNative(callback);
 
-                return OnBeforeDownload(m_browser, m_download_item, m_suggested_name, m_callback);
+                return OnBeforeDownload(m_browser, m_download_item, m_suggested_name, m_callback) ? 1 : 0;
             }
         }
 
         /// <summary>
-        /// Called before a download begins. |suggested_name| is the suggested name
-        /// for the download file. By default the download will be canceled. Execute
-        /// |callback| either asynchronously or in this method to continue the
-        /// download if desired. Do not keep a reference to |download_item| outside of
-        /// this method.
+        /// Called before a download begins. |suggested_name| is the suggested name for the download file.
+        /// Return true and execute |callback| either asynchronously or in this method to continue or cancel the download.
+        /// Return false to proceed with default handling (cancel with Alloy style, download shelf with Chrome style).
+        /// Do not keep a reference to |download_item| outside of this method.
         /// </summary>
-        protected virtual int OnBeforeDownload(CefBrowser browser, CefDownloadItem downloadItem, string suggestedName, CefBeforeDownloadCallback callback)
+        protected virtual bool OnBeforeDownload(CefBrowser browser, CefDownloadItem downloadItem, string suggestedName, CefBeforeDownloadCallback callback)
         {
-            // TODO hgo: Review return
-            return 0;
+            return false;
         }
 
 
