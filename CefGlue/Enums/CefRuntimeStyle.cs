@@ -28,7 +28,7 @@ namespace Xilium.CefGlue
     /// multiple Alloy style BrowserViews. See CefWindowInfo.runtime_style
     /// documentation for any additional platform-specific limitations.
     /// </summary>
-    public enum CefRuntimeStyleType
+    public enum CefRuntimeStyle
     {
         DEFAULT,
         CHROME,

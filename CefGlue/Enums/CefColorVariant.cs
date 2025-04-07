@@ -10,7 +10,7 @@ namespace Xilium.CefGlue
     /// Specifies the color variants supported by
     /// CefRequestContext::SetChromeThemeColor.
     /// </summary>
-    public enum CefColorVariantType
+    public enum CefColorVariant
     {
         SYSTEM,
         LIGHT,

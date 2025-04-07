@@ -144,6 +144,8 @@
         /// be called from within the scope of a CefRenderProcessHandler, CefV8Handler
         /// or CefV8Accessor callback, or in combination with calling Enter() and
         /// Exit() on a stored CefV8Context reference.
+        ///
+        /// NOTE: Always returns nullptr when V8 sandbox is enabled.
         /// </summary>
         public static CefV8Value CreateArrayBuffer(IntPtr buffer, ulong length, CefV8ArrayBufferReleaseCallback releaseCallback)
         {
@@ -156,6 +158,21 @@
                 );
 
             return CefV8Value.FromNative(n_value);
+        }
+
+        ///
+        /// Create a new CefV8Value object of type ArrayBuffer which copies the
+        /// provided |buffer| of size |length| bytes.
+        /// This method should only be called from within the scope of a
+        /// CefRenderProcessHandler, CefV8Handler or CefV8Accessor callback, or in
+        /// combination with calling Enter() and Exit() on a stored CefV8Context
+        /// reference.
+        ///
+        /*--cef(optional_param=buffer)--*/
+        public static CefV8Value CreateArrayBufferWithCopy(IntPtr buffer, ulong length)
+        {
+            // TODO hgo
+            throw new NotImplementedException();
         }
 
         /// <summary>

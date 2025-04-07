@@ -183,8 +183,8 @@ c2cs_enumtypes = {
     'cef_content_setting_values_t': 'CefContentSettingValue',
     'cef_zoom_command_t': 'CefZoomCommand',
     'cef_dom_form_control_type_t': 'CefDomFormControlType',
-    'cef_color_variant_t': 'CefColorVariantType',
-    'cef_runtime_style_t': 'CefRuntimeStyleType',
+    'cef_color_variant_t': 'CefColorVariant',
+    'cef_runtime_style_t': 'CefRuntimeStyle',
     'cef_task_type_t': 'CefTaskType',
  }
 

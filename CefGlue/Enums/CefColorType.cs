@@ -20,5 +20,6 @@ namespace Xilium.CefGlue
         /// BGRA with 8 bits per pixel (32bits total).
         /// </summary>
         Bgra8888,
+        NUM_VALUES,
     }
 }
