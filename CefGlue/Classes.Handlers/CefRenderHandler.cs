@@ -236,9 +236,9 @@
                 rect++;
             }
             
-            var mInfo = new CefAcceleratedPaintInfo(info);
+            var m_Info = new CefAcceleratedPaintInfo(info);
             
-            OnAcceleratedPaint(m_browser, type, m_dirtyRects, mInfo);
+            OnAcceleratedPaint(m_browser, type, m_dirtyRects, m_Info);
         }
 
         /// <summary>
