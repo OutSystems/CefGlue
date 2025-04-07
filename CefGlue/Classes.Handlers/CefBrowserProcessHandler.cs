@@ -163,8 +163,18 @@
         
         private cef_request_context_handler_t* get_default_request_context_handler(cef_browser_process_handler_t* self)
         {
-            // TODO hgo: This must be reviewed
-            throw new NotImplementedException(); 
+            CheckSelf(self);
+            
+            var m_requestContextHandler = GetDefaultRequestContextHandler();
+            return m_requestContextHandler != null ? m_requestContextHandler.ToNative() : null;
         }
+        
+        /// <summary>
+        /// Return the default handler for use with a new user or incognito profile (CefRequestContext object).
+        /// If null is returned the CefRequestContext will be unmanaged (no callbacks will be executed for that
+        /// CefRequestContext). This method is currently only used with Chrome style when creating new browser
+        /// windows via Chrome UI.
+        /// </summary>
+        protected virtual CefRequestContextHandler GetDefaultRequestContextHandler() => null;
     }
 }
