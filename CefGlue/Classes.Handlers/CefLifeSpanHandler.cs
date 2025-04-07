@@ -54,13 +54,15 @@
 
         /// <summary>
         /// Called on the UI thread before a new popup browser is created. The
-        /// |browser| and |frame| values represent the source of the popup request.
-        /// The |target_url| and |target_frame_name| values indicate where the popup
-        /// browser should navigate and may be empty if not specified with the
-        /// request. The |target_disposition| value indicates where the user intended
-        /// to open the popup (e.g. current tab, new tab, etc). The |user_gesture|
-        /// value will be true if the popup was opened via explicit user gesture (e.g.
-        /// clicking a link) or false if the popup opened automatically (e.g. via the
+        /// |browser| and |frame| values represent the source of the popup request
+        /// (opener browser and frame). The |popup_id| value uniquely identifies the
+        /// popup in the context of the opener browser. The |target_url| and
+        /// |target_frame_name| values indicate where the popup browser should
+        /// navigate and may be empty if not specified with the request. The
+        /// |target_disposition| value indicates where the user intended to open the
+        /// popup (e.g. current tab, new tab, etc). The |user_gesture| value will be
+        /// true if the popup was opened via explicit user gesture (e.g. clicking a
+        /// link) or false if the popup opened automatically (e.g. via the
         /// DomContentLoaded event). The |popupFeatures| structure contains additional
         /// information about the requested popup window. To allow creation of the
         /// popup browser optionally modify |windowInfo|, |client|, |settings| and
@@ -70,12 +72,16 @@
         /// false the new browser will not be scriptable and may not be hosted in the
         /// same renderer process as the source browser. Any modifications to
         /// |windowInfo| will be ignored if the parent browser is wrapped in a
-        /// CefBrowserView. Popup browser creation will be canceled if the parent
-        /// browser is destroyed before the popup browser creation completes
-        /// (indicated by a call to OnAfterCreated for the popup browser). The
-        /// |extra_info| parameter provides an opportunity to specify extra
-        /// information specific to the created popup browser that will be passed to
-        /// CefRenderProcessHandler::OnBrowserCreated() in the render process.
+        /// CefBrowserView. The |extra_info| parameter provides an opportunity to
+        /// specify extra information specific to the created popup browser that will
+        /// be passed to CefRenderProcessHandler::OnBrowserCreated() in the render
+        /// process.
+        ///
+        /// If popup browser creation succeeds then OnAfterCreated will be called for
+        /// the new popup browser. If popup browser creation fails, and if the opener
+        /// browser has not yet been destroyed, then OnBeforePopupAborted will be
+        /// called for the opener browser. See OnBeforePopupAborted documentation for
+        /// additional details.
         /// </summary>
         protected virtual bool OnBeforePopup(CefBrowser browser, CefFrame frame, int popupId, string targetUrl, string targetFrameName, CefWindowOpenDisposition targetDisposition, bool userGesture, CefPopupFeatures popupFeatures, CefWindowInfo windowInfo, ref CefClient client, CefBrowserSettings settings, ref CefDictionaryValue extraInfo, ref bool noJavascriptAccess)
         {

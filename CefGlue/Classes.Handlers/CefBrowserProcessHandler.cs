@@ -170,10 +170,11 @@
         }
         
         /// <summary>
-        /// Return the default handler for use with a new user or incognito profile (CefRequestContext object).
-        /// If null is returned the CefRequestContext will be unmanaged (no callbacks will be executed for that
-        /// CefRequestContext). This method is currently only used with Chrome style when creating new browser
-        /// windows via Chrome UI.
+        /// Return the default handler for use with a new user or incognito profile
+        /// (CefRequestContext object). If null is returned the CefRequestContext will
+        /// be unmanaged (no callbacks will be executed for that CefRequestContext).
+        /// This method is currently only used with Chrome style when creating new
+        /// browser windows via Chrome UI.
         /// </summary>
         protected virtual CefRequestContextHandler GetDefaultRequestContextHandler() => null;
     }
