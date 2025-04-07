@@ -11,7 +11,7 @@ namespace Xilium.CefGlue
     using Xilium.CefGlue.Interop;
     
     // Role: PROXY
-    public unsafe partial class CefUnresponsiveProcessCallback : IDisposable
+    public sealed unsafe partial class CefUnresponsiveProcessCallback : IDisposable
     {
         internal static CefUnresponsiveProcessCallback FromNative(cef_unresponsive_process_callback_t* ptr)
         {
@@ -24,10 +24,10 @@ namespace Xilium.CefGlue
             return new CefUnresponsiveProcessCallback(ptr);
         }
         
-        private protected cef_unresponsive_process_callback_t* _self;
-        private protected int _disposed = 0;
+        private cef_unresponsive_process_callback_t* _self;
+        private int _disposed = 0;
         
-        private protected CefUnresponsiveProcessCallback(cef_unresponsive_process_callback_t* ptr)
+        private CefUnresponsiveProcessCallback(cef_unresponsive_process_callback_t* ptr)
         {
             if (ptr == null) throw new ArgumentNullException("ptr");
             _self = ptr;

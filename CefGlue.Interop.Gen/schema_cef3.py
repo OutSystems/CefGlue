@@ -187,10 +187,9 @@ classdef = {
     'CefPreferenceManager': { 'role': ROLE_PROXY, 'abstract': True },
 
     # 134
-    'CefPreferenceObserver': { 'role': ROLE_PROXY, 'abstract': True },
-    'CefSettingObserver': { 'role': ROLE_PROXY, 'abstract': True },
+    'CefPreferenceObserver': { 'role': ROLE_HANDLER },
+    'CefSettingObserver': { 'role': ROLE_HANDLER },
 
-    'CefTaskManager': { 'role': ROLE_PROXY, 'abstract': True },
-    'CefUnresponsiveProcessCallback': { 'role': ROLE_PROXY, 'abstract': True },
-
-    }
+    'CefTaskManager': { 'role': ROLE_PROXY },
+    'CefUnresponsiveProcessCallback': { 'role': ROLE_PROXY },
+}

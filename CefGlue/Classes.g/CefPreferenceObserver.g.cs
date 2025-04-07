@@ -10,74 +10,99 @@ namespace Xilium.CefGlue
     using System.Threading;
     using Xilium.CefGlue.Interop;
     
-    // Role: PROXY
-    public unsafe partial class CefPreferenceObserver : IDisposable
+    // Role: HANDLER
+    public abstract unsafe partial class CefPreferenceObserver
     {
-        internal static CefPreferenceObserver FromNative(cef_preference_observer_t* ptr)
-        {
-            return new CefPreferenceObserver(ptr);
-        }
+        private static Dictionary<IntPtr, CefPreferenceObserver> _roots = new Dictionary<IntPtr, CefPreferenceObserver>();
         
-        internal static CefPreferenceObserver FromNativeOrNull(cef_preference_observer_t* ptr)
-        {
-            if (ptr == null) return null;
-            return new CefPreferenceObserver(ptr);
-        }
+        private int _refct;
+        private cef_preference_observer_t* _self;
         
-        private protected cef_preference_observer_t* _self;
-        private protected int _disposed = 0;
+        protected object SyncRoot { get { return this; } }
         
-        private protected CefPreferenceObserver(cef_preference_observer_t* ptr)
+        private cef_preference_observer_t.add_ref_delegate _ds0;
+        private cef_preference_observer_t.release_delegate _ds1;
+        private cef_preference_observer_t.has_one_ref_delegate _ds2;
+        private cef_preference_observer_t.has_at_least_one_ref_delegate _ds3;
+        private cef_preference_observer_t.on_preference_changed_delegate _ds4;
+        
+        protected CefPreferenceObserver()
         {
-            if (ptr == null) throw new ArgumentNullException("ptr");
-            _self = ptr;
-            CefObjectTracker.Track(this);
+            _self = cef_preference_observer_t.Alloc();
+        
+            _ds0 = new cef_preference_observer_t.add_ref_delegate(add_ref);
+            _self->_base._add_ref = Marshal.GetFunctionPointerForDelegate(_ds0);
+            _ds1 = new cef_preference_observer_t.release_delegate(release);
+            _self->_base._release = Marshal.GetFunctionPointerForDelegate(_ds1);
+            _ds2 = new cef_preference_observer_t.has_one_ref_delegate(has_one_ref);
+            _self->_base._has_one_ref = Marshal.GetFunctionPointerForDelegate(_ds2);
+            _ds3 = new cef_preference_observer_t.has_at_least_one_ref_delegate(has_at_least_one_ref);
+            _self->_base._has_at_least_one_ref = Marshal.GetFunctionPointerForDelegate(_ds3);
+            _ds4 = new cef_preference_observer_t.on_preference_changed_delegate(on_preference_changed);
+            _self->_on_preference_changed = Marshal.GetFunctionPointerForDelegate(_ds4);
         }
         
         ~CefPreferenceObserver()
         {
-            if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
+            Dispose(false);
+        }
+        
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_self != null)
             {
-                Release();
+                cef_preference_observer_t.Free(_self);
                 _self = null;
             }
         }
         
-        public void Dispose()
+        private void add_ref(cef_preference_observer_t* self)
         {
-            if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
+            lock (SyncRoot)
             {
-                Release();
-                _self = null;
+                var result = ++_refct;
+                if (result == 1)
+                {
+                    lock (_roots) { _roots.Add((IntPtr)_self, this); }
+                }
             }
-            CefObjectTracker.Untrack(this);
-            GC.SuppressFinalize(this);
         }
         
-        internal void AddRef()
+        private int release(cef_preference_observer_t* self)
         {
-            cef_preference_observer_t.add_ref(_self);
+            lock (SyncRoot)
+            {
+                var result = --_refct;
+                if (result == 0)
+                {
+                    lock (_roots) { _roots.Remove((IntPtr)_self); }
+                    return 1;
+                }
+                return 0;
+            }
         }
         
-        internal bool Release()
+        private int has_one_ref(cef_preference_observer_t* self)
         {
-            return cef_preference_observer_t.release(_self) != 0;
+            lock (SyncRoot) { return _refct == 1 ? 1 : 0; }
         }
         
-        internal bool HasOneRef
+        private int has_at_least_one_ref(cef_preference_observer_t* self)
         {
-            get { return cef_preference_observer_t.has_one_ref(_self) != 0; }
-        }
-        
-        internal bool HasAtLeastOneRef
-        {
-            get { return cef_preference_observer_t.has_at_least_one_ref(_self) != 0; }
+            lock (SyncRoot) { return _refct != 0 ? 1 : 0; }
         }
         
         internal cef_preference_observer_t* ToNative()
         {
-            AddRef();
+            add_ref(_self);
             return _self;
         }
+        
+        [Conditional("DEBUG")]
+        private void CheckSelf(cef_preference_observer_t* self)
+        {
+            if (_self != self) throw ExceptionBuilder.InvalidSelfReference();
+        }
+        
     }
 }

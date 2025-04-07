@@ -11,7 +11,7 @@ namespace Xilium.CefGlue
     using Xilium.CefGlue.Interop;
     
     // Role: PROXY
-    public unsafe partial class CefTaskManager : IDisposable
+    public sealed unsafe partial class CefTaskManager : IDisposable
     {
         internal static CefTaskManager FromNative(cef_task_manager_t* ptr)
         {
@@ -24,10 +24,10 @@ namespace Xilium.CefGlue
             return new CefTaskManager(ptr);
         }
         
-        private protected cef_task_manager_t* _self;
-        private protected int _disposed = 0;
+        private cef_task_manager_t* _self;
+        private int _disposed = 0;
         
-        private protected CefTaskManager(cef_task_manager_t* ptr)
+        private CefTaskManager(cef_task_manager_t* ptr)
         {
             if (ptr == null) throw new ArgumentNullException("ptr");
             _self = ptr;
