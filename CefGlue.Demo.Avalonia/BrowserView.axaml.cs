@@ -142,6 +142,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             protected override bool OnBeforePopup(
                 CefBrowser browser,
                 CefFrame frame,
+                int popupId,
                 string targetUrl,
                 string targetFrameName,
                 CefWindowOpenDisposition targetDisposition,
