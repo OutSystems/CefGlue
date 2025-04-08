@@ -36,7 +36,7 @@
 
         internal cef_composition_underline_t ToNative()
         {
-            cef_composition_underline_t result;
+            cef_composition_underline_t result = default;
             result.range = new cef_range_t(Range.From, Range.To);
             result.color = Color.ToArgb();
             result.background_color = BackgroundColor.ToArgb();
