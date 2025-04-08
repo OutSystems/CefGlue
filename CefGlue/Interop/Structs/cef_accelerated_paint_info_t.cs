@@ -9,6 +9,8 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_accelerated_paint_info_t
     {
+        public IntPtr size;
+
         ///
         /// Handle for the shared texture IOSurface.
         ///
