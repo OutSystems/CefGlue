@@ -12,31 +12,31 @@ namespace Xilium.CefGlue
     /// </summary>
     public enum CefTaskType
     {
-        UNKNOWN,
+        Unknown,
         /// The main browser process.
-        BROWSER,
+        Browser,
         /// A graphics process.
-        GPU,
+        Gpu,
         /// A Linux zygote process.
-        ZYGOTE,
+        Zygote,
         /// A browser utility process.
-        UTILITY,
+        Utility,
         /// A normal WebContents renderer process.
-        RENDERER,
+        Renderer,
         /// An extension or app process.
-        EXTENSION,
+        Extension,
         /// A browser plugin guest process.
-        GUEST,
+        Guest,
         /// A plugin process.
-        PLUGIN,
+        Plugin,
         /// A sandbox helper process
-        SANDBOX_HELPER,
+        SandboxHelper,
         /// A dedicated worker running on the renderer process.
-        DEDICATED_WORKER,
+        DedicatedWorker,
         /// A shared worker running on the renderer process.
-        SHARED_WORKER,
+        SharedWorker,
         /// A service worker running on the renderer process.
-        SERVICE_WORKER,
-        NUM_VALUES,
+        ServiceWorker,
+        NumValues,
     }
 }

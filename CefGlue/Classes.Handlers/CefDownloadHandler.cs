@@ -29,8 +29,7 @@
         /// and |request_method| is the target method (GET, POST, etc). Return true to
         /// proceed with the download or false to cancel the download.
         /// </summary>
-        protected virtual bool CanDownload(CefBrowser browser, string url, string requestMethod)
-            => true;
+        protected virtual bool CanDownload(CefBrowser browser, string url, string requestMethod) => true;
 
 
         private int on_before_download(cef_download_handler_t* self, cef_browser_t* browser, cef_download_item_t* download_item, cef_string_t* suggested_name, cef_before_download_callback_t* callback)

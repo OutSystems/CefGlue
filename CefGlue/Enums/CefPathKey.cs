@@ -57,5 +57,7 @@ namespace Xilium.CefGlue
         /// CefSettings.resources_dir_path.
         /// </summary>
         Resources,
+        
+        NumValues,
     }
 }

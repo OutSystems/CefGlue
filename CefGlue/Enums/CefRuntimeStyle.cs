@@ -30,8 +30,8 @@ namespace Xilium.CefGlue
     /// </summary>
     public enum CefRuntimeStyle
     {
-        DEFAULT,
-        CHROME,
-        ALLOY,
+        Default,
+        Chrome,
+        Alloy,
     }
 }

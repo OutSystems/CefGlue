@@ -26,7 +26,6 @@
             var mCallback = CefFileDialogCallback.FromNative(callback);
 
             var result = OnFileDialog(mBrowser, mode, mTitle, mDefaultFilePath, mAcceptFilters, mAcceptExtensions, mAcceptDescriptions, mCallback);
-
             return result ? 1 : 0;
         }
 
@@ -50,7 +49,7 @@
         /// return false. If this method returns false it may be called an additional
         /// time for the same dialog (both before and after MIME type expansion).
         /// </summary>
-        protected virtual bool OnFileDialog(CefBrowser browser, CefFileDialogMode mode, string title, string defaultFilePath, string[] acceptFilters, string[] accept_extensions, string[] accept_descriptions, CefFileDialogCallback callback)
+        protected virtual bool OnFileDialog(CefBrowser browser, CefFileDialogMode mode, string title, string defaultFilePath, string[] acceptFilters, string[] acceptExtensions, string[] acceptDescriptions, CefFileDialogCallback callback)
             => false;
     }
 }

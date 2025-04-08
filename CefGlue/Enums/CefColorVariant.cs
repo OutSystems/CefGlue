@@ -12,13 +12,13 @@ namespace Xilium.CefGlue
     /// </summary>
     public enum CefColorVariant
     {
-        SYSTEM,
-        LIGHT,
-        DARK,
-        TONAL_SPOT,
-        NEUTRAL,
-        VIBRANT,
-        EXPRESSIVE,
-        NUM_VALUES,
+        System,
+        Light,
+        Dark,
+        TonalSpot,
+        Neutral,
+        Vibrant,
+        Expressive,
+        NumValues,
     }
 }
