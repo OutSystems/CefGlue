@@ -61,12 +61,12 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Front L, Front R, Front C, Back L, Back R
         /// </summary>
-        Layout_5_0Back,
+        Layout_5_0_Back,
 
         /// <summary>
         /// Front L, Front R, Front C, LFE, Back L, Back R
         /// </summary>
-        Layout_5_1Back,
+        Layout_5_1_Back,
 
         /// <summary>
         /// Front L, Front R, Front C, Back L, Back R, Side L, Side R
@@ -81,7 +81,7 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Front L, Front R, Front C, LFE, Front LofC, Front RofC, Side L, Side R
         /// </summary>
-        Layout_7_1Wide,
+        Layout_7_1_Wide,
 
         /// <summary>
         /// Front L, Front R
@@ -111,7 +111,7 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Front L, Front R, Front LofC, Front RofC, Side L, Side R
         /// </summary>
-        Layout_6_0Front,
+        Layout_6_0_Front,
 
         /// <summary>
         /// Front L, Front R, Front C, Back L, Back R, Back C
@@ -126,22 +126,22 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Front L, Front R, Front C, LFE, Back L, Back R, Back C
         /// </summary>
-        Layout_6_1Back,
+        Layout_6_1_Back,
 
         /// <summary>
         /// Front L, Front R, LFE, Front LofC, Front RofC, Side L, Side R
         /// </summary>
-        Layout_6_1Front,
+        Layout_6_1_Front,
 
         /// <summary>
         /// Front L, Front R, Front C, Front LofC, Front RofC, Side L, Side R
         /// </summary>
-        Layout_7_0Front,
+        Layout_7_0_Front,
 
         /// <summary>
         /// Front L, Front R, Front C, LFE, Back L, Back R, Front LofC, Front RofC
         /// </summary>
-        Layout_7_1WideBack,
+        Layout_7_1_WideBack,
 
         /// <summary>
         /// Front L, Front R, Front C, Back L, Back R, Back C, Side L, Side R
@@ -165,7 +165,7 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Front L, Front R, LFE, Side L, Side R
         /// </summary>
-        Layout_4_1QuadSide,
+        Layout_4_1_QuadSide,
 
         /// <summary>
         /// Actual channel layout is specified in the bitstream and the actual channel
@@ -180,7 +180,7 @@ namespace Xilium.CefGlue
         /// Will be represented as six channels (5.1) due to eight channel limit
         /// kMaxConcurrentChannels
         /// </summary>
-        Layout_5_1_4Downmix,
+        Layout_5_1_4_Downmix,
 
         /// <summary>
         /// Front C, LFE
@@ -190,7 +190,7 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Front L, Front R, LFE, Back C
         /// </summary>
-        Layout_3_1Back,
+        Layout_3_1_Back,
 
         NumValues
     }
