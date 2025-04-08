@@ -128,7 +128,7 @@
             string actual;
             try
             {
-                var n_actual = libcef.api_hash(0);
+                var n_actual = libcef.api_hash(libcef.CEF_API_VERSION, 0);
                 actual = n_actual != null ? new string(n_actual) : null;
             }
             catch (EntryPointNotFoundException ex)

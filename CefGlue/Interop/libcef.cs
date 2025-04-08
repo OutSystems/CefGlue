@@ -29,7 +29,7 @@
         public static extern int version_info(int entry);
 
         [DllImport(libcef.DllName, EntryPoint = "cef_api_hash", CallingConvention = libcef.CEF_CALL)]
-        public static extern sbyte* api_hash(int entry);
+        public static extern sbyte* api_hash(int version, int entry);
 
         #endregion
     }

@@ -19,6 +19,7 @@ namespace Xilium.CefGlue.Interop
         public const int CHROME_VERSION_BUILD = 6998;
         public const int CHROME_VERSION_PATCH = 178;
         
+        public const int CEF_API_VERSION = 13401;
         public const string CEF_API_HASH_PLATFORM_WIN = "751255204f006b8b883a8baf552a2da792f8aa44";
         public const string CEF_API_HASH_PLATFORM_MACOS = "b54732b528bc2669481ec0cf17c7b97b033720b9";
         public const string CEF_API_HASH_PLATFORM_LINUX = "b14bee2c0fd250da67faea421f620b58e5dea9a2";

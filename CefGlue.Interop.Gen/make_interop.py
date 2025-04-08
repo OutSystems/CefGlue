@@ -818,10 +818,11 @@ def make_version_cs(content, api_hash_content, api_versions_content):
     result.append('public const int CHROME_VERSION_PATCH = %s;' % __get_version_constant(content, "CHROME_VERSION_PATCH"))
     result.append("");
 
-    os_hashes = get_cef_api_hash(api_versions_content)
-    result.append('public const string CEF_API_HASH_PLATFORM_WIN = "%s";' % os_hashes["OS_WIN"])
-    result.append('public const string CEF_API_HASH_PLATFORM_MACOS = "%s";' % os_hashes["OS_MAC"])
-    result.append('public const string CEF_API_HASH_PLATFORM_LINUX = "%s";' % os_hashes["OS_LINUX"])
+    api_details = get_cef_api_details(api_versions_content)
+    result.append('public const int CEF_API_VERSION = %s;' % api_details["API_VERSION"])
+    result.append('public const string CEF_API_HASH_PLATFORM_WIN = "%s";' % api_details["OS_WIN"])
+    result.append('public const string CEF_API_HASH_PLATFORM_MACOS = "%s";' % api_details["OS_MAC"])
+    result.append('public const string CEF_API_HASH_PLATFORM_LINUX = "%s";' % api_details["OS_LINUX"])
 
     body = []
     body.append('using System;')
@@ -844,7 +845,7 @@ def make_version_cs(content, api_hash_content, api_versions_content):
         'body': indent + ('\n'+indent).join(body)
       }
 
-def get_cef_api_hash(content):
+def get_cef_api_details(content):
     lines = content.splitlines()
     
     # Find the last API version
@@ -856,7 +857,7 @@ def get_cef_api_hash(content):
     last_version_number = last_version.split('_')[-1]
     
     # Extract OS-specific hashes
-    os_hashes = {}
+    details = { "API_VERSION": last_version_number }
     current_os = None
     
     # Iterate through lines and capture hashes for each OS
@@ -874,10 +875,10 @@ def get_cef_api_hash(content):
         # Capture hash value for the detected OS
         match = re.match(rf"#define\s+CEF_API_HASH_{last_version_number}\s+\"(\w+)\"", line)
         if match and current_os:
-            os_hashes[current_os] = match.group(1)
+            details[current_os] = match.group(1)
             current_os = None  # Reset for the next block
     
-    return os_hashes
+    return details
 
 def __get_version_constant(content, name, platform = None):
     if platform is None:
