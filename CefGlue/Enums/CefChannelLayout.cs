@@ -192,6 +192,6 @@ namespace Xilium.CefGlue
         /// </summary>
         Layout_3_1_Back,
 
-        NumValues
+        NumValues,
     }
 }
