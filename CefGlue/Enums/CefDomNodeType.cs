@@ -11,7 +11,7 @@ namespace Xilium.CefGlue
     /// </summary>
     public enum CefDomNodeType
     {
-       Unsupported = 0,
+       Unsupported,
        Element,
        Attribute,
        Text,
@@ -21,5 +21,6 @@ namespace Xilium.CefGlue
        Document,
        DocumentType,
        DocumentFragment,
+       NumValues,
     }
 }

@@ -12,5 +12,7 @@ namespace Xilium.CefGlue
         Alert = 0,
         Confirm,
         Prompt,
+        
+        NumValues,
    }
 }

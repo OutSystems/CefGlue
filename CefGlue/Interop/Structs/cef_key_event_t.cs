@@ -6,6 +6,7 @@
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_key_event_t
     {
+        public IntPtr size;
         public CefKeyEventType type;
         public CefEventFlags modifiers;
         public int windows_key_code;

@@ -9,6 +9,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_popup_features_t
     {
+        public IntPtr size;
         public int x;
         public int xSet;
         public int y;

@@ -21,8 +21,7 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Default policy (same as CLEAR_REFERRER_ON_TRANSITION_FROM_SECURE_TO_INSECURE).
         /// </summary>
-        Default =
-            ClearReferrerOnTransitionFromSecureToInsecure,
+        Default = ClearReferrerOnTransitionFromSecureToInsecure,
 
         /// <summary>
         /// A slight variant on CLEAR_REFERRER_ON_TRANSITION_FROM_SECURE_TO_INSECURE:
@@ -67,6 +66,6 @@ namespace Xilium.CefGlue
         NoReferrer,
 
         // Always the last value in this enumeration.
-        LastValue = NoReferrer,
+        NumValues,
     }
 }

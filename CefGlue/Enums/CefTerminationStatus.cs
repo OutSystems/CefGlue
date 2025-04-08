@@ -39,7 +39,6 @@ namespace Xilium.CefGlue
         /// On Windows, the OS terminated the process due to code integrity failure.
         /// </summary>
         IntegrityFailure,
-
         NumValues
     }
 }

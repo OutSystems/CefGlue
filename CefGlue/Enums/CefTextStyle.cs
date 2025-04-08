@@ -16,5 +16,6 @@ namespace Xilium.CefGlue
         Strike,
         DiagonalStrike,
         Underline,
+        NumValues,
     }
 }

@@ -61,6 +61,14 @@
         {
             cef_frame_t.paste(_self);
         }
+        
+        /// <summary>
+        /// Execute paste and match style in this frame.
+        /// </summary>
+        public void PasteAndMatchStyle()
+        {
+            cef_frame_t.paste_and_match_style(_self);
+        }
 
         /// <summary>
         /// Execute delete in this frame.

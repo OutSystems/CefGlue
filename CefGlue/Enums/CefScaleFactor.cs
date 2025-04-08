@@ -11,7 +11,7 @@ namespace Xilium.CefGlue
     /// </summary>
     public enum CefScaleFactor : int
     {
-        None = 0,
+        None,
         P100,
         P125,
         P133,
@@ -21,5 +21,6 @@ namespace Xilium.CefGlue
         P200,
         P250,
         P300,
+        NumValues,
     }
 }
