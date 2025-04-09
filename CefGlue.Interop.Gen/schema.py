@@ -117,7 +117,6 @@ c2cs_enumtypes = {
     'cef_handler_statustype_t': 'CefStatusMessageType',
     'cef_storage_type_t': 'CefStorageType',
     'cef_thread_id_t': 'CefThreadId',
-    'cef_v8_accesscontrol_t': 'CefV8AccessControl',
     'cef_v8_propertyattribute_t': 'CefV8PropertyAttribute',
     'cef_value_type_t': 'CefValueType',
     'cef_xml_encoding_type_t': 'CefXmlEncoding',
