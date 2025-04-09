@@ -1,5 +1,5 @@
 ﻿//
-// This file manually written from cef/include/internal/cef_types.h.
+// This file manually written from cef/include/internal/cef_types_runtime.h.
 // C API name: cef_runtime_style_t.
 //
 namespace Xilium.CefGlue

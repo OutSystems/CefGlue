@@ -157,7 +157,7 @@
                 releaseCallback.ToNative()
                 );
 
-            return CefV8Value.FromNative(n_value);
+            return FromNative(n_value);
         }
 
         ///
@@ -171,8 +171,8 @@
         /*--cef(optional_param=buffer)--*/
         public static CefV8Value CreateArrayBufferWithCopy(IntPtr buffer, ulong length)
         {
-            // TODO hgo
-            throw new NotImplementedException();
+            var n_value = cef_v8value_t.create_array_buffer_with_copy((void*)buffer, checked((UIntPtr)length));
+            return FromNative(n_value);
         }
 
         /// <summary>
