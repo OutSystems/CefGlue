@@ -56,6 +56,7 @@ namespace Xilium.CefGlue.Interop
         #endregion
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_window_info_t_linux
     {
         public IntPtr size;
@@ -96,6 +97,7 @@ namespace Xilium.CefGlue.Interop
         #endregion
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_window_info_t_mac
     {
         public IntPtr size;
