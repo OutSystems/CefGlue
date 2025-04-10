@@ -14,7 +14,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_window_info_t_windows
     {
-        // Standard parameters required by CreateWindowEx()
+        public IntPtr size;
         public uint ex_style;
         public cef_string_t window_name;
         public uint style;
@@ -25,6 +25,7 @@ namespace Xilium.CefGlue.Interop
         public int shared_texture_enabled;
         public int external_begin_frame_enabled;
         public IntPtr window;
+        public CefRuntimeStyle runtime_style;
 
         #region Alloc & Free
         private static int _sizeof;
