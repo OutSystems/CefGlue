@@ -54,6 +54,7 @@ namespace Xilium.CefGlue.Interop
 
     internal unsafe struct cef_window_info_t_linux
     {
+        public IntPtr size;
         public cef_string_t window_name;
         public cef_rect_t bounds;
         public IntPtr parent_window;
@@ -90,6 +91,7 @@ namespace Xilium.CefGlue.Interop
 
     internal unsafe struct cef_window_info_t_mac
     {
+        public IntPtr size;
         public cef_string_t window_name;
         public cef_rect_t bounds;
         public int hidden;
@@ -98,6 +100,7 @@ namespace Xilium.CefGlue.Interop
         public int shared_texture_enabled;
         public int external_begin_frame_enabled;
         public IntPtr view;
+        public CefRuntimeStyle runtime_style;
 
         #region Alloc & Free
         private static int _sizeof;
