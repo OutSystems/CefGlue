@@ -2,6 +2,7 @@
 // This file manually written from:
 //     cef/include/internal/cef_types_win.h.
 //
+
 namespace Xilium.CefGlue.Interop
 {
     using System;
@@ -28,6 +29,7 @@ namespace Xilium.CefGlue.Interop
         public CefRuntimeStyle runtime_style;
 
         #region Alloc & Free
+
         private static int _sizeof;
 
         static cef_window_info_t_windows()
@@ -50,6 +52,7 @@ namespace Xilium.CefGlue.Interop
                 Marshal.FreeHGlobal((IntPtr)ptr);
             }
         }
+
         #endregion
     }
 
@@ -63,8 +66,10 @@ namespace Xilium.CefGlue.Interop
         public int shared_texture_enabled;
         public int external_begin_frame_enabled;
         public IntPtr window;
+        public CefRuntimeStyle runtime_style;
 
         #region Alloc & Free
+
         private static int _sizeof;
 
         static cef_window_info_t_linux()
@@ -87,6 +92,7 @@ namespace Xilium.CefGlue.Interop
                 Marshal.FreeHGlobal((IntPtr)ptr);
             }
         }
+
         #endregion
     }
 
@@ -104,6 +110,7 @@ namespace Xilium.CefGlue.Interop
         public CefRuntimeStyle runtime_style;
 
         #region Alloc & Free
+
         private static int _sizeof;
 
         static cef_window_info_t_mac()
@@ -126,7 +133,7 @@ namespace Xilium.CefGlue.Interop
                 Marshal.FreeHGlobal((IntPtr)ptr);
             }
         }
+
         #endregion
     }
-
 }
