@@ -236,8 +236,7 @@
                 rect++;
             }
             
-            var m_Info = new CefAcceleratedPaintInfo(info);
-            
+            var m_Info = CefAcceleratedPaintInfo.FromNative(info);
             OnAcceleratedPaint(m_browser, type, m_dirtyRects, m_Info);
         }
 

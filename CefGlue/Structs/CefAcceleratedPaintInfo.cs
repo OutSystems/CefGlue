@@ -5,7 +5,7 @@ namespace Xilium.CefGlue;
 using System;
 using Xilium.CefGlue.Interop;
 
-internal abstract unsafe class CefAcceleratedPaintInfo
+public abstract unsafe class CefAcceleratedPaintInfo
 {
     private bool _disposed;
 
