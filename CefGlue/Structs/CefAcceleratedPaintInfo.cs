@@ -16,7 +16,7 @@ internal abstract unsafe class CefAcceleratedPaintInfo
             CefRuntimePlatform.Windows => new CefAcceleratedPaintInfoWindowsImpl(ptr),
             CefRuntimePlatform.Linux   => new CefAcceleratedPaintInfoLinuxImpl(ptr),
             CefRuntimePlatform.MacOS   => new CefAcceleratedPaintInfoMacImpl(ptr),
-            _                          => throw new NotSupportedException()
+            _                          => throw new NotSupportedException(),
         };
     }
 
