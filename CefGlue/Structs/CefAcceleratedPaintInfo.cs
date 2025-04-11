@@ -1,18 +1,40 @@
-﻿namespace Xilium.CefGlue
+﻿using Xilium.CefGlue.Platform;
+
+namespace Xilium.CefGlue;
+
+using System;
+using Xilium.CefGlue.Interop;
+
+internal abstract unsafe class CefAcceleratedPaintInfo
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    using Xilium.CefGlue.Interop;
+    private bool _disposed;
 
-    public struct CefAcceleratedPaintInfo
+    internal static CefAcceleratedPaintInfo FromNative(cef_accelerated_paint_info_t* ptr)
     {
-        internal unsafe CefAcceleratedPaintInfo(cef_accelerated_paint_info_t* info)
+        return CefRuntime.Platform switch
         {
-            // TODO hgo: Finish structure
-            Extra = new CefAcceleratedPaintInfoCommon(info->extra);
-        }
+            CefRuntimePlatform.Windows => new CefAcceleratedPaintInfoWindowsImpl(ptr),
+            CefRuntimePlatform.Linux   => new CefAcceleratedPaintInfoLinuxImpl(ptr),
+            CefRuntimePlatform.MacOS   => new CefAcceleratedPaintInfoMacImpl(ptr),
+            _                          => throw new NotSupportedException()
+        };
+    }
 
-        public CefAcceleratedPaintInfoCommon Extra;
+    ~CefAcceleratedPaintInfo()
+    {
+        _disposed = true;
+    }
+
+    public abstract IntPtr SharedTexture { get; }
+    public abstract CefColorType Format { get; }
+    public abstract CefAcceleratedPaintInfoCommon Extra { get; }
+
+    public abstract ulong Modifier { get; }
+    public abstract int PlaneCount { get; }
+    public abstract CefAcceleratedPaintNativePixmapPlane[] Planes { get; }
+
+    protected void ThrowIfDisposed()
+    {
+        if (_disposed) throw ExceptionBuilder.ObjectDisposed();
     }
 }
