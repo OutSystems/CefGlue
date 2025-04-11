@@ -9,7 +9,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_task_info_t
     {
-        public IntPtr size;
+        public UIntPtr size;
         public ulong id;
         public CefTaskType type;
         public int is_killable;

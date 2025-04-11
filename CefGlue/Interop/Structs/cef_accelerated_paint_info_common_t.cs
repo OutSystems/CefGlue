@@ -9,7 +9,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_accelerated_paint_info_common_t
     {
-        public IntPtr size;
+        public UIntPtr size;
         
         ///
         /// Timestamp of the frame in microseconds since capture start.

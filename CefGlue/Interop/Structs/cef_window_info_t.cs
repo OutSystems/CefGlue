@@ -15,7 +15,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_window_info_t_windows
     {
-        public IntPtr size;
+        public UIntPtr size;
         public uint ex_style;
         public cef_string_t window_name;
         public uint style;
@@ -59,7 +59,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_window_info_t_linux
     {
-        public IntPtr size;
+        public UIntPtr size;
         public cef_string_t window_name;
         public cef_rect_t bounds;
         public IntPtr parent_window;
@@ -100,7 +100,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_window_info_t_mac
     {
-        public IntPtr size;
+        public UIntPtr size;
         public cef_string_t window_name;
         public cef_rect_t bounds;
         public int hidden;

@@ -9,7 +9,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_media_sink_device_info_t
     {
-        public IntPtr size;
+        public UIntPtr size;
         public cef_string_t ip_address;
         public int port;
         public cef_string_t model_name;

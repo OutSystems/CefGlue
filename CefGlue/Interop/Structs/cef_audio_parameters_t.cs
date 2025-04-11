@@ -9,7 +9,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_audio_parameters_t
     {
-        public IntPtr size;
+        public UIntPtr size;
         public CefChannelLayout channel_layout;
         public int sample_rate;
         public int frames_per_buffer;

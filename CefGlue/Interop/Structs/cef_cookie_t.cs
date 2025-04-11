@@ -9,7 +9,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_cookie_t
     {
-        public IntPtr size;
+        public UIntPtr size;
         public cef_string_t name;
         public cef_string_t value;
         public cef_string_t domain;

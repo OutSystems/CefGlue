@@ -16,7 +16,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_accelerated_paint_info_t_mac
     {
-        public IntPtr size;
+        public UIntPtr size;
         public IntPtr shared_texture_io_surface;
         public CefColorType format;
         public cef_accelerated_paint_info_common_t extra;
@@ -25,7 +25,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_accelerated_paint_info_t_windows
     {
-        public IntPtr size;
+        public UIntPtr size;
         public IntPtr shared_texture_handle;
         public CefColorType format;
         public cef_accelerated_paint_info_common_t extra;
@@ -34,7 +34,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_accelerated_paint_info_t_linux
     {
-        public IntPtr size;
+        public UIntPtr size;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public cef_accelerated_paint_native_pixmap_plane_t[] planes;
