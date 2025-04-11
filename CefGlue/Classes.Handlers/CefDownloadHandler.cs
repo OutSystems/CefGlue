@@ -29,11 +29,10 @@
         /// and |request_method| is the target method (GET, POST, etc). Return true to
         /// proceed with the download or false to cancel the download.
         /// </summary>
-        protected virtual bool CanDownload(CefBrowser browser, string url, string requestMethod)
-            => true;
+        protected virtual bool CanDownload(CefBrowser browser, string url, string requestMethod) => true;
 
 
-        private void on_before_download(cef_download_handler_t* self, cef_browser_t* browser, cef_download_item_t* download_item, cef_string_t* suggested_name, cef_before_download_callback_t* callback)
+        private int on_before_download(cef_download_handler_t* self, cef_browser_t* browser, cef_download_item_t* download_item, cef_string_t* suggested_name, cef_before_download_callback_t* callback)
         {
             CheckSelf(self);
 
@@ -43,19 +42,21 @@
                 var m_suggested_name = cef_string_t.ToString(suggested_name);
                 var m_callback = CefBeforeDownloadCallback.FromNative(callback);
 
-                OnBeforeDownload(m_browser, m_download_item, m_suggested_name, m_callback);
+                return OnBeforeDownload(m_browser, m_download_item, m_suggested_name, m_callback) ? 1 : 0;
             }
         }
 
         /// <summary>
         /// Called before a download begins. |suggested_name| is the suggested name
-        /// for the download file. By default the download will be canceled. Execute
-        /// |callback| either asynchronously or in this method to continue the
-        /// download if desired. Do not keep a reference to |download_item| outside of
-        /// this method.
+        /// for the download file. Return true and execute |callback| either
+        /// asynchronously or in this method to continue or cancel the download.
+        /// Return false to proceed with default handling (cancel with Alloy style,
+        /// download shelf with Chrome style). Do not keep a reference to
+        /// |download_item| outside of this method.
         /// </summary>
-        protected virtual void OnBeforeDownload(CefBrowser browser, CefDownloadItem downloadItem, string suggestedName, CefBeforeDownloadCallback callback)
+        protected virtual bool OnBeforeDownload(CefBrowser browser, CefDownloadItem downloadItem, string suggestedName, CefBeforeDownloadCallback callback)
         {
+            return false;
         }
 
 

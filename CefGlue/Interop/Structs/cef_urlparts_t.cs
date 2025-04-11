@@ -9,6 +9,7 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal unsafe struct cef_urlparts_t
     {
+        public UIntPtr size;
         public cef_string_t spec;
         public cef_string_t scheme;
         public cef_string_t username;

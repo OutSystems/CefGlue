@@ -14,7 +14,7 @@ namespace Xilium.CefGlue
         ButtonButton,
         ButtonSubmit,
         ButtonReset,
-        ButtonSelectList,
+        ButtonPopover,
         Fieldset,
         InputButton,
         InputCheckbox,
@@ -41,7 +41,7 @@ namespace Xilium.CefGlue
         Output,
         SelectOne,
         SelectMultiple,
-        SelectList,
         TextArea,
+        NumValues,
     }
 }

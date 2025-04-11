@@ -110,6 +110,10 @@ namespace Xilium.CefGlue.Interop
         [DllImport(libcef.DllName, EntryPoint = "cef_v8value_create_array_buffer", CallingConvention = libcef.CEF_CALL)]
         public static extern cef_v8value_t* create_array_buffer(void* buffer, UIntPtr length, cef_v8array_buffer_release_callback_t* release_callback);
         
+        // CreateArrayBufferWithCopy
+        [DllImport(libcef.DllName, EntryPoint = "cef_v8value_create_array_buffer_with_copy", CallingConvention = libcef.CEF_CALL)]
+        public static extern cef_v8value_t* create_array_buffer_with_copy(void* buffer, UIntPtr length);
+        
         // CreateFunction
         [DllImport(libcef.DllName, EntryPoint = "cef_v8value_create_function", CallingConvention = libcef.CEF_CALL)]
         public static extern cef_v8value_t* create_function(cef_string_t* name, cef_v8handler_t* handler);
@@ -356,7 +360,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate int set_value_byaccessor_delegate(cef_v8value_t* self, cef_string_t* key, CefV8AccessControl settings, CefV8PropertyAttribute attribute);
+        private delegate int set_value_byaccessor_delegate(cef_v8value_t* self, cef_string_t* key, CefV8PropertyAttribute attribute);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -1121,7 +1125,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p27;
         private static set_value_byaccessor_delegate _d27;
         
-        public static int set_value_byaccessor(cef_v8value_t* self, cef_string_t* key, CefV8AccessControl settings, CefV8PropertyAttribute attribute)
+        public static int set_value_byaccessor(cef_v8value_t* self, cef_string_t* key, CefV8PropertyAttribute attribute)
         {
             set_value_byaccessor_delegate d;
             var p = self->_set_value_byaccessor;
@@ -1131,7 +1135,7 @@ namespace Xilium.CefGlue.Interop
                 d = (set_value_byaccessor_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_value_byaccessor_delegate));
                 if (_p27 == IntPtr.Zero) { _d27 = d; _p27 = p; }
             }
-            return d(self, key, settings, attribute);
+            return d(self, key, attribute);
         }
         
         // GetKeys

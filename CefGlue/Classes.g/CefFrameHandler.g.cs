@@ -25,9 +25,10 @@ namespace Xilium.CefGlue
         private cef_frame_handler_t.has_one_ref_delegate _ds2;
         private cef_frame_handler_t.has_at_least_one_ref_delegate _ds3;
         private cef_frame_handler_t.on_frame_created_delegate _ds4;
-        private cef_frame_handler_t.on_frame_attached_delegate _ds5;
-        private cef_frame_handler_t.on_frame_detached_delegate _ds6;
-        private cef_frame_handler_t.on_main_frame_changed_delegate _ds7;
+        private cef_frame_handler_t.on_frame_destroyed_delegate _ds5;
+        private cef_frame_handler_t.on_frame_attached_delegate _ds6;
+        private cef_frame_handler_t.on_frame_detached_delegate _ds7;
+        private cef_frame_handler_t.on_main_frame_changed_delegate _ds8;
         
         protected CefFrameHandler()
         {
@@ -43,12 +44,14 @@ namespace Xilium.CefGlue
             _self->_base._has_at_least_one_ref = Marshal.GetFunctionPointerForDelegate(_ds3);
             _ds4 = new cef_frame_handler_t.on_frame_created_delegate(on_frame_created);
             _self->_on_frame_created = Marshal.GetFunctionPointerForDelegate(_ds4);
-            _ds5 = new cef_frame_handler_t.on_frame_attached_delegate(on_frame_attached);
-            _self->_on_frame_attached = Marshal.GetFunctionPointerForDelegate(_ds5);
-            _ds6 = new cef_frame_handler_t.on_frame_detached_delegate(on_frame_detached);
-            _self->_on_frame_detached = Marshal.GetFunctionPointerForDelegate(_ds6);
-            _ds7 = new cef_frame_handler_t.on_main_frame_changed_delegate(on_main_frame_changed);
-            _self->_on_main_frame_changed = Marshal.GetFunctionPointerForDelegate(_ds7);
+            _ds5 = new cef_frame_handler_t.on_frame_destroyed_delegate(on_frame_destroyed);
+            _self->_on_frame_destroyed = Marshal.GetFunctionPointerForDelegate(_ds5);
+            _ds6 = new cef_frame_handler_t.on_frame_attached_delegate(on_frame_attached);
+            _self->_on_frame_attached = Marshal.GetFunctionPointerForDelegate(_ds6);
+            _ds7 = new cef_frame_handler_t.on_frame_detached_delegate(on_frame_detached);
+            _self->_on_frame_detached = Marshal.GetFunctionPointerForDelegate(_ds7);
+            _ds8 = new cef_frame_handler_t.on_main_frame_changed_delegate(on_main_frame_changed);
+            _self->_on_main_frame_changed = Marshal.GetFunctionPointerForDelegate(_ds8);
         }
         
         ~CefFrameHandler()

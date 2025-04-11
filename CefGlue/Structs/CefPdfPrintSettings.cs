@@ -94,6 +94,16 @@
         /// |header_template|.
         /// </summary>
         public string FooterTemplate { get; set; }
+        
+        /// <summary>
+        /// Set to true (1) to generate tagged (accessible) PDF.
+        /// </summary>
+        public bool GenerateTaggedPdf { get; set; }
+        
+        /// <summary>
+        /// Set to true (1) to generate a document outline.
+        /// </summary>
+        public bool GenerateDocumentOutline { get; set; }
 
         internal unsafe cef_pdf_print_settings_t* ToNative()
         {
@@ -114,6 +124,8 @@
             ptr->display_header_footer = DisplayHeaderFooter ? 1 : 0;
             cef_string_t.Copy(HeaderTemplate, &ptr->header_template);
             cef_string_t.Copy(FooterTemplate, &ptr->footer_template);
+            ptr->generate_tagged_pdf = GenerateTaggedPdf ? 1 : 0;
+            ptr->generate_document_outline = GenerateDocumentOutline ? 1 : 0;
 
             return ptr;
         }

@@ -8,33 +8,37 @@ namespace Xilium.CefGlue
 
     /// <summary>
     /// Permission types used with OnShowPermissionPrompt. Some types are
-    /// platform-specific or only supported with the Chrome runtime. Should be kept
+    /// platform-specific or only supported with Chrome style. Should be kept
     /// in sync with Chromium's permissions::RequestType type.
     /// </summary>
     [Flags]
     public enum CefPermissionRequestTypes
     {
         None = 0,
-        AccessibilityEvents = 1 << 0,
-        ArSession = 1 << 1,
-        CameraPanTiltZoom = 1 << 2,
-        CameraStream = 1 << 3,
+        ArSession = 1 << 0,
+        CameraPanTiltZoom = 1 << 1,
+        CameraStream = 1 << 2,
+        CapturedSurfaceControl = 1 << 3,
         Clipboard = 1 << 4,
         TopLevelStorageAccess = 1 << 5,
         DiskQuota = 1 << 6,
         LocalFonts = 1 << 7,
         Geolocation = 1 << 8,
-        IdleDetection = 1 << 9,
-        MicStream = 1 << 10,
-        Midi = 1 << 11,
-        MidiSysex = 1 << 12,
-        MultipleDownloads = 1 << 13,
-        Notifications = 1 << 14,
-        ProtectedMediaIdentifier = 1 << 15,
-        RegisterProtocolHandler = 1 << 16,
-        StorageAccess = 1 << 17,
-        VrSession = 1 << 18,
-        WindowManagement = 1 << 19,
-        FileSystemAccess = 1 << 20,
+        HandTracking = 1 << 9,
+        IdentityProvider = 1 << 10,
+        IdleDetection = 1 << 11,
+        MicStream = 1 << 12,
+        MidiSysex = 1 << 13,
+        MultipleDownloads = 1 << 14,
+        Notifications = 1 << 15,
+        KeyboardLock = 1 << 16,
+        PointerLock = 1 << 17,
+        ProtectedMediaIdentifier = 1 << 18,
+        RegisterProtocolHandler = 1 << 19,
+        StorageAccess = 1 << 20,
+        VrSession = 1 << 21,
+        WebAppInstallation = 1 << 22,
+        WindowManagement = 1 << 23,
+        FileSystemAccess = 1 << 24,
     }
 }

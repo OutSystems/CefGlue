@@ -17,7 +17,6 @@ namespace Xilium.CefGlue
         Education,
         WiredDisplay,
         Generic,
-
-        // CEF_MSIT_TOTAL_COUNT,  
+        NumValues,  
     }
 }

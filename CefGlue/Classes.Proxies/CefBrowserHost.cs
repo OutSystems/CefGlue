@@ -86,14 +86,26 @@
         }
 
         /// <summary>
-        /// Request that the browser close. The JavaScript 'onbeforeunload' event will
-        /// be fired. If |force_close| is false the event handler, if any, will be
-        /// allowed to prompt the user and the user can optionally cancel the close.
-        /// If |force_close| is true the prompt will not be displayed and the close
-        /// will proceed. Results in a call to CefLifeSpanHandler::DoClose() if the
-        /// event handler allows the close or if |force_close| is true. See
-        /// CefLifeSpanHandler::DoClose() documentation for additional usage
-        /// information.
+        /// Request that the browser close. Closing a browser is a multi-stage process
+        /// that may complete either synchronously or asynchronously, and involves
+        /// callbacks such as CefLifeSpanHandler::DoClose (Alloy style only),
+        /// CefLifeSpanHandler::OnBeforeClose, and a top-level window close handler
+        /// such as CefWindowDelegate::CanClose (or platform-specific equivalent). In
+        /// some cases a close request may be delayed or canceled by the user. Using
+        /// TryCloseBrowser() instead of CloseBrowser() is recommended for most use
+        /// cases. See CefLifeSpanHandler::DoClose() documentation for detailed usage
+        /// and examples.
+        ///
+        /// If |force_close| is false then JavaScript unload handlers, if any, may be
+        /// fired and the close may be delayed or canceled by the user. If
+        /// |force_close| is true then the user will not be prompted and the close
+        /// will proceed immediately (possibly asynchronously). If browser close is
+        /// delayed and not canceled the default behavior is to call the top-level
+        /// window close handler once the browser is ready to be closed. This default
+        /// behavior can be changed for Alloy style browsers by implementing
+        /// CefLifeSpanHandler::DoClose(). IsReadyToBeClosed() can be used to detect
+        /// mandatory browser close events when customizing close behavior on the
+        /// browser process UI thread.
         /// </summary>
         public void CloseBrowser(bool forceClose = false)
         {
@@ -101,13 +113,16 @@
         }
 
         /// <summary>
-        /// Helper for closing a browser. Call this method from the top-level window
-        /// close handler (if any). Internally this calls CloseBrowser(false) if the
-        /// close has not yet been initiated. This method returns false while the
-        /// close is pending and true after the close has completed. See
-        /// CloseBrowser() and CefLifeSpanHandler::DoClose() documentation for
-        /// additional usage information. This method must be called on the browser
-        /// process UI thread.
+        /// Helper for closing a browser. This is similar in behavior to
+        /// CLoseBrowser(false) but returns a boolean to reflect the immediate close
+        /// status. Call this method from a top-level window close handler such as
+        /// CefWindowDelegate::CanClose (or platform-specific equivalent) to request
+        /// that the browser close, and return the result to indicate if the window
+        /// close should proceed. Returns false if the close will be delayed
+        /// (JavaScript unload handlers triggered but still pending) or true if the
+        /// close will proceed immediately (possibly asynchronously). See
+        /// CloseBrowser() documentation for additional usage information. This method
+        /// must be called on the browser process UI thread.
         /// </summary>
         public bool TryCloseBrowser()
         {
@@ -874,29 +889,6 @@
         }
 
         /// <summary>
-        /// Returns the extension hosted in this browser or NULL if no extension is
-        /// hosted. See CefRequestContext::LoadExtension for details.
-        /// </summary>
-        public CefExtension GetExtension()
-        {
-            var nExtension = cef_browser_host_t.get_extension(_self);
-            return CefExtension.FromNativeOrNull(nExtension);
-        }
-
-        /// <summary>
-        /// Returns true if this browser is hosting an extension background script.
-        /// Background hosts do not have a window and are not displayable. See
-        /// CefRequestContext::LoadExtension for details.
-        /// </summary>
-        public bool IsBackgroundHost
-        {
-            get
-            {
-                return cef_browser_host_t.is_background_host(_self) != 0;
-            }
-        }
-
-        /// <summary>
         /// Set whether the browser's audio is muted.
         /// </summary>
         public void SetAudioMuted(bool value)
@@ -908,13 +900,7 @@
         /// Returns true if the browser's audio is muted.  This method can only be
         /// called on the UI thread.
         /// </summary>
-        public bool IsAudioMuted
-        {
-            get
-            {
-                return cef_browser_host_t.is_audio_muted(_self) != 0;
-            }
-        }
+        public bool IsAudioMuted => cef_browser_host_t.is_audio_muted(_self) != 0;
 
         /// <summary>
         /// Returns true if the renderer is currently in browser fullscreen. This
