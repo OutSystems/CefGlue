@@ -22,6 +22,8 @@ namespace Xilium.CefGlue.Demo.Avalonia
                       .With(new Win32PlatformOptions())
                       .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings() {
                           RootCachePath = cachePath,
+                          // TODO hgo: Undo line
+                          LogSeverity = CefLogSeverity.Verbose,
 #if WINDOWLESS 
                           // its recommended to leave this off (false), since its less performant and can cause more issues
                           WindowlessRenderingEnabled = true

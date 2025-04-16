@@ -21,10 +21,19 @@ namespace Xilium.CefGlue.Common
         {
             if (string.IsNullOrEmpty(processType))
             {
-                if (CefRuntime.Platform == CefRuntimePlatform.Linux) 
+                switch (CefRuntime.Platform)
                 {
-                    commandLine.AppendSwitch("no-zygote");
+                    case CefRuntimePlatform.Windows:
+                        // TODO hgo: This is not a real solution. Temporary fix
+                        //commandLine.AppendSwitch("use-angle", "d3d9");
+                        //commandLine.AppendSwitch("use-angle", "d3d11");
+                        commandLine.AppendSwitch("use-angle", "d3d12");        
+                        break;
+                    case CefRuntimePlatform.Linux:
+                        commandLine.AppendSwitch("no-zygote", "1");
+                        break;
                 }
+                
                 if (CefRuntimeLoader.IsOSREnabled)
                 {
                     commandLine.AppendSwitch("disable-gpu", "1");
