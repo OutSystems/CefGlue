@@ -1,4 +1,6 @@
-﻿namespace Xilium.CefGlue
+﻿using System;
+
+namespace Xilium.CefGlue
 {
     using Xilium.CefGlue.Interop;
 
@@ -36,7 +38,7 @@
 
         internal cef_composition_underline_t ToNative()
         {
-            cef_composition_underline_t result;
+            var result = new cef_composition_underline_t { size = (UIntPtr)cef_composition_underline_t.Size };
             result.range = new cef_range_t(Range.From, Range.To);
             result.color = Color.ToArgb();
             result.background_color = BackgroundColor.ToArgb();

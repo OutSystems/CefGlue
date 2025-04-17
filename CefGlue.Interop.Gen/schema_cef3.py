@@ -144,7 +144,7 @@ classdef = {
 	'CefWaitableEvent': { 'role': ROLE_PROXY },
     # 59
     'CefAccessibilityHandler': { 'role': ROLE_HANDLER },
-    # 62
+    # 62 - ( Deprecated )
     'CefExtension': { 'role': ROLE_PROXY },
     'CefExtensionHandler': { 'role': ROLE_HANDLER, 'reversible': True },
     'CefGetExtensionResourceCallback': { 'role': ROLE_PROXY },
@@ -185,4 +185,12 @@ classdef = {
     # 108
     'CefPreferenceRegistrar': { 'role': ROLE_PROXY },
     'CefPreferenceManager': { 'role': ROLE_PROXY, 'abstract': True },
-    }
+
+    # 126
+    'CefUnresponsiveProcessCallback': { 'role': ROLE_PROXY },
+    
+    # 134
+    'CefPreferenceObserver': { 'role': ROLE_HANDLER },
+    'CefSettingObserver': { 'role': ROLE_HANDLER },
+    'CefTaskManager': { 'role': ROLE_PROXY },
+}

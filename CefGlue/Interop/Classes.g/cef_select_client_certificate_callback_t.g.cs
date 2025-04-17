@@ -43,7 +43,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void select_delegate(cef_select_client_certificate_callback_t* self, cef_x509certificate_t* cert);
+        private delegate void select_delegate(cef_select_client_certificate_callback_t* self, cef_x509_certificate_t* cert);
         
         // AddRef
         private static IntPtr _p0;
@@ -117,7 +117,7 @@ namespace Xilium.CefGlue.Interop
         private static IntPtr _p4;
         private static select_delegate _d4;
         
-        public static void select(cef_select_client_certificate_callback_t* self, cef_x509certificate_t* cert)
+        public static void select(cef_select_client_certificate_callback_t* self, cef_x509_certificate_t* cert)
         {
             select_delegate d;
             var p = self->_select;

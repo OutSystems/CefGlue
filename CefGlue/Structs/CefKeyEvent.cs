@@ -1,4 +1,6 @@
-﻿namespace Xilium.CefGlue
+﻿using System.Drawing;
+
+namespace Xilium.CefGlue
 {
     using System;
     using Xilium.CefGlue.Interop;
@@ -121,6 +123,7 @@
         {
             if (ptr == null) throw new ArgumentNullException("ptr");
 
+            ptr->size = (UIntPtr)cef_key_event_t.Size;
             ptr->type = EventType;
             ptr->modifiers = Modifiers;
             ptr->windows_key_code = WindowsKeyCode;

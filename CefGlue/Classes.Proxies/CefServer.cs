@@ -120,7 +120,7 @@
             {
                 var n_contentType = new cef_string_t(contentType_str, contentType != null ? contentType.Length : 0);
                 var n_dataSize = checked((UIntPtr)dataSize);
-                cef_server_t.send_http200response(_self, connectionId, &n_contentType, (void*)data, n_dataSize);
+                cef_server_t.send_http200_response(_self, connectionId, &n_contentType, (void*)data, n_dataSize);
             }
         }
 
@@ -131,7 +131,7 @@
         /// </summary>
         public void SendHttp404Response(int connectionId)
         {
-            cef_server_t.send_http404response(_self, connectionId);
+            cef_server_t.send_http404_response(_self, connectionId);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@
             fixed (char* errorMessage_str = errorMessage)
             {
                 var n_errorMessage = new cef_string_t(errorMessage_str, errorMessage != null ? errorMessage.Length : 0);
-                cef_server_t.send_http500response(_self, connectionId, &n_errorMessage);
+                cef_server_t.send_http500_response(_self, connectionId, &n_errorMessage);
             }
         }
 

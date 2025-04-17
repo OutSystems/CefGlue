@@ -13,5 +13,6 @@ namespace Xilium.CefGlue
         Simplex,
         LongEdge,
         ShortEdge,
+        NumValues,
     }
 }

@@ -75,19 +75,19 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_context_created_delegate(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8context_t* context);
+        internal delegate void on_context_created_delegate(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8_context_t* context);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_context_released_delegate(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8context_t* context);
+        internal delegate void on_context_released_delegate(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8_context_t* context);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        internal delegate void on_uncaught_exception_delegate(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8context_t* context, cef_v8exception_t* exception, cef_v8stack_trace_t* stackTrace);
+        internal delegate void on_uncaught_exception_delegate(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8_context_t* context, cef_v8_exception_t* exception, cef_v8_stack_trace_t* stackTrace);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

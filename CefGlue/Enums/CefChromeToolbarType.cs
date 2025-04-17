@@ -11,8 +11,10 @@ namespace Xilium.CefGlue
     /// </summary>
     public enum CefChromeToolbarType
     {
-        None = 1,
+        Unknown,
+        None,
         Normal,
         Location,
+        NumValues,
     }
 }

@@ -19,9 +19,9 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_address;
         internal IntPtr _has_connection;
         internal IntPtr _is_valid_connection;
-        internal IntPtr _send_http200response;
-        internal IntPtr _send_http404response;
-        internal IntPtr _send_http500response;
+        internal IntPtr _send_http200_response;
+        internal IntPtr _send_http404_response;
+        internal IntPtr _send_http500_response;
         internal IntPtr _send_http_response;
         internal IntPtr _send_raw_data;
         internal IntPtr _close_connection;
@@ -95,19 +95,19 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void send_http200response_delegate(cef_server_t* self, int connection_id, cef_string_t* content_type, void* data, UIntPtr data_size);
+        private delegate void send_http200_response_delegate(cef_server_t* self, int connection_id, cef_string_t* content_type, void* data, UIntPtr data_size);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void send_http404response_delegate(cef_server_t* self, int connection_id);
+        private delegate void send_http404_response_delegate(cef_server_t* self, int connection_id);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void send_http500response_delegate(cef_server_t* self, int connection_id, cef_string_t* error_message);
+        private delegate void send_http500_response_delegate(cef_server_t* self, int connection_id, cef_string_t* error_message);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -305,16 +305,16 @@ namespace Xilium.CefGlue.Interop
         
         // SendHttp200Response
         private static IntPtr _pa;
-        private static send_http200response_delegate _da;
+        private static send_http200_response_delegate _da;
         
-        public static void send_http200response(cef_server_t* self, int connection_id, cef_string_t* content_type, void* data, UIntPtr data_size)
+        public static void send_http200_response(cef_server_t* self, int connection_id, cef_string_t* content_type, void* data, UIntPtr data_size)
         {
-            send_http200response_delegate d;
-            var p = self->_send_http200response;
+            send_http200_response_delegate d;
+            var p = self->_send_http200_response;
             if (p == _pa) { d = _da; }
             else
             {
-                d = (send_http200response_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(send_http200response_delegate));
+                d = (send_http200_response_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(send_http200_response_delegate));
                 if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
             }
             d(self, connection_id, content_type, data, data_size);
@@ -322,16 +322,16 @@ namespace Xilium.CefGlue.Interop
         
         // SendHttp404Response
         private static IntPtr _pb;
-        private static send_http404response_delegate _db;
+        private static send_http404_response_delegate _db;
         
-        public static void send_http404response(cef_server_t* self, int connection_id)
+        public static void send_http404_response(cef_server_t* self, int connection_id)
         {
-            send_http404response_delegate d;
-            var p = self->_send_http404response;
+            send_http404_response_delegate d;
+            var p = self->_send_http404_response;
             if (p == _pb) { d = _db; }
             else
             {
-                d = (send_http404response_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(send_http404response_delegate));
+                d = (send_http404_response_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(send_http404_response_delegate));
                 if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
             }
             d(self, connection_id);
@@ -339,16 +339,16 @@ namespace Xilium.CefGlue.Interop
         
         // SendHttp500Response
         private static IntPtr _pc;
-        private static send_http500response_delegate _dc;
+        private static send_http500_response_delegate _dc;
         
-        public static void send_http500response(cef_server_t* self, int connection_id, cef_string_t* error_message)
+        public static void send_http500_response(cef_server_t* self, int connection_id, cef_string_t* error_message)
         {
-            send_http500response_delegate d;
-            var p = self->_send_http500response;
+            send_http500_response_delegate d;
+            var p = self->_send_http500_response;
             if (p == _pc) { d = _dc; }
             else
             {
-                d = (send_http500response_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(send_http500response_delegate));
+                d = (send_http500_response_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(send_http500_response_delegate));
                 if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
             }
             d(self, connection_id, error_message);

@@ -16,7 +16,7 @@
     /// </summary>
     public abstract unsafe partial class CefV8Interceptor
     {
-        private int get_byname(cef_v8interceptor_t* self, cef_string_t* name, cef_v8value_t* @object, cef_v8value_t** retval, cef_string_t* exception)
+        private int get_byname(cef_v8_interceptor_t* self, cef_string_t* name, cef_v8_value_t* @object, cef_v8_value_t** retval, cef_string_t* exception)
         {
             CheckSelf(self);
 
@@ -54,7 +54,7 @@
         }
 
 
-        private int get_byindex(cef_v8interceptor_t* self, int index, cef_v8value_t* @object, cef_v8value_t** retval, cef_string_t* exception)
+        private int get_byindex(cef_v8_interceptor_t* self, int index, cef_v8_value_t* @object, cef_v8_value_t** retval, cef_string_t* exception)
         {
             CheckSelf(self);
 
@@ -90,7 +90,7 @@
         }
 
 
-        private int set_byname(cef_v8interceptor_t* self, cef_string_t* name, cef_v8value_t* @object, cef_v8value_t* value, cef_string_t* exception)
+        private int set_byname(cef_v8_interceptor_t* self, cef_string_t* name, cef_v8_value_t* @object, cef_v8_value_t* value, cef_string_t* exception)
         {
             CheckSelf(self);
 
@@ -125,7 +125,7 @@
         }
 
 
-        private int set_byindex(cef_v8interceptor_t* self, int index, cef_v8value_t* @object, cef_v8value_t* value, cef_string_t* exception)
+        private int set_byindex(cef_v8_interceptor_t* self, int index, cef_v8_value_t* @object, cef_v8_value_t* value, cef_string_t* exception)
         {
             CheckSelf(self);
 

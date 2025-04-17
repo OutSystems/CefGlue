@@ -9,7 +9,7 @@ namespace Xilium.CefGlue
     /// </summary>
     public enum CefColorModel
     {
-        Unknown = 0,
+        Unknown,
         Gray,
         Color,
         Cmyk,
@@ -34,5 +34,6 @@ namespace Xilium.CefGlue
         ProcessColorModel_Cmyk,       // Used in canon printer ppds.
         ProcessColorModel_Greyscale,  // Used in canon printer ppds.
         ProcessColorModel_Rgb,        // Used in canon printer ppds
+        NumValues,
     }
 }

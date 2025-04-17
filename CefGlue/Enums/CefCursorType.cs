@@ -13,7 +13,7 @@ namespace Xilium.CefGlue
     /// </summary>
     public enum CefCursorType
     {
-        Pointer = 0,
+        Pointer,
         Cross,
         Hand,
         IBeam,
@@ -63,5 +63,6 @@ namespace Xilium.CefGlue
         DragAndDropMove,
         DragAndDropCopy,
         DragAndDropLink,
+        NumValues,
     }
 }

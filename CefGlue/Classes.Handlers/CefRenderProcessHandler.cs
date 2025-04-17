@@ -86,7 +86,7 @@
         }
 
 
-        private void on_context_created(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8context_t* context)
+        private void on_context_created(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8_context_t* context)
         {
             CheckSelf(self);
 
@@ -109,7 +109,7 @@
         }
 
 
-        private void on_context_released(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8context_t* context)
+        private void on_context_released(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8_context_t* context)
         {
             CheckSelf(self);
 
@@ -129,7 +129,7 @@
         }
 
 
-        private void on_uncaught_exception(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8context_t* context, cef_v8exception_t* exception, cef_v8stack_trace_t* stackTrace)
+        private void on_uncaught_exception(cef_render_process_handler_t* self, cef_browser_t* browser, cef_frame_t* frame, cef_v8_context_t* context, cef_v8_exception_t* exception, cef_v8_stack_trace_t* stackTrace)
         {
             CheckSelf(self);
 

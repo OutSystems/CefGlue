@@ -19,7 +19,7 @@
         public CefX509CertPrincipal GetSubject()
         {
             return CefX509CertPrincipal.FromNative(
-                cef_x509certificate_t.get_subject(_self)
+                cef_x509_certificate_t.get_subject(_self)
                 );
         }
 
@@ -29,7 +29,7 @@
         public CefX509CertPrincipal GetIssuer()
         {
             return CefX509CertPrincipal.FromNative(
-                cef_x509certificate_t.get_issuer(_self)
+                cef_x509_certificate_t.get_issuer(_self)
                 );
         }
 
@@ -39,7 +39,7 @@
         /// </summary>
         public CefBinaryValue GetSerialNumber()
         {
-            var n_result = cef_x509certificate_t.get_serial_number(_self);
+            var n_result = cef_x509_certificate_t.get_serial_number(_self);
             return CefBinaryValue.FromNative(n_result);
         }
 
@@ -49,7 +49,7 @@
         /// </summary>
         public CefBaseTime GetValidStart()
         {
-            return cef_x509certificate_t.get_valid_start(_self);
+            return cef_x509_certificate_t.get_valid_start(_self);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@
         /// </summary>
         public CefBaseTime GetValidExpiry()
         {
-            return cef_x509certificate_t.get_valid_expiry(_self);
+            return cef_x509_certificate_t.get_valid_expiry(_self);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@
         /// </summary>
         public CefBinaryValue GetDerEncoded()
         {
-            var n_result = cef_x509certificate_t.get_derencoded(_self);
+            var n_result = cef_x509_certificate_t.get_derencoded(_self);
             return CefBinaryValue.FromNative(n_result);
         }
 
@@ -75,7 +75,7 @@
         /// </summary>
         public CefBinaryValue GetPemEncoded()
         {
-            var n_result = cef_x509certificate_t.get_pemencoded(_self);
+            var n_result = cef_x509_certificate_t.get_pemencoded(_self);
             return CefBinaryValue.FromNative(n_result);
         }
 
@@ -85,7 +85,7 @@
         /// </summary>
         public long GetIssuerChainSize()
         {
-            return (long)cef_x509certificate_t.get_issuer_chain_size(_self);
+            return (long)cef_x509_certificate_t.get_issuer_chain_size(_self);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@
             UIntPtr n_chainCount;
             cef_binary_value_t* n_chain;
 
-            cef_x509certificate_t.get_derencoded_issuer_chain(_self, &n_chainCount, &n_chain);
+            cef_x509_certificate_t.get_derencoded_issuer_chain(_self, &n_chainCount, &n_chain);
 
             chainCount = (long)n_chainCount;
             chain = CefBinaryValue.FromNative(n_chain);
@@ -114,7 +114,7 @@
             UIntPtr n_chainCount;
             cef_binary_value_t* n_chain;
 
-            cef_x509certificate_t.get_pemencoded_issuer_chain(_self, &n_chainCount, &n_chain);
+            cef_x509_certificate_t.get_pemencoded_issuer_chain(_self, &n_chainCount, &n_chain);
 
             chainCount = (long)n_chainCount;
             chain = CefBinaryValue.FromNative(n_chain);

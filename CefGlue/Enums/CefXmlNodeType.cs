@@ -9,7 +9,7 @@ namespace Xilium.CefGlue
     /// </summary>
     public enum CefXmlNodeType
     {
-        Unsupported = 0,
+        Unsupported,
         ProcessingInstruction,
         DocumentType,
         ElementStart,
@@ -20,5 +20,6 @@ namespace Xilium.CefGlue
         EntityReference,
         WhiteSpace,
         Comment,
+        NumValues,
     }
 }

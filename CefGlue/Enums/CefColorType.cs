@@ -1,7 +1,8 @@
 ﻿//
-// This file manually written from cef/include/internal/cef_types.h.
+// This file manually written from cef/include/internal/cef_types_color.h.
 // C API name: cef_color_type_t.
 //
+
 namespace Xilium.CefGlue
 {
     using System;
@@ -20,5 +21,7 @@ namespace Xilium.CefGlue
         /// BGRA with 8 bits per pixel (32bits total).
         /// </summary>
         Bgra8888,
+
+        NumValues,
     }
 }

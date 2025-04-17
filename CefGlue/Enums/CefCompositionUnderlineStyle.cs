@@ -15,5 +15,6 @@ namespace Xilium.CefGlue
         Dot,
         Dash,
         None,
+        NumValues,
     }
 }

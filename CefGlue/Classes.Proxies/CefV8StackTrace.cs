@@ -22,7 +22,7 @@
         public static CefV8StackTrace GetCurrent(int frameLimit)
         {
             return CefV8StackTrace.FromNative(
-                cef_v8stack_trace_t.get_current(frameLimit)
+                cef_v8_stack_trace_t.get_current(frameLimit)
                 );
         }
 
@@ -33,7 +33,7 @@
         /// </summary>
         public bool IsValid
         {
-            get { return cef_v8stack_trace_t.is_valid(_self) != 0; }
+            get { return cef_v8_stack_trace_t.is_valid(_self) != 0; }
         }
 
         /// <summary>
@@ -41,7 +41,7 @@
         /// </summary>
         public int FrameCount
         {
-            get { return cef_v8stack_trace_t.get_frame_count(_self); }
+            get { return cef_v8_stack_trace_t.get_frame_count(_self); }
         }
 
         /// <summary>
@@ -50,7 +50,7 @@
         public CefV8StackFrame GetFrame(int index)
         {
             return CefV8StackFrame.FromNative(
-                cef_v8stack_trace_t.get_frame(_self, index)
+                cef_v8_stack_trace_t.get_frame(_self, index)
                 );
         }
     }
