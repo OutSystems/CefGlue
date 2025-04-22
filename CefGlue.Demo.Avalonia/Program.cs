@@ -20,6 +20,16 @@ namespace Xilium.CefGlue.Demo.Avalonia
             AppBuilder.Configure<App>()
                 .UsePlatformDetect()
                 .UseReactiveUI()
+                .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings {
+                        RootCachePath = cachePath,
+                    },
+                    customSchemes: [
+                        new CustomScheme
+                        {
+                            SchemeName = "test",
+                            SchemeHandlerFactory = new CustomSchemeHandler()
+                        }
+                    ]))
                 .StartWithClassicDesktopLifetime(args);
                       
             return 0;
