@@ -26,6 +26,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
             browser = new AvaloniaCefBrowser();
             browser.Address = "https://get.webgl.org/";
+            //browser.Address = "https://webglsamples.org/aquarium/aquarium.html";
             browser.RegisterJavascriptObject(new BindingTestClass(), "boundBeforeLoadObject");
             browser.LoadStart += OnBrowserLoadStart;
             browser.TitleChanged += OnBrowserTitleChanged;
