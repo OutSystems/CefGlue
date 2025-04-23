@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using Avalonia;
-using Avalonia.ReactiveUI;
 using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Shared;
 
@@ -19,7 +18,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             AppDomain.CurrentDomain.ProcessExit += delegate { Cleanup(cachePath); };
             AppBuilder.Configure<App>()
                 .UsePlatformDetect()
-                .UseReactiveUI()
+                .With(new Win32PlatformOptions())
                 .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings {
                         RootCachePath = cachePath,
                     },

@@ -302,7 +302,6 @@ namespace Xilium.CefGlue.Common
             IsBrowserCreated = true;
 
             var windowInfo = CefWindowInfo.Create();
-            windowInfo.RuntimeStyle = CefRuntimeStyle.Alloy;
             SetupBrowserView(windowInfo, width, height, hostViewHandle.Value);
 
             var cefClient = CreateCefClient();
