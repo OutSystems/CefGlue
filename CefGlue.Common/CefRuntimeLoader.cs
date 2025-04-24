@@ -42,6 +42,8 @@ namespace Xilium.CefGlue.Common
             switch (CefRuntime.Platform)
             {
                 case CefRuntimePlatform.Windows:
+                case CefRuntimePlatform.Linux:
+                    settings.NoSandbox = true;
                     settings.MultiThreadedMessageLoop = true;
                     break;
 
@@ -58,11 +60,6 @@ namespace Xilium.CefGlue.Common
                     settings.MainBundlePath = basePath;
                     settings.FrameworkDirPath = basePath;
                     settings.ResourcesDirPath = resourcesPath;
-                    break;
-                
-                case CefRuntimePlatform.Linux:
-                    settings.NoSandbox = true;
-                    settings.MultiThreadedMessageLoop = true;
                     break;
             }
 
