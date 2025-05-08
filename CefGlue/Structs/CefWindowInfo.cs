@@ -147,18 +147,9 @@
         
         public abstract CefRuntimeStyle RuntimeStyle { get; set; }
 
-        public void SetAsChild(IntPtr parentHandle, CefRectangle bounds)
+        public void SetAsChild(CefRectangle bounds)
         {
             ThrowIfDisposed();
-
-            // Style = WindowStyle.WS_CHILD
-            //       | WindowStyle.WS_CLIPCHILDREN
-            //       | WindowStyle.WS_CLIPSIBLINGS
-            //       | WindowStyle.WS_TABSTOP
-            //       | WindowStyle.WS_VISIBLE;
-
-            //ParentHandle = parentHandle;
-
             Bounds = bounds;
         }
 

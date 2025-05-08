@@ -24,15 +24,13 @@
         /// the created browser that will be passed to
         /// CefRenderProcessHandler::OnBrowserCreated() in the render process.
         /// </summary>
-        public static void CreateBrowser(CefWindowInfo windowInfo, CefClient client, CefBrowserSettings settings, string url, CefDictionaryValue extraInfo = null, CefRequestContext requestContext = null)
+        public static void CreateBrowser(CefWindowInfo windowInfo, CefBrowserSettings settings, string url, CefDictionaryValue extraInfo = null, CefRequestContext requestContext = null)
         {
             if (windowInfo == null) throw new ArgumentNullException("windowInfo");
-            if (client == null) throw new ArgumentNullException("client");
             if (settings == null) throw new ArgumentNullException("settings");
             // TODO: [ApiUsage] if windowInfo.WindowRenderingDisabled && client doesn't provide RenderHandler implementation -> throw exception
 
             var n_windowInfo = windowInfo.GetNativePointer();
-            var n_client = client.ToNative();
             var n_settings = settings.ToNative();
             var n_extraInfo = extraInfo != null ? extraInfo.ToNative() : null;
             var n_requestContext = requestContext != null ? requestContext.ToNative() : null;
