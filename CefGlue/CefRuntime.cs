@@ -219,7 +219,7 @@
 
             try
             {
-                if (libcef.initialize(n_main_args, n_settings, n_app, (void*)windowsSandboxInfo) != 0)
+                if (libcef.initialize(n_main_args, n_settings, null, null) != 0)
                 {
                     _initialized = true;
                 }

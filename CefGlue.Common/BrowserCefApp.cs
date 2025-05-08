@@ -13,8 +13,8 @@ namespace Xilium.CefGlue.Common
         internal BrowserCefApp(CustomScheme[] customSchemes = null, KeyValuePair<string, string>[] flags = null, BrowserProcessHandler browserProcessHandler = null) :
             base(customSchemes)
         {
-            _browserProcessHandler = new CommonBrowserProcessHandler(browserProcessHandler, customSchemes);
-            _flags = flags;
+            //_browserProcessHandler = new CommonBrowserProcessHandler(browserProcessHandler, customSchemes);
+            //_flags = flags;
         }
 
         protected override void OnBeforeCommandLineProcessing(string processType, CefCommandLine commandLine)

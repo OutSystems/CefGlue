@@ -151,13 +151,13 @@
         {
             ThrowIfDisposed();
 
-            Style = WindowStyle.WS_CHILD
-                  | WindowStyle.WS_CLIPCHILDREN
-                  | WindowStyle.WS_CLIPSIBLINGS
-                  | WindowStyle.WS_TABSTOP
-                  | WindowStyle.WS_VISIBLE;
+            // Style = WindowStyle.WS_CHILD
+            //       | WindowStyle.WS_CLIPCHILDREN
+            //       | WindowStyle.WS_CLIPSIBLINGS
+            //       | WindowStyle.WS_TABSTOP
+            //       | WindowStyle.WS_VISIBLE;
 
-            ParentHandle = parentHandle;
+            //ParentHandle = parentHandle;
 
             Bounds = bounds;
         }

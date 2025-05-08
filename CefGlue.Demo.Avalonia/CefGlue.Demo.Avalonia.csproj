@@ -7,40 +7,12 @@
     <AssemblyName>Xilium.CefGlue.Demo.Avalonia</AssemblyName>
     <RootNamespace>Xilium.CefGlue.Demo.Avalonia</RootNamespace>
     <RollForward>Major</RollForward>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug_WindowlessRender'">
-    <DefineConstants>$(DefineConstants);WINDOWLESS</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <CFBundleName>Xilium.CefGlue.Demo.Avalonia</CFBundleName> <!-- Also defines .app file name -->
-    <CFBundleDisplayName>CefGlueDemoAvalonia</CFBundleDisplayName>
-    <CFBundleIdentifier>com.example</CFBundleIdentifier>
-    <CFBundleVersion>1.0.0</CFBundleVersion>
-    <CFBundlePackageType>AAPL</CFBundlePackageType>
-    <CFBundleSignature>4242</CFBundleSignature>
-    <CFBundleShortVersionString>DemoAvalonia</CFBundleShortVersionString>
-    <CFBundleExecutable>Xilium.CefGlue.Demo.Avalonia</CFBundleExecutable>
-    <CFBundleIconFile>AppName.icns</CFBundleIconFile> <!-- Will be copied from output directory -->
-    <NSPrincipalClass>NSApplication</NSPrincipalClass>
-    <NSHighResolutionCapable>true</NSHighResolutionCapable>
-  </PropertyGroup>
+  
   <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />
 
   <ItemGroup>
-    <PackageReference Include="Dotnet.Bundle" />
-    <PackageReference Include="Avalonia.Desktop" />
-    <PackageReference Include="Avalonia.ReactiveUI" />
-    <PackageReference Include="Avalonia.Diagnostics" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CefGlue.Avalonia\CefGlue.Avalonia.csproj" />
-    <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
     <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj" />
-    <ProjectReference Include="..\CefGlue.Common.Shared\CefGlue.Common.Shared.csproj" />
   </ItemGroup>
 
   <Import Project="$(ProjectDir)..\CefGlue.Common\build\CefGlue.Common.targets" />

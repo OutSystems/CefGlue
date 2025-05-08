@@ -12,14 +12,7 @@ namespace Xilium.CefGlue.Common
     public static class CefRuntimeLoader
     {
         private const string DefaultBrowserProcessDirectory = "CefGlueBrowserProcess";
-
-        private static Action<BrowserProcessHandler> _delayedInitialization;
-
-        public static void Initialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null)
-        {
-            _delayedInitialization = (browserProcessHandler) => InternalInitialize(settings, flags, customSchemes, browserProcessHandler);
-        }
-
+        
         private static void InternalInitialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null, BrowserProcessHandler browserProcessHandler = null)
         {
             CefRuntime.Load();
@@ -29,11 +22,10 @@ namespace Xilium.CefGlue.Common
                 settings = new CefSettings();
             }
 
-            settings.UncaughtExceptionStackSize = 100; // for uncaught exception event work properly
 
             var basePath = AppContext.BaseDirectory;
             var probingPaths = GetSubProcessPaths(basePath);
-            var subProcessPath = probingPaths.FirstOrDefault(p => File.Exists(p));
+            var subProcessPath = probingPaths.FirstOrDefault(File.Exists);
             if (subProcessPath == null)
                 throw new FileNotFoundException($"Unable to find SubProcess. Probed locations: {string.Join(Environment.NewLine, probingPaths)}");
 
@@ -46,25 +38,8 @@ namespace Xilium.CefGlue.Common
                     settings.NoSandbox = true;
                     settings.MultiThreadedMessageLoop = true;
                     break;
-
-                case CefRuntimePlatform.MacOS:
-                    var resourcesPath = Path.Combine(basePath, "Resources");
-                    if (!Directory.Exists(resourcesPath))
-                    {
-                        throw new FileNotFoundException($"Unable to find Resources folder");
-                    }
-
-                    settings.NoSandbox = true;
-                    settings.MultiThreadedMessageLoop = false;
-                    settings.ExternalMessagePump = true;
-                    settings.MainBundlePath = basePath;
-                    settings.FrameworkDirPath = basePath;
-                    settings.ResourcesDirPath = resourcesPath;
-                    break;
             }
-
-            AppDomain.CurrentDomain.ProcessExit += delegate { CefRuntime.Shutdown(); };
-
+            
             IsOSREnabled = settings.WindowlessRenderingEnabled;
 
             // On Linux, with osr disable, the filename in CefMainArgs will be used as accessible name.
@@ -75,15 +50,7 @@ namespace Xilium.CefGlue.Common
                 exeFileName = "CefGlue";
             }
 
-            CefRuntime.Initialize(new CefMainArgs(new[] { exeFileName }), settings, new BrowserCefApp(customSchemes, flags, browserProcessHandler), IntPtr.Zero);
-
-            if (customSchemes != null)
-            {
-                foreach (var scheme in customSchemes)
-                {
-                    CefRuntime.RegisterSchemeHandlerFactory(scheme.SchemeName, scheme.DomainName, scheme.SchemeHandlerFactory);
-                }
-            }
+            CefRuntime.Initialize(new CefMainArgs([exeFileName]), settings, new BrowserCefApp(customSchemes, flags, browserProcessHandler), IntPtr.Zero);
         }
 
         private static IEnumerable<string> GetSubProcessPaths(string baseDirectory)
@@ -97,17 +64,9 @@ namespace Xilium.CefGlue.Common
             yield return Path.Combine(baseDirectory, BrowserProcessFileName);
         }
 
-        internal static void Load(BrowserProcessHandler browserProcessHandler = null)
+        public static void Load(BrowserProcessHandler browserProcessHandler = null)
         {
-            if (_delayedInitialization != null)
-            {
-                _delayedInitialization.Invoke(browserProcessHandler);
-                _delayedInitialization = null;
-            }
-            else
-            {
-                InternalInitialize(browserProcessHandler: browserProcessHandler);
-            }
+            InternalInitialize(browserProcessHandler: browserProcessHandler);
         }
 
         public static bool IsLoaded => CefRuntime.IsInitialized;

@@ -25,20 +25,7 @@ namespace Xilium.CefGlue.Common
                 CefRuntimeLoader.Load();
             }
 
-#if HAS_NLOG
-            _logger = new Logger(nameof(BaseCefBrowser));
-#else
-            _logger = new NullLogger(nameof(BaseCefBrowser));
-#endif
-
-            if (CefRuntimeLoader.IsOSREnabled)
-            {
-                _adapter = new CommonOffscreenBrowserAdapter(this, nameof(BaseCefBrowser), CreateOffScreenControlHost(), CreatePopupHost(), _logger, cefRequestContextFactory?.Invoke());
-            } 
-            else
-            {
-                _adapter = new CommonBrowserAdapter(this, nameof(BaseCefBrowser), CreateControl(), _logger, cefRequestContextFactory?.Invoke());
-            }
+            _adapter = new CommonBrowserAdapter(this, nameof(BaseCefBrowser), CreateControl(), _logger, cefRequestContextFactory?.Invoke());
         }
 
         ~BaseCefBrowser()
@@ -205,7 +192,11 @@ namespace Xilium.CefGlue.Common
         /// <summary>
         /// Gets or set the url.
         /// </summary>
-        public string Address { get => _adapter.Address; set => _adapter.Address = value; }
+        public string Address
+        {
+            get => _adapter.Address;
+            set { }
+        }
 
         /// <summary>
         /// Returns true when the underlying browser has been initialized.
@@ -357,7 +348,7 @@ namespace Xilium.CefGlue.Common
         /// <param name="methodHandler">Optional handler to be executed before the target object method is called. You may use this for instance to log calls.</param>
         public void RegisterJavascriptObject(object targetObject, string name, MethodCallHandler methodHandler = null)
         {
-            _adapter.RegisterJavascriptObject(targetObject, name, methodHandler);
+           // _adapter.RegisterJavascriptObject(targetObject, name, methodHandler);
         }
 
         /// <summary>

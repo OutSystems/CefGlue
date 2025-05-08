@@ -32,6 +32,8 @@ namespace Xilium.CefGlue.Common
         private readonly NativeObjectRegistry _objectRegistry = new NativeObjectRegistry();
 
         private object _disposeLock = new object();
+        
+        
 
         public CommonBrowserAdapter(object eventsEmitter, string name, IControl control, ILogger logger, CefRequestContext cefRequestContext = null)
         {

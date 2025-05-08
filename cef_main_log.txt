@@ -1,0 +1,213 @@
+[5536:45392:0508/113101.827:VERBOSE1:variations_field_trial_creator_base.cc(83)] VariationsSeedUsage:2
+[5536:45392:0508/113101.827:VERBOSE1:variations_field_trial_creator_base.cc(357)] VariationsSetupComplete
+[5536:45392:0508/113101.860:VERBOSE1:webrtc_event_log_manager.cc(96)] WebRTC remote-bound event logging enabled.
+[5536:45392:0508/113101.862:VERBOSE1:pref_proxy_config_tracker_impl.cc(199)] 00001EE4000642C0: set chrome proxy config service to 00001EE400110D00
+[5536:45392:0508/113101.868:VERBOSE1:device_event_log_impl.cc(204)] [11:31:01.867] Display: EVENT: screen_win.cc:951 Displays updated, count: 2
+[5536:45392:0508/113101.869:VERBOSE1:device_event_log_impl.cc(204)] [11:31:01.869] Display: EVENT: screen_win.cc:953 Display[882414461] bounds=[-1920,0 1920x1200], workarea=[-1920,0 1920x1160], scale=1, rotation=0, panel_rotation=0 external detected
+[5536:45392:0508/113101.869:VERBOSE1:device_event_log_impl.cc(204)] [11:31:01.869] Display: EVENT: screen_win.cc:953 Display[3567939853] bounds=[0,0 1920x1080], workarea=[0,0 1920x1040], scale=1, rotation=0, panel_rotation=0 external detected
+[5536:39864:0508/113101.876:VERBOSE1:media_stream_manager.cc(1501)] MSM::InitializeMaybeAsync([this=0x1ee4000e46c0])
+[5536:39864:0508/113101.876:VERBOSE1:media_stream_manager.cc(1501)] MDM::MediaDevicesManager()
+[5536:39864:0508/113101.876:VERBOSE1:media_stream_manager.cc(1501)] MSM::MediaStreamManager([this=0x1ee4000e46c0]))
+[5536:45392:0508/113101.881:VERBOSE1:chrome_browser_cloud_management_controller.cc(161)] Cloud management controller initialization aborted as CBCM is not enabled. Please use the `--enable-chrome-browser-cloud-management` command line flag to enable it if you are not using the official Google Chrome build.
+[5536:45392:0508/113101.881:VERBOSE1:platform_auth_policy_observer.cc(70)] PlatformAuthProviderManager enabled: 0
+[5536:45392:0508/113101.887:WARNING:account_consistency_mode_manager.cc(77)] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.
+[5536:45392:0508/113101.887:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[5536:45392:0508/113101.890:VERBOSE1:pref_proxy_config_tracker_impl.cc(199)] 00001EE400064000: set chrome proxy config service to 00001EE400114C60
+[5536:45392:0508/113101.890:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[5536:45392:0508/113101.890:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(310)] MutablePO2TS::MutablePO2TS
+[5536:45392:0508/113101.891:VERBOSE1:pref_proxy_config_tracker_impl.cc(199)] 00001EE400065E40: set chrome proxy config service to 00001EE400116660
+[5536:45392:0508/113101.891:VERBOSE1:device_event_log_impl.cc(204)] [11:31:01.891] Bluetooth: EVENT: bluetooth_api.cc:82 BluetoothAPI: 00001EE4005C9E00
+[5536:45392:0508/113101.892:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[5536:45392:0508/113101.892:VERBOSE1:bluetooth_low_energy_event_router.cc(291)] Initializing BluetoothLowEnergyEventRouter.
+[5536:23480:0508/113101.894:VERBOSE1:simple_index_file.cc(599)] Simple Cache Index is being restored from disk.
+[5536:50148:0508/113101.894:VERBOSE1:simple_index_file.cc(599)] Simple Cache Index is being restored from disk.
+[5536:45392:0508/113101.894:VERBOSE1:gaia_auth_util.cc(55)] Canonicalized @gmail.com to @gmail.com
+[5536:45392:0508/113101.894:VERBOSE1:gaia_auth_util.cc(55)] Canonicalized @gmail.com to @gmail.com
+[5536:45392:0508/113101.894:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[5536:45392:0508/113101.894:VERBOSE1:account_reconcilor.cc(181)] AccountReconcilor::AccountReconcilor
+[5536:45392:0508/113101.894:VERBOSE1:account_reconcilor.cc(219)] AccountReconcilor::Initialize
+[5536:45392:0508/113101.894:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[5536:45392:0508/113101.894:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[5536:45392:0508/113101.898:VERBOSE1:extension_service.cc(1438)] AddComponentExtension Web Store
+[5536:45392:0508/113101.898:VERBOSE1:extension_service.cc(1440)] Component extension Web Store (ahfgeienlihckogmohjhadlkjgocpleb) installing/upgrading from '' to 0.2
+[5536:45392:0508/113101.899:VERBOSE1:extension_service.cc(1438)] AddComponentExtension Chromium PDF Viewer
+[5536:45392:0508/113101.899:VERBOSE1:extension_service.cc(1440)] Component extension Chromium PDF Viewer (mhjfbmdgcfjbbpaeojofohoefgiehjai) installing/upgrading from '' to 1
+[5536:45392:0508/113101.899:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[5536:45392:0508/113101.899:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[5536:45392:0508/113101.901:VERBOSE1:on_device_head_suggest_component_installer.cc(61)] On Device Head Component will fetch model for locale: ENUS500000
+[5536:45392:0508/113101.901:VERBOSE1:trust_token_key_commitments_component_installer.cc(23)] Registering Trust Token Key Commitments component.
+[5536:45392:0508/113101.901:VERBOSE1:first_party_sets_component_installer.cc(39)] Registering Related Website Sets component.
+[5536:45392:0508/113101.901:VERBOSE1:privacy_sandbox_attestations_component_installer.cc(181)] Registering Privacy Sandbox Attestations component
+[5536:45392:0508/113101.901:VERBOSE1:file_type_policies_component_installer.cc(128)] Registering File Type Policies component.
+[5536:48464:0508/113101.901:VERBOSE1:component_installer.cc(481)] StartRegistration for Privacy Sandbox Attestations
+[5536:45392:0508/113101.901:VERBOSE1:hyphenation_component_installer.cc(151)] Registering Hyphenation component.
+[5536:41596:0508/113101.901:VERBOSE1:component_installer.cc(481)] StartRegistration for Widevine Content Decryption Module
+[5536:45392:0508/113101.901:VERBOSE1:tpcd_metadata_component_installer.cc(23)] Third Party Cookie Deprecation Metadata component.
+[5536:45392:0508/113101.901:VERBOSE1:translate_kit_component_installer.cc(160)] Registering TranslateKit component.
+[5536:45392:0508/113101.902:VERBOSE1:open_cookie_database_component_installer.cc(23)] Registering Open Cookie Database component.
+[5536:42972:0508/113101.902:VERBOSE1:component_installer.cc(481)] StartRegistration for Subresource Filter Rules
+[5536:45392:0508/113101.902:VERBOSE1:cookie_readiness_list_component_installer.cc(24)] Registering Cookie Readiness List component.
+[5536:23480:0508/113101.902:VERBOSE1:component_installer.cc(481)] StartRegistration for OnDeviceHeadSuggest
+[5536:45392:0508/113101.902:VERBOSE1:profile_manager.cc(1272)] AddKeepAlive(Default, kAppWindow). keep_alives=[kWaitingForFirstBrowserWindow (1), kAppWindow (1)]
+[5536:34936:0508/113101.903:VERBOSE1:component_installer.cc(481)] StartRegistration for Optimization Hints
+[5536:48464:0508/113101.904:VERBOSE1:component_installer.cc(481)] StartRegistration for Trust Token Key Commitments
+[5536:41596:0508/113101.904:VERBOSE1:component_installer.cc(481)] StartRegistration for Certificate Error Assistant
+[5536:50148:0508/113101.904:VERBOSE1:component_installer.cc(481)] StartRegistration for File Type Policies
+[5536:42972:0508/113101.905:VERBOSE1:component_installer.cc(481)] StartRegistration for CRLSet
+[5536:10904:0508/113101.905:VERBOSE1:component_installer.cc(481)] StartRegistration for Origin Trials
+[5536:41596:0508/113101.905:VERBOSE1:component_installer.cc(481)] StartRegistration for MEI Preload
+[5536:34936:0508/113101.905:VERBOSE1:component_installer.cc(481)] StartRegistration for PKI Metadata
+[5536:32152:0508/113101.906:VERBOSE1:component_installer.cc(481)] StartRegistration for Safety Tips
+[5536:23480:0508/113101.906:VERBOSE1:component_installer.cc(481)] StartRegistration for Crowd Deny
+[5536:48464:0508/113101.906:VERBOSE1:component_installer.cc(481)] StartRegistration for Hyphenation
+[5536:35340:0508/113101.906:VERBOSE1:component_installer.cc(481)] StartRegistration for Zxcvbn Data Dictionaries
+[5536:10904:0508/113101.906:VERBOSE1:component_installer.cc(481)] StartRegistration for Autofill States Data
+[5536:50148:0508/113101.906:VERBOSE1:component_installer.cc(481)] StartRegistration for Third-Party Cookie Deprecation Metadata
+[5536:34936:0508/113101.906:VERBOSE1:component_installer.cc(481)] StartRegistration for Open Cookie Database
+[5536:45392:0508/113101.907:VERBOSE1:component_installer.cc(560)] FinishRegistration for OnDeviceHeadSuggest
+[5536:45392:0508/113101.907:VERBOSE1:component_updater_service.cc(165)] CrxUpdateService starting up. First update attempt will take place in 60 s seconds. Next update attempt will take place in 18000 s seconds. 
+[5536:45392:0508/113101.907:VERBOSE1:component_installer.cc(560)] FinishRegistration for Privacy Sandbox Attestations
+[5536:45392:0508/113101.907:VERBOSE1:component_installer.cc(560)] FinishRegistration for Widevine Content Decryption Module
+[5536:45392:0508/113101.907:VERBOSE1:component_installer.cc(560)] FinishRegistration for Optimization Hints
+[5536:45392:0508/113101.908:VERBOSE1:component_installer.cc(560)] FinishRegistration for Subresource Filter Rules
+[5536:45392:0508/113101.908:VERBOSE1:component_installer.cc(560)] FinishRegistration for Certificate Error Assistant
+[5536:45392:0508/113101.908:VERBOSE1:component_installer.cc(560)] FinishRegistration for Trust Token Key Commitments
+[5536:45392:0508/113101.908:VERBOSE1:component_installer.cc(560)] FinishRegistration for Origin Trials
+[5536:45392:0508/113101.908:VERBOSE1:component_installer.cc(560)] FinishRegistration for File Type Policies
+[5536:45392:0508/113101.908:VERBOSE1:component_installer.cc(560)] FinishRegistration for PKI Metadata
+[5536:19372:0508/113101.908:VERBOSE1:component_installer.cc(481)] StartRegistration for Cookie Readiness List
+[5536:35568:0508/113101.908:VERBOSE1:component_installer.cc(481)] StartRegistration for Amount Extraction Heuristic Regexes
+[5536:45392:0508/113101.910:VERBOSE1:component_installer.cc(560)] FinishRegistration for CRLSet
+[5536:41596:0508/113101.910:VERBOSE1:token_service_table.cc(202)] Loaded tokens: result = 3 ; number of tokens loaded = 0
+[5536:45392:0508/113101.910:VERBOSE1:component_installer.cc(560)] FinishRegistration for MEI Preload
+[5536:45392:0508/113101.910:VERBOSE1:component_installer.cc(560)] FinishRegistration for Safety Tips
+[5536:45392:0508/113101.910:VERBOSE1:component_installer.cc(560)] FinishRegistration for Crowd Deny
+[5536:45392:0508/113101.914:VERBOSE1:component_installer.cc(560)] FinishRegistration for Autofill States Data
+[5536:45392:0508/113101.914:VERBOSE1:component_installer.cc(560)] FinishRegistration for Hyphenation
+[5536:45392:0508/113101.914:VERBOSE1:component_installer.cc(560)] FinishRegistration for Zxcvbn Data Dictionaries
+[5536:45392:0508/113101.914:VERBOSE1:component_installer.cc(560)] FinishRegistration for Open Cookie Database
+[5536:45392:0508/113101.914:VERBOSE1:component_installer.cc(560)] FinishRegistration for Third-Party Cookie Deprecation Metadata
+[5536:45392:0508/113101.914:VERBOSE1:component_installer.cc(560)] FinishRegistration for Cookie Readiness List
+[5536:45392:0508/113101.914:VERBOSE1:component_installer.cc(560)] FinishRegistration for Amount Extraction Heuristic Regexes
+[5536:45392:0508/113101.914:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(520)] MutablePO2TS::OnWebDataServiceRequestDone. Result type: 6
+[5536:45392:0508/113101.914:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(580)] MutablePO2TS::LoadAllCredentialsIntoMemory; 0 credential(s).
+[5536:45392:0508/113101.914:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[5536:45392:0508/113101.914:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[5536:45392:0508/113101.914:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[5536:45392:0508/113101.914:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[5536:45392:0508/113101.914:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[5536:45392:0508/113101.914:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[5536:45392:0508/113101.915:VERBOSE1:partitioned_lock_manager.cc(212)] Acquiring <PartitionedLockId>{id: 0x31, partition: 0} for Start@chrome\browser\web_applications\generated_icon_fix_manager.cc:58
+[5536:45392:0508/113101.915:VERBOSE1:partitioned_lock_manager.cc(194)] All locks acquired for Start@chrome\browser\web_applications\generated_icon_fix_manager.cc:58
+[5536:45392:0508/113101.915:VERBOSE1:partitioned_lock_manager.cc(236)] Releasing <PartitionedLockId>{id: 0x31, partition: 0} requested by Start@chrome\browser\web_applications\generated_icon_fix_manager.cc:58
+[5536:45392:0508/113101.940:VERBOSE1:profile_manager.cc(1272)] AddKeepAlive(Default, kExtensionUpdater). keep_alives=[kWaitingForFirstBrowserWindow (1), kAppWindow (1), kExtensionUpdater (1)]
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Session.TotalDuration
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Commerce.PriceDrops.ActiveTabNavigationComplete.IsProductDetailPage
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing Autofill_PolledCreditCardSuggestions
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing IOS.ParcelTracking.Tracked.AutoTrack
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Omnibox.SuggestionUsed.ClientSummarizedResultType
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing MetadataWriter
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Sync.DeviceCount2
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Sync.DeviceCount2.Phone
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Sync.DeviceCount2.Desktop
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Sync.DeviceCount2.Tablet
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing MobileBookmarkManagerOpen
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing NewTabPage.MostVisited.Clicked
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing TabGroup.Created.OpenInNewTab
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing Android.HistoryPage.OpenItem
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing MobileMenuRecentTabs
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing PasswordManager.ManagePasswordsReferrer
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing PasswordManager.ProfileStore.TotalAccountsHiRes3.WithScheme.Https
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing PasswordManager.FillingAssistance
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing PasswordManager.SavedPasswordIsGenerated
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing PasswordManager.SaveUIDismissalReason
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing PasswordManager.SaveUIDismissalReason
+[5536:45392:0508/113101.948:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing IOS.CredentialExtension.IsEnabled.Startup
+[5536:45392:0508/113102.161:VERBOSE1:segment_result_provider.cc(136)] GetSegmentResult: segment=OPTIMIZATION_TARGET_SEGMENTATION_DEVICE_SWITCHER ignoring DB score, executing model.
+[5536:45392:0508/113102.161:VERBOSE1:segment_result_provider.cc(277)] ExecuteModelAndGetScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_DEVICE_SWITCHER server segment info not available
+[5536:45392:0508/113102.161:VERBOSE1:segment_result_provider.cc(210)] OnGotModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_DEVICE_SWITCHER failed to get database model score, trying default model.
+[5536:45392:0508/113102.288:VERBOSE1:profile_manager.cc(1272)] AddKeepAlive(Default, kBrowserWindow). keep_alives=[kWaitingForFirstBrowserWindow (1), kBrowserWindow (1), kAppWindow (1), kExtensionUpdater (1)]
+[5536:45392:0508/113102.288:VERBOSE1:profile_manager.cc(1350)] ClearFirstBrowserWindowKeepAlive(Default). keep_alives=[kBrowserWindow (1), kAppWindow (1), kExtensionUpdater (1)]
+[5536:45392:0508/113102.316:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[5536:45392:0508/113102.340:VERBOSE1:device_event_log_impl.cc(204)] [11:31:02.340] Display: EVENT: screen_win.cc:951 Displays updated, count: 2
+[5536:45392:0508/113102.340:VERBOSE1:device_event_log_impl.cc(204)] [11:31:02.340] Display: EVENT: screen_win.cc:953 Display[882414461] bounds=[-1920,0 1920x1200], workarea=[-1920,0 1920x1160], scale=1, rotation=0, panel_rotation=0 external detected
+[5536:45392:0508/113102.340:VERBOSE1:device_event_log_impl.cc(204)] [11:31:02.340] Display: EVENT: screen_win.cc:953 Display[3567939853] bounds=[0,0 1920x1080], workarea=[0,0 1920x1040], scale=1, rotation=0, panel_rotation=0 external detected
+[5536:45392:0508/113102.353:WARNING:chrome_browser_delegate.cc(696)] Creating a chrome browser without a client
+[13728:27212:0508/113102.579:WARNING:viz_main_impl.cc(85)] VizNullHypothesis is disabled (not a warning)
+[13728:27212:0508/113102.581:ERROR:direct_composition_support.cc(1122)] QueryInterface to IDCompositionDevice4 failed: No such interface supported (0x80004002)
+[5536:45392:0508/113102.585:VERBOSE1:device_event_log_impl.cc(204)] [11:31:02.586] Display: EVENT: screen_win.cc:951 Displays updated, count: 2
+[5536:45392:0508/113102.586:VERBOSE1:device_event_log_impl.cc(204)] [11:31:02.586] Display: EVENT: screen_win.cc:953 Display[882414461] bounds=[-1920,0 1920x1200], workarea=[-1920,0 1920x1160], scale=1, rotation=0, panel_rotation=0 external detected
+[5536:45392:0508/113102.586:VERBOSE1:device_event_log_impl.cc(204)] [11:31:02.586] Display: EVENT: screen_win.cc:953 Display[3567939853] bounds=[0,0 1920x1080], workarea=[0,0 1920x1040], scale=1, rotation=0, panel_rotation=0 external detected
+[5536:45392:0508/113103.062:VERBOSE1:extension_downloader.cc(757)] Failed to fetch manifest 'https://clients2.google.com/service/update2/crx?os=win&arch=x64&os_arch=x86_64&nacl_arch=x86-64&prod=chromiumcrx&prodchannel=&prodversion=134.0.6998.178&lang=en-US&acceptformat=crx3,puff&x=id%3Dlmjegmlicamnimmfhcmpkclmigmmcbeh%26v%3D0.0.0.0%26installedby%3Dexternal%26uc%26ping%3Dr%253D-1%2526e%253D1' response code:-1
+[5536:45392:0508/113103.063:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113103.657:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113104.285:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113104.856:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113105.494:VERBOSE1:extension_downloader.cc(757)] Failed to fetch manifest 'https://clients2.google.com/service/update2/crx?os=win&arch=x64&os_arch=x86_64&nacl_arch=x86-64&prod=chromiumcrx&prodchannel=&prodversion=134.0.6998.178&lang=en-US&acceptformat=crx3,puff&x=id%3Dlmjegmlicamnimmfhcmpkclmigmmcbeh%26v%3D0.0.0.0%26installedby%3Dexternal%26uc%26ping%3Dr%253D-1%2526e%253D1' response code:-1
+[5536:45392:0508/113105.494:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113106.145:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113106.765:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(226)] GetCachedModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_CHROME_LOW_USER_ENGAGEMENT does not have a segment info.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(172)] OnGotModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_CHROME_LOW_USER_ENGAGEMENT failed to get score from database, executing server model.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(277)] ExecuteModelAndGetScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_CHROME_LOW_USER_ENGAGEMENT server segment info not available
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(201)] OnGotModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_CHROME_LOW_USER_ENGAGEMENT failed to get score from executing server model, getting score from default model from db.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(240)] GetCachedModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_CHROME_LOW_USER_ENGAGEMENT has expired or unavailable result.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(210)] OnGotModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_CHROME_LOW_USER_ENGAGEMENT failed to get database model score, trying default model.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(295)] ExecuteModelAndGetScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_CHROME_LOW_USER_ENGAGEMENT signal collection not met
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(226)] GetCachedModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_SEARCH_USER does not have a segment info.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(172)] OnGotModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_SEARCH_USER failed to get score from database, executing server model.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(277)] ExecuteModelAndGetScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_SEARCH_USER server segment info not available
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(201)] OnGotModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_SEARCH_USER failed to get score from executing server model, getting score from default model from db.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(240)] GetCachedModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_SEARCH_USER has expired or unavailable result.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(210)] OnGotModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_SEARCH_USER failed to get database model score, trying default model.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(295)] ExecuteModelAndGetScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_SEARCH_USER signal collection not met
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(226)] GetCachedModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_SHOPPING_USER does not have a segment info.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(172)] OnGotModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_SHOPPING_USER failed to get score from database, executing server model.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(277)] ExecuteModelAndGetScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_SHOPPING_USER server segment info not available
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(201)] OnGotModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_SHOPPING_USER failed to get score from executing server model, getting score from default model from db.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(240)] GetCachedModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_SHOPPING_USER has expired or unavailable result.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(210)] OnGotModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_SHOPPING_USER failed to get database model score, trying default model.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(226)] GetCachedModelScore: segment=CROSS_DEVICE_USER_SEGMENT does not have a segment info.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(172)] OnGotModelScore: segment=CROSS_DEVICE_USER_SEGMENT failed to get score from database, executing server model.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(277)] ExecuteModelAndGetScore: segment=CROSS_DEVICE_USER_SEGMENT server segment info not available
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(201)] OnGotModelScore: segment=CROSS_DEVICE_USER_SEGMENT failed to get score from executing server model, getting score from default model from db.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(240)] GetCachedModelScore: segment=CROSS_DEVICE_USER_SEGMENT has expired or unavailable result.
+[5536:45392:0508/113106.964:VERBOSE1:segment_result_provider.cc(210)] OnGotModelScore: segment=CROSS_DEVICE_USER_SEGMENT failed to get database model score, trying default model.
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(295)] ExecuteModelAndGetScore: segment=CROSS_DEVICE_USER_SEGMENT signal collection not met
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(226)] GetCachedModelScore: segment=RESUME_HEAVY_USER_SEGMENT does not have a segment info.
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(172)] OnGotModelScore: segment=RESUME_HEAVY_USER_SEGMENT failed to get score from database, executing server model.
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(277)] ExecuteModelAndGetScore: segment=RESUME_HEAVY_USER_SEGMENT server segment info not available
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(201)] OnGotModelScore: segment=RESUME_HEAVY_USER_SEGMENT failed to get score from executing server model, getting score from default model from db.
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(240)] GetCachedModelScore: segment=RESUME_HEAVY_USER_SEGMENT has expired or unavailable result.
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(210)] OnGotModelScore: segment=RESUME_HEAVY_USER_SEGMENT failed to get database model score, trying default model.
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(295)] ExecuteModelAndGetScore: segment=RESUME_HEAVY_USER_SEGMENT signal collection not met
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(226)] GetCachedModelScore: segment=PASSWORD_MANAGER_USER does not have a segment info.
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(172)] OnGotModelScore: segment=PASSWORD_MANAGER_USER failed to get score from database, executing server model.
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(277)] ExecuteModelAndGetScore: segment=PASSWORD_MANAGER_USER server segment info not available
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(201)] OnGotModelScore: segment=PASSWORD_MANAGER_USER failed to get score from executing server model, getting score from default model from db.
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(240)] GetCachedModelScore: segment=PASSWORD_MANAGER_USER has expired or unavailable result.
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(210)] OnGotModelScore: segment=PASSWORD_MANAGER_USER failed to get database model score, trying default model.
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(295)] ExecuteModelAndGetScore: segment=PASSWORD_MANAGER_USER signal collection not met
+[5536:19372:0508/113106.965:VERBOSE1:ukm_database_backend.cc(328)] Output from SQL query SELECT IFNULL(COUNT(metric_value),0)FROM uma_metrics WHERE metric_hash='1A94D82447638877' AND profile_id=? AND type=? AND metric_value IN(1)AND event_timestamp BETWEEN ? AND ? Bind values: 0:3449500681 1:2 2:2025-05-01 10:31:06.965198 UTC 3:2025-05-08 10:31:06.965198 UTC  Result: 0.000000,
+[5536:19372:0508/113106.965:VERBOSE1:ukm_database_backend.cc(328)] Output from SQL query SELECT IFNULL(COUNT(metric_value),0)FROM uma_metrics WHERE metric_hash='8A5076C9026398BD' AND profile_id=? AND type=? AND event_timestamp BETWEEN ? AND ? Bind values: 0:3449500681 1:1 2:2025-05-01 10:31:06.965198 UTC 3:2025-05-08 10:31:06.965198 UTC  Result: 0.000000,
+[5536:19372:0508/113106.965:VERBOSE1:ukm_database_backend.cc(328)] Output from SQL query SELECT COALESCE((SELECT metric_value FROM uma_metrics WHERE metric_hash='ED7CFEC70BF9942D' AND profile_id=? AND type=? AND event_timestamp BETWEEN ? AND ? ORDER BY event_timestamp DESC,id DESC LIMIT 1),0.000000) Bind values: 0:3449500681 1:3 2:2025-05-01 10:31:06.965198 UTC 3:2025-05-08 10:31:06.965198 UTC  Result: 0.000000,
+[5536:45392:0508/113106.965:VERBOSE1:model_executor_impl.cc(189)] Segmentation model input:  feature 0: 0 feature 1: 0 feature 2: 0 feature 3: 0 for segment OPTIMIZATION_TARGET_SEGMENTATION_SHOPPING_USER
+[5536:45392:0508/113106.965:VERBOSE1:model_executor_impl.cc(218)] Segmentation model result:  output 0: 0 for segment OPTIMIZATION_TARGET_SEGMENTATION_SHOPPING_USER
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(29)] ComputeDiscreteMapping: segment=: result=0, rank=0
+[5536:45392:0508/113106.965:VERBOSE1:segment_result_provider.cc(359)] OnModelExecuted: Default model executed successfully. Result: PredictionResult: timestamp: 13391173866965739 result 0: 0 for segment OPTIMIZATION_TARGET_SEGMENTATION_SHOPPING_USER
+[5536:45392:0508/113106.965:VERBOSE1:segment_info_database.cc(208)] SaveSegmentResult: saving: PredictionResult: timestamp: 13391173866965739 result 0: 0 for segment id: OPTIMIZATION_TARGET_SEGMENTATION_SHOPPING_USER
+[5536:45392:0508/113106.965:VERBOSE1:cached_result_writer.cc(30)] CachedResultWriter updating prefs with new result: PredictionResult: timestamp: 13391173866965739 result 0: 0 for segmentation key: shopping_user
+[5536:45392:0508/113107.414:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113108.061:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113108.723:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113109.300:VERBOSE1:extension_downloader.cc(757)] Failed to fetch manifest 'https://clients2.google.com/service/update2/crx?os=win&arch=x64&os_arch=x86_64&nacl_arch=x86-64&prod=chromiumcrx&prodchannel=&prodversion=134.0.6998.178&lang=en-US&acceptformat=crx3,puff&x=id%3Dlmjegmlicamnimmfhcmpkclmigmmcbeh%26v%3D0.0.0.0%26installedby%3Dexternal%26uc%26ping%3Dr%253D-1%2526e%253D1' response code:-1
+[5536:45392:0508/113109.300:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113109.924:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[5536:45392:0508/113109.924:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[5536:45392:0508/113109.924:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[5536:45392:0508/113109.924:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[5536:45392:0508/113109.924:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113110.616:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113111.217:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:45392:0508/113111.845:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[5536:39864:0508/113111.911:VERBOSE1:media_stream_manager.cc(1501)] MSPL::OnSpeedLimitChange({this=0x1ee4000e4808}, {new_limit=24})

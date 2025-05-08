@@ -40,7 +40,7 @@
             fixed (char* url_ptr = url)
             {
                 var n_url = new cef_string_t(url_ptr, url != null ? url.Length : 0);
-                var n_success = cef_browser_host_t.create_browser(n_windowInfo, n_client, &n_url, n_settings, n_extraInfo, n_requestContext);
+                var n_success = cef_browser_host_t.create_browser(n_windowInfo, null, &n_url, n_settings, n_extraInfo, n_requestContext);
                 if (n_success != 1) throw ExceptionBuilder.FailedToCreateBrowser(n_success);
             }
         }
