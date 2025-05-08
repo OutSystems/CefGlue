@@ -10,7 +10,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
 
         static int Main(string[] args)
         {
-            CefRuntimeLoader.Load();
+            CefRuntimeLoader.Initialize();
             Task.Delay(20000).Wait();
             return 0;
         }
