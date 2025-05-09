@@ -17,6 +17,14 @@ namespace Xilium.CefGlue.Common
         private readonly CommonBrowserAdapter _adapter;
 
         #region Disposable
+        
+        static BaseCefBrowser()
+        {
+            if (CefRuntime.Platform == CefRuntimePlatform.MacOS && !CefRuntimeLoader.IsLoaded)
+            {
+                CefRuntimeLoader.Load(new BrowserProcessHandler());
+            }
+        }
 
         public BaseCefBrowser(Func<CefRequestContext> cefRequestContextFactory = null)
         {
@@ -24,12 +32,8 @@ namespace Xilium.CefGlue.Common
             {
                 CefRuntimeLoader.Load();
             }
-
-#if HAS_NLOG
-            _logger = new Logger(nameof(BaseCefBrowser));
-#else
+            
             _logger = new NullLogger(nameof(BaseCefBrowser));
-#endif
 
             if (CefRuntimeLoader.IsOSREnabled)
             {

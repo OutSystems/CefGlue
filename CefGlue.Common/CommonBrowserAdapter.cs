@@ -33,17 +33,22 @@ namespace Xilium.CefGlue.Common
 
         private object _disposeLock = new object();
 
+        static CommonBrowserAdapter()
+        {
+            if (CefRuntime.Platform == CefRuntimePlatform.MacOS && !CefRuntimeLoader.IsLoaded)
+            {
+                CefRuntimeLoader.Load(new BrowserProcessHandler());
+            }
+        }
+        
         public CommonBrowserAdapter(object eventsEmitter, string name, IControl control, ILogger logger, CefRequestContext cefRequestContext = null)
         {
             _eventsEmitter = eventsEmitter;
             _name = name;
             _logger = logger;
 
-            Control = control;
             RequestContext = cefRequestContext;
-
-            control.GotFocus += HandleGotFocus;
-            control.SizeChanged += HandleControlSizeChanged;
+            
 
             if (_logger.IsInfoEnabled)
             {
@@ -139,9 +144,7 @@ namespace Xilium.CefGlue.Common
         public JSDialogHandler JSDialogHandler { get; set; }
 
         #endregion
-
-        protected virtual IControl Control { get; }
-
+        
         protected CefBrowserHost BrowserHost { get; private set; }
 
         protected bool IsBrowserCreated { get; private set; }
@@ -293,16 +296,10 @@ namespace Xilium.CefGlue.Common
                 return false;
             }
 
-            var hostViewHandle = Control.GetHostViewHandle(width, height);
-            if (hostViewHandle == null)
-            {
-                return false;
-            }
-
             IsBrowserCreated = true;
 
             var windowInfo = CefWindowInfo.Create();
-            SetupBrowserView(windowInfo, width, height, hostViewHandle.Value);
+            SetupBrowserView(windowInfo, width, height, IntPtr.Zero);
 
             var cefClient = CreateCefClient();
             cefClient.Dispatcher.RegisterMessageHandler(Messages.UnhandledException.Name, OnBrowserProcessUnhandledException);
@@ -398,11 +395,7 @@ namespace Xilium.CefGlue.Common
 
         protected virtual void HandleControlSizeChanged(CefSize size)
         {
-            var created = CreateBrowser(size.Width, size.Height);
-            if (created)
-            {
-                Control.SizeChanged -= HandleControlSizeChanged;
-            }
+           
         }
 
         private void OnBrowserProcessUnhandledException(MessageReceivedEventArgs e)
@@ -473,7 +466,6 @@ namespace Xilium.CefGlue.Common
 
         protected virtual void OnBrowserHostCreated(CefBrowserHost browserHost)
         {
-            Control.InitializeRender(browserHost.GetWindowHandle());
         }
 
         protected virtual bool OnBrowserClose(CefBrowser browser)
@@ -484,7 +476,6 @@ namespace Xilium.CefGlue.Common
                 return false;
             }
 
-            Control.DestroyRender();
             Cleanup(browser);
 
             if (CefRuntime.Platform == CefRuntimePlatform.Linux)
@@ -549,7 +540,6 @@ namespace Xilium.CefGlue.Common
                 }
 
                 _tooltip = text;
-                Control.SetTooltip(text);
             });
 
             return true;
@@ -615,12 +605,11 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandleOpenContextMenu(CefContextMenuParams parameters, CefMenuModel model, CefRunContextMenuCallback callback)
         {
-            Control.OpenContextMenu(MenuEntry.FromCefModel(model), parameters.X, parameters.Y, callback);
+
         }
 
         void ICefBrowserHost.HandleCloseContextMenu()
         {
-            Control.CloseContextMenu();
         }
 
         void ICefBrowserHost.HandleException(Exception exception)
@@ -633,7 +622,7 @@ namespace Xilium.CefGlue.Common
             var result = false;
             WithErrorHandling((nameof(ICefBrowserHost.HandleCursorChange)), () =>
             {
-                result = Control.SetCursor(cursorHandle, cursorType);
+
             });
 
             return result;

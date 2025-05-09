@@ -1,11 +1,9 @@
 using System;
 using System.Reactive.Linq;
-using Avalonia.ReactiveUI;
-using Xilium.CefGlue.Common.Handlers;
 
-namespace Xilium.CefGlue.Avalonia
+namespace Xilium.CefGlue
 {
-    internal class AvaloniaBrowserProcessHandler : BrowserProcessHandler
+    internal class BrowserProcessHandler : Common.Handlers.BrowserProcessHandler
     {
         private IDisposable _current;
         private object _schedule = new object();
@@ -24,7 +22,7 @@ namespace Xilium.CefGlue.Avalonia
                     delayMs = 1;
                 }
 
-                _current = Observable.Interval(TimeSpan.FromMilliseconds(delayMs)).ObserveOn(AvaloniaScheduler.Instance).Subscribe((i) =>
+                _current = Observable.Interval(TimeSpan.FromMilliseconds(delayMs)).Subscribe((i) =>
                 {
                     CefRuntime.DoMessageLoopWork();
                 });
