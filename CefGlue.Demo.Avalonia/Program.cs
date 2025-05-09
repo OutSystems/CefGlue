@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Avalonia;
 using Xilium.CefGlue.Common;
 using Xilium.CefGlue.Common.Shared;
@@ -14,22 +15,25 @@ namespace Xilium.CefGlue.Demo.Avalonia
             // generate a unique cache path to avoid problems when launching more than one process
             // https://www.magpcss.org/ceforum/viewtopic.php?f=6&t=19665
             var cachePath = Path.Combine(Path.GetTempPath(), "CefGlue_" + Guid.NewGuid().ToString().Replace("-", null));
+            CefRuntimeLoader.InitializeSync(new CefSettings { RootCachePath = cachePath });
+            Task.Delay(20000).Wait();
             
-            AppDomain.CurrentDomain.ProcessExit += delegate { Cleanup(cachePath); };
-            AppBuilder.Configure<App>()
-                .UsePlatformDetect()
-                .With(new Win32PlatformOptions())
-                .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings {
-                        RootCachePath = cachePath,
-                    },
-                    customSchemes: [
-                        new CustomScheme
-                        {
-                            SchemeName = "test",
-                            SchemeHandlerFactory = new CustomSchemeHandler()
-                        }
-                    ]))
-                .StartWithClassicDesktopLifetime(args);
+            
+            // AppDomain.CurrentDomain.ProcessExit += delegate { Cleanup(cachePath); };
+            // AppBuilder.Configure<App>()
+            //     .UsePlatformDetect()
+            //     .With(new Win32PlatformOptions())
+            //     .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings {
+            //             RootCachePath = cachePath,
+            //         },
+            //         customSchemes: [
+            //             new CustomScheme
+            //             {
+            //                 SchemeName = "test",
+            //                 SchemeHandlerFactory = new CustomSchemeHandler()
+            //             }
+            //         ]))
+            //     .StartWithClassicDesktopLifetime(args);
                       
             return 0;
         }

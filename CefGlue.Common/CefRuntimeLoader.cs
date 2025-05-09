@@ -14,6 +14,11 @@ namespace Xilium.CefGlue.Common
         private const string DefaultBrowserProcessDirectory = "CefGlueBrowserProcess";
 
         private static Action<BrowserProcessHandler> _delayedInitialization;
+        
+        public static void InitializeSync(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null)
+        {
+            InternalInitialize(settings, flags, customSchemes);
+        }
 
         public static void Initialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null)
         {
@@ -37,7 +42,7 @@ namespace Xilium.CefGlue.Common
             if (subProcessPath == null)
                 throw new FileNotFoundException($"Unable to find SubProcess. Probed locations: {string.Join(Environment.NewLine, probingPaths)}");
 
-            settings.BrowserSubprocessPath = subProcessPath;
+            //settings.BrowserSubprocessPath = subProcessPath;
 
             switch (CefRuntime.Platform)
             {
