@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Xilium.CefGlue.Common.Events;
 using Xilium.CefGlue.Common.Handlers;
-using Xilium.CefGlue.Common.Helpers;
-using Xilium.CefGlue.Common.Helpers.Logger;
-using Xilium.CefGlue.Common.JavascriptExecution;
-using Xilium.CefGlue.Common.ObjectBinding;
-using Xilium.CefGlue.Common.Platform;
 using Xilium.CefGlue.Common.Shared.Helpers;
 using Xilium.CefGlue.Common.Shared.RendererProcessCommunication;
 using Xilium.CefGlue.Platform.Windows;
