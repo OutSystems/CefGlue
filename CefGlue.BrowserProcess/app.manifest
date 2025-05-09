@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <asmv1:assembly
         manifestVersion="1.0"
         xmlns="urn:schemas-microsoft-com:asm.v1"
@@ -7,6 +8,7 @@
         xmlns:asmv3="urn:schemas-microsoft-com:asm.v3"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+    <assemblyIdentity version="134.6998.178" name="CefGlue.BrowserProcess.exe" />
     <trustInfo xmlns="urn:schemas-microsoft-com:asm.v2">
         <security>
             <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
