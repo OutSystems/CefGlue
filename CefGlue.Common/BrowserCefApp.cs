@@ -37,7 +37,7 @@ namespace Xilium.CefGlue.Common
                 // Telemetry to debug
                 //commandLine.AppendSwitch("disable-features", "NetworkServiceSandbox");
                 commandLine.AppendSwitch("log-severity", "verbose");
-                commandLine.AppendSwitch("log-file", "C:\\git\\CefGlue\\cef_main_log.txt");
+                commandLine.AppendSwitch("log-file", "C:\\cef_main_log.txt");
                 
                 if (_flags != null)
                 {
