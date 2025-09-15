@@ -74,5 +74,6 @@ namespace Xilium.CefGlue
         /// time without warning).
         /// </summary>
         Renderer,
+        NumValues,
     }
 }

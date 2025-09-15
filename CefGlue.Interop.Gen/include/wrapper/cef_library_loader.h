@@ -33,11 +33,11 @@
 
 #include "include/base/cef_build.h"
 
-#ifdef __cplusplus
-#include <string>
+#if defined(OS_MAC)
 
+#ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus
+#endif
 
 ///
 /// Load the CEF library at the specified |path|. Returns true (1) on
@@ -53,6 +53,12 @@ int cef_unload_library(void);
 
 #ifdef __cplusplus
 }
+#endif
+
+#endif  // defined(OS_MAC)
+
+#ifdef __cplusplus
+#include <string>
 
 #if defined(OS_MAC)
 
@@ -84,7 +90,8 @@ int cef_unload_library(void);
 ///   #include "include/wrapper/cef_library_loader.h"
 ///
 ///   int main(int argc, char* argv[]) {
-///     // Initialize the macOS sandbox for this helper process.
+///     // Dynamically load and initialize the macOS sandbox for this helper
+///     // process.
 ///     CefScopedSandboxContext sandbox_context;
 ///     if (!sandbox_context.Initialize(argc, argv))
 ///       return 1;
@@ -98,7 +105,7 @@ int cef_unload_library(void);
 ///   }
 /// </pre>
 ///
-class CefScopedLibraryLoader {
+class CefScopedLibraryLoader final {
  public:
   CefScopedLibraryLoader();
 
@@ -124,10 +131,101 @@ class CefScopedLibraryLoader {
  private:
   bool Load(bool helper);
 
-  bool loaded_;
+  bool loaded_ = false;
 };
 
-#endif  // defined(OS_MAC)
+#elif defined(OS_WIN)
+#include <windows.h>
+
+#include "include/cef_version_info.h"
+
+///
+/// Scoped helper for loading the CEF library at runtime from a specific
+/// location on disk. Can optionally be used to verify code signing status and
+/// Chromium version compatibility at the same time. Binaries using this helper
+/// must be built with the "/DELAYLOAD:libcef.dll" linker flag.
+///
+/// Example usage:
+///
+/// <pre>
+///   #include "include/wrapper/cef_library_loader.h"
+///
+///   int APIENTRY wWinMain(HINSTANCE hInstance,
+///                         HINSTANCE hPrevInstance,
+///                         LPTSTR lpCmdLine,
+///                         int nCmdShow)
+///     // Version that was used to compile the CEF client app.
+///     cef_version_info_t version_info = {};
+///     CEF_POPULATE_VERSION_INFO(&version_info);
+///
+///     // Dynamically load libcef.dll from the specified location, and verify
+///     // that the Chromium version is compatible. Any failures will
+///     // intentionally crash the application. All CEF distribution resources
+///     // (DLLs, pak, etc) must be located in the same directory.
+///     CefScopedLibraryLoader library_loader;
+///     if (!library_loader.LoadInSubProcessAssert(&version_info)) {
+///       // Not running as a potentially sandboxed sub-process.
+///       // Choose the appropriate path for loading libcef.dll...
+///       const wchar_t* path = L"c:\\path\\to\\myapp\\cef\\libcef.dll";
+///       if (!library_loader.LoadInMainAssert(path, nullptr, true,
+///                                            &version_info)) {
+///         // The load failed. We'll crash before reaching this line.
+///         NOTREACHED();
+///         return CEF_RESULT_CODE_KILLED;
+///       }
+///     }
+///
+///     // Continue with CEF initialization...
+///   }
+/// </pre>
+///
+class CefScopedLibraryLoader final {
+ public:
+  CefScopedLibraryLoader();
+
+  CefScopedLibraryLoader(const CefScopedLibraryLoader&) = delete;
+  CefScopedLibraryLoader& operator=(const CefScopedLibraryLoader&) = delete;
+
+  ~CefScopedLibraryLoader();
+
+  ///
+  /// Load the CEF library (libcef.dll) in the main process from the specified
+  /// absolute path. If libcef.dll is code signed then all signatures must be
+  /// valid. If |thumbprint| is a SHA1 hash (e.g. 40 character upper-case
+  /// hex-encoded value) then the primary signature must match that thumbprint.
+  /// If |allow_unsigned| is true and |thumbprint| is nullptr then libcef.dll
+  /// may be unsigned, otherwise it must be validly signed. Failure of code
+  /// signing requirements or DLL loading will result in a FATAL error and
+  /// application termination. If |version_info| is specified then the
+  /// libcef.dll version information must also match. Returns true if the load
+  /// succeeds. Usage must be protected by cef::logging::ScopedEarlySupport.
+  ///
+  bool LoadInMainAssert(const wchar_t* dll_path,
+                        const char* thumbprint,
+                        bool allow_unsigned,
+                        cef_version_info_t* version_info);
+
+  ///
+  /// Load the CEF library (libcef.dll) in a sub-process that may be sandboxed.
+  /// The path will be determined based on command-line arguments for the
+  /// current process. Failure of DLL loading will result in a FATAL error and
+  /// application termination. If |version_info| is specified then the
+  /// libcef.dll version information must match. Returns true if the load
+  /// succeeds. Usage must be protected by cef::logging::ScopedEarlySupport.
+  ///
+  bool LoadInSubProcessAssert(cef_version_info_t* version_info);
+
+ private:
+  HMODULE handle_ = nullptr;
+};
+
+namespace switches {
+// Changes to this value require rebuilding libcef.dll.
+inline constexpr char kLibcefPath[] = "libcef-path";
+inline constexpr wchar_t kLibcefPathW[] = L"libcef-path";
+}  // namespace switches
+
+#endif  // defined(OS_WIN)
 #endif  // __cplusplus
 
 #endif  // CEF_INCLUDE_WRAPPER_CEF_LIBRARY_LOADER_H_

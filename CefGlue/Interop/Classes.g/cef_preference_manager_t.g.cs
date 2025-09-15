@@ -18,6 +18,15 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_all_preferences;
         internal IntPtr _can_set_preference;
         internal IntPtr _set_preference;
+        internal IntPtr _add_preference_observer;
+        
+        // GetChromeVariationsAsSwitches
+        [DllImport(libcef.DllName, EntryPoint = "cef_preference_manager_get_chrome_variations_as_switches", CallingConvention = libcef.CEF_CALL)]
+        public static extern void get_chrome_variations_as_switches(cef_string_list* switches);
+        
+        // GetChromeVariationsAsStrings
+        [DllImport(libcef.DllName, EntryPoint = "cef_preference_manager_get_chrome_variations_as_strings", CallingConvention = libcef.CEF_CALL)]
+        public static extern void get_chrome_variations_as_strings(cef_string_list* strings);
         
         // GetGlobalPreferenceManager
         [DllImport(libcef.DllName, EntryPoint = "cef_preference_manager_get_global", CallingConvention = libcef.CEF_CALL)]
@@ -76,6 +85,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int set_preference_delegate(cef_preference_manager_t* self, cef_string_t* name, cef_value_t* value, cef_string_t* error);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate cef_registration_t* add_preference_observer_delegate(cef_preference_manager_t* self, cef_string_t* name, cef_preference_observer_t* observer);
         
         // AddRef
         private static IntPtr _p0;
@@ -228,6 +243,23 @@ namespace Xilium.CefGlue.Interop
                 if (_p8 == IntPtr.Zero) { _d8 = d; _p8 = p; }
             }
             return d(self, name, value, error);
+        }
+        
+        // AddPreferenceObserver
+        private static IntPtr _p9;
+        private static add_preference_observer_delegate _d9;
+        
+        public static cef_registration_t* add_preference_observer(cef_preference_manager_t* self, cef_string_t* name, cef_preference_observer_t* observer)
+        {
+            add_preference_observer_delegate d;
+            var p = self->_add_preference_observer;
+            if (p == _p9) { d = _d9; }
+            else
+            {
+                d = (add_preference_observer_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(add_preference_observer_delegate));
+                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
+            }
+            return d(self, name, observer);
         }
         
     }

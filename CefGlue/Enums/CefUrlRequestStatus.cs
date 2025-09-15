@@ -11,7 +11,7 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Unknown status.
         /// </summary>
-        Unknown = 0,
+        Unknown,
 
         /// <summary>
         /// Request succeeded.
@@ -33,5 +33,6 @@ namespace Xilium.CefGlue
         /// Request failed for some reason.
         /// </summary>
         Failed,
+        NumValues,
     }
 }

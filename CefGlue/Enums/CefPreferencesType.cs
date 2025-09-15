@@ -2,6 +2,7 @@
 // This file manually written from cef/include/internal/cef_types.h.
 // C API name: cef_preferences_type_t.
 //
+
 namespace Xilium.CefGlue
 {
     /// <summary>
@@ -20,5 +21,7 @@ namespace Xilium.CefGlue
         /// is created.
         /// </summary>
         RequestContext,
+
+        NumValues,
     }
 }

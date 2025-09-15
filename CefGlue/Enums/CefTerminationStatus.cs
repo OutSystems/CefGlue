@@ -2,6 +2,7 @@
 // This file manually written from cef/include/internal/cef_types.h.
 // C API name: cef_termination_status_t.
 //
+
 namespace Xilium.CefGlue
 {
     /// <summary>
@@ -12,12 +13,12 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Non-zero exit status.
         /// </summary>
-        Termination,
+        AbnormalTermination,
 
         /// <summary>
         /// SIGKILL or task manager kill.
         /// </summary>
-        WasKilled,
+        ProcessWasKilled,
 
         /// <summary>
         /// Segmentation fault.
@@ -25,8 +26,19 @@ namespace Xilium.CefGlue
         ProcessCrashed,
 
         /// <summary>
-        /// Out of memory. Some platforms may use TS_PROCESS_CRASHED instead.
+        /// Out of memory. Some platforms may use PROCESS_CRASHED instead.
         /// </summary>
-        OutOfMemory,
+        ProcessOom,
+
+        /// <summary>
+        /// Child process never launched.
+        /// </summary>
+        LaunchFailed,
+
+        /// <summary>
+        /// On Windows, the OS terminated the process due to code integrity failure.
+        /// </summary>
+        IntegrityFailure,
+        NumValues
     }
 }

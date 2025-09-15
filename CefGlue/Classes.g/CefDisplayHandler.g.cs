@@ -35,6 +35,8 @@ namespace Xilium.CefGlue
         private cef_display_handler_t.on_loading_progress_change_delegate _dsc;
         private cef_display_handler_t.on_cursor_change_delegate _dsd;
         private cef_display_handler_t.on_media_access_change_delegate _dse;
+        private cef_display_handler_t.on_contents_bounds_change_delegate _dsf;
+        private cef_display_handler_t.get_root_window_screen_rect_delegate _ds10;
         
         protected CefDisplayHandler()
         {
@@ -70,6 +72,10 @@ namespace Xilium.CefGlue
             _self->_on_cursor_change = Marshal.GetFunctionPointerForDelegate(_dsd);
             _dse = new cef_display_handler_t.on_media_access_change_delegate(on_media_access_change);
             _self->_on_media_access_change = Marshal.GetFunctionPointerForDelegate(_dse);
+            _dsf = new cef_display_handler_t.on_contents_bounds_change_delegate(on_contents_bounds_change);
+            _self->_on_contents_bounds_change = Marshal.GetFunctionPointerForDelegate(_dsf);
+            _ds10 = new cef_display_handler_t.get_root_window_screen_rect_delegate(get_root_window_screen_rect);
+            _self->_get_root_window_screen_rect = Marshal.GetFunctionPointerForDelegate(_ds10);
         }
         
         ~CefDisplayHandler()
