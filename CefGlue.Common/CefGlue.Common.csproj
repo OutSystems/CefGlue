@@ -6,7 +6,7 @@
         <AssemblyName>Xilium.CefGlue.Common</AssemblyName>
         <RootNamespace>Xilium.CefGlue.Common</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PackageId>CefGlue.Common$(PackageSuffix)</PackageId>
+        <PackageId>Volo.CefGlue.Common$(PackageSuffix)</PackageId>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
