@@ -46,10 +46,10 @@
             <PrivateAssets>all</PrivateAssets>
         </ProjectReference>
 
-        <None Include="build\CefGlue.Common.props" Pack="True" PackagePath="build\CefGlue.Common$(PackageSuffix).props" />
-        <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="build\CefGlue.Common$(PackageSuffix).targets" />
-        <None Include="build\CefGlue.Common.props" Pack="True" PackagePath="buildTransitive\CefGlue.Common$(PackageSuffix).props" />
-        <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="buildTransitive\CefGlue.Common$(PackageSuffix).targets" />
+        <None Include="build\Volo.CefGlue.Common.props" Pack="True" PackagePath="build\Volo.CefGlue.Common$(PackageSuffix).props" />
+        <None Include="build\Volo.CefGlue.Common.targets" Pack="True" PackagePath="build\Volo.CefGlue.Common$(PackageSuffix).targets" />
+        <None Include="build\Volo.CefGlue.Common.props" Pack="True" PackagePath="buildTransitive\Volo.CefGlue.Common$(PackageSuffix).props" />
+        <None Include="build\Volo.CefGlue.Common.targets" Pack="True" PackagePath="buildTransitive\Volo.CefGlue.Common$(PackageSuffix).targets" />
     </ItemGroup>
 
     <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
