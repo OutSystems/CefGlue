@@ -5,7 +5,7 @@
     <RootNamespace>Xilium.CefGlue.Avalonia</RootNamespace>
     <AssemblyName>Xilium.CefGlue.Avalonia</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PackageId>CefGlue.Avalonia$(PackageSuffix)</PackageId>
+    <PackageId>Volo.CefGlue.Avalonia$(PackageSuffix)</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>

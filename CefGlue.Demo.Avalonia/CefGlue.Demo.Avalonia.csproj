@@ -42,6 +42,6 @@
     <ProjectReference Include="..\CefGlue.Common.Shared\CefGlue.Common.Shared.csproj" />
   </ItemGroup>
 
-  <Import Project="$(ProjectDir)..\CefGlue.Common\build\CefGlue.Common.targets" />
+  <Import Project="$(ProjectDir)..\CefGlue.Common\build\Volo.CefGlue.Common.targets" />
 
 </Project>
