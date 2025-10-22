@@ -18,20 +18,20 @@ namespace Xilium.CefGlue
         /// also the default value for requests like sub-resource loads that are not
         /// navigations.
         /// </summary>
-        Link = 0,
+        Link,
 
         /// <summary>
         /// Source is some other "explicit" navigation. This is the default value for
         /// navigations where the actual type is unknown. See also
         /// TT_DIRECT_LOAD_FLAG.
         /// </summary>
-        Explicit = 1,
+        Explicit,
 
         /// <summary>
         /// User got to this page through a suggestion in the UI (for example, via the
-        /// destinations page). Chrome runtime only.
+        /// destinations page). Chrome style only.
         /// </summary>
-        AutoBookmark = 2,
+        AutoBookmark,
 
         /// <summary>
         /// Source is a subframe navigation. This is any content that is automatically
@@ -40,7 +40,7 @@ namespace Xilium.CefGlue
         /// The user may not even realize the content in these pages is a separate
         /// frame, so may not care about the URL.
         /// </summary>
-        AutoSubframe = 3,
+        AutoSubframe,
 
         /// <summary>
         /// Source is a subframe navigation explicitly requested by the user that will
@@ -49,40 +49,40 @@ namespace Xilium.CefGlue
         /// the background because the user probably cares about the fact that this
         /// link was loaded.
         /// </summary>
-        ManualSubframe = 4,
+        ManualSubframe,
 
         /// <summary>
         /// User got to this page by typing in the URL bar and selecting an entry
         /// that did not look like a URL.  For example, a match might have the URL
         /// of a Google search result page, but appear like "Search Google for ...".
         /// These are not quite the same as EXPLICIT navigations because the user
-        /// didn't type or see the destination URL. Chrome runtime only.
+        /// didn't type or see the destination URL. Chrome style only.
         /// See also TT_KEYWORD.
         /// </summary>
-        Generated = 5,
+        Generated,
 
         /// <summary>
         /// This is a toplevel navigation. This is any content that is automatically
         /// loaded in a toplevel frame.  For example, opening a tab to show the ASH
         /// screen saver, opening the devtools window, opening the NTP after the safe
         /// browsing warning, opening web-based dialog boxes are examples of
-        /// AUTO_TOPLEVEL navigations. Chrome runtime only.
+        /// AUTO_TOPLEVEL navigations. Chrome style only.
         /// </summary>
-        AutoTopLevel = 6,
+        AutoTopLevel,
 
         /// <summary>
         /// Source is a form submission by the user. NOTE: In some situations
         /// submitting a form does not result in this transition type. This can happen
         /// if the form uses a script to submit the contents.
         /// </summary>
-        FormSubmit = 7,
+        FormSubmit,
 
         /// <summary>
         /// Source is a "reload" of the page via the Reload function or by re-visiting
         /// the same URL. NOTE: This is distinct from the concept of whether a
         /// particular load uses "reload semantics" (i.e. bypasses cached data).
         /// </summary>
-        Reload = 8,
+        Reload,
 
         /// <summary>
         /// The url was generated from a replaceable keyword other than the default
@@ -93,15 +93,15 @@ namespace Xilium.CefGlue
         /// the url 'http://' + keyword. For example, if you do a tab-to-search
         /// against wikipedia the generated url has a transition qualifer of
         /// TT_KEYWORD, and TemplateURLModel generates a visit for 'wikipedia.org'
-        /// with a transition type of TT_KEYWORD_GENERATED. Chrome runtime only.
+        /// with a transition type of TT_KEYWORD_GENERATED. Chrome style only.
         /// </summary>
-        Keyword = 9,
+        Keyword,
 
         /// <summary>
         /// Corresponds to a visit generated for a keyword. See description of
-        /// TT_KEYWORD for more details. Chrome runtime only.
+        /// TT_KEYWORD for more details. Chrome style only.
         /// </summary>
-        KeywordGenerated = 10,
+        KeywordGenerated,
 
         /// <summary>
         /// General mask defining the bits used for the source values.
@@ -129,14 +129,13 @@ namespace Xilium.CefGlue
         DirectLoadFlag = 0x02000000,
 
         /// <summary>
-        /// User is navigating to the home page. Chrome runtime only.
+        /// User is navigating to the home page. Chrome style only.
         /// </summary>
         HomePageFlag = 0x04000000,
 
         /// <summary>
         /// The transition originated from an external application; the exact
-        /// definition of this is embedder dependent. Chrome runtime and
-        /// extension system only.
+        /// definition of this is embedder dependent. Chrome style only.
         /// </summary>
         FromApiFlag = 0x08000000,
 

@@ -20,7 +20,6 @@ namespace Xilium.CefGlue.Interop
         public cef_string_t browser_subprocess_path;
         public cef_string_t framework_dir_path;
         public cef_string_t main_bundle_path;
-        public int chrome_runtime;
         public int multi_threaded_message_loop;
         public int external_message_pump;
         public int windowless_rendering_enabled;
@@ -28,7 +27,6 @@ namespace Xilium.CefGlue.Interop
         public cef_string_t cache_path;
         public cef_string_t root_cache_path;
         public int persist_session_cookies;
-        public int persist_user_preferences;
         public cef_string_t user_agent;
         public cef_string_t user_agent_product;
         public cef_string_t locale;
@@ -37,7 +35,6 @@ namespace Xilium.CefGlue.Interop
         public cef_string_t javascript_flags;
         public cef_string_t resources_dir_path;
         public cef_string_t locales_dir_path;
-        public int pack_loading_disabled;
         public int remote_debugging_port;
         public int uncaught_exception_stack_size;
         public uint background_color;
@@ -46,6 +43,7 @@ namespace Xilium.CefGlue.Interop
         public int cookieable_schemes_exclude_defaults;
         public cef_string_t chrome_policy_id;
         public int chrome_app_icon_id;
+        public int disable_signal_handlers;
 
         #region Alloc & Free
         private static int _sizeof;

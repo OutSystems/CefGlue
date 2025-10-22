@@ -27,7 +27,7 @@ namespace Xilium.CefGlue.Demo.WPF
             };
             CefRuntimeLoader.Initialize(settings);
 
-            var app = new Xilium.CefGlue.Demo.WPF.App();
+            var app = new App();
             app.InitializeComponent();
             app.Run();
 
