@@ -1,4 +1,8 @@
-﻿using System;
+﻿//
+// This file manually written from cef/include/internal/cef_types_content_settings.h.
+// C API name: cef_content_setting_types_t.
+//
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,13 +15,13 @@ namespace Xilium.CefGlue
     /// </summary>
     public enum CefContentSettingType
     {
-        // This setting governs whether cookies are enabled by the user in the
+        /// This setting governs whether cookies are enabled by the user in the
         /// provided context. However, it may be overridden by other settings. This
         /// enum should NOT be read directly to determine whether cookies are enabled;
         /// the client should instead rely on the CookieSettings API.
-        Cookies = 0,
+        Cookies,
         Images,
-        JavaScript,
+        Javascript,
 
         /// This setting governs both popups and unwanted redirects like tab-unders
         /// and framebusting.
@@ -36,7 +40,7 @@ namespace Xilium.CefGlue
         /// Advanced device-specific functions on MIDI devices. MIDI-SysEx
         /// communications can be used for changing the MIDI device's persistent state
         /// such as firmware.
-        MidiSysEx,
+        MidiSysex,
 
         SslCertDecisions,
         ProtectedMediaIdentifier,
@@ -89,8 +93,8 @@ namespace Xilium.CefGlue
         /// permission to respond to accessibility events, which can be used to
         /// provide a custom accessibility experience. Requires explicit user consent
         /// because some users may not want sites to know they're using assistive
-        /// technology.
-        AccessibilityEvents,
+        /// technology. Deprecated in M131.
+        DeprecatedAccessibilityEvents,
 
         /// Used to store whether to allow a website to install a payment handler.
         PaymentHandler,
@@ -180,8 +184,8 @@ namespace Xilium.CefGlue
 
         /// Used to store whether a site is allowed to request AR or VR sessions with
         /// the WebXr Device API.
-        VR,
-        AR,
+        Vr,
+        Ar,
 
         /// Content setting which stores whether to allow site to open and read files
         /// and directories selected through the File System Access API.
@@ -221,13 +225,16 @@ namespace Xilium.CefGlue
         /// use by the File System Access API.
         FileSystemLastPickedDirectory,
 
-        /// Controls access to the getDisplayMedia API when {preferCurrentTab: true}
-        /// is specified.
+        /// Controls access to the getDisplayMedia API.
         DisplayCapture,
 
         /// Website setting to store permissions metadata granted to paths on the
         /// local file system via the File System Access API.
-        /// |FILE_SYSTEM_WRITE_GUARD| is the corresponding "guard" setting.
+        /// |FILE_SYSTEM_WRITE_GUARD| is the corresponding "guard" setting. The stored
+        /// data represents valid permission only if
+        /// |FILE_SYSTEM_ACCESS_EXTENDED_PERMISSION| is enabled via user opt-in.
+        /// Otherwise, they represent "recently granted but revoked permission", which
+        /// are used to restore the permission.
         FileSystemAccessChooserData,
 
         /// Stores a grant that allows a relying party to send a request for identity
@@ -237,7 +244,7 @@ namespace Xilium.CefGlue
         FederatedIdentitySharing,
 
         /// Whether to use the v8 optimized JIT for running JavaScript on the page.
-        JavaScriptJit,
+        JavascriptJit,
 
         /// Content setting which stores user decisions to allow loading a site over
         /// HTTP. Entries are added by hostname when a user bypasses the HTTPS-First
@@ -255,7 +262,8 @@ namespace Xilium.CefGlue
         /// a specified account. When this is present it allows access to session
         /// management capabilities between the sites. This setting is associated
         /// with the relying party's origin.
-        FederatedIdentityActiveSession,
+        /// Obsolete on Nov 2023.
+        DeprecatedFederatedIdentityActiveSession,
 
         /// Setting to indicate whether Chrome should automatically apply darkening to
         /// web content.
@@ -304,7 +312,7 @@ namespace Xilium.CefGlue
 
         /// Setting to indicate whether user has opted in to allowing auto re-authn
         /// via the FedCM API.
-        FederatedIdentityAutoReAuthNPermission,
+        FederatedIdentityAutoReAuthnPermission,
 
         /// Website setting which stores whether the user has explicitly registered
         /// a website as an identity-provider.
@@ -328,28 +336,135 @@ namespace Xilium.CefGlue
         /// Stores per origin metadata for cookie controls.
         CookieControlsMetadata,
 
-        /// Content Setting for 3PC accesses granted via 3PC deprecation trial.
-        TpcdSupport,
-
-        /// Content setting used to indicate whether entering picture-in-picture
-        /// automatically should be enabled.
-        AutoPictureInPicture,
+        /// Content Setting for temporary 3PC accesses granted by user behavior
+        /// heuristics.
+        TpcdHeuristicsGrants,
 
         /// Content Setting for 3PC accesses granted by metadata delivered via the
         /// component updater service. This type will only be used when
         /// `net::features::kTpcdMetadataGrants` is enabled.
         TpcdMetadataGrants,
 
-        // Whether user has opted into keeping file/directory permissions persistent
+        /// Content Setting for 3PC accesses granted via 3PC deprecation trial.
+        TpcdTrial,
+
+        /// Content Setting for 3PC accesses granted via top-level 3PC deprecation
+        /// trial. Similar to TPCD_TRIAL, but applicable at the page-level for the
+        /// lifetime of the page that served the token, rather than being specific to
+        /// a requesting-origin/top-level-site combination and persistent.
+        TopLevelTpcdTrial,
+
+        /// Content Setting for a first-party origin trial that allows websites to
+        /// enable third-party cookie deprecation.
+        /// ALLOW (default): no effect (e.g. third-party cookies allowed, if not
+        ///                  blocked otherwise).
+        /// BLOCK: third-party cookies blocked, but 3PCD mitigations enabled.
+        TopLevelTpcdOriginTrial,
+
+        /// Content setting used to indicate whether entering picture-in-picture
+        /// automatically should be enabled.
+        AutoPictureInPicture,
+
+        /// Whether user has opted into keeping file/directory permissions persistent
         /// between visits for a given origin. When enabled, permission metadata
         /// stored under |FILE_SYSTEM_ACCESS_CHOOSER_DATA| can auto-grant incoming
         /// permission request.
         FileSystemAccessExtendedPermission,
 
-        /// Content Setting for temporary 3PC accesses granted by user behavior
-        /// heuristics.
-        TpcdHeuristicsGrants,
+        /// Whether the FSA Persistent Permissions restore prompt is eligible to be
+        /// shown to the user, for a given origin.
+        FileSystemAccessRestorePermission,
 
-        NumTypes,
+        /// Whether an application capturing another tab, may scroll and zoom
+        /// the captured tab.
+        CapturedSurfaceControl,
+
+        /// Content setting for access to smart card readers.
+        /// The "guard" content setting stores whether to allow sites to access the
+        /// Smart Card API.
+        SmartCardGuard,
+        SmartCardData,
+
+        /// Content settings for access to printers for the Web Printing API.
+        WebPrinting,
+
+        /// Content setting used to indicate whether entering HTML Fullscreen
+        /// automatically (i.e. without transient activation) should be enabled.
+        AutomaticFullscreen,
+
+        /// Content settings used to indicate that a web app is allowed to prompt the
+        /// user for the installation of sub apps.
+        SubAppInstallationPrompts,
+
+        /// Whether an application can enumerate audio output device.
+        SpeakerSelection,
+
+        /// Content settings for access to the Direct Sockets API.
+        DirectSockets,
+
+        /// Keyboard Lock API allows a site to capture keyboard inputs that would
+        /// otherwise be handled by the OS or the browser.
+        KeyboardLock,
+
+        /// Pointer Lock API allows a site to hide the cursor and have exclusive
+        /// access to mouse inputs.
+        PointerLock,
+
+        /// Website setting which is used for UnusedSitePermissionsService to store
+        /// auto-revoked notification permissions from abusive sites.
+        RevokedAbusiveNotificationPermissions,
+
+        /// Content setting that controls tracking protection status per site.
+        /// BLOCK: Protections enabled. This is the default state.
+        /// ALLOW: Protections disabled.
+        TrackingProtection,
+
+        /// With this permission, when the application calls `getDisplayMedia()`, a
+        /// system audio track can be returned without showing the display media
+        /// selection picker. The application can explicitly specify
+        /// `systemAudio: 'exclude'` or `video: true` to still show the display media
+        /// selection picker if needed. Please note that the setting only works for
+        /// WebUI.
+        DisplayMediaSystemAudio,
+
+        /// Whether to use the higher-tier v8 optimizers for running JavaScript on the
+        /// page.
+        JavascriptOptimizer,
+
+        /// Content Setting for the Storage Access Headers persistent origin trial
+        /// that allows origins to opt into the storage access header behavior. Should
+        /// be scoped to `REQUESTING_ORIGIN_AND_TOP_SCHEMEFUL_SITE_SCOPE` in order to
+        /// correspond to the design of persistent origin trials. See also:
+        /// https://github.com/cfredric/storage-access-headers
+        /// ALLOW: storage access request headers will be attached to cross-site
+        ///        requests, and url requests will look for response headers from
+        ///        origins to retry a request or load with storage access.
+        /// BLOCK (default): no effect.
+        StorageAccessHeaderOriginTrial,
+
+        /// Whether or not sites can request Hand Tracking data within WebXR Sessions.
+        HandTracking,
+
+        /// Website setting to indicate whether user has opted in to allow web apps to
+        /// install other web apps.
+        WebAppInstallation,
+
+        /// Content settings for private network access in the context of the
+        /// Direct Sockets API.
+        DirectSocketsPrivateNetworkAccess,
+
+        /// Content settings for legacy cookie scope.
+        /// Checks whether cookies scope is handled according to origin-bound cookies
+        /// or legacy behavior.
+        LegacyCookieScope,
+
+        /// Website setting to indicate whether the user has allowlisted suspicious
+        /// notifications for the origin.
+        AreSuspiciousNotificationsAllowlistedByUser,
+
+        /// Content settings for access to the Controlled Frame API.
+        ControlledFrame,
+
+        NumValues,
     }
 }

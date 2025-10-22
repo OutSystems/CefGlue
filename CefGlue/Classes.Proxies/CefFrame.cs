@@ -61,6 +61,14 @@
         {
             cef_frame_t.paste(_self);
         }
+        
+        /// <summary>
+        /// Execute paste and match style in this frame.
+        /// </summary>
+        public void PasteAndMatchStyle()
+        {
+            cef_frame_t.paste_and_match_style(_self);
+        }
 
         /// <summary>
         /// Execute delete in this frame.
@@ -186,13 +194,10 @@
         }
 
         /// <summary>
-        /// Returns the globally unique identifier for this frame or &lt; 0 if the
+        /// Returns the globally unique identifier for this frame or empty if the
         /// underlying frame does not yet exist.
         /// </summary>
-        public long Identifier
-        {
-            get { return cef_frame_t.get_identifier(_self); }
-        }
+        public string Identifier => cef_string_userfree.ToString(cef_frame_t.get_identifier(_self));
 
         /// <summary>
         /// Returns the parent of this frame or NULL if this is the main (top-level)
@@ -242,7 +247,7 @@
             get
             {
                 return CefV8Context.FromNative(
-                    cef_frame_t.get_v8context(_self)
+                    cef_frame_t.get_v8_context(_self)
                     );
             }
         }

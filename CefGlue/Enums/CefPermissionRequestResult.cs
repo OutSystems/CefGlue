@@ -30,5 +30,6 @@ namespace Xilium.CefGlue
         /// UI) then any related promises may remain unresolved.
         /// </summary>
         Ignore,
+        NumValues,
     }
 }

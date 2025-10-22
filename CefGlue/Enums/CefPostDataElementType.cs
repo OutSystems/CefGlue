@@ -12,5 +12,6 @@ namespace Xilium.CefGlue
         Empty = 0,
         Bytes,
         File,
+        NumValues,
     }
 }

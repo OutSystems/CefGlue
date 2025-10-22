@@ -79,8 +79,12 @@
         /// Called when web content in the page has toggled fullscreen mode. If
         /// |fullscreen| is true the content will automatically be sized to fill the
         /// browser content area. If |fullscreen| is false the content will
-        /// automatically return to its original size and position. The client is
-        /// responsible for resizing the browser if desired.
+        /// automatically return to its original size and position. With Alloy style
+        /// the client is responsible for triggering the fullscreen transition (for
+        /// example, by calling CefWindow::SetFullscreen when using Views). With
+        /// Chrome style the fullscreen transition will be triggered automatically.
+        /// The CefWindowDelegate::OnWindowFullscreenTransition method will be called
+        /// during the fullscreen transition for notification purposes.
         /// </summary>
         protected virtual void OnFullscreenModeChange(CefBrowser browser, bool fullscreen) { }
 
@@ -233,5 +237,41 @@
         /// </summary>
         protected virtual void OnMediaAccessChange(CefBrowser browser, bool hasVideoAccess, bool hasAudioAccess)
         { }
+
+
+        private int on_contents_bounds_change(cef_display_handler_t* self, cef_browser_t* browser, cef_rect_t* new_bounds)
+        {
+            CheckSelf(self);
+
+            var mBrowser = CefBrowser.FromNative(browser);
+
+            return OnContentBoundChange(mBrowser, new CefRectangle(*new_bounds)) ? 1 : 0;
+        }
+
+        /// <summary>
+        /// Called when the browser's bound changed by javascript.
+        /// </summary>
+        protected virtual bool OnContentBoundChange(CefBrowser browser, CefRectangle rectangle)
+        {
+            return false;
+        }
+
+
+        private int get_root_window_screen_rect(cef_display_handler_t* self, cef_browser_t* browser, cef_rect_t* rect)
+        {
+            CheckSelf(self);
+
+            var mBrowser = CefBrowser.FromNative(browser);
+
+            return OnGetRootWindowScreenRectangle(mBrowser, new CefRectangle(*rect)) ? 1 : 0;
+        }
+
+        /// <summary>
+        /// Called to retrieve the external (client-provided) root window rectangle in screen DIP coordinates.
+        /// </summary>
+        protected virtual bool OnGetRootWindowScreenRectangle(CefBrowser browser, CefRectangle rectangle)
+        {
+            return false;
+        }
     }
 }

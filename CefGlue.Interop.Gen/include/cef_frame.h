@@ -96,6 +96,12 @@ class CefFrame : public virtual CefBaseRefCounted {
   virtual void Paste() = 0;
 
   ///
+  /// Execute paste and match style in this frame.
+  ///
+  /*--cef()--*/
+  virtual void PasteAndMatchStyle() = 0;
+
+  ///
   /// Execute delete in this frame.
   ///
   /*--cef(capi_name=del)--*/
@@ -180,11 +186,11 @@ class CefFrame : public virtual CefBaseRefCounted {
   virtual CefString GetName() = 0;
 
   ///
-  /// Returns the globally unique identifier for this frame or < 0 if the
+  /// Returns the globally unique identifier for this frame or empty if the
   /// underlying frame does not yet exist.
   ///
   /*--cef()--*/
-  virtual int64_t GetIdentifier() = 0;
+  virtual CefString GetIdentifier() = 0;
 
   ///
   /// Returns the parent of this frame or NULL if this is the main (top-level)

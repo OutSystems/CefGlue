@@ -90,7 +90,7 @@
             if (_disposed) throw ExceptionBuilder.ObjectDisposed();
         }
 
-        public bool Disposed { get { return _disposed; } }
+        public bool Disposed => _disposed;
 
         internal abstract cef_window_info_t* GetNativePointer();
         protected internal abstract void DisposeNativePointer();
@@ -144,6 +144,8 @@
         /// the client application by calling CefBrowserHost::SendExternalBeginFrame.
         /// </summary>
         public abstract bool ExternalBeginFrameEnabled { get; set; }
+        
+        public abstract CefRuntimeStyle RuntimeStyle { get; set; }
 
         public void SetAsChild(IntPtr parentHandle, CefRectangle bounds)
         {
