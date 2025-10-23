@@ -1,43 +1,24 @@
 using System;
 using System.IO;
-using Avalonia;
+using System.Threading.Tasks;
 using Xilium.CefGlue.Common;
-using Xilium.CefGlue.Common.Shared;
 
 namespace Xilium.CefGlue.Demo.Avalonia
 {
     class Program
     {
-
         static int Main(string[] args)
         {
-            // generate a unique cache path to avoid problems when launching more than one process
             // https://www.magpcss.org/ceforum/viewtopic.php?f=6&t=19665
             var cachePath = Path.Combine(Path.GetTempPath(), "CefGlue_" + Guid.NewGuid().ToString().Replace("-", null));
-            
+            CefRuntimeLoader.InitializeSync(new CefSettings { RootCachePath = cachePath });
             AppDomain.CurrentDomain.ProcessExit += delegate { Cleanup(cachePath); };
             
-            AppBuilder.Configure<App>()
-                      .UsePlatformDetect()
-                      .With(new Win32PlatformOptions())
-                      .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings() {
-                          RootCachePath = cachePath,
-#if WINDOWLESS 
-                          // its recommended to leave this off (false), since its less performant and can cause more issues
-                          WindowlessRenderingEnabled = true
-#else
-                          WindowlessRenderingEnabled = false
-#endif
-                      },
-                      customSchemes: new[] {
-                        new CustomScheme()
-                        {
-                            SchemeName = "test",
-                            SchemeHandlerFactory = new CustomSchemeHandler()
-                        }
-                      }))
-                      .StartWithClassicDesktopLifetime(args);
-                      
+            // To check if it's working
+            //CefBrowserWindow.Create();
+            
+            // Hold for 20 seconds to register NetworkService crashes
+            Task.Delay(20000).Wait();
             return 0;
         }
 

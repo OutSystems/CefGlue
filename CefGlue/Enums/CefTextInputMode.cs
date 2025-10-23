@@ -20,7 +20,6 @@ namespace Xilium.CefGlue
         Numeric,
         Decimal,
         Search,
-
-        Max = Search,
+        NumValues,
     }
 }

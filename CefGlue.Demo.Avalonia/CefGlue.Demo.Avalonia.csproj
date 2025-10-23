@@ -30,13 +30,10 @@
   <Import Project="$(ProjectDir)..\CefGlue.CopyLocal.props" />
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" />
     <PackageReference Include="Dotnet.Bundle" />
-    <PackageReference Include="Avalonia.Diagnostics" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CefGlue.Avalonia\CefGlue.Avalonia.csproj" />
     <ProjectReference Include="..\CefGlue\CefGlue.csproj" />
     <ProjectReference Include="..\CefGlue.Common\CefGlue.Common.csproj" />
     <ProjectReference Include="..\CefGlue.Common.Shared\CefGlue.Common.Shared.csproj" />

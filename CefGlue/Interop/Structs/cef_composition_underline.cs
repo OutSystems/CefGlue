@@ -9,6 +9,9 @@ namespace Xilium.CefGlue.Interop
     [StructLayout(LayoutKind.Sequential, Pack = libcef.ALIGN)]
     internal struct cef_composition_underline_t
     {
+        public static readonly int Size = Marshal.SizeOf(typeof(cef_composition_underline_t));
+        
+        public UIntPtr size;
         public cef_range_t range;
         public uint color;
         public uint background_color;

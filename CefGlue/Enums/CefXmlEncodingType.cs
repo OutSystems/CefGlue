@@ -12,10 +12,11 @@ namespace Xilium.CefGlue
     /// </summary>
     public enum CefXmlEncoding
     {
-       None = 0,
+       None,
        Utf8,
        Utf16LE,
        Utf16BE,
        Ascii,
+       NumValues,
     }
 }

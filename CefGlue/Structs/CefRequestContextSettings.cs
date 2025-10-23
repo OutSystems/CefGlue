@@ -35,14 +35,6 @@
         public bool PersistSessionCookies { get; set; }
 
         /// <summary>
-        /// To persist user preferences as a JSON file in the cache path directory set
-        /// this value to true (1). Can be set globally using the
-        /// CefSettings.persist_user_preferences value. This value will be ignored if
-        /// |cache_path| is empty or if it matches the CefSettings.cache_path value.
-        /// </summary>
-        public bool PersistUserPreferences { get; set; }
-
-        /// <summary>
         /// Comma delimited ordered list of language codes without any whitespace that
         /// will be used in the "Accept-Language" HTTP header. Can be set globally
         /// using the CefSettings.accept_language_list value or overridden on a per-
@@ -70,7 +62,6 @@
             var ptr = cef_request_context_settings_t.Alloc();
             cef_string_t.Copy(CachePath, &ptr->cache_path);
             ptr->persist_session_cookies = PersistSessionCookies ? 1 : 0;
-            ptr->persist_user_preferences = PersistUserPreferences ? 1 : 0;
             cef_string_t.Copy(AcceptLanguageList, &ptr->accept_language_list);
             cef_string_t.Copy(CookieableSchemesList, &ptr->cookieable_schemes_list);
             ptr->cookieable_schemes_exclude_defaults = CookieableSchemesExcludeDefaults ? 1 : 0;

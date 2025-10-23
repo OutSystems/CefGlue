@@ -21,18 +21,24 @@ namespace Xilium.CefGlue.Common
         {
             if (string.IsNullOrEmpty(processType))
             {
-                if (CefRuntime.Platform == CefRuntimePlatform.Linux) 
+                if (CefRuntime.Platform == CefRuntimePlatform.Linux)
                 {
                     commandLine.AppendSwitch("no-zygote");
                 }
+
                 if (CefRuntimeLoader.IsOSREnabled)
                 {
-                    commandLine.AppendSwitch("disable-gpu", "1");
-                    commandLine.AppendSwitch("disable-gpu-compositing", "1");
-                    commandLine.AppendSwitch("enable-begin-frame-scheduling", "1");
-                    commandLine.AppendSwitch("disable-smooth-scrolling", "1");
+                    commandLine.AppendSwitch("disable-gpu");
+                    commandLine.AppendSwitch("disable-gpu-compositing");
+                    commandLine.AppendSwitch("enable-begin-frame-scheduling");
+                    commandLine.AppendSwitch("disable-smooth-scrolling");
                 }
-
+                
+                // Telemetry to debug
+                //commandLine.AppendSwitch("disable-features", "NetworkServiceSandbox");
+                commandLine.AppendSwitch("log-severity", "verbose");
+                commandLine.AppendSwitch("log-file", "C:\\cef_main_log.txt");
+                
                 if (_flags != null)
                 {
                     foreach (var flag in _flags)

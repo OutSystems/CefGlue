@@ -1,9 +1,0 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        x:Class="Xilium.CefGlue.Demo.Avalonia.BrowserView">
-
-    <DockPanel>
-        <TextBox x:Name="addressTextBox" DockPanel.Dock="Top" KeyDown="OnAddressTextBoxKeyDown" />
-        <Decorator x:Name="browserWrapper"/>
-    </DockPanel>
-</UserControl>

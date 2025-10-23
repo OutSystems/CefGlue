@@ -22,18 +22,16 @@ namespace Xilium.CefGlue.Common
             Popup = popup;
         }
 
-        protected new IOffScreenControlHost Control => (IOffScreenControlHost) base.Control;
 
         private IOffScreenPopupHost Popup { get; }
 
         protected override void InnerDispose()
         {
-            Control.RenderSurface.Dispose();
             Popup.RenderSurface.Dispose();
         }
 
-        private int Width => Control.RenderSurface.Width;
-        private int Height => Control.RenderSurface.Height;
+        private int Width => 800;
+        private int Height => 800;
 
         private void SendMouseClickEvent(CefMouseEvent mouseEvent, CefMouseButtonType mouseButton, bool isMouseUp, int clickCount)
         {
@@ -222,7 +220,6 @@ namespace Xilium.CefGlue.Common
         {
             WithErrorHandling(nameof(HandleScreenInfoChanged), () =>
             {
-                Control.RenderSurface.DeviceScaleFactor = deviceScaleFactor;
                 Popup.RenderSurface.DeviceScaleFactor = deviceScaleFactor;
 
                 BrowserHost?.WasResized();
@@ -274,16 +271,11 @@ namespace Xilium.CefGlue.Common
 
         protected override void SetupBrowserView(CefWindowInfo windowInfo, int width, int height, IntPtr hostViewHandle)
         {
-            AttachEventHandlers(Control);
             AttachEventHandlers(Popup);
 
-            Control.ScreenInfoChanged += HandleScreenInfoChanged;
-            Control.VisibilityChanged += HandleVisibilityChanged;
-
-            Control.RenderSurface.Resize(width, height);
 
             // Find the window that's hosting us
-            windowInfo.SetAsWindowless(hostViewHandle, Control.RenderSurface.AllowsTransparency);
+            windowInfo.SetAsWindowless(hostViewHandle, false);
         }
 
         protected override void OnBrowserHostCreated(CefBrowserHost browserHost)
@@ -301,7 +293,6 @@ namespace Xilium.CefGlue.Common
                 return;
             }
 
-            Control.RenderSurface.Resize(newWidth, newHeight);
             BrowserHost?.WasResized();
             
             _logger.Debug($"Browser resized {newWidth}x{newHeight}");
@@ -355,7 +346,6 @@ namespace Xilium.CefGlue.Common
 
         void IOffscreenCefBrowserHost.GetScreenInfo(CefScreenInfo screenInfo)
         {
-            screenInfo.DeviceScaleFactor = Control.RenderSurface.DeviceScaleFactor;
         }
 
         void IOffscreenCefBrowserHost.HandlePopupShow(bool show)
@@ -389,38 +379,18 @@ namespace Xilium.CefGlue.Common
                 return;
             }
 
-            OffScreenRenderSurface renderHandler;
-            if (isPopup)
-            {
-                renderHandler = Popup.RenderSurface;
-            }
-            else
-            {
-                renderHandler = Control.RenderSurface;
-            }
-
-            const string ScopeName = nameof(IOffscreenCefBrowserHost.HandleViewPaint);
-
-            WithErrorHandling(ScopeName, () =>
-            {
-                renderHandler?.Render(buffer, width, height, dirtyRects)
-                              .ContinueWith(t => HandleException(ScopeName, t.Exception), TaskContinuationOptions.OnlyOnFaulted);
-            });
         }
 
         void IOffscreenCefBrowserHost.HandleStartDragging(CefBrowser browser, CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y)
         {
             WithErrorHandling(nameof(IOffscreenCefBrowserHost.HandleStartDragging), async () =>
             {
-                var result = await Control.StartDrag(dragData, allowedOps, x, y);
-                BrowserHost.DragSourceEndedAt(x, y, result);
-                BrowserHost.DragSourceSystemDragEnded();
+              
             });
         }
 
         void IOffscreenCefBrowserHost.HandleUpdateDragCursor(CefBrowser browser, CefDragOperationsMask operation)
         {
-            Control.UpdateDragCursor(operation);
         }
 
         #endregion

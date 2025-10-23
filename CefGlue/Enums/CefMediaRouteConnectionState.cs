@@ -9,10 +9,11 @@ namespace Xilium.CefGlue
     /// </summary>
     public enum CefMediaRouteConnectionState
     {
-        Unknown,
+        Unknown = -1,
         Connecting,
         Connected,
         Closed,
         Terminated,
+        NumValues,
     }
 }

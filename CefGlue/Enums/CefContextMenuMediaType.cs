@@ -46,5 +46,7 @@ namespace Xilium.CefGlue
         /// A plugin node is selected.
         /// </summary>
         Plugin,
+        
+        NumValues,
     }
 }

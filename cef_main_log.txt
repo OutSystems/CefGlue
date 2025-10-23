@@ -1,0 +1,138 @@
+[25304:41924:0509/180920.175:VERBOSE1:variations_field_trial_creator_base.cc(83)] VariationsSeedUsage:2
+[25304:41924:0509/180920.175:VERBOSE1:variations_field_trial_creator_base.cc(357)] VariationsSetupComplete
+[25304:41924:0509/180920.192:VERBOSE1:webrtc_event_log_manager.cc(96)] WebRTC remote-bound event logging enabled.
+[25304:41924:0509/180920.196:VERBOSE1:pref_proxy_config_tracker_impl.cc(199)] 000052240223C2C0: set chrome proxy config service to 0000522402310D00
+[25304:41924:0509/180920.205:VERBOSE1:device_event_log_impl.cc(204)] [18:09:20.202] Display: EVENT: screen_win.cc:951 Displays updated, count: 2
+[25304:41924:0509/180920.205:VERBOSE1:device_event_log_impl.cc(204)] [18:09:20.205] Display: EVENT: screen_win.cc:953 Display[882414461] bounds=[3072,360 1920x1200], workarea=[3072,360 1920x1160], scale=1, rotation=0, panel_rotation=0 external detected
+[25304:41924:0509/180920.205:VERBOSE1:device_event_log_impl.cc(204)] [18:09:20.205] Display: EVENT: screen_win.cc:953 Display[3004333093] bounds=[0,0 3072x1728], workarea=[0,0 3072x1688], scale=1.25, rotation=0, panel_rotation=0 external detected
+[25304:36152:0509/180920.212:VERBOSE1:media_stream_manager.cc(1501)] MSM::InitializeMaybeAsync([this=0x5224022f7840])
+[25304:36152:0509/180920.212:VERBOSE1:media_stream_manager.cc(1501)] MDM::MediaDevicesManager()
+[25304:36152:0509/180920.212:VERBOSE1:media_stream_manager.cc(1501)] MSM::MediaStreamManager([this=0x5224022f7840]))
+[25304:41924:0509/180920.216:VERBOSE1:chrome_browser_cloud_management_controller.cc(161)] Cloud management controller initialization aborted as CBCM is not enabled. Please use the `--enable-chrome-browser-cloud-management` command line flag to enable it if you are not using the official Google Chrome build.
+[25304:41924:0509/180920.217:VERBOSE1:platform_auth_policy_observer.cc(70)] PlatformAuthProviderManager enabled: 0
+[25304:41924:0509/180920.225:WARNING:account_consistency_mode_manager.cc(77)] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.
+[25304:41924:0509/180920.225:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[25304:41924:0509/180920.228:VERBOSE1:pref_proxy_config_tracker_impl.cc(199)] 000052240223C000: set chrome proxy config service to 00005224023145E0
+[25304:41924:0509/180920.228:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[25304:41924:0509/180920.228:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(310)] MutablePO2TS::MutablePO2TS
+[25304:41924:0509/180920.230:VERBOSE1:pref_proxy_config_tracker_impl.cc(199)] 000052240223E3C0: set chrome proxy config service to 0000522402316CE0
+[25304:41924:0509/180920.231:VERBOSE1:device_event_log_impl.cc(204)] [18:09:20.231] Bluetooth: EVENT: bluetooth_api.cc:82 BluetoothAPI: 00005224027C5E00
+[25304:41924:0509/180920.232:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[25304:4764:0509/180920.232:VERBOSE1:simple_index_file.cc(599)] Simple Cache Index is being restored from disk.
+[25304:41924:0509/180920.232:VERBOSE1:bluetooth_low_energy_event_router.cc(291)] Initializing BluetoothLowEnergyEventRouter.
+[25304:36044:0509/180920.233:VERBOSE1:simple_index_file.cc(599)] Simple Cache Index is being restored from disk.
+[25304:41924:0509/180920.234:VERBOSE1:gaia_auth_util.cc(55)] Canonicalized @gmail.com to @gmail.com
+[25304:41924:0509/180920.234:VERBOSE1:gaia_auth_util.cc(55)] Canonicalized @gmail.com to @gmail.com
+[25304:41924:0509/180920.234:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[25304:41924:0509/180920.234:VERBOSE1:account_reconcilor.cc(181)] AccountReconcilor::AccountReconcilor
+[25304:41924:0509/180920.234:VERBOSE1:account_reconcilor.cc(219)] AccountReconcilor::Initialize
+[25304:41924:0509/180920.234:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[25304:41924:0509/180920.235:VERBOSE1:account_consistency_mode_manager.cc(212)] Desktop Identity Consistency disabled as sign-in to Chrome is not allowed
+[25304:41924:0509/180920.240:VERBOSE1:extension_service.cc(1438)] AddComponentExtension Web Store
+[25304:41924:0509/180920.240:VERBOSE1:extension_service.cc(1440)] Component extension Web Store (ahfgeienlihckogmohjhadlkjgocpleb) installing/upgrading from '' to 0.2
+[25304:41924:0509/180920.240:VERBOSE1:extension_service.cc(1438)] AddComponentExtension Chromium PDF Viewer
+[25304:41924:0509/180920.240:VERBOSE1:extension_service.cc(1440)] Component extension Chromium PDF Viewer (mhjfbmdgcfjbbpaeojofohoefgiehjai) installing/upgrading from '' to 1
+[25304:41924:0509/180920.241:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[25304:41924:0509/180920.241:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[25304:41924:0509/180920.243:VERBOSE1:on_device_head_suggest_component_installer.cc(61)] On Device Head Component will fetch model for locale: ENUS500000
+[25304:14268:0509/180920.243:VERBOSE1:component_installer.cc(481)] StartRegistration for Widevine Content Decryption Module
+[25304:46368:0509/180920.243:VERBOSE1:component_installer.cc(481)] StartRegistration for Subresource Filter Rules
+[25304:46748:0509/180920.243:VERBOSE1:component_installer.cc(481)] StartRegistration for OnDeviceHeadSuggest
+[25304:36044:0509/180920.243:VERBOSE1:component_installer.cc(481)] StartRegistration for Optimization Hints
+[25304:41924:0509/180920.243:VERBOSE1:trust_token_key_commitments_component_installer.cc(23)] Registering Trust Token Key Commitments component.
+[25304:41924:0509/180920.244:VERBOSE1:first_party_sets_component_installer.cc(39)] Registering Related Website Sets component.
+[25304:25748:0509/180920.244:VERBOSE1:component_installer.cc(481)] StartRegistration for Trust Token Key Commitments
+[25304:41924:0509/180920.244:VERBOSE1:privacy_sandbox_attestations_component_installer.cc(181)] Registering Privacy Sandbox Attestations component
+[25304:41924:0509/180920.244:VERBOSE1:file_type_policies_component_installer.cc(128)] Registering File Type Policies component.
+[25304:46896:0509/180920.244:VERBOSE1:component_installer.cc(481)] StartRegistration for Privacy Sandbox Attestations
+[25304:41924:0509/180920.244:VERBOSE1:hyphenation_component_installer.cc(151)] Registering Hyphenation component.
+[25304:41924:0509/180920.244:VERBOSE1:tpcd_metadata_component_installer.cc(23)] Third Party Cookie Deprecation Metadata component.
+[25304:41924:0509/180920.244:VERBOSE1:translate_kit_component_installer.cc(160)] Registering TranslateKit component.
+[25304:41924:0509/180920.244:VERBOSE1:open_cookie_database_component_installer.cc(23)] Registering Open Cookie Database component.
+[25304:38048:0509/180920.244:VERBOSE1:component_installer.cc(481)] StartRegistration for Certificate Error Assistant
+[25304:41924:0509/180920.244:VERBOSE1:cookie_readiness_list_component_installer.cc(24)] Registering Cookie Readiness List component.
+[25304:41924:0509/180920.244:VERBOSE1:profile_manager.cc(1272)] AddKeepAlive(Default, kAppWindow). keep_alives=[kWaitingForFirstBrowserWindow (1), kAppWindow (1)]
+[25304:14268:0509/180920.245:VERBOSE1:component_installer.cc(481)] StartRegistration for File Type Policies
+[25304:36044:0509/180920.246:VERBOSE1:component_installer.cc(481)] StartRegistration for CRLSet
+[25304:46748:0509/180920.246:VERBOSE1:component_installer.cc(481)] StartRegistration for Origin Trials
+[25304:25748:0509/180920.247:VERBOSE1:component_installer.cc(481)] StartRegistration for MEI Preload
+[25304:46896:0509/180920.247:VERBOSE1:component_installer.cc(481)] StartRegistration for PKI Metadata
+[25304:4764:0509/180920.247:VERBOSE1:component_installer.cc(481)] StartRegistration for Safety Tips
+[25304:14268:0509/180920.247:VERBOSE1:component_installer.cc(481)] StartRegistration for Crowd Deny
+[25304:29800:0509/180920.247:VERBOSE1:component_installer.cc(481)] StartRegistration for Hyphenation
+[25304:36044:0509/180920.247:VERBOSE1:component_installer.cc(481)] StartRegistration for Zxcvbn Data Dictionaries
+[25304:33672:0509/180920.248:VERBOSE1:component_installer.cc(481)] StartRegistration for Autofill States Data
+[25304:36628:0509/180920.249:VERBOSE1:component_installer.cc(481)] StartRegistration for Third-Party Cookie Deprecation Metadata
+[25304:46748:0509/180920.249:VERBOSE1:component_installer.cc(481)] StartRegistration for Open Cookie Database
+[25304:38048:0509/180920.249:VERBOSE1:component_installer.cc(481)] StartRegistration for Cookie Readiness List
+[25304:4764:0509/180920.250:VERBOSE1:component_installer.cc(481)] StartRegistration for Amount Extraction Heuristic Regexes
+[25304:46368:0509/180920.250:VERBOSE1:token_service_table.cc(202)] Loaded tokens: result = 3 ; number of tokens loaded = 0
+[25304:41924:0509/180920.251:VERBOSE1:component_installer.cc(560)] FinishRegistration for Widevine Content Decryption Module
+[25304:41924:0509/180920.251:VERBOSE1:component_updater_service.cc(165)] CrxUpdateService starting up. First update attempt will take place in 60 s seconds. Next update attempt will take place in 18000 s seconds. 
+[25304:41924:0509/180920.251:VERBOSE1:component_installer.cc(560)] FinishRegistration for OnDeviceHeadSuggest
+[25304:41924:0509/180920.251:VERBOSE1:component_installer.cc(560)] FinishRegistration for Optimization Hints
+[25304:41924:0509/180920.251:VERBOSE1:component_installer.cc(560)] FinishRegistration for Trust Token Key Commitments
+[25304:41924:0509/180920.252:VERBOSE1:component_installer.cc(560)] FinishRegistration for Privacy Sandbox Attestations
+[25304:41924:0509/180920.252:VERBOSE1:component_installer.cc(560)] FinishRegistration for File Type Policies
+[25304:41924:0509/180920.252:VERBOSE1:component_installer.cc(560)] FinishRegistration for Certificate Error Assistant
+[25304:41924:0509/180920.252:VERBOSE1:component_installer.cc(560)] FinishRegistration for CRLSet
+[25304:41924:0509/180920.252:VERBOSE1:component_installer.cc(560)] FinishRegistration for Origin Trials
+[25304:41924:0509/180920.252:VERBOSE1:component_installer.cc(560)] FinishRegistration for Subresource Filter Rules
+[25304:41924:0509/180920.254:VERBOSE1:component_installer.cc(560)] FinishRegistration for Safety Tips
+[25304:41924:0509/180920.255:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(520)] MutablePO2TS::OnWebDataServiceRequestDone. Result type: 6
+[25304:41924:0509/180920.255:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(580)] MutablePO2TS::LoadAllCredentialsIntoMemory; 0 credential(s).
+[25304:41924:0509/180920.255:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[25304:41924:0509/180920.255:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[25304:41924:0509/180920.255:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[25304:41924:0509/180920.255:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[25304:41924:0509/180920.255:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[25304:41924:0509/180920.255:VERBOSE1:mutable_profile_oauth2_token_service_delegate.cc(401)] MutablePO2TS::RefreshTokenIsAvailable
+[25304:41924:0509/180920.255:VERBOSE1:component_installer.cc(560)] FinishRegistration for PKI Metadata
+[25304:41924:0509/180920.259:VERBOSE1:component_installer.cc(560)] FinishRegistration for MEI Preload
+[25304:41924:0509/180920.259:VERBOSE1:component_installer.cc(560)] FinishRegistration for Hyphenation
+[25304:41924:0509/180920.259:VERBOSE1:component_installer.cc(560)] FinishRegistration for Zxcvbn Data Dictionaries
+[25304:41924:0509/180920.259:VERBOSE1:component_installer.cc(560)] FinishRegistration for Crowd Deny
+[25304:41924:0509/180920.259:VERBOSE1:component_installer.cc(560)] FinishRegistration for Autofill States Data
+[25304:41924:0509/180920.259:VERBOSE1:component_installer.cc(560)] FinishRegistration for Third-Party Cookie Deprecation Metadata
+[25304:41924:0509/180920.260:VERBOSE1:component_installer.cc(560)] FinishRegistration for Open Cookie Database
+[25304:41924:0509/180920.260:VERBOSE1:component_installer.cc(560)] FinishRegistration for Cookie Readiness List
+[25304:41924:0509/180920.260:VERBOSE1:component_installer.cc(560)] FinishRegistration for Amount Extraction Heuristic Regexes
+[25304:41924:0509/180920.260:VERBOSE1:partitioned_lock_manager.cc(212)] Acquiring <PartitionedLockId>{id: 0x31, partition: 0} for Start@chrome\browser\web_applications\generated_icon_fix_manager.cc:58
+[25304:41924:0509/180920.260:VERBOSE1:partitioned_lock_manager.cc(194)] All locks acquired for Start@chrome\browser\web_applications\generated_icon_fix_manager.cc:58
+[25304:41924:0509/180920.260:VERBOSE1:partitioned_lock_manager.cc(236)] Releasing <PartitionedLockId>{id: 0x31, partition: 0} requested by Start@chrome\browser\web_applications\generated_icon_fix_manager.cc:58
+[25304:41924:0509/180920.261:VERBOSE1:profile_manager.cc(1272)] AddKeepAlive(Default, kExtensionUpdater). keep_alives=[kWaitingForFirstBrowserWindow (1), kAppWindow (1), kExtensionUpdater (1)]
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Session.TotalDuration
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Commerce.PriceDrops.ActiveTabNavigationComplete.IsProductDetailPage
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing Autofill_PolledCreditCardSuggestions
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing IOS.ParcelTracking.Tracked.AutoTrack
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Omnibox.SuggestionUsed.ClientSummarizedResultType
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing MetadataWriter
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Sync.DeviceCount2
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Sync.DeviceCount2.Phone
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Sync.DeviceCount2.Desktop
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing Sync.DeviceCount2.Tablet
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing MobileBookmarkManagerOpen
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing NewTabPage.MostVisited.Clicked
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing TabGroup.Created.OpenInNewTab
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing Android.HistoryPage.OpenItem
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(54)] Segmentation platform started observing MobileMenuRecentTabs
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing PasswordManager.ManagePasswordsReferrer
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing PasswordManager.ProfileStore.TotalAccountsHiRes3.WithScheme.Https
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing PasswordManager.FillingAssistance
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing PasswordManager.SavedPasswordIsGenerated
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing PasswordManager.SaveUIDismissalReason
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing PasswordManager.SaveUIDismissalReason
+[25304:41924:0509/180920.266:VERBOSE1:signal_filter_processor.cc(61)] Segmentation platform started observing IOS.CredentialExtension.IsEnabled.Startup
+[39456:3696:0509/180920.371:WARNING:viz_main_impl.cc(85)] VizNullHypothesis is disabled (not a warning)
+[39456:3696:0509/180920.373:ERROR:direct_composition_support.cc(1122)] QueryInterface to IDCompositionDevice4 failed: No such interface supported (0x80004002)
+[25304:41924:0509/180920.376:VERBOSE1:device_event_log_impl.cc(204)] [18:09:20.376] Display: EVENT: screen_win.cc:951 Displays updated, count: 2
+[25304:41924:0509/180920.376:VERBOSE1:device_event_log_impl.cc(204)] [18:09:20.376] Display: EVENT: screen_win.cc:953 Display[882414461] bounds=[3072,360 1920x1200], workarea=[3072,360 1920x1160], scale=1, rotation=0, panel_rotation=0 external detected
+[25304:41924:0509/180920.376:VERBOSE1:device_event_log_impl.cc(204)] [18:09:20.376] Display: EVENT: screen_win.cc:953 Display[3004333093] bounds=[0,0 3072x1728], workarea=[0,0 3072x1688], scale=1.25, rotation=0, panel_rotation=0 external detected
+[25304:41924:0509/180920.474:VERBOSE1:segment_result_provider.cc(136)] GetSegmentResult: segment=OPTIMIZATION_TARGET_SEGMENTATION_DEVICE_SWITCHER ignoring DB score, executing model.
+[25304:41924:0509/180920.474:VERBOSE1:segment_result_provider.cc(277)] ExecuteModelAndGetScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_DEVICE_SWITCHER server segment info not available
+[25304:41924:0509/180920.474:VERBOSE1:segment_result_provider.cc(210)] OnGotModelScore: segment=OPTIMIZATION_TARGET_SEGMENTATION_DEVICE_SWITCHER failed to get database model score, trying default model.
+[25304:41924:0509/180920.857:VERBOSE1:extension_downloader.cc(757)] Failed to fetch manifest 'https://clients2.google.com/service/update2/crx?os=win&arch=x64&os_arch=x86_64&nacl_arch=x86-64&prod=chromiumcrx&prodchannel=&prodversion=134.0.6998.178&lang=en-US&acceptformat=crx3,puff&x=id%3Dlmjegmlicamnimmfhcmpkclmigmmcbeh%26v%3D0.0.0.0%26installedby%3Dexternal%26uc%26ping%3Dr%253D-1%2526e%253D1' response code:-1
+[25304:41924:0509/180920.857:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[25304:41924:0509/180921.458:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[25304:41924:0509/180922.041:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.
+[25304:41924:0509/180922.674:ERROR:network_service_instance_impl.cc(612)] Network service crashed, restarting service.

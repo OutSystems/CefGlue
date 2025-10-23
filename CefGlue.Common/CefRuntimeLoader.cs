@@ -14,6 +14,11 @@ namespace Xilium.CefGlue.Common
         private const string DefaultBrowserProcessDirectory = "CefGlueBrowserProcess";
 
         private static Action<BrowserProcessHandler> _delayedInitialization;
+        
+        public static void InitializeSync(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null)
+        {
+            InternalInitialize(settings, flags, customSchemes);
+        }
 
         public static void Initialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null)
         {
@@ -42,6 +47,8 @@ namespace Xilium.CefGlue.Common
             switch (CefRuntime.Platform)
             {
                 case CefRuntimePlatform.Windows:
+                case CefRuntimePlatform.Linux:
+                    settings.NoSandbox = true;
                     settings.MultiThreadedMessageLoop = true;
                     break;
 
@@ -59,11 +66,6 @@ namespace Xilium.CefGlue.Common
                     settings.FrameworkDirPath = basePath;
                     settings.ResourcesDirPath = resourcesPath;
                     break;
-                
-                case CefRuntimePlatform.Linux:
-                    settings.NoSandbox = true;
-                    settings.MultiThreadedMessageLoop = true;
-                    break;
             }
 
             AppDomain.CurrentDomain.ProcessExit += delegate { CefRuntime.Shutdown(); };
@@ -77,18 +79,7 @@ namespace Xilium.CefGlue.Common
             {
                 exeFileName = "CefGlue";
             }
-            
-            // Fix crash with youtube https://github.com/chromiumembedded/cef/issues/3643
-            {
-#if DEBUG
-                if (CefRuntime.ChromeVersion.Split(".").First() != "120")
-                {
-                    throw new Exception("Remove this fix block after CEF upgrade");
-                }
-#endif
-                flags = (flags ?? []).Append(KeyValuePair.Create("disable-features", "FirstPartySets")).ToArray();
-            }
-            
+
             CefRuntime.Initialize(new CefMainArgs(new[] { exeFileName }), settings, new BrowserCefApp(customSchemes, flags, browserProcessHandler), IntPtr.Zero);
 
             if (customSchemes != null)
