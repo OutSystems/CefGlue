@@ -201,6 +201,11 @@ namespace Xilium.CefGlue.Common
         /// Return the handler for JavaScript dialogs. If no handler is provided the default implementation will be used.
         /// </summary>
         public JSDialogHandler JSDialogHandler { get => _adapter.JSDialogHandler; set => _adapter.JSDialogHandler = value; }
+        
+        /// <summary>
+        /// Return the handler for browser permission events.
+        /// </summary>
+        public PermissionHandler PermissionHandler { get => _adapter.PermissionHandler; set => _adapter.PermissionHandler = value; }
 
         /// <summary>
         /// Gets or set the url.
