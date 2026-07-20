@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 using System.Reactive.Linq;
-using Avalonia.ReactiveUI;
+using ReactiveUI.Avalonia;
 using Xilium.CefGlue.Common.Handlers;
 
 namespace Xilium.CefGlue.Avalonia
