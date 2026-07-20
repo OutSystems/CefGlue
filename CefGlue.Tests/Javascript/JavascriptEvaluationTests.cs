@@ -46,7 +46,8 @@ namespace CefGlue.Tests.Javascript
         {
             var expected = DateTime.Parse("2022-12-20T15:50:21.817Z");
             var result = await EvaluateJavascript<DateTime>($"return new Date('{expected.ToString("o", CultureInfo.InvariantCulture)}');");
-            Assert.AreEqual(expected, result);
+            // Align to UTC before comparison to eliminate local Ticks deviation
+            Assert.AreEqual(expected.ToUniversalTime(), result.ToUniversalTime());
         }
 
         [Test]
