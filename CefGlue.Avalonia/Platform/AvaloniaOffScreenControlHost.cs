@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Collections;
@@ -173,7 +173,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             MouseMoved?.Invoke(e.AsCefMouseEvent(MousePositionReferential));
         }
 
-        private void OnLostFocus(object sender, RoutedEventArgs e)
+        private void OnLostFocus(object sender, FocusChangedEventArgs e)
         {
             LostFocus?.Invoke();
         }
@@ -190,13 +190,16 @@ namespace Xilium.CefGlue.Avalonia.Platform
         private void OnAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
         {
             VisibilityChanged?.Invoke(true);
-            if (e.Root is Window newWindow)
+            if (e.RootVisual is Window newWindow)
             {
                 _windowStateChangedObservable = newWindow.GetPropertyChangedObservable(Window.WindowStateProperty).Subscribe(OnHostWindowStateChanged);
             }
-            if (e.Root.RenderScaling != RenderSurface.DeviceScaleFactor)
+
+            // In Avalonia 12, safely read the current window's scaling factor through TopLevel
+            var topLevel = TopLevel.GetTopLevel(_control);
+            if (topLevel != null && topLevel.RenderScaling != RenderSurface.DeviceScaleFactor)
             {
-                RenderSurface.DeviceScaleFactor = (float)e.Root.RenderScaling;
+                RenderSurface.DeviceScaleFactor = (float)topLevel.RenderScaling;
                 ScreenInfoChanged?.Invoke(RenderSurface.DeviceScaleFactor);
             }
         }
@@ -268,10 +271,19 @@ namespace Xilium.CefGlue.Avalonia.Platform
             var lastPointerEvent = this._lastPointerEvent; // story a copy, since this might be other thread
             if (lastPointerEvent != null)
             {
-                var dataObject = new DataObject();
-                dataObject.Set(DataFormats.Text, dragData.FragmentText);
+                // Replace the deprecated DataObject with the officially recommended DataTransfer
+                var dataObject = new DataTransfer();
+                if (!string.IsNullOrEmpty(dragData.FragmentText))
+                {
+                    var item = new DataTransferItem();
+                    item.SetText(dragData.FragmentText); 
+                    dataObject.Add(item);
+                }
 
-                var result = await Dispatcher.UIThread.InvokeAsync(() => DragDrop.DoDragDrop(lastPointerEvent, dataObject, allowedOps.AsDragDropEffects()));
+                // Use asynchronous DoDragDropAsync to trigger the OS's native drag-and-drop action
+                var result = await Dispatcher.UIThread.InvokeAsync(() =>
+                    DragDrop.DoDragDropAsync(lastPointerEvent, dataObject, allowedOps.AsDragDropEffects()));
+
                 this._lastPointerEvent = null;
                 _previousCursor = null;
                 _currentDragCursor = null;

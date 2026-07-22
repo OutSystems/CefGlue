@@ -45,7 +45,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             SizeChanged?.Invoke(new CefSize((int)_control.Bounds.Width, (int)_control.Bounds.Height));
         }
 
-        private void OnGotFocus(object sender, GotFocusEventArgs e)
+        private void OnGotFocus(object sender, FocusChangedEventArgs e)
         {
             GotFocus?.Invoke();
         }
@@ -128,7 +128,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
                     menu.PlacementAnchor = PopupAnchor.TopLeft;
                     menu.PlacementGravity = PopupGravity.BottomRight;
-                    menu.PlacementMode = PlacementMode.AnchorAndGravity;
+                    menu.Placement = PlacementMode.AnchorAndGravity;
                     menu.PlacementRect = new Rect(x, y, 1, 1);
                     menu.Open(_control);
                 },
