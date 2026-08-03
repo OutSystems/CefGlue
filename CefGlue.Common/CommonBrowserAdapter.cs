@@ -232,7 +232,7 @@ namespace Xilium.CefGlue.Common
 
         public Task<T> EvaluateJavaScript<T>(string code, string url, int line, string frameName = null, TimeSpan? timeout = null)
         {
-            var frame = frameName != null ? _browser?.GetFrame(frameName) : _browser?.GetMainFrame();
+            var frame = frameName != null ? _browser?.GetFrameByName(frameName) : _browser?.GetMainFrame();
             if (frame != null)
             {
                 return EvaluateJavaScript<T>(code, url, line, frame, timeout);
@@ -254,13 +254,7 @@ namespace Xilium.CefGlue.Common
         public void ShowDeveloperTools()
         {
             var windowInfo = CefWindowInfo.Create();
-
-            if (CefRuntime.Platform == CefRuntimePlatform.Windows)
-            {
-                // This function set ParentHandle (owner in Windows) and set Bounds to CW_USERDEFAULT (only works on Windows).
-                // So, it should be called only in Windows.
-                windowInfo.SetAsPopup(BrowserHost?.GetWindowHandle() ?? IntPtr.Zero, "DevTools");
-            }
+            windowInfo.RuntimeStyle = CefRuntimeStyle.Chrome;
 
             BrowserHost?.ShowDevTools(windowInfo, _cefClient, new CefBrowserSettings(), new CefPoint());
         }

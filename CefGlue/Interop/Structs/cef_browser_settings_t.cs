@@ -44,7 +44,7 @@ namespace Xilium.CefGlue.Interop
         public CefState chrome_zoom_bubble;
 
         #region Alloc & Free
-        private static int _sizeof;
+        private static readonly int _sizeof;
 
         static cef_browser_settings_t()
         {

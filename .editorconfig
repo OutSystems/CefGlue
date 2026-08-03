@@ -6,6 +6,7 @@ charset = utf-8-bom
 tab_width = 4
 indent_size = 4
 indent_style = space
+insert_final_newline = true
 
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else	= true
@@ -14,3 +15,9 @@ csharp_new_line_before_finally = true
 csharp_new_line_before_members_in_object_initializers = true
 csharp_new_line_before_members_in_anonymous_types = true
 csharp_new_line_between_query_expression_clauses = true
+
+dotnet_style_allow_trailing_comma = true
+csharp_wrap_parameters_style = chop_if_long
+csharp_wrap_ternary_expr_style = chop_if_long
+csharp_wrap_object_and_collection_initializer_style = chop_if_long
+csharp_wrap_arguments_style = chop_if_long

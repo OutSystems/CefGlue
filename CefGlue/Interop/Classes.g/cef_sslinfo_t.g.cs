@@ -14,7 +14,7 @@ namespace Xilium.CefGlue.Interop
     {
         internal cef_base_ref_counted_t _base;
         internal IntPtr _get_cert_status;
-        internal IntPtr _get_x509certificate;
+        internal IntPtr _get_x509_certificate;
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -50,7 +50,7 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate cef_x509certificate_t* get_x509certificate_delegate(cef_sslinfo_t* self);
+        private delegate cef_x509_certificate_t* get_x509_certificate_delegate(cef_sslinfo_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -139,16 +139,16 @@ namespace Xilium.CefGlue.Interop
         
         // GetX509Certificate
         private static IntPtr _p5;
-        private static get_x509certificate_delegate _d5;
+        private static get_x509_certificate_delegate _d5;
         
-        public static cef_x509certificate_t* get_x509certificate(cef_sslinfo_t* self)
+        public static cef_x509_certificate_t* get_x509_certificate(cef_sslinfo_t* self)
         {
-            get_x509certificate_delegate d;
-            var p = self->_get_x509certificate;
+            get_x509_certificate_delegate d;
+            var p = self->_get_x509_certificate;
             if (p == _p5) { d = _d5; }
             else
             {
-                d = (get_x509certificate_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_x509certificate_delegate));
+                d = (get_x509_certificate_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_x509_certificate_delegate));
                 if (_p5 == IntPtr.Zero) { _d5 = d; _p5 = p; }
             }
             return d(self);

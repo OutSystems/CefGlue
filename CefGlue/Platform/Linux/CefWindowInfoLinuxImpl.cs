@@ -71,25 +71,25 @@
 
         public override WindowStyle Style
         {
-            get { return default(WindowStyle); }
+            get => default;
             set { }
         }
 
         public override WindowStyleEx StyleEx
         {
-            get { return default(WindowStyleEx); }
+            get => default;
             set { }
         }
 
         public override IntPtr MenuHandle
         {
-            get { return default(IntPtr); }
+            get => default;
             set { }
         }
 
         public override bool Hidden
         {
-            get { return default(bool); }
+            get => default;
             set { }
         }
 
@@ -109,6 +109,12 @@
         {
             get { ThrowIfDisposed(); return _self->external_begin_frame_enabled != 0; }
             set { ThrowIfDisposed(); _self->external_begin_frame_enabled = value ? 1 : 0; }
+        }
+        
+        public override CefRuntimeStyle RuntimeStyle
+        {
+            get { ThrowIfDisposed(); return _self->runtime_style; }
+            set { ThrowIfDisposed(); _self->runtime_style = value; }
         }
     }
 }

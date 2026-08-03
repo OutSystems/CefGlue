@@ -15,6 +15,6 @@ namespace Xilium.CefGlue
         TextAcceleratorHovered,
         Background,
         BackgroundHovered,
-        Count,
+        NumValues,
     }
 }

@@ -110,5 +110,6 @@ namespace Xilium.CefGlue
         /// A sub-frame service worker navigation preload request.
         /// </summary>
         NavigationPreloadSubFrame,
+        NumValues,
     }
 }

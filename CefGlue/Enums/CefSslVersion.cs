@@ -13,13 +13,14 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Unknown SSL version.
         /// </summary>
-        Unknown = 0,
-        Ssl2 = 1,
-        Ssl3 = 2,
-        Tls1 = 3,
-        Tls1_1 = 4,
-        Tls1_2 = 5,
-        Tls1_3 = 6,
-        Quic = 7,
+        Unknown,
+        Ssl2,
+        Ssl3,
+        Tls1,
+        Tls1_1,
+        Tls1_2,
+        Tls1_3,
+        Quic,
+        NumValues,
     }
 }

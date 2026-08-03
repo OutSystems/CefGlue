@@ -51,7 +51,7 @@ def get_capi_name(cppname, isclassname, prefix=None):
     # and the last character was a lower case letter
     if len(result) > 0 and not chr.isdigit() \
         and chr.upper() == chr \
-        and not lastchr.upper() == lastchr:
+        and (lastchr.lower() == lastchr or lastchr.isdigit()):
       result += '_'
     result += chr.lower()
     lastchr = chr

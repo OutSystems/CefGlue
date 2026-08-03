@@ -110,5 +110,11 @@
             get { ThrowIfDisposed(); return _self->external_begin_frame_enabled != 0; }
             set { ThrowIfDisposed(); _self->external_begin_frame_enabled = value ? 1 : 0; }
         }
+        
+        public override CefRuntimeStyle RuntimeStyle
+        {
+            get { ThrowIfDisposed(); return _self->runtime_style; }
+            set { ThrowIfDisposed(); _self->runtime_style = value; }
+        }
     }
 }

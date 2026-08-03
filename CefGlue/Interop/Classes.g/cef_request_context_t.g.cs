@@ -18,6 +18,7 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _get_all_preferences;
         internal IntPtr _can_set_preference;
         internal IntPtr _set_preference;
+        internal IntPtr _add_preference_observer;
         internal IntPtr _is_same;
         internal IntPtr _is_sharing_with;
         internal IntPtr _is_global;
@@ -30,16 +31,16 @@ namespace Xilium.CefGlue.Interop
         internal IntPtr _clear_http_auth_credentials;
         internal IntPtr _close_all_connections;
         internal IntPtr _resolve_host;
-        internal IntPtr _load_extension;
-        internal IntPtr _did_load_extension;
-        internal IntPtr _has_extension;
-        internal IntPtr _get_extensions;
-        internal IntPtr _get_extension;
         internal IntPtr _get_media_router;
         internal IntPtr _get_website_setting;
         internal IntPtr _set_website_setting;
         internal IntPtr _get_content_setting;
         internal IntPtr _set_content_setting;
+        internal IntPtr _add_setting_observer;
+        internal IntPtr _set_chrome_color_scheme;
+        internal IntPtr _get_chrome_color_scheme_mode;
+        internal IntPtr _get_chrome_color_scheme_color;
+        internal IntPtr _get_chrome_color_scheme_variant;
         
         // GetGlobalContext
         [DllImport(libcef.DllName, EntryPoint = "cef_request_context_get_global_context", CallingConvention = libcef.CEF_CALL)]
@@ -106,6 +107,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate int set_preference_delegate(cef_preference_manager_t* self, cef_string_t* name, cef_value_t* value, cef_string_t* error);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate cef_registration_t* add_preference_observer_delegate(cef_preference_manager_t* self, cef_string_t* name, cef_preference_observer_t* observer);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG
@@ -183,36 +190,6 @@ namespace Xilium.CefGlue.Interop
         #if !DEBUG
         [SuppressUnmanagedCodeSecurity]
         #endif
-        private delegate void load_extension_delegate(cef_request_context_t* self, cef_string_t* root_directory, cef_dictionary_value_t* manifest, cef_extension_handler_t* handler);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        private delegate int did_load_extension_delegate(cef_request_context_t* self, cef_string_t* extension_id);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        private delegate int has_extension_delegate(cef_request_context_t* self, cef_string_t* extension_id);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        private delegate int get_extensions_delegate(cef_request_context_t* self, cef_string_list* extension_ids);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
-        private delegate cef_extension_t* get_extension_delegate(cef_request_context_t* self, cef_string_t* extension_id);
-        
-        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
-        #if !DEBUG
-        [SuppressUnmanagedCodeSecurity]
-        #endif
         private delegate cef_media_router_t* get_media_router_delegate(cef_request_context_t* self, cef_completion_callback_t* callback);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
@@ -238,6 +215,36 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         private delegate void set_content_setting_delegate(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type, CefContentSettingValue value);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate cef_registration_t* add_setting_observer_delegate(cef_request_context_t* self, cef_setting_observer_t* observer);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate void set_chrome_color_scheme_delegate(cef_request_context_t* self, CefColorVariant variant, uint user_color);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate CefColorVariant get_chrome_color_scheme_mode_delegate(cef_request_context_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate uint get_chrome_color_scheme_color_delegate(cef_request_context_t* self);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        private delegate CefColorVariant get_chrome_color_scheme_variant_delegate(cef_request_context_t* self);
         
         // AddRef
         private static IntPtr _p0;
@@ -392,378 +399,395 @@ namespace Xilium.CefGlue.Interop
             return d(self, name, value, error);
         }
         
-        // IsSame
+        // AddPreferenceObserver
         private static IntPtr _p9;
-        private static is_same_delegate _d9;
+        private static add_preference_observer_delegate _d9;
+        
+        public static cef_registration_t* add_preference_observer(cef_preference_manager_t* self, cef_string_t* name, cef_preference_observer_t* observer)
+        {
+            add_preference_observer_delegate d;
+            var p = self->_add_preference_observer;
+            if (p == _p9) { d = _d9; }
+            else
+            {
+                d = (add_preference_observer_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(add_preference_observer_delegate));
+                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
+            }
+            return d(self, name, observer);
+        }
+        
+        // IsSame
+        private static IntPtr _pa;
+        private static is_same_delegate _da;
         
         public static int is_same(cef_request_context_t* self, cef_request_context_t* other)
         {
             is_same_delegate d;
             var p = self->_is_same;
-            if (p == _p9) { d = _d9; }
-            else
-            {
-                d = (is_same_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_same_delegate));
-                if (_p9 == IntPtr.Zero) { _d9 = d; _p9 = p; }
-            }
-            return d(self, other);
-        }
-        
-        // IsSharingWith
-        private static IntPtr _pa;
-        private static is_sharing_with_delegate _da;
-        
-        public static int is_sharing_with(cef_request_context_t* self, cef_request_context_t* other)
-        {
-            is_sharing_with_delegate d;
-            var p = self->_is_sharing_with;
             if (p == _pa) { d = _da; }
             else
             {
-                d = (is_sharing_with_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_sharing_with_delegate));
+                d = (is_same_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_same_delegate));
                 if (_pa == IntPtr.Zero) { _da = d; _pa = p; }
             }
             return d(self, other);
         }
         
-        // IsGlobal
+        // IsSharingWith
         private static IntPtr _pb;
-        private static is_global_delegate _db;
+        private static is_sharing_with_delegate _db;
+        
+        public static int is_sharing_with(cef_request_context_t* self, cef_request_context_t* other)
+        {
+            is_sharing_with_delegate d;
+            var p = self->_is_sharing_with;
+            if (p == _pb) { d = _db; }
+            else
+            {
+                d = (is_sharing_with_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_sharing_with_delegate));
+                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
+            }
+            return d(self, other);
+        }
+        
+        // IsGlobal
+        private static IntPtr _pc;
+        private static is_global_delegate _dc;
         
         public static int is_global(cef_request_context_t* self)
         {
             is_global_delegate d;
             var p = self->_is_global;
-            if (p == _pb) { d = _db; }
-            else
-            {
-                d = (is_global_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_global_delegate));
-                if (_pb == IntPtr.Zero) { _db = d; _pb = p; }
-            }
-            return d(self);
-        }
-        
-        // GetHandler
-        private static IntPtr _pc;
-        private static get_handler_delegate _dc;
-        
-        public static cef_request_context_handler_t* get_handler(cef_request_context_t* self)
-        {
-            get_handler_delegate d;
-            var p = self->_get_handler;
             if (p == _pc) { d = _dc; }
             else
             {
-                d = (get_handler_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_handler_delegate));
+                d = (is_global_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(is_global_delegate));
                 if (_pc == IntPtr.Zero) { _dc = d; _pc = p; }
             }
             return d(self);
         }
         
-        // GetCachePath
+        // GetHandler
         private static IntPtr _pd;
-        private static get_cache_path_delegate _dd;
+        private static get_handler_delegate _dd;
         
-        public static cef_string_userfree* get_cache_path(cef_request_context_t* self)
+        public static cef_request_context_handler_t* get_handler(cef_request_context_t* self)
         {
-            get_cache_path_delegate d;
-            var p = self->_get_cache_path;
+            get_handler_delegate d;
+            var p = self->_get_handler;
             if (p == _pd) { d = _dd; }
             else
             {
-                d = (get_cache_path_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_cache_path_delegate));
+                d = (get_handler_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_handler_delegate));
                 if (_pd == IntPtr.Zero) { _dd = d; _pd = p; }
             }
             return d(self);
         }
         
-        // GetCookieManager
+        // GetCachePath
         private static IntPtr _pe;
-        private static get_cookie_manager_delegate _de;
+        private static get_cache_path_delegate _de;
+        
+        public static cef_string_userfree* get_cache_path(cef_request_context_t* self)
+        {
+            get_cache_path_delegate d;
+            var p = self->_get_cache_path;
+            if (p == _pe) { d = _de; }
+            else
+            {
+                d = (get_cache_path_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_cache_path_delegate));
+                if (_pe == IntPtr.Zero) { _de = d; _pe = p; }
+            }
+            return d(self);
+        }
+        
+        // GetCookieManager
+        private static IntPtr _pf;
+        private static get_cookie_manager_delegate _df;
         
         public static cef_cookie_manager_t* get_cookie_manager(cef_request_context_t* self, cef_completion_callback_t* callback)
         {
             get_cookie_manager_delegate d;
             var p = self->_get_cookie_manager;
-            if (p == _pe) { d = _de; }
+            if (p == _pf) { d = _df; }
             else
             {
                 d = (get_cookie_manager_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_cookie_manager_delegate));
-                if (_pe == IntPtr.Zero) { _de = d; _pe = p; }
+                if (_pf == IntPtr.Zero) { _df = d; _pf = p; }
             }
             return d(self, callback);
         }
         
         // RegisterSchemeHandlerFactory
-        private static IntPtr _pf;
-        private static register_scheme_handler_factory_delegate _df;
+        private static IntPtr _p10;
+        private static register_scheme_handler_factory_delegate _d10;
         
         public static int register_scheme_handler_factory(cef_request_context_t* self, cef_string_t* scheme_name, cef_string_t* domain_name, cef_scheme_handler_factory_t* factory)
         {
             register_scheme_handler_factory_delegate d;
             var p = self->_register_scheme_handler_factory;
-            if (p == _pf) { d = _df; }
+            if (p == _p10) { d = _d10; }
             else
             {
                 d = (register_scheme_handler_factory_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(register_scheme_handler_factory_delegate));
-                if (_pf == IntPtr.Zero) { _df = d; _pf = p; }
+                if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
             }
             return d(self, scheme_name, domain_name, factory);
         }
         
         // ClearSchemeHandlerFactories
-        private static IntPtr _p10;
-        private static clear_scheme_handler_factories_delegate _d10;
+        private static IntPtr _p11;
+        private static clear_scheme_handler_factories_delegate _d11;
         
         public static int clear_scheme_handler_factories(cef_request_context_t* self)
         {
             clear_scheme_handler_factories_delegate d;
             var p = self->_clear_scheme_handler_factories;
-            if (p == _p10) { d = _d10; }
+            if (p == _p11) { d = _d11; }
             else
             {
                 d = (clear_scheme_handler_factories_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(clear_scheme_handler_factories_delegate));
-                if (_p10 == IntPtr.Zero) { _d10 = d; _p10 = p; }
+                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
             }
             return d(self);
         }
         
         // ClearCertificateExceptions
-        private static IntPtr _p11;
-        private static clear_certificate_exceptions_delegate _d11;
+        private static IntPtr _p12;
+        private static clear_certificate_exceptions_delegate _d12;
         
         public static void clear_certificate_exceptions(cef_request_context_t* self, cef_completion_callback_t* callback)
         {
             clear_certificate_exceptions_delegate d;
             var p = self->_clear_certificate_exceptions;
-            if (p == _p11) { d = _d11; }
-            else
-            {
-                d = (clear_certificate_exceptions_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(clear_certificate_exceptions_delegate));
-                if (_p11 == IntPtr.Zero) { _d11 = d; _p11 = p; }
-            }
-            d(self, callback);
-        }
-        
-        // ClearHttpAuthCredentials
-        private static IntPtr _p12;
-        private static clear_http_auth_credentials_delegate _d12;
-        
-        public static void clear_http_auth_credentials(cef_request_context_t* self, cef_completion_callback_t* callback)
-        {
-            clear_http_auth_credentials_delegate d;
-            var p = self->_clear_http_auth_credentials;
             if (p == _p12) { d = _d12; }
             else
             {
-                d = (clear_http_auth_credentials_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(clear_http_auth_credentials_delegate));
+                d = (clear_certificate_exceptions_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(clear_certificate_exceptions_delegate));
                 if (_p12 == IntPtr.Zero) { _d12 = d; _p12 = p; }
             }
             d(self, callback);
         }
         
-        // CloseAllConnections
+        // ClearHttpAuthCredentials
         private static IntPtr _p13;
-        private static close_all_connections_delegate _d13;
+        private static clear_http_auth_credentials_delegate _d13;
         
-        public static void close_all_connections(cef_request_context_t* self, cef_completion_callback_t* callback)
+        public static void clear_http_auth_credentials(cef_request_context_t* self, cef_completion_callback_t* callback)
         {
-            close_all_connections_delegate d;
-            var p = self->_close_all_connections;
+            clear_http_auth_credentials_delegate d;
+            var p = self->_clear_http_auth_credentials;
             if (p == _p13) { d = _d13; }
             else
             {
-                d = (close_all_connections_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(close_all_connections_delegate));
+                d = (clear_http_auth_credentials_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(clear_http_auth_credentials_delegate));
                 if (_p13 == IntPtr.Zero) { _d13 = d; _p13 = p; }
             }
             d(self, callback);
         }
         
-        // ResolveHost
+        // CloseAllConnections
         private static IntPtr _p14;
-        private static resolve_host_delegate _d14;
+        private static close_all_connections_delegate _d14;
+        
+        public static void close_all_connections(cef_request_context_t* self, cef_completion_callback_t* callback)
+        {
+            close_all_connections_delegate d;
+            var p = self->_close_all_connections;
+            if (p == _p14) { d = _d14; }
+            else
+            {
+                d = (close_all_connections_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(close_all_connections_delegate));
+                if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
+            }
+            d(self, callback);
+        }
+        
+        // ResolveHost
+        private static IntPtr _p15;
+        private static resolve_host_delegate _d15;
         
         public static void resolve_host(cef_request_context_t* self, cef_string_t* origin, cef_resolve_callback_t* callback)
         {
             resolve_host_delegate d;
             var p = self->_resolve_host;
-            if (p == _p14) { d = _d14; }
+            if (p == _p15) { d = _d15; }
             else
             {
                 d = (resolve_host_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(resolve_host_delegate));
-                if (_p14 == IntPtr.Zero) { _d14 = d; _p14 = p; }
+                if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
             }
             d(self, origin, callback);
         }
         
-        // LoadExtension
-        private static IntPtr _p15;
-        private static load_extension_delegate _d15;
-        
-        public static void load_extension(cef_request_context_t* self, cef_string_t* root_directory, cef_dictionary_value_t* manifest, cef_extension_handler_t* handler)
-        {
-            load_extension_delegate d;
-            var p = self->_load_extension;
-            if (p == _p15) { d = _d15; }
-            else
-            {
-                d = (load_extension_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(load_extension_delegate));
-                if (_p15 == IntPtr.Zero) { _d15 = d; _p15 = p; }
-            }
-            d(self, root_directory, manifest, handler);
-        }
-        
-        // DidLoadExtension
-        private static IntPtr _p16;
-        private static did_load_extension_delegate _d16;
-        
-        public static int did_load_extension(cef_request_context_t* self, cef_string_t* extension_id)
-        {
-            did_load_extension_delegate d;
-            var p = self->_did_load_extension;
-            if (p == _p16) { d = _d16; }
-            else
-            {
-                d = (did_load_extension_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(did_load_extension_delegate));
-                if (_p16 == IntPtr.Zero) { _d16 = d; _p16 = p; }
-            }
-            return d(self, extension_id);
-        }
-        
-        // HasExtension
-        private static IntPtr _p17;
-        private static has_extension_delegate _d17;
-        
-        public static int has_extension(cef_request_context_t* self, cef_string_t* extension_id)
-        {
-            has_extension_delegate d;
-            var p = self->_has_extension;
-            if (p == _p17) { d = _d17; }
-            else
-            {
-                d = (has_extension_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(has_extension_delegate));
-                if (_p17 == IntPtr.Zero) { _d17 = d; _p17 = p; }
-            }
-            return d(self, extension_id);
-        }
-        
-        // GetExtensions
-        private static IntPtr _p18;
-        private static get_extensions_delegate _d18;
-        
-        public static int get_extensions(cef_request_context_t* self, cef_string_list* extension_ids)
-        {
-            get_extensions_delegate d;
-            var p = self->_get_extensions;
-            if (p == _p18) { d = _d18; }
-            else
-            {
-                d = (get_extensions_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_extensions_delegate));
-                if (_p18 == IntPtr.Zero) { _d18 = d; _p18 = p; }
-            }
-            return d(self, extension_ids);
-        }
-        
-        // GetExtension
-        private static IntPtr _p19;
-        private static get_extension_delegate _d19;
-        
-        public static cef_extension_t* get_extension(cef_request_context_t* self, cef_string_t* extension_id)
-        {
-            get_extension_delegate d;
-            var p = self->_get_extension;
-            if (p == _p19) { d = _d19; }
-            else
-            {
-                d = (get_extension_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_extension_delegate));
-                if (_p19 == IntPtr.Zero) { _d19 = d; _p19 = p; }
-            }
-            return d(self, extension_id);
-        }
-        
         // GetMediaRouter
-        private static IntPtr _p1a;
-        private static get_media_router_delegate _d1a;
+        private static IntPtr _p16;
+        private static get_media_router_delegate _d16;
         
         public static cef_media_router_t* get_media_router(cef_request_context_t* self, cef_completion_callback_t* callback)
         {
             get_media_router_delegate d;
             var p = self->_get_media_router;
-            if (p == _p1a) { d = _d1a; }
+            if (p == _p16) { d = _d16; }
             else
             {
                 d = (get_media_router_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_media_router_delegate));
-                if (_p1a == IntPtr.Zero) { _d1a = d; _p1a = p; }
+                if (_p16 == IntPtr.Zero) { _d16 = d; _p16 = p; }
             }
             return d(self, callback);
         }
         
         // GetWebsiteSetting
-        private static IntPtr _p1b;
-        private static get_website_setting_delegate _d1b;
+        private static IntPtr _p17;
+        private static get_website_setting_delegate _d17;
         
         public static cef_value_t* get_website_setting(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type)
         {
             get_website_setting_delegate d;
             var p = self->_get_website_setting;
-            if (p == _p1b) { d = _d1b; }
+            if (p == _p17) { d = _d17; }
             else
             {
                 d = (get_website_setting_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_website_setting_delegate));
-                if (_p1b == IntPtr.Zero) { _d1b = d; _p1b = p; }
+                if (_p17 == IntPtr.Zero) { _d17 = d; _p17 = p; }
             }
             return d(self, requesting_url, top_level_url, content_type);
         }
         
         // SetWebsiteSetting
-        private static IntPtr _p1c;
-        private static set_website_setting_delegate _d1c;
+        private static IntPtr _p18;
+        private static set_website_setting_delegate _d18;
         
         public static void set_website_setting(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type, cef_value_t* value)
         {
             set_website_setting_delegate d;
             var p = self->_set_website_setting;
-            if (p == _p1c) { d = _d1c; }
+            if (p == _p18) { d = _d18; }
             else
             {
                 d = (set_website_setting_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_website_setting_delegate));
-                if (_p1c == IntPtr.Zero) { _d1c = d; _p1c = p; }
+                if (_p18 == IntPtr.Zero) { _d18 = d; _p18 = p; }
             }
             d(self, requesting_url, top_level_url, content_type, value);
         }
         
         // GetContentSetting
-        private static IntPtr _p1d;
-        private static get_content_setting_delegate _d1d;
+        private static IntPtr _p19;
+        private static get_content_setting_delegate _d19;
         
         public static CefContentSettingValue get_content_setting(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type)
         {
             get_content_setting_delegate d;
             var p = self->_get_content_setting;
-            if (p == _p1d) { d = _d1d; }
+            if (p == _p19) { d = _d19; }
             else
             {
                 d = (get_content_setting_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_content_setting_delegate));
-                if (_p1d == IntPtr.Zero) { _d1d = d; _p1d = p; }
+                if (_p19 == IntPtr.Zero) { _d19 = d; _p19 = p; }
             }
             return d(self, requesting_url, top_level_url, content_type);
         }
         
         // SetContentSetting
-        private static IntPtr _p1e;
-        private static set_content_setting_delegate _d1e;
+        private static IntPtr _p1a;
+        private static set_content_setting_delegate _d1a;
         
         public static void set_content_setting(cef_request_context_t* self, cef_string_t* requesting_url, cef_string_t* top_level_url, CefContentSettingType content_type, CefContentSettingValue value)
         {
             set_content_setting_delegate d;
             var p = self->_set_content_setting;
-            if (p == _p1e) { d = _d1e; }
+            if (p == _p1a) { d = _d1a; }
             else
             {
                 d = (set_content_setting_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_content_setting_delegate));
-                if (_p1e == IntPtr.Zero) { _d1e = d; _p1e = p; }
+                if (_p1a == IntPtr.Zero) { _d1a = d; _p1a = p; }
             }
             d(self, requesting_url, top_level_url, content_type, value);
+        }
+        
+        // AddSettingObserver
+        private static IntPtr _p1b;
+        private static add_setting_observer_delegate _d1b;
+        
+        public static cef_registration_t* add_setting_observer(cef_request_context_t* self, cef_setting_observer_t* observer)
+        {
+            add_setting_observer_delegate d;
+            var p = self->_add_setting_observer;
+            if (p == _p1b) { d = _d1b; }
+            else
+            {
+                d = (add_setting_observer_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(add_setting_observer_delegate));
+                if (_p1b == IntPtr.Zero) { _d1b = d; _p1b = p; }
+            }
+            return d(self, observer);
+        }
+        
+        // SetChromeColorScheme
+        private static IntPtr _p1c;
+        private static set_chrome_color_scheme_delegate _d1c;
+        
+        public static void set_chrome_color_scheme(cef_request_context_t* self, CefColorVariant variant, uint user_color)
+        {
+            set_chrome_color_scheme_delegate d;
+            var p = self->_set_chrome_color_scheme;
+            if (p == _p1c) { d = _d1c; }
+            else
+            {
+                d = (set_chrome_color_scheme_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(set_chrome_color_scheme_delegate));
+                if (_p1c == IntPtr.Zero) { _d1c = d; _p1c = p; }
+            }
+            d(self, variant, user_color);
+        }
+        
+        // GetChromeColorSchemeMode
+        private static IntPtr _p1d;
+        private static get_chrome_color_scheme_mode_delegate _d1d;
+        
+        public static CefColorVariant get_chrome_color_scheme_mode(cef_request_context_t* self)
+        {
+            get_chrome_color_scheme_mode_delegate d;
+            var p = self->_get_chrome_color_scheme_mode;
+            if (p == _p1d) { d = _d1d; }
+            else
+            {
+                d = (get_chrome_color_scheme_mode_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_chrome_color_scheme_mode_delegate));
+                if (_p1d == IntPtr.Zero) { _d1d = d; _p1d = p; }
+            }
+            return d(self);
+        }
+        
+        // GetChromeColorSchemeColor
+        private static IntPtr _p1e;
+        private static get_chrome_color_scheme_color_delegate _d1e;
+        
+        public static uint get_chrome_color_scheme_color(cef_request_context_t* self)
+        {
+            get_chrome_color_scheme_color_delegate d;
+            var p = self->_get_chrome_color_scheme_color;
+            if (p == _p1e) { d = _d1e; }
+            else
+            {
+                d = (get_chrome_color_scheme_color_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_chrome_color_scheme_color_delegate));
+                if (_p1e == IntPtr.Zero) { _d1e = d; _p1e = p; }
+            }
+            return d(self);
+        }
+        
+        // GetChromeColorSchemeVariant
+        private static IntPtr _p1f;
+        private static get_chrome_color_scheme_variant_delegate _d1f;
+        
+        public static CefColorVariant get_chrome_color_scheme_variant(cef_request_context_t* self)
+        {
+            get_chrome_color_scheme_variant_delegate d;
+            var p = self->_get_chrome_color_scheme_variant;
+            if (p == _p1f) { d = _d1f; }
+            else
+            {
+                d = (get_chrome_color_scheme_variant_delegate)Marshal.GetDelegateForFunctionPointer(p, typeof(get_chrome_color_scheme_variant_delegate));
+                if (_p1f == IntPtr.Zero) { _d1f = d; _p1f = p; }
+            }
+            return d(self);
         }
         
     }

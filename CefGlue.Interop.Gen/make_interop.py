@@ -803,7 +803,7 @@ def append_xmldoc(result, lines):
     return
 
 
-def make_version_cs(content, api_hash_content):
+def make_version_cs(content, api_hash_content, api_versions_content):
     result = []
 
     result.append('public const string CEF_VERSION = %s;' % __get_version_constant(content, "CEF_VERSION"))
@@ -818,11 +818,11 @@ def make_version_cs(content, api_hash_content):
     result.append('public const int CHROME_VERSION_PATCH = %s;' % __get_version_constant(content, "CHROME_VERSION_PATCH"))
     result.append("");
 
-    result.append('public const string CEF_API_HASH_UNIVERSAL = %s;' % __get_version_constant(api_hash_content, "CEF_API_HASH_UNIVERSAL"))
-    result.append("");
-    result.append('public const string CEF_API_HASH_PLATFORM_WIN = %s;' % __get_version_constant(api_hash_content, "CEF_API_HASH_PLATFORM", "WIN"))
-    result.append('public const string CEF_API_HASH_PLATFORM_MACOS = %s;' % __get_version_constant(api_hash_content, "CEF_API_HASH_PLATFORM", "MAC"))
-    result.append('public const string CEF_API_HASH_PLATFORM_LINUX = %s;' % __get_version_constant(api_hash_content, "CEF_API_HASH_PLATFORM", "LINUX"))
+    api_details = get_cef_api_details(api_versions_content)
+    result.append('public const int CEF_API_VERSION = %s;' % api_details["API_VERSION"])
+    result.append('public const string CEF_API_HASH_PLATFORM_WIN = "%s";' % api_details["OS_WIN"])
+    result.append('public const string CEF_API_HASH_PLATFORM_MACOS = "%s";' % api_details["OS_MAC"])
+    result.append('public const string CEF_API_HASH_PLATFORM_LINUX = "%s";' % api_details["OS_LINUX"])
 
     body = []
     body.append('using System;')
@@ -844,6 +844,41 @@ def make_version_cs(content, api_hash_content):
         'namespace': schema.interop_namespace,
         'body': indent + ('\n'+indent).join(body)
       }
+
+def get_cef_api_details(content):
+    lines = content.splitlines()
+    
+    # Find the last API version
+    match_version = re.search(r"#define\s+CEF_API_VERSION_LAST\s+(CEF_API_VERSION_\d+)", content)
+    if not match_version:
+        raise ValueError("CEF_API_VERSION_LAST not found in the file")
+    
+    last_version = match_version.group(1)
+    last_version_number = last_version.split('_')[-1]
+    
+    # Extract OS-specific hashes
+    details = { "API_VERSION": last_version_number }
+    current_os = None
+    
+    # Iterate through lines and capture hashes for each OS
+    for line in lines:
+        line = line.strip()
+        
+        # Detect OS
+        if "#if defined(OS_WIN)" in line:
+            current_os = "OS_WIN"
+        elif "#elif defined(OS_MAC)" in line:
+            current_os = "OS_MAC"
+        elif "#elif defined(OS_LINUX)" in line:
+            current_os = "OS_LINUX"
+        
+        # Capture hash value for the detected OS
+        match = re.match(rf"#define\s+CEF_API_HASH_{last_version_number}\s+\"(\w+)\"", line)
+        if match and current_os:
+            details[current_os] = match.group(1)
+            current_os = None  # Reset for the next block
+    
+    return details
 
 def __get_version_constant(content, name, platform = None):
     if platform is None:
@@ -905,7 +940,7 @@ def write_interop(header, filepath, backup, schema_name, cppheaderdir):
         writect += update_file(None, './' + tmplpath, schema.cpp2csname(cls.get_name()) + ".tmpl.g.cs", content, backup)
 
     # process cef_version.h and cef_api_hash.h
-    content = make_version_cs(read_file(cppheaderdir + '/' + 'cef_version.h'), read_file(cppheaderdir + '/' + 'cef_api_hash.h'),)
+    content = make_version_cs(read_file(cppheaderdir + '/' + 'cef_version.h'), read_file(cppheaderdir + '/' + 'cef_api_hash.h'), read_file(cppheaderdir + '/' + 'cef_api_versions.h'))
     writect += update_file(project_props_compile_items, filepath + '/' + schema.libcef_path, schema.libcef_version_filename, content, backup)
 
     # make project props file

@@ -6,11 +6,12 @@ namespace Xilium.CefGlue
 {
 	public enum CefNavigationType
 	{
-		LinkClicked = 0,
+		LinkClicked,
 		FormSubmitted,
 		BackForward,
 		Reload,
 		FormResubmitted,
 		Other,
+        NumValues,
 	}
 }

@@ -15,7 +15,7 @@ namespace Xilium.CefGlue
         /// <summary>
         /// Requires that the file exists before allowing the user to pick it.
         /// </summary>
-        Open = 0,
+        Open,
 
         /// <summary>
         /// Like Open, but allows picking multiple files to open.
@@ -32,5 +32,6 @@ namespace Xilium.CefGlue
         /// already exists.
         /// </summary>
         Save,
+        NumValues,
     }
 }

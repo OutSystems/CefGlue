@@ -15,5 +15,6 @@ namespace Xilium.CefGlue
         Capturing,
         AtTarget,
         Bubbling,
+        NumValues,
     }
 }

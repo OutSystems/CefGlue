@@ -13,21 +13,21 @@ namespace Xilium.CefGlue
     // Role: PROXY
     public sealed unsafe partial class CefV8StackFrame : IDisposable
     {
-        internal static CefV8StackFrame FromNative(cef_v8stack_frame_t* ptr)
+        internal static CefV8StackFrame FromNative(cef_v8_stack_frame_t* ptr)
         {
             return new CefV8StackFrame(ptr);
         }
         
-        internal static CefV8StackFrame FromNativeOrNull(cef_v8stack_frame_t* ptr)
+        internal static CefV8StackFrame FromNativeOrNull(cef_v8_stack_frame_t* ptr)
         {
             if (ptr == null) return null;
             return new CefV8StackFrame(ptr);
         }
         
-        private cef_v8stack_frame_t* _self;
+        private cef_v8_stack_frame_t* _self;
         private int _disposed = 0;
         
-        private CefV8StackFrame(cef_v8stack_frame_t* ptr)
+        private CefV8StackFrame(cef_v8_stack_frame_t* ptr)
         {
             if (ptr == null) throw new ArgumentNullException("ptr");
             _self = ptr;
@@ -56,25 +56,25 @@ namespace Xilium.CefGlue
         
         internal void AddRef()
         {
-            cef_v8stack_frame_t.add_ref(_self);
+            cef_v8_stack_frame_t.add_ref(_self);
         }
         
         internal bool Release()
         {
-            return cef_v8stack_frame_t.release(_self) != 0;
+            return cef_v8_stack_frame_t.release(_self) != 0;
         }
         
         internal bool HasOneRef
         {
-            get { return cef_v8stack_frame_t.has_one_ref(_self) != 0; }
+            get { return cef_v8_stack_frame_t.has_one_ref(_self) != 0; }
         }
         
         internal bool HasAtLeastOneRef
         {
-            get { return cef_v8stack_frame_t.has_at_least_one_ref(_self) != 0; }
+            get { return cef_v8_stack_frame_t.has_at_least_one_ref(_self) != 0; }
         }
         
-        internal cef_v8stack_frame_t* ToNative()
+        internal cef_v8_stack_frame_t* ToNative()
         {
             AddRef();
             return _self;

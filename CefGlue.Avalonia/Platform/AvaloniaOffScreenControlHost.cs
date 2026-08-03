@@ -184,7 +184,7 @@ namespace Xilium.CefGlue.Avalonia.Platform
             _previousCursor = null;
             _currentDragCursor = null;
             _windowStateChangedObservable?.Dispose();
-            VisibilityChanged(false);
+            VisibilityChanged?.Invoke(false);
         }
 
         private void OnAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)

@@ -18,5 +18,6 @@ namespace Xilium.CefGlue
         Binary,
         Dictionary,
         List,
+        NumValues,
     }
 }

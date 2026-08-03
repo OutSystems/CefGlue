@@ -16,11 +16,11 @@ namespace Xilium.CefGlue
         private static Dictionary<IntPtr, CefV8Handler> _roots = new Dictionary<IntPtr, CefV8Handler>();
         
         private int _refct;
-        private cef_v8handler_t* _self;
+        private cef_v8_handler_t* _self;
         
         protected object SyncRoot { get { return this; } }
         
-        internal static CefV8Handler FromNativeOrNull(cef_v8handler_t* ptr)
+        internal static CefV8Handler FromNativeOrNull(cef_v8_handler_t* ptr)
         {
             CefV8Handler value = null;
             bool found;
@@ -33,32 +33,32 @@ namespace Xilium.CefGlue
             return found ? value : null;
         }
         
-        internal static CefV8Handler FromNative(cef_v8handler_t* ptr)
+        internal static CefV8Handler FromNative(cef_v8_handler_t* ptr)
         {
             var value = FromNativeOrNull(ptr);
             if (value == null) throw ExceptionBuilder.ObjectNotFound();
             return value;
         }
         
-        private cef_v8handler_t.add_ref_delegate _ds0;
-        private cef_v8handler_t.release_delegate _ds1;
-        private cef_v8handler_t.has_one_ref_delegate _ds2;
-        private cef_v8handler_t.has_at_least_one_ref_delegate _ds3;
-        private cef_v8handler_t.execute_delegate _ds4;
+        private cef_v8_handler_t.add_ref_delegate _ds0;
+        private cef_v8_handler_t.release_delegate _ds1;
+        private cef_v8_handler_t.has_one_ref_delegate _ds2;
+        private cef_v8_handler_t.has_at_least_one_ref_delegate _ds3;
+        private cef_v8_handler_t.execute_delegate _ds4;
         
         protected CefV8Handler()
         {
-            _self = cef_v8handler_t.Alloc();
+            _self = cef_v8_handler_t.Alloc();
         
-            _ds0 = new cef_v8handler_t.add_ref_delegate(add_ref);
+            _ds0 = new cef_v8_handler_t.add_ref_delegate(add_ref);
             _self->_base._add_ref = Marshal.GetFunctionPointerForDelegate(_ds0);
-            _ds1 = new cef_v8handler_t.release_delegate(release);
+            _ds1 = new cef_v8_handler_t.release_delegate(release);
             _self->_base._release = Marshal.GetFunctionPointerForDelegate(_ds1);
-            _ds2 = new cef_v8handler_t.has_one_ref_delegate(has_one_ref);
+            _ds2 = new cef_v8_handler_t.has_one_ref_delegate(has_one_ref);
             _self->_base._has_one_ref = Marshal.GetFunctionPointerForDelegate(_ds2);
-            _ds3 = new cef_v8handler_t.has_at_least_one_ref_delegate(has_at_least_one_ref);
+            _ds3 = new cef_v8_handler_t.has_at_least_one_ref_delegate(has_at_least_one_ref);
             _self->_base._has_at_least_one_ref = Marshal.GetFunctionPointerForDelegate(_ds3);
-            _ds4 = new cef_v8handler_t.execute_delegate(execute);
+            _ds4 = new cef_v8_handler_t.execute_delegate(execute);
             _self->_execute = Marshal.GetFunctionPointerForDelegate(_ds4);
         }
         
@@ -71,12 +71,12 @@ namespace Xilium.CefGlue
         {
             if (_self != null)
             {
-                cef_v8handler_t.Free(_self);
+                cef_v8_handler_t.Free(_self);
                 _self = null;
             }
         }
         
-        private void add_ref(cef_v8handler_t* self)
+        private void add_ref(cef_v8_handler_t* self)
         {
             lock (SyncRoot)
             {
@@ -88,7 +88,7 @@ namespace Xilium.CefGlue
             }
         }
         
-        private int release(cef_v8handler_t* self)
+        private int release(cef_v8_handler_t* self)
         {
             lock (SyncRoot)
             {
@@ -102,24 +102,24 @@ namespace Xilium.CefGlue
             }
         }
         
-        private int has_one_ref(cef_v8handler_t* self)
+        private int has_one_ref(cef_v8_handler_t* self)
         {
             lock (SyncRoot) { return _refct == 1 ? 1 : 0; }
         }
         
-        private int has_at_least_one_ref(cef_v8handler_t* self)
+        private int has_at_least_one_ref(cef_v8_handler_t* self)
         {
             lock (SyncRoot) { return _refct != 0 ? 1 : 0; }
         }
         
-        internal cef_v8handler_t* ToNative()
+        internal cef_v8_handler_t* ToNative()
         {
             add_ref(_self);
             return _self;
         }
         
         [Conditional("DEBUG")]
-        private void CheckSelf(cef_v8handler_t* self)
+        private void CheckSelf(cef_v8_handler_t* self)
         {
             if (_self != self) throw ExceptionBuilder.InvalidSelfReference();
         }

@@ -128,7 +128,7 @@
             string actual;
             try
             {
-                var n_actual = libcef.api_hash(0);
+                var n_actual = libcef.api_hash(libcef.CEF_API_VERSION, 0);
                 actual = n_actual != null ? new string(n_actual) : null;
             }
             catch (EntryPointNotFoundException ex)
@@ -573,12 +573,12 @@
             fixed (char* url_str = url)
             {
                 var n_url = new cef_string_t(url_str, url != null ? url.Length : 0);
-                var n_parts = new cef_urlparts_t();
+                var n_parts = cef_urlparts_t.Alloc();
 
-                var result = libcef.parse_url(&n_url, &n_parts) != 0;
+                var result = libcef.parse_url(&n_url, n_parts) != 0;
 
-                parts = result ? CefUrlParts.FromNative(&n_parts) : null;
-                cef_urlparts_t.Clear(&n_parts);
+                parts = result ? CefUrlParts.FromNative(n_parts) : null;
+                cef_urlparts_t.Free(n_parts);
                 return result;
             }
         }
@@ -590,11 +590,11 @@
             var n_parts = parts.ToNative();
             var n_url = new cef_string_t();
 
-            var result = libcef.create_url(&n_parts, &n_url) != 0;
+            var result = libcef.create_url(n_parts, &n_url) != 0;
 
             url = result ? cef_string_t.ToString(&n_url) : null;
 
-            cef_urlparts_t.Clear(&n_parts);
+            cef_urlparts_t.Free(n_parts);
             libcef.string_clear(&n_url);
 
             return result;
@@ -640,7 +640,7 @@
         /// </summary>
         public static unsafe string Base64Encode(void* data, int size)
         {
-            var n_result = libcef.base64encode(data, (UIntPtr)size);
+            var n_result = libcef.base64_encode(data, (UIntPtr)size);
             return cef_string_userfree.ToString(n_result);
         }
 
@@ -668,7 +668,7 @@
             fixed (char* data_str = data)
             {
                 var n_data = new cef_string_t(data_str, data != null ? data.Length : 0);
-                return CefBinaryValue.FromNative(libcef.base64decode(&n_data));
+                return CefBinaryValue.FromNative(libcef.base64_decode(&n_data));
             }
         }
 

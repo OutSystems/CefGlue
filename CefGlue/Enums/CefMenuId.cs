@@ -23,8 +23,9 @@ namespace Xilium.CefGlue
         Cut = 112,
         Copy = 113,
         Paste = 114,
-        Delete = 115,
-        SelectAll = 116,
+        PasteMatchStyle = 115,
+        Delete = 116,
+        SelectAll = 117,
 
         // Miscellaneous.
         Find = 130,

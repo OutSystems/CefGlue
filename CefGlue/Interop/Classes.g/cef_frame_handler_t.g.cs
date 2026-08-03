@@ -14,6 +14,7 @@ namespace Xilium.CefGlue.Interop
     {
         internal cef_base_ref_counted_t _base;
         internal IntPtr _on_frame_created;
+        internal IntPtr _on_frame_destroyed;
         internal IntPtr _on_frame_attached;
         internal IntPtr _on_frame_detached;
         internal IntPtr _on_main_frame_changed;
@@ -47,6 +48,12 @@ namespace Xilium.CefGlue.Interop
         [SuppressUnmanagedCodeSecurity]
         #endif
         internal delegate void on_frame_created_delegate(cef_frame_handler_t* self, cef_browser_t* browser, cef_frame_t* frame);
+        
+        [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
+        #if !DEBUG
+        [SuppressUnmanagedCodeSecurity]
+        #endif
+        internal delegate void on_frame_destroyed_delegate(cef_frame_handler_t* self, cef_browser_t* browser, cef_frame_t* frame);
         
         [UnmanagedFunctionPointer(libcef.CEF_CALLBACK)]
         #if !DEBUG

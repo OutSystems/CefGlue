@@ -10,11 +10,13 @@
         /// <summary>
         /// The source is explicit navigation via the API (LoadURL(), etc).
         /// </summary>
-        Navigation = 0,
+        Navigation,
 
         /// <summary>
         /// The source is a system-generated focus event.
         /// </summary>
         System,
+        
+        NumValues,
     }
 }

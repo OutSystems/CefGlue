@@ -25,7 +25,8 @@ namespace Xilium.CefGlue.Demo.Avalonia
             var browserWrapper = this.FindControl<Decorator>("browserWrapper");
 
             browser = new AvaloniaCefBrowser();
-            browser.Address = "https://www.google.com";
+            browser.Address = "https://get.webgl.org/";
+            //browser.Address = "https://webglsamples.org/aquarium/aquarium.html";
             browser.RegisterJavascriptObject(new BindingTestClass(), "boundBeforeLoadObject");
             browser.LoadStart += OnBrowserLoadStart;
             browser.TitleChanged += OnBrowserTitleChanged;
@@ -142,6 +143,7 @@ namespace Xilium.CefGlue.Demo.Avalonia
             protected override bool OnBeforePopup(
                 CefBrowser browser,
                 CefFrame frame,
+                int popupId,
                 string targetUrl,
                 string targetFrameName,
                 CefWindowOpenDisposition targetDisposition,

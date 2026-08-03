@@ -83,17 +83,28 @@
             </None>
         </ItemGroup>
     
+        <!-- CEF resolves 'locales' relative to the directory libcef.dll was loaded from, and the
+             build output has two copies that different processes pick up: the browser process
+             loads runtimes\<rid>\native\libcef.dll, while the subprocess in CefGlueBrowserProcess\
+             resolves its own copy at the output root (see NativeLibsLoader). Both need a locales
+             folder beside them, which is what the block above already does for every other CEF
+             resource. A RID-specific publish flattens the two into one, so the root copy is
+             enough there. -->
         <ItemGroup>
-            <None Include="@(CefRuntimeWin64Locales)" Condition="'$(CefGlueTargetPlatform)' == 'win-x64'">
+            <CefRuntimeLocales Include="@(CefRuntimeWin64Locales)" Condition="'$(CefGlueTargetPlatform)' == 'win-x64'" />
+            <CefRuntimeLocales Include="@(CefRuntimeWinArm64Locales)" Condition="'$(CefGlueTargetPlatform)' == 'win-arm64'" />
+
+            <None Include="@(CefRuntimeLocales)">
                 <Visible>false</Visible>
-                <Link>runtimes\win-x64\native\locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
+                <Link>runtimes\$(CefGlueTargetPlatform)\native\locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
                 <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-                <PublishState>Included</PublishState>
+                <CopyToPublishDirectory>Never</CopyToPublishDirectory>
             </None>
-            <None Include="@(CefRuntimeWinArm64Locales)"  Condition="'$(CefGlueTargetPlatform)' == 'win-arm64'">
+            <None Include="@(CefRuntimeLocales)">
                 <Visible>false</Visible>
-                <Link>runtimes\win-arm64\native\locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
+                <Link>$(OutputDirectory)locales\%(RecursiveDir)%(FileName)%(Extension)</Link>
                 <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
                 <PublishState>Included</PublishState>
             </None>
         </ItemGroup>

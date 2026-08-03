@@ -19,7 +19,7 @@
         {
             get
             {
-                var n_result = cef_v8exception_t.get_message(_self);
+                var n_result = cef_v8_exception_t.get_message(_self);
                 return cef_string_userfree.ToString(n_result);
             }
         }
@@ -31,7 +31,7 @@
         {
             get
             {
-                var n_result = cef_v8exception_t.get_source_line(_self);
+                var n_result = cef_v8_exception_t.get_source_line(_self);
                 return cef_string_userfree.ToString(n_result);
             }
         }
@@ -44,7 +44,7 @@
         {
             get
             {
-                var n_result = cef_v8exception_t.get_script_resource_name(_self);
+                var n_result = cef_v8_exception_t.get_script_resource_name(_self);
                 return cef_string_userfree.ToString(n_result);
             }
         }
@@ -55,7 +55,7 @@
         /// </summary>
         public int LineNumber
         {
-            get { return cef_v8exception_t.get_line_number(_self); }
+            get { return cef_v8_exception_t.get_line_number(_self); }
         }
 
         /// <summary>
@@ -64,7 +64,7 @@
         /// </summary>
         public int StartPosition
         {
-            get { return cef_v8exception_t.get_start_position(_self); }
+            get { return cef_v8_exception_t.get_start_position(_self); }
         }
 
         /// <summary>
@@ -73,7 +73,7 @@
         /// </summary>
         public int EndPosition
         {
-            get { return cef_v8exception_t.get_end_position(_self); }
+            get { return cef_v8_exception_t.get_end_position(_self); }
         }
 
         /// <summary>
@@ -82,7 +82,7 @@
         /// </summary>
         public int StartColumn
         {
-            get { return cef_v8exception_t.get_start_column(_self); }
+            get { return cef_v8_exception_t.get_start_column(_self); }
         }
 
         /// <summary>
@@ -91,7 +91,7 @@
         /// </summary>
         public int EndColumn
         {
-            get { return cef_v8exception_t.get_end_column(_self); }
+            get { return cef_v8_exception_t.get_end_column(_self); }
         }
     }
 }

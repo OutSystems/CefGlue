@@ -22,7 +22,7 @@
         /// </summary>
         public bool IsValid
         {
-            get { return cef_v8stack_frame_t.is_valid(_self) != 0; }
+            get { return cef_v8_stack_frame_t.is_valid(_self) != 0; }
         }
 
         /// <summary>
@@ -32,7 +32,7 @@
         {
             get
             {
-                var n_result = cef_v8stack_frame_t.get_script_name(_self);
+                var n_result = cef_v8_stack_frame_t.get_script_name(_self);
                 return cef_string_userfree.ToString(n_result);
             }
         }
@@ -46,7 +46,7 @@
         {
             get
             {
-                var n_result = cef_v8stack_frame_t.get_script_name_or_source_url(_self);
+                var n_result = cef_v8_stack_frame_t.get_script_name_or_source_url(_self);
                 return cef_string_userfree.ToString(n_result);
             }
         }
@@ -58,7 +58,7 @@
         {
             get
             {
-                var n_result = cef_v8stack_frame_t.get_function_name(_self);
+                var n_result = cef_v8_stack_frame_t.get_function_name(_self);
                 return cef_string_userfree.ToString(n_result);
             }
         }
@@ -68,7 +68,7 @@
         /// </summary>
         public int LineNumber
         {
-            get { return cef_v8stack_frame_t.get_line_number(_self); }
+            get { return cef_v8_stack_frame_t.get_line_number(_self); }
         }
 
         /// <summary>
@@ -77,7 +77,7 @@
         /// </summary>
         public int Column
         {
-            get { return cef_v8stack_frame_t.get_column(_self); }
+            get { return cef_v8_stack_frame_t.get_column(_self); }
         }
 
         /// <summary>
@@ -85,7 +85,7 @@
         /// </summary>
         public bool IsEval
         {
-            get { return cef_v8stack_frame_t.is_eval(_self) != 0; }
+            get { return cef_v8_stack_frame_t.is_eval(_self) != 0; }
         }
 
         /// <summary>
@@ -93,7 +93,7 @@
         /// </summary>
         public bool IsConstructor
         {
-            get { return cef_v8stack_frame_t.is_constructor(_self) != 0; }
+            get { return cef_v8_stack_frame_t.is_constructor(_self) != 0; }
         }
     }
 }
