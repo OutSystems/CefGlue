@@ -24,7 +24,9 @@ namespace Xilium.CefGlue.Avalonia
                     delayMs = 1;
                 }
 
-                _current = Observable.Interval(TimeSpan.FromMilliseconds(delayMs)).ObserveOn(AvaloniaScheduler.Instance).Subscribe((i) =>
+                // CEF asks for a single DoMessageLoopWork call after delayMs and notifies again when it
+                // needs more, so this must stay one-shot: a recurring timer keeps pumping forever.
+                _current = Observable.Timer(TimeSpan.FromMilliseconds(delayMs)).ObserveOn(AvaloniaScheduler.Instance).Subscribe((i) =>
                 {
                     CefRuntime.DoMessageLoopWork();
                 });
