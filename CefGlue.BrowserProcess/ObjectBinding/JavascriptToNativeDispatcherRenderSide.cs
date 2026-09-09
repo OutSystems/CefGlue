@@ -209,6 +209,9 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 if (_registeredObjects.Remove(objName))
                 {
+                    // a completed query left behind would answer a later Bind with true for the deleted global
+                    _pendingBoundQueryTasks.TryRemove(objName, out _);
+
                     var global = context.GetGlobal();
                     global.DeleteValue(objName);
                 }
