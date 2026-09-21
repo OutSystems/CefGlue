@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Reactive.Linq;
+using System.Threading;
 using Avalonia.ReactiveUI;
 using Avalonia.Threading;
 using Xilium.CefGlue.Common.Handlers;
@@ -30,6 +31,7 @@ namespace Xilium.CefGlue.Avalonia
 
         private IDisposable _pump;
         private object _schedule = new object();
+        private int _immediatePumpQueued;
 
         private static int ResolvePumpIntervalMs()
         {
@@ -59,11 +61,36 @@ namespace Xilium.CefGlue.Avalonia
                 }
             }
 
-            if (delayMs <= 0)
+            if (delayMs > 0)
             {
-                // CEF wants work as soon as possible, so don't make it wait for the next tick.
-                Dispatcher.UIThread.Post(CefRuntime.DoMessageLoopWork, DispatcherPriority.Normal);
+                return;
             }
+
+            // CEF wants work as soon as possible, so don't make it wait for the next tick. This
+            // notification arrives from any thread and asks for 0 the vast majority of the time,
+            // so only keep one immediate pump in flight: a single DoMessageLoopWork drains
+            // everything that is pending.
+            if (Interlocked.Exchange(ref _immediatePumpQueued, 1) == 1)
+            {
+                return;
+            }
+
+            // Default, not Normal: in Avalonia, Default is the normal priority (0) and Normal is
+            // a WPF-compatibility alias sitting second from the top (5), above Render (4), so
+            // pumping at Normal lets CEF preempt layout and repaint. Not Background or Input
+            // either: Dispatcher.ExecuteJobsCore runs everything at Input priority and below only
+            // while the platform reports no pending OS input, which would defer the pump exactly
+            // while the user is typing or scrolling. Default is the lowest priority that is still
+            // dispatched unconditionally.
+            Dispatcher.UIThread.Post(
+                () =>
+                {
+                    // Cleared before the pump runs, so work CEF schedules from inside
+                    // DoMessageLoopWork still queues a fresh notification.
+                    Volatile.Write(ref _immediatePumpQueued, 0);
+                    CefRuntime.DoMessageLoopWork();
+                },
+                DispatcherPriority.Default);
         }
     }
 }
