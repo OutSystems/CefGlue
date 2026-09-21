@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Reactive.Linq;
+using System.Threading;
 using Avalonia.ReactiveUI;
 using Avalonia.Threading;
 using Xilium.CefGlue.Common.Handlers;
@@ -30,6 +31,7 @@ namespace Xilium.CefGlue.Avalonia
 
         private IDisposable _pump;
         private object _schedule = new object();
+        private int _immediatePumpQueued;
 
         private static int ResolvePumpIntervalMs()
         {
@@ -59,11 +61,30 @@ namespace Xilium.CefGlue.Avalonia
                 }
             }
 
-            if (delayMs <= 0)
+            if (delayMs > 0)
             {
-                // CEF wants work as soon as possible, so don't make it wait for the next tick.
-                Dispatcher.UIThread.Post(CefRuntime.DoMessageLoopWork, DispatcherPriority.Normal);
+                return;
             }
+
+            // CEF wants work as soon as possible, so don't make it wait for the next tick.
+            // A single pump drains everything pending, and this is notified from any thread,
+            // so keep only one in flight rather than queueing a job per notification.
+            if (Interlocked.Exchange(ref _immediatePumpQueued, 1) == 1)
+            {
+                return;
+            }
+
+            // Default is Avalonia's normal priority; Normal is a WPF-compatibility alias that
+            // sits above Render. Input and below are only dispatched while the platform reports
+            // no pending OS input, which would stall the pump while the user types or scrolls.
+            Dispatcher.UIThread.Post(
+                () =>
+                {
+                    // Cleared first, so work scheduled from inside the pump queues a new one.
+                    Volatile.Write(ref _immediatePumpQueued, 0);
+                    CefRuntime.DoMessageLoopWork();
+                },
+                DispatcherPriority.Default);
         }
     }
 }
