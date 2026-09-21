@@ -67,8 +67,8 @@ namespace Xilium.CefGlue.Avalonia
             }
 
             // CEF wants work as soon as possible, so don't make it wait for the next tick.
-            // A single pump drains everything pending, and this is notified from any thread,
-            // so keep only one in flight rather than queueing a job per notification.
+            // Notified from any thread, and CEF notifies again while work remains, so one
+            // queued pump is enough: a job per notification would just pile them up.
             if (Interlocked.Exchange(ref _immediatePumpQueued, 1) == 1)
             {
                 return;
