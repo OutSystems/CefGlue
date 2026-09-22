@@ -74,9 +74,9 @@ namespace Xilium.CefGlue.Avalonia
                 return;
             }
 
-            // Default is Avalonia's normal priority; Normal is a WPF-compatibility alias that
-            // sits above Render. Input and below are only dispatched while the platform reports
-            // no pending OS input, which would stall the pump while the user types or scrolls.
+            // Lowest priority Avalonia dispatches unconditionally: Input and below are held
+            // back while the platform reports pending OS input, stalling the pump as the user
+            // types or scrolls, and anything above Render lets CEF preempt layout and repaint.
             Dispatcher.UIThread.Post(
                 () =>
                 {
