@@ -209,6 +209,8 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 if (_registeredObjects.Remove(objName))
                 {
+                    _pendingBoundQueryTasks.TryRemove(objName, out _);
+
                     var global = context.GetGlobal();
                     global.DeleteValue(objName);
                 }
