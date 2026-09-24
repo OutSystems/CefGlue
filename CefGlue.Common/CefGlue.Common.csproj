@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <Import Project="..\CefGlue.Packages.props" />
-    
+
     <PropertyGroup>
         <TargetFramework>$(DotnetVersion)</TargetFramework>
         <AssemblyName>Xilium.CefGlue.Common</AssemblyName>
@@ -21,10 +21,6 @@
         <None Include="BaseCefBrowser.cs" />
     </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="System.Text.Json" />
-    </ItemGroup>
-
     <ItemGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch($(DefineConstants), '(^|;)HAS_NLOG($|;)'))">
         <PackageReference Include="NLog" />
     </ItemGroup>
@@ -40,12 +36,6 @@
             <IncludeAssets>CefGlue.dll</IncludeAssets>
         </ProjectReference>
 
-        <!-- Forces BrowserProcess build before CopyProjectReferencesToPackage target run -->
-        <ProjectReference Include="..\CefGlue.BrowserProcess\CefGlue.BrowserProcess.csproj">
-            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-            <PrivateAssets>all</PrivateAssets>
-        </ProjectReference>
-
         <None Include="build\CefGlue.Common.props" Pack="True" PackagePath="build\CefGlue.Common$(PackageSuffix).props" />
         <None Include="build\CefGlue.Common.targets" Pack="True" PackagePath="build\CefGlue.Common$(PackageSuffix).targets" />
         <None Include="build\CefGlue.Common.props" Pack="True" PackagePath="buildTransitive\CefGlue.Common$(PackageSuffix).props" />
@@ -56,16 +46,16 @@
         <ItemGroup>
             <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\win-$(ArchitectureConfig)\publish\**\*">
-                <PackagePath>bin\win-$(ArchitectureConfig)</PackagePath>
-            </TfmSpecificPackageFile>
-            
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\linux-$(ArchitectureConfig)\publish\**\*">
-                <PackagePath>bin\linux-$(ArchitectureConfig)</PackagePath>
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\win-$(ArchitectureConfig)\Xilium.CefGlue.BrowserProcess.*">
+                <PackagePath>runtimes\win-$(ArchitectureConfig)\native</PackagePath>
             </TfmSpecificPackageFile>
 
-            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\osx-$(ArchitectureConfig)\publish\**\*">
-                <PackagePath>bin\osx-$(ArchitectureConfig)</PackagePath>
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\linux-$(ArchitectureConfig)\Xilium.CefGlue.BrowserProcess.*">
+                <PackagePath>runtimes\linux-$(ArchitectureConfig)\native</PackagePath>
+            </TfmSpecificPackageFile>
+
+            <TfmSpecificPackageFile Include="..\CefGlue.BrowserProcess\bin\$(Platform)\$(Configuration)\$(DotnetVersion)\osx-$(ArchitectureConfig)\Xilium.CefGlue.BrowserProcess.*">
+                <PackagePath>runtimes\osx-$(ArchitectureConfig)\native</PackagePath>
             </TfmSpecificPackageFile>
         </ItemGroup>
     </Target>

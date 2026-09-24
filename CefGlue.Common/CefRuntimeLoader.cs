@@ -6,13 +6,12 @@ using System.Diagnostics;
 using System.Reflection;
 using Xilium.CefGlue.Common.Handlers;
 using Xilium.CefGlue.Common.Shared;
+using System.Runtime.InteropServices;
 
 namespace Xilium.CefGlue.Common
 {
     public static class CefRuntimeLoader
     {
-        private const string DefaultBrowserProcessDirectory = "CefGlueBrowserProcess";
-
         private static Action<BrowserProcessHandler> _delayedInitialization;
 
         public static void Initialize(CefSettings settings = null, KeyValuePair<string, string>[] flags = null, CustomScheme[] customSchemes = null)
@@ -102,12 +101,12 @@ namespace Xilium.CefGlue.Common
 
         private static IEnumerable<string> GetSubProcessPaths(string baseDirectory)
         {
-            yield return Path.Combine(baseDirectory, DefaultBrowserProcessDirectory, BrowserProcessFileName);
+            yield return Path.Combine(baseDirectory, $"runtimes/{RuntimeInformation.RuntimeIdentifier}/native", BrowserProcessFileName);
             yield return Path.Combine(baseDirectory, BrowserProcessFileName);
 
             // The executing DLL might not be in the current domain directory (plugins scenario)
             baseDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            yield return Path.Combine(baseDirectory, DefaultBrowserProcessDirectory, BrowserProcessFileName);
+            yield return Path.Combine(baseDirectory, $"runtimes/{RuntimeInformation.RuntimeIdentifier}/native", BrowserProcessFileName);
             yield return Path.Combine(baseDirectory, BrowserProcessFileName);
         }
 

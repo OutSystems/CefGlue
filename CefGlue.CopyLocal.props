@@ -11,7 +11,7 @@
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">linux-x64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">linux-arm64</CefGlueTargetPlatform>
     </PropertyGroup>
-    
+
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'x64'">osx-x64</CefGlueTargetPlatform>
         <CefGlueTargetPlatform Condition="'$(Platform)' == 'ARM64'">osx-arm64</CefGlueTargetPlatform>
@@ -22,12 +22,15 @@
         <RuntimeIdentifiers>osx-x64;osx-arm64;win-x64;win-arm64;linux-x64;linux-arm64</RuntimeIdentifiers>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(RuntimeIdentifier)' == ''">
-        <CefGlueBrowserProcessFiles
-            Include="$(BrowserProcessDir)\$(CefGlueTargetPlatform)\publish\*" />
+    <ItemGroup>
+        <CefGlueBrowserProcessFiles Include="$(BrowserProcessDir)\Xilium.CefGlue.*" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(RuntimeIdentifier)' != ''">
-        <CefGlueBrowserProcessFiles Include="$(BrowserProcessDir)\$(RuntimeIdentifier)\publish\*" />
+    <ItemGroup>
+        <None Include="@(CefGlueBrowserProcessFiles)">
+            <Visible>false</Visible>
+            <Link>$(OutputDirectory)runtimes\$(CefGlueTargetPlatform)\native\%(RecursiveDir)%(FileName)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 </Project>
