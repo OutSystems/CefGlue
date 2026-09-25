@@ -209,7 +209,13 @@ namespace Xilium.CefGlue.BrowserProcess.ObjectBinding
             {
                 if (_registeredObjects.Remove(objName))
                 {
-                    _pendingBoundQueryTasks.TryRemove(objName, out _);
+                    // removing the query orphans whatever is already awaiting it, and nothing left in here
+                    // can complete it, so answer those waiters rather than leave their promises (and the v8
+                    // contexts those keep alive) pending for the life of the process
+                    if (_pendingBoundQueryTasks.TryRemove(objName, out var taskSource))
+                    {
+                        taskSource.TrySetResult(false);
+                    }
 
                     var global = context.GetGlobal();
                     global.DeleteValue(objName);
