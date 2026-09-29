@@ -104,6 +104,11 @@ namespace Xilium.CefGlue.Common
         {
             return _frameHandler;
         }
+        
+        protected override CefPermissionHandler GetPermissionHandler()
+        {
+            return _owner.PermissionHandler;
+        }
 
         protected override bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {

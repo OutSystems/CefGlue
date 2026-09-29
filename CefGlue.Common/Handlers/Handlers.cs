@@ -103,6 +103,8 @@
     public abstract class JSDialogHandler : CefJSDialogHandler { }
 
     public class KeyboardHandler : CefKeyboardHandler { }
+    
+    public abstract class PermissionHandler : CefPermissionHandler { }
 
     public class LifeSpanHandler : CefLifeSpanHandler
     {

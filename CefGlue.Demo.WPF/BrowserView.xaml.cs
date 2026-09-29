@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Xilium.CefGlue.Common.Events;
+using Xilium.CefGlue.Common.Handlers;
 
 namespace Xilium.CefGlue.Demo.WPF
 {
@@ -12,6 +13,53 @@ namespace Xilium.CefGlue.Demo.WPF
         {
             InitializeComponent();
             //browser.RegisterJavascriptObject(new BindingTestClass(), "boundBeforeLoadObject");
+            //browser.PermissionHandler = new BrowserPermissionHandler();
+        }
+        
+        /// <summary>
+        /// Simplified permission handler for browser requests.
+        /// </summary>
+        internal sealed class BrowserPermissionHandler : PermissionHandler
+        {
+            protected override bool OnRequestMediaAccessPermission(CefBrowser browser, CefFrame frame,
+                string requestingOrigin,
+                CefMediaAccessPermissionTypes requestedPermissions, CefMediaAccessCallback callback)
+            {
+                if (browser == null || callback == null) return false;
+
+                // Grant all requested media permissions for all sites.
+                callback.Continue(requestedPermissions);
+                return true;
+            }
+
+            /// <summary>
+            /// Called when a permission prompt is shown (e.g., clipboard, geolocation, notifications).
+            /// Grants permissions for all sites. For testing, you can filter by checking requestingOrigin, 
+            /// e.g., if (requestingOrigin.Contains("test-site.com")) to restrict to specific domains.
+            /// </summary>
+            /// <param name="browser">The browser instance initiating the prompt.</param>
+            /// <param name="promptId">The unique ID of the permission prompt.</param>
+            /// <param name="requestingOrigin">The origin requesting the permission.</param>
+            /// <param name="requestedPermissions">The requested permission types.</param>
+            /// <param name="callback">The callback to invoke with the permission result.</param>
+            /// <returns>True if the prompt was handled, false otherwise.</returns>
+            protected override bool OnShowPermissionPrompt(CefBrowser browser, ulong promptId, string requestingOrigin,
+                CefPermissionRequestTypes requestedPermissions, CefPermissionPromptCallback callback)
+            {
+                if (browser == null || callback == null) return false;
+
+                // Allow clipboard, geolocation, and notifications for all sites.
+                var result = CefPermissionRequestResult.Deny;
+                if (requestedPermissions.HasFlag(CefPermissionRequestTypes.Clipboard) ||
+                    requestedPermissions.HasFlag(CefPermissionRequestTypes.Geolocation) ||
+                    requestedPermissions.HasFlag(CefPermissionRequestTypes.Notifications))
+                {
+                    result = CefPermissionRequestResult.Accept;
+                }
+
+                callback.Continue(result);
+                return true;
+            }
         }
 
         public event Action<string> TitleChanged;
