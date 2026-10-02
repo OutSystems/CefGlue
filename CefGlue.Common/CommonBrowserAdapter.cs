@@ -173,7 +173,7 @@ namespace Xilium.CefGlue.Common
             // Remove leading whitespace from the URL
             url = url.TrimStart();
 
-            // to play safe, load url must be called after OnBrowserCreated(CefBrowser) which runs on CefThreadId.UI, 
+            // to play safe, load url must be called after OnBrowserCreated(CefBrowser) which runs on CefThreadId.UI,
             // otherwise the navigation will be aborted
             ActionTask.Run(() =>
             {
@@ -599,6 +599,8 @@ namespace Xilium.CefGlue.Common
 
         void ICefBrowserHost.HandleLoadEnd(CefBrowser browser, CefFrame frame, int httpStatusCode)
         {
+            // Register all objects
+            _objectRegistry.SetBrowser(browser);
             LoadEnd?.Invoke(_eventsEmitter, new LoadEndEventArgs(frame, httpStatusCode));
         }
 
