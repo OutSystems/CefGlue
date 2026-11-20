@@ -29,24 +29,25 @@
     <PackageReference Include="System.Runtime.Loader" />
   </ItemGroup>
 
-  <Target Name="Editbin" AfterTargets="Compile" Condition="$(IsEditbinEnabled) == True And $(VcvarsFile) != '' And $([MSBuild]::IsOSPlatform('Windows'))">
-    <!--
-      Quick explanation: This target runs after compile, and currently 3 more times for each MSBuild command executed in the next target "PublishApp".
-      We just want this target to be executed for windows specs and when passed the VcvarsFile location.
-      Using VS Studio: VcvarsFile="$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars64.bat"
-      Using VS Studio tools: VcvarsFile="C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build\vcvars64.bat"
-    -->
-
+  <Target Name="Editbin" AfterTargets="Compile" Condition="'$(IsEditbinEnabled)' == 'True' And '$(VcvarsFile)' != '' And $([MSBuild]::IsOSPlatform('Windows'))">
     <PropertyGroup>
+      <_VcvarsFile>$(VcvarsFile)</_VcvarsFile>
+      <_VsWhere>$(MSBuildProgramFiles32)\Microsoft Visual Studio\Installer\vswhere.exe</_VsWhere>
       <ApphostLocation>$(ProjectDir)$(BaseIntermediateOutputPath)$(Platform)\$(Configuration)\$(TargetFramework)\</ApphostLocation>
       <ApphostLocation Condition="'$(IsPublishing)' == 'True'">$(ApphostLocation)$(RuntimeIdentifier)\</ApphostLocation> <!-- When publishing, we also use the runtime identifiers (check the next target "PublishApp") -->
     </PropertyGroup>
 
-    <!--
-      This command aims at increasing the stack size of Xilium.CefGlue.BrowserProcess.exe to 8 MiBs, using the visual studio tool "editbin".
-      Since we are reaching the .exe at the compile time, the file name is "apphost.exe" instead and located at /obj folder
-    -->
-    <Exec Command="call &quot;$(VcvarsFile)&quot;&#xD;&#xA; editbin /STACK:0x800000 &quot;$(ApphostLocation)\apphost.exe&quot;&#xD;&#xA;" />
+    <!-- A hosted agent can move to a different Visual Studio installation. -->
+    <Exec Condition="!Exists('$(_VcvarsFile)') And Exists('$(_VsWhere)')"
+          Command="&quot;$(_VsWhere)&quot; -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -find VC\Auxiliary\Build\vcvars64.bat"
+          ConsoleToMSBuild="true" StandardOutputImportance="Low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_VcvarsFile" />
+    </Exec>
+    <Error Condition="!Exists('$(_VcvarsFile)')"
+           Text="Could not find a Visual C++ environment script. Set VcvarsFile to a valid path or install the MSVC x64/x86 build tools." />
+
+    <!-- Reserve 8 MiB of stack before the SDK copies the Windows apphost to the output. -->
+    <Exec Command="call &quot;$(_VcvarsFile)&quot; &amp;&amp; editbin /STACK:0x800000 &quot;$(ApphostLocation)\apphost.exe&quot;" />
   </Target>
 
   <Target Name="PublishApp" AfterTargets="AfterBuild" Condition="'$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' and '$(IsPublishing)' != 'True'">
