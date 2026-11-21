@@ -165,7 +165,11 @@ namespace Xilium.CefGlue.Avalonia.Platform
 
         private void OnPointerExited(object sender, PointerEventArgs e)
         {
-            MouseLeave?.Invoke(e.AsCefMouseEvent(MousePositionReferential));
+            // Taking pointer capture can raise PointerExited while the pointer is still inside the browser.
+            if (e.Pointer.Captured != _control)
+            {
+                MouseLeave?.Invoke(e.AsCefMouseEvent(MousePositionReferential));
+            }
         }
 
         private void OnPointerMoved(object sender, PointerEventArgs e)
