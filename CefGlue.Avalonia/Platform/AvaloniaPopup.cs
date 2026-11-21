@@ -45,7 +45,8 @@ namespace Xilium.CefGlue.Avalonia.Platform
         {
             Dispatcher.UIThread.Post(() =>
             {
-                _popup.Show(_popup.PlacementTarget.GetVisualRoot() as Window);
+                // Use TopLevel.GetTopLevel to dynamically get ownership of the current rendering root window
+                _popup.Show(TopLevel.GetTopLevel(_popup.PlacementTarget) as Window);
             });
         }
 

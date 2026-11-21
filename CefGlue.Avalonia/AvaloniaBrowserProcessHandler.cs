@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Reactive.Linq;
 using System.Threading;
-using Avalonia.ReactiveUI;
+using ReactiveUI.Avalonia;
 using Avalonia.Threading;
 using Xilium.CefGlue.Common.Handlers;
 

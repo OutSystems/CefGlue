@@ -31,8 +31,9 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Themes.Simple" />
+    <PackageReference Include="AvaloniaUI.DiagnosticsSupport" />
     <PackageReference Include="Dotnet.Bundle" />
-    <PackageReference Include="Avalonia.Diagnostics" />
   </ItemGroup>
 
   <ItemGroup>
